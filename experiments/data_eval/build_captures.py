@@ -92,9 +92,9 @@ def build(row, data: Path, stats: Counter) -> dict:
     else:
         failures["registration"] = rdap["failure_reason"] if rdap else "not_collected"
     for a in artifacts:
-        stats[f"obtained:{a['field']}"] += 1
+        stats[f"obtained:{a['field']}:{row.label}"] += 1
     for f, why in failures.items():
-        stats[f"unavailable:{f}:{why.split(':')[0]}"] += 1
+        stats[f"unavailable:{f}:{why.split(':')[0]}:{row.label}"] += 1
     return {"case_id": row.case_id, "submission_type": row.submission_type, "payload": url,
             "label": row.label, "inapplicable": ["message_body"], "artifacts": artifacts,
             "failures": failures, "findings": {}, "revisions": {}}
@@ -125,6 +125,20 @@ def main() -> None:
     print(f"wrote {n} captures")
     for k, v in sorted(stats.items()):
         print(f"  {k}: {v}")
+    # Missingness that differs by label is a shortcut a model can learn: flag it.
+    labels = Counter(r.label for r in read(str(data / "manifest.jsonl"))
+                     if args.split in ("all", r.split))
+    fields = sorted({k.split(":")[1] for k in stats if k.startswith("obtained:")})
+    report = {}
+    for f in fields:
+        rate = {l: stats.get(f"obtained:{f}:{l}", 0) / labels[l] for l in labels if labels[l]}
+        report[f] = rate
+        if len(rate) == 2 and abs(rate["phishing"] - rate["benign"]) >= 0.10:
+            print(f"  WARNING: '{f}' availability differs by label "
+                  f"(phishing {rate['phishing']:.0%} vs benign {rate['benign']:.0%}); "
+                  f"missingness can leak the label")
+    (data / f"coverage_by_label_{args.split}.json").write_text(json.dumps(report, indent=1),
+                                                              encoding="utf-8")
 
 
 if __name__ == "__main__":
