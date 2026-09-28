@@ -46,6 +46,13 @@ metadata/dom are `not_in_source_dataset`. Phishing dated 2022-11..2023-12 (Phish
 paper states Jul-Dec 2023; 2022 dates exist in the release), 29 phishing without a date;
 benign all 2023-08-14 (Tranco top-50k, i.e. popular, likely-memorized sites).
 
+### Mendeley comparison set (PhishDebate replication, PRE-CUTOFF)
+`python -m experiments.data_eval.build_mendeley --root data/raw/mendeley_web --out experiments/data_eval/data/mendeley`
+(needs the 8 `dataset-part-*` folders plus `index.sql`). All 80,000 index rows
+(30,000 phishing / 50,000 legitimate, created 2020-12..2021-11) match an HTML file; 3,275
+unindexed files are ignored. Random 500/500 (PhishDebate protocol) after removing empty
+(39) and exact-duplicate (71) pages. Evidence = url, served html, visible text only.
+
 ### SMS and email sets (PRE-CUTOFF, reported separately)
 `python -m experiments.data_eval.build_messages --sms Dataset_5971.csv --nazario Nazario.csv --enron Enron.csv --out experiments/data_eval/data/messages`
 
@@ -96,7 +103,7 @@ capture serves the first link to every child (prototype limitation, see Exp 1 ha
 ## Remaining role-2 work
 1. Evidence + captures for dev/calib; rebuild test captures when enrichment finishes.
 2. SMS (Mishra & Soni) and Email (Nazario + Enron, de-artifacted) manifests + captures.
-3. Mendeley 500/500 for the PhishDebate comparison (TR-OP done). Mendeley Data is
+3. Done: Mendeley and TR-OP 500/500 for the PhishDebate comparison. (Mendeley Data is
    behind a Cloudflare check: download manually.
 4. Exp 5: removal conditions use `Config.evidence_removal` (runtime withholding, no new
    data); the conflict set is `build_conflicts.py` -- rerun after test enrichment.
