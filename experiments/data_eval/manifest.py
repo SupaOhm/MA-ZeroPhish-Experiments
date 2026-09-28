@@ -91,9 +91,14 @@ def validate(rows: list[ManifestRow]) -> tuple[list[str], list[str]]:
                if len(s) > 1]
     errors += [f"group key {k} spans splits {sorted(s)}" for k, s in by_key.items() if len(s) > 1]
     # Chronology (per source dataset): dev <= calib <= test by observation date.
+    # Undated rows (observed_at == "unknown") cannot be ordered and are skipped.
     by_src = defaultdict(lambda: defaultdict(list))
     for r in rows:
-        by_src[r.source_dataset][r.split].append(r.observed_at)
+        if r.observed_at != "unknown":
+            by_src[r.source_dataset][r.split].append(r.observed_at)
+    undated = Counter(r.source_dataset for r in rows if r.observed_at == "unknown")
+    warnings += [f"{src}: {n} undated rows; chronology not checkable for them"
+                 for src, n in sorted(undated.items())]
     for src, sp in by_src.items():
         order = [s for s in SPLITS if sp.get(s)]
         for a, b in zip(order, order[1:]):

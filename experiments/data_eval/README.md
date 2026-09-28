@@ -46,6 +46,24 @@ metadata/dom are `not_in_source_dataset`. Phishing dated 2022-11..2023-12 (Phish
 paper states Jul-Dec 2023; 2022 dates exist in the release), 29 phishing without a date;
 benign all 2023-08-14 (Tranco top-50k, i.e. popular, likely-memorized sites).
 
+### SMS and email sets (PRE-CUTOFF, reported separately)
+`python -m experiments.data_eval.build_messages --sms Dataset_5971.csv --nazario Nazario.csv --enron Enron.csv --out experiments/data_eval/data/messages`
+
+| source | dev | test | notes |
+|---|---|---|---|
+| SMS (Mishra & Soni) | 50/50 | 100/100 | smishing->phishing, ham->benign, 489 spam dropped, 86 duplicates; undated |
+| Email (Nazario + Enron ham) | 50/50 | 100/100 | Enron spam (label 1) dropped; 236 duplicates; Nazario 2015-2022, Enron undated |
+
+Email de-artifacting: subject+body only; identical lowercasing/punctuation spacing for both
+sources; Enron tokenized URLs re-joined; e-mail addresses, "forwarded by" lines,
+enron/ect/hou tokens and the monkey.org / enron domains neutralized (checked: 0 residual
+mentions in either source). **Residual topic difference remains** (energy trading vs.
+credential lures) -- a stated limitation. Dev/test are template-disjoint but NOT
+chronological (random, like the source papers). Only `http(s)://` links become child
+objects in the prototype classifier; links are dead (pre-cutoff), so page fields are
+recorded failures. 7 test messages carry >1 link (`multi_url_message` stratum); the
+capture serves the first link to every child (prototype limitation, see Exp 1 handoff).
+
 ## Protocol decisions (flag for the team / advisor)
 - **Grouping** = union-find over registrable domain (full host on shared hosting
   platforms), HTML tag skeleton (kit reuse) and normalized visible text. 297 train rows
