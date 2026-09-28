@@ -1,0 +1,29 @@
+{
+  "case_id": "c5-absence-observation",
+  "submission_type": "url",
+  "payload": "https://portal.example-university.test/students/login",
+  "label": "benign",
+  "inapplicable": ["message_body"],
+  "artifacts": [
+    {"field": "url", "content": "https://portal.example-university.test/students/login", "instrument": "submission"},
+    {"field": "redirect_chain", "content": "no redirect", "instrument": "headless_browser"},
+    {"field": "html", "content": "<form action=\"https://portal.example-university.test/students/authenticate\">", "instrument": "headless_browser"},
+    {"field": "dom", "content": "<form action=\"https://portal.example-university.test/students/authenticate\">", "instrument": "headless_browser"},
+    {"field": "page_resources", "content": "css, js, favicon all same-origin", "instrument": "resource_fetcher"},
+    {"field": "page_content", "content": "Sign in to view your course registration", "instrument": "headless_browser"},
+    {"field": "screenshot", "content": "[render: student portal login, university mark]", "instrument": "headless_browser"},
+    {"field": "brand_reference", "content": "matches university mark on file", "instrument": "brand_reference_lookup"},
+    {"field": "dns", "content": "A 198.51.100.77", "instrument": "dns_client"},
+    {"field": "registration", "content": "created 6 years ago", "instrument": "registration_client"},
+    {"field": "tls", "content": "OV, issued 20 days ago, renewal of a 3-year chain", "instrument": "tls_client"},
+    {"field": "ct", "content": "no log entry predates the submission", "instrument": "ct_client"},
+    {"field": "hosting", "content": "institutional hosting, AS64512, stable since registration", "instrument": "hosting_client"}
+  ],
+  "failures": {},
+  "findings": {
+    "metadata": [
+      {"observation": "no Certificate Transparency entry predates the submission", "field": "ct", "direction": "phishing", "strength": "marginal"}
+    ]
+  },
+  "revisions": {}
+}

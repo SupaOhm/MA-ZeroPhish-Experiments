@@ -1,0 +1,30 @@
+{
+  "case_id": "c7-terminates-insufficient",
+  "submission_type": "url",
+  "payload": "http://sso.example-partner.test/auth",
+  "label": "phishing",
+  "inapplicable": ["message_body"],
+  "artifacts": [
+    {"field": "url", "content": "http://sso.example-partner.test/auth", "instrument": "submission"},
+    {"field": "dns", "content": "A 203.0.113.99", "instrument": "dns_client"}
+  ],
+  "failures": {
+    "redirect_chain": "cloaked",
+    "html": "cloaked",
+    "dom": "cloaked",
+    "page_resources": "cloaked",
+    "page_content": "cloaked",
+    "screenshot": "cloaked",
+    "brand_reference": "cloaked",
+    "registration": "cloaked",
+    "tls": "cloaked",
+    "ct": "cloaked",
+    "hosting": "cloaked"
+  },
+  "findings": {
+    "url": [
+      {"observation": "subdomain token loosely resembles a partner brand", "field": "url", "direction": "phishing", "strength": "marginal"}
+    ]
+  },
+  "revisions": {}
+}

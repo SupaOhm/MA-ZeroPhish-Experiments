@@ -1,0 +1,319 @@
+\section{Experimental Evaluation}
+\label{sec:evaluation}
+
+We evaluate MA-ZeroPhish across five
+dimensions: zero-day detection,
+adaptive investigation, provenance-aware
+reconciliation, selective collaboration,
+and independent adjudication. The
+experiments assess detection accuracy,
+evidence robustness, and investigation
+cost under unseen campaigns and
+incomplete evidence.
+
+\subsection{Experimental Setup}
+\label{sec:exp-setup}
+
+\noindent\textbf{Dataset and Zero-Day
+Evaluation Protocol.}
+The dataset comprises benign and phishing
+URLs, webpages, SMS messages, and emails.
+Chronological, campaign-disjoint splits
+separate development, calibration, and
+testing. Known campaign variants and
+related domains or infrastructure are
+grouped to minimize cross-split leakage.
+Test campaigns are excluded from
+few-shot examples, trigger configuration,
+and estimator calibration.
+
+Reputation and blacklist membership
+are excluded as detection features.
+We additionally evaluate samples
+confirmed absent from selected reputation
+sources at their observation time.
+Where model cutoff dates are available,
+we report a post-cutoff subset.
+These controls strengthen zero-day
+evaluation without claiming complete
+exclusion from model pretraining.
+
+\medskip
+\noindent\textbf{Implementation and
+Configuration.}
+MA-ZeroPhish implements Phases 1--4 of Section~\ref{sec:process} using fixed model versions, declared
+tools, and a common evidence schema.
+The case-wide budget, dispatch costs,
+trigger weights, confidence-band rules,
+collaboration threshold $\tau$, round
+limit $r_{\max}^{\mathrm{coll}}$, and
+per-round reference limit $k$ are
+fixed before testing.
+
+The stopping-error estimator is trained
+and calibrated on held-out intermediate
+states assessed by a frozen Judge
+against independently established
+ground truth. Abstentions are evaluated
+separately from substantive classification
+errors. All methods use identical test
+samples and acquisition conditions
+unless explicitly varied.
+
+\medskip
+\noindent\textbf{Baselines.}
+We compare MA-ZeroPhish with a
+single-agent multimodal detector,
+fixed all-specialist execution,
+full multi-agent debate, and fixed
+multi-agent execution without revision.
+Baselines receive equivalent applicable
+evidence, with tool access, model calls,
+and resource budgets explicitly reported.
+Both matched-budget and unrestricted-cost
+comparisons distinguish architectural
+benefits from additional computation.
+
+\medskip
+\noindent\textbf{Evaluation Metrics.}
+Detection is assessed using precision,
+recall, F1-score, false-positive rate,
+and area under the precision--recall
+curve. We report substantive-verdict
+coverage, insufficient-evidence rate,
+and selective risk to account for
+abstention. Investigation efficiency
+is measured by latency, model calls,
+input/output tokens, acquisition
+requests, and monetary cost.
+
+Results include repeated-run variability
+and paired confidence intervals on
+identical test samples. Calibration
+is assessed using reliability plots
+and Brier score on intermediate states
+receiving substantive Judge verdicts,
+with abstention coverage reported
+separately.
+
+
+\subsection{Experiment 1: Zero-Day
+Detection Performance}
+\label{sec:exp1}
+
+This experiment evaluates detection
+performance on temporally separated,
+campaign-disjoint phishing samples
+and benign controls. MA-ZeroPhish
+is compared with the single-agent,
+fixed multi-agent, and full-debate
+baselines using the same test set.
+Results are reported separately
+for URLs, webpages, SMS, and emails,
+including message submissions
+containing multiple URLs.
+
+We report precision, recall,
+F1-score, false-positive rate,
+and precision--recall curves.
+Because MA-ZeroPhish supports an
+insufficient-evidence outcome,
+selective risk and coverage are
+reported alongside conventional
+classification metrics. An additional
+analysis isolates samples lacking
+known reputation entries at the
+time of observation.
+
+This experiment determines whether
+adaptive investigation and independent
+adjudication maintain detection
+performance on previously unseen
+campaigns without relying on
+reputation-based shortcuts.
+
+\subsection{Experiment 2: Adaptive
+Acquisition and Specialist Selection}
+\label{sec:exp2}
+
+This experiment evaluates Phase 1
+under varying evidence availability
+and acquisition budgets. We compare
+adaptive specialist dispatch with
+a fixed workflow that executes
+all applicable specialists. Test
+conditions include complete evidence,
+partial browser captures, unavailable
+network metadata, and message
+submissions with multiple URLs.
+
+The acquisition budget and number
+of applicable modalities are varied
+while recording selected specialists,
+trigger coverage, acquisition success,
+model calls, latency, and total cost.
+We also measure the proportion of
+initially unselected specialists
+subsequently dispatched by the
+Moderator.
+
+The analysis examines the trade-off
+between reduced initial investigation
+cost and additional collaboration
+required to recover omitted
+modalities or missing evidence.
+
+\subsection{Experiment 3: Provenance-Aware
+Evidence Reconciliation}
+\label{sec:exp3}
+
+This experiment isolates the effect
+of Phase 3 common-cause reconciliation.
+We construct evaluation cases containing
+repeated artifact citations, overlapping
+cross-modal observations, independently
+acquired corroboration, and conflicting
+specialist interpretations. Dependency
+ground truth is established from
+acquisition records and manually
+verified causal relationships where
+available.
+
+We compare full provenance-aware
+reconciliation with variants that
+(i) treat all agreeing observations
+as independent and (ii) group
+observations solely by semantic
+similarity. Dependency identification
+precision and recall, duplicate-support
+rate, escalation frequency, and
+downstream decision changes are
+reported.
+
+The experiment tests whether the
+provenance graph discounts demonstrably
+dependent evidence without incorrectly
+merging independent observations
+that express similar conclusions.
+
+\subsection{Experiment 4: Uncertainty-Driven
+Collaboration}
+\label{sec:exp4}
+
+This experiment evaluates the calibrated
+stopping-error gate and targeted
+collaboration in Phase 3. MA-ZeroPhish
+is compared with no collaboration,
+fixed-round collaboration, and
+full multi-agent debate. We vary
+the escalation threshold $\tau$,
+round limit, and per-round citation
+limit $k$ while maintaining the
+same initial specialist records.
+
+We measure detection performance,
+selective risk, collaboration rounds,
+specialist reinvocations, model calls,
+tokens, latency, and total cost.
+The stopping-error estimator is
+evaluated using calibration plots,
+Brier score, and discrimination
+metrics on held-out intermediate
+investigation states.
+
+We additionally report escalation
+precision: the proportion of
+initiated rounds that resolve an
+identified issue or yield new
+eligible evidence. The results
+characterize the accuracy--cost
+trade-off and determine whether
+the calibrated gate avoids
+unnecessary full-agent debate.
+
+\subsection{Experiment 5: Robustness
+to Missing and Conflicting Evidence}
+\label{sec:exp5}
+
+This experiment evaluates the complete
+framework under incomplete or
+contradictory evidence. Controlled
+test conditions progressively remove
+served HTML, rendered DOM, screenshots,
+or network metadata, and introduce
+conflicting observations from
+different modalities. Failed
+acquisition attempts and stale
+captures are recorded explicitly
+rather than represented as benign
+evidence.
+
+We measure substantive-verdict
+coverage, selective risk,
+insufficient-evidence rate,
+false-positive rate, recovery
+through authorized local acquisition,
+and the proportion of unresolved
+issues disclosed in final decisions.
+We also inspect whether the Judge
+cites only eligible observations
+and preserves material coverage
+limitations.
+
+This experiment examines whether
+MA-ZeroPhish can abstain when
+evidence is inadequate rather than
+forcing agreement among specialists
+or converting acquisition failures
+into benign indicators.
+
+\subsection{Experiment 6: Ablation Study}
+\label{sec:exp6}
+
+To quantify the contribution of
+each mechanism, we evaluate the
+full framework against five
+ablated configurations:
+\begin{enumerate}
+\item Without adaptive specialist
+selection, executing all applicable
+agents initially.
+\item Without common-cause
+reconciliation, treating validated
+observations as independent.
+\item Without calibrated escalation,
+using a fixed collaboration policy.
+\item Without targeted collaboration,
+replacing selective requests with
+full-agent debate.
+\item Without independent
+adjudication, allowing the final
+decision maker to observe specialist
+verdicts and confidence bands.
+\end{enumerate}
+
+All configurations use identical
+evaluation samples and fixed model
+versions. Detection metrics,
+selective risk, model calls,
+tokens, latency, and cost are
+reported for each ablation.
+Additional analysis measures
+revision-validation failures,
+unsupported evidence citations,
+and changes in final decisions
+caused by removing the corresponding
+mechanism.
+
+The ablation study distinguishes
+the benefits of adaptive routing,
+provenance handling, calibrated
+collaboration, and judgment
+independence, rather than attributing
+all improvements to multi-agent
+execution alone.
+
+
+
+% ---- properties --------------------------------------------------------
+

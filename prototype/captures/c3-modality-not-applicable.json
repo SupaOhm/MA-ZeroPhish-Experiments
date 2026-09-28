@@ -1,0 +1,36 @@
+{
+  "case_id": "c3-modality-not-applicable",
+  "submission_type": "url",
+  "payload": "https://www.example-bank.test/accounts/statements",
+  "label": "benign",
+  "inapplicable": ["message_body"],
+  "artifacts": [
+    {"field": "url", "content": "https://www.example-bank.test/accounts/statements", "instrument": "submission"},
+    {"field": "redirect_chain", "content": "no redirect", "instrument": "headless_browser"},
+    {"field": "html", "content": "<form action=\"https://www.example-bank.test/accounts/login\">", "instrument": "headless_browser"},
+    {"field": "dom", "content": "<form action=\"https://www.example-bank.test/accounts/login\">", "instrument": "headless_browser"},
+    {"field": "page_content", "content": "View your recent statements and transactions", "instrument": "headless_browser"},
+    {"field": "screenshot", "content": "[render: account dashboard, bank mark]", "instrument": "headless_browser"},
+    {"field": "dns", "content": "A 198.51.100.20", "instrument": "dns_client"},
+    {"field": "registration", "content": "created 11 years ago", "instrument": "registration_client"},
+    {"field": "tls", "content": "EV, issued 40 days ago, renewal of a 4-year chain", "instrument": "tls_client"},
+    {"field": "ct", "content": "37 log entries spanning 11 years", "instrument": "ct_client"},
+    {"field": "hosting", "content": "dedicated hosting, AS64500, stable since registration", "instrument": "hosting_client"}
+  ],
+  "failures": {},
+  "findings": {
+    "url": [
+      {"observation": "registrable domain matches the declared brand with no subdomain deception", "field": "url", "direction": "benign", "strength": "consistent"}
+    ],
+    "web_structure": [
+      {"observation": "form posts to the same registrable domain as the page", "field": "html", "direction": "benign", "strength": "consistent"}
+    ],
+    "content": [
+      {"observation": "presentation matches the declared brand's own template, no urgency language", "field": "page_content", "direction": "benign", "strength": "consistent"}
+    ],
+    "metadata": [
+      {"observation": "domain registered eleven years before observation, stable hosting throughout", "field": "registration", "direction": "benign", "strength": "distinctive"}
+    ]
+  },
+  "revisions": {}
+}

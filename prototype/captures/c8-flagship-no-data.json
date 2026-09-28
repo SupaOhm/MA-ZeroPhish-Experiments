@@ -1,0 +1,33 @@
+{
+  "case_id": "c8-flagship-no-data",
+  "submission_type": "url",
+  "payload": "https://account.example.test/verify",
+  "label": "phishing",
+  "inapplicable": ["message_body"],
+  "artifacts": [
+    {"field": "url", "content": "https://account.example.test/verify", "instrument": "submission"},
+    {"field": "redirect_chain", "content": "no redirects", "instrument": "headless_browser"},
+    {"field": "page_resources", "content": "cached resource manifest: login.js", "instrument": "resource_fetcher"}
+  ],
+  "failures": {
+    "html": "connection_reset",
+    "dom": "render_timeout",
+    "page_content": "render_timeout",
+    "screenshot": "render_timeout",
+    "brand_reference": "not_captured",
+    "dns": "lookup_timeout",
+    "registration": "lookup_timeout",
+    "tls": "not_captured",
+    "ct": "lookup_timeout",
+    "hosting": "lookup_timeout"
+  },
+  "findings": {
+    "url": [
+      {"observation": "account verification path", "field": "url", "direction": "phishing", "strength": "marginal"}
+    ],
+    "web_structure": [
+      {"observation": "manifest names a login script; HTML and DOM are unavailable", "field": "page_resources", "direction": "phishing", "strength": "marginal"}
+    ]
+  },
+  "revisions": {}
+}

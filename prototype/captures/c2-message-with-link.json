@@ -1,0 +1,40 @@
+{
+  "case_id": "c2-message-with-link",
+  "submission_type": "message",
+  "payload": "Your account will be suspended. Verify now: http://account-verify.secure-login.example.test/signin",
+  "label": "phishing",
+  "inapplicable": [],
+  "artifacts": [
+    {"field": "message_body", "content": "Your account will be suspended. Verify now: http://account-verify.secure-login.example.test/signin", "instrument": "submission"},
+    {"field": "url", "content": "http://account-verify.secure-login.example.test/signin", "instrument": "link_processor"},
+    {"field": "redirect_chain", "content": "301 -> http://account-verify.secure-login.example.test/signin", "instrument": "headless_browser"},
+    {"field": "html", "content": "<form action=\"http://collect.example.test/p\">", "instrument": "headless_browser"},
+    {"field": "dom", "content": "<form action=\"http://collect.example.test/p\">", "instrument": "headless_browser"},
+    {"field": "page_content", "content": "Verify your account to avoid suspension", "instrument": "headless_browser"},
+    {"field": "screenshot", "content": "[render: sign-in form, bank mark]", "instrument": "headless_browser"},
+    {"field": "dns", "content": "A 203.0.113.10", "instrument": "dns_client"},
+    {"field": "registration", "content": "created 3 days ago", "instrument": "registration_client"},
+    {"field": "tls", "content": "DV, issued 3 days ago", "instrument": "tls_client"},
+    {"field": "ct", "content": "1 log entry, 3 days ago", "instrument": "ct_client"},
+    {"field": "hosting", "content": "shared hosting, AS64496", "instrument": "hosting_client"}
+  ],
+  "failures": {},
+  "findings": {
+    "message": [
+      {"observation": "requests credential entry via an embedded link", "field": "message_body", "direction": "phishing", "strength": "distinctive"}
+    ],
+    "url": [
+      {"observation": "brand token in a subdomain of an unrelated registrable domain", "field": "url", "direction": "phishing", "strength": "distinctive"}
+    ],
+    "web_structure": [
+      {"observation": "form posts to a different registrable domain than the page", "field": "html", "direction": "phishing", "strength": "distinctive"}
+    ],
+    "content": [
+      {"observation": "urgency language paired with a credential request", "field": "page_content", "direction": "phishing", "strength": "consistent"}
+    ],
+    "metadata": [
+      {"observation": "domain registered three days before observation", "field": "registration", "direction": "phishing", "strength": "consistent"}
+    ]
+  },
+  "revisions": {}
+}
