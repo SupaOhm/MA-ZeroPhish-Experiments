@@ -71,6 +71,15 @@ objects in the prototype classifier; links are dead (pre-cutoff), so page fields
 recorded failures. 7 test messages carry >1 link (`multi_url_message` stratum); the
 capture serves the first link to every child (prototype limitation, see Exp 1 handoff).
 
+## RDAP excluded from captures by default (label leakage via future takedowns)
+RDAP is looked up in 2026-09 for samples observed in 2025. HTTP 404 ("domain does not
+exist") mostly means the domain was taken down or expired AFTER observation -- future
+information that correlates with the label: dev phishing 86/150 404 vs benign 16/150.
+`build_captures` therefore withholds `registration` for EVERY case
+(`excluded_retrospective_lookup_leaks_future_takedown`); raw RDAP records stay in
+`evidence/*/rdap.json`, and `--rdap include` restores the old behaviour. CT is historical
+and label-balanced (97% / 97% on test), so the Metadata agent keeps CT evidence.
+
 ## Protocol decisions (flag for the team / advisor)
 - **Grouping** = union-find over registrable domain (full host on shared hosting
   platforms), HTML tag skeleton (kit reuse) and normalized visible text. 297 train rows

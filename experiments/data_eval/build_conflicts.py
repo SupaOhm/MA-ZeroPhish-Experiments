@@ -39,6 +39,12 @@ GROUPS = {
 }
 
 
+def group_fields(caps: dict, group: str) -> tuple:
+    """Fields of a group that exist anywhere (registration may be excluded by policy)."""
+    present = {a["field"] for c in caps.values() for a in c["artifacts"]}
+    return tuple(f for f in GROUPS[group] if f in present)
+
+
 def has_all(cap: dict, fields) -> bool:
     got = {a["field"] for a in cap["artifacts"]}
     return all(f in got for f in fields)
@@ -70,7 +76,12 @@ def main() -> None:
     out_dir = data / "captures" / f"{args.split}_conflict"
     out_dir.mkdir(parents=True, exist_ok=True)
     out_rows, stats = [], Counter()
-    for group, fields in GROUPS.items():
+    for group in GROUPS:
+        fields = group_fields(caps, group)
+        if not fields:
+            stats[f"{group}:no_fields_present"] += 1
+            continue
+        stats[f"{group}:fields={'+'.join(fields)}"] += 1
         for cid in sorted(caps):
             base, label = caps[cid], rows[cid].label
             if not has_all(base, fields):

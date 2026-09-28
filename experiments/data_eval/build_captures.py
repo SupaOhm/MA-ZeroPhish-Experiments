@@ -24,6 +24,7 @@ from pathlib import Path
 from .manifest import read
 
 INSTR_SOURCE = "phreshphish_crawler"          # the dataset's own capture of served HTML
+RDAP_POLICY = "exclude"                        # exclude | include  (see build())
 NOT_RETRO = "not_retrospectively_observable"   # live-only records for a 2025 sample
 
 
@@ -86,7 +87,12 @@ def build(row, data: Path, stats: Counter) -> dict:
                           "instrument": ct["instrument"]})
     else:
         failures["ct"] = ct["failure_reason"] if ct else "not_collected"
-    if rdap and rdap["status"] == "obtained":
+    if RDAP_POLICY == "exclude":
+        # RDAP is looked up today; a 404 mostly means the domain was taken down or
+        # expired AFTER observation, which is future information that correlates
+        # with the phishing label. Withheld for every case, both labels alike.
+        failures["registration"] = "excluded_retrospective_lookup_leaks_future_takedown"
+    elif rdap and rdap["status"] == "obtained":
         artifacts.append({"field": "registration", "content": rdap_text(rdap, row.observed_at),
                           "instrument": rdap["instrument"]})
     else:
@@ -104,7 +110,12 @@ def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--data", required=True)
     ap.add_argument("--split", choices=["dev", "calib", "test", "all"], default="all")
+    ap.add_argument("--rdap", choices=["exclude", "include"], default="exclude",
+                    help="exclude (default): retrospective RDAP availability leaks future "
+                         "takedowns; include: keep RDAP where obtained")
     args = ap.parse_args()
+    global RDAP_POLICY
+    RDAP_POLICY = args.rdap
     data = Path(args.data)
     stats: Counter = Counter()
     n = 0
