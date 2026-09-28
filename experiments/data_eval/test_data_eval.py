@@ -75,6 +75,26 @@ class ScoringTests(unittest.TestCase):
             self.assertEqual(dec[("a", 1)]["c1"]["verdict"], "benign")
 
 
+class ConflictTests(unittest.TestCase):
+    def test_swap_replaces_only_group_and_keeps_url(self):
+        from experiments.data_eval.build_conflicts import has_all, swap
+        base = {"case_id": "b", "payload": "http://b", "artifacts": [
+            {"field": "url", "content": "http://b", "instrument": "i"},
+            {"field": "ct", "content": "young cert", "instrument": "crt"},
+            {"field": "registration", "content": "3 days", "instrument": "rdap"}]}
+        donor = {"case_id": "d", "payload": "http://d", "artifacts": [
+            {"field": "url", "content": "http://d", "instrument": "i"},
+            {"field": "ct", "content": "old cert", "instrument": "crt"},
+            {"field": "registration", "content": "12 years", "instrument": "rdap"}]}
+        self.assertTrue(has_all(base, ("ct", "registration")))
+        new = swap(base, donor, ("ct", "registration"))
+        got = {a["field"]: a["content"] for a in new["artifacts"]}
+        self.assertEqual(got, {"url": "http://b", "ct": "old cert", "registration": "12 years"})
+        self.assertEqual(new["payload"], "http://b")
+        self.assertEqual(base["artifacts"][1]["content"], "young cert")   # base untouched
+        self.assertFalse(has_all(base, ("html",)))
+
+
 class ManifestTests(unittest.TestCase):
     def test_leakage_across_splits_is_an_error(self):
         errs, _ = validate([row("a", "dev", group="g1"), row("b", "test", group="g1")])
