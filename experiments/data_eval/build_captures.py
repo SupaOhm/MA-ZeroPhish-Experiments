@@ -113,7 +113,14 @@ def main() -> None:
             continue
         out = data / "captures" / row.split / f"{row.case_id}.json"
         out.parent.mkdir(parents=True, exist_ok=True)
-        out.write_text(json.dumps(build(row, data, stats), ensure_ascii=False), encoding="utf-8")
+        if row.source_dataset == "tr-op":
+            from .build_trop import build_capture as build_trop_capture
+            cap = build_trop_capture(row, data)
+            for a in cap["artifacts"]:
+                stats[f"obtained:{a['field']}"] += 1
+        else:
+            cap = build(row, data, stats)
+        out.write_text(json.dumps(cap, ensure_ascii=False), encoding="utf-8")
         n += 1
     print(f"wrote {n} captures")
     for k, v in sorted(stats.items()):

@@ -37,6 +37,15 @@ Tests: `python -m unittest experiments.data_eval.test_data_eval`
 documented cutoff (`manifest.MODEL_CUTOFFS`). One sample per campaign group per split.
 17 model-screening samples are in dev (never in calib/test).
 
+### TR-OP comparison set (PhishDebate replication, PRE-CUTOFF)
+`python -m experiments.data_eval.build_trop --zip TR-OP.zip --out experiments/data_eval/data/trop`
+then `build_captures --data experiments/data_eval/data/trop`.
+Random 500 phishing / 500 benign (PhishDebate protocol), exact duplicates removed (28).
+Evidence = TR-OP's own: url, served html, visible text, **live screenshot** (all 1000);
+metadata/dom are `not_in_source_dataset`. Phishing dated 2022-11..2023-12 (PhishDebate's
+paper states Jul-Dec 2023; 2022 dates exist in the release), 29 phishing without a date;
+benign all 2023-08-14 (Tranco top-50k, i.e. popular, likely-memorized sites).
+
 ## Protocol decisions (flag for the team / advisor)
 - **Grouping** = union-find over registrable domain (full host on shared hosting
   platforms), HTML tag skeleton (kit reuse) and normalized visible text. 297 train rows
@@ -69,7 +78,8 @@ documented cutoff (`manifest.MODEL_CUTOFFS`). One sample per campaign group per 
 ## Remaining role-2 work
 1. Evidence + captures for dev/calib; rebuild test captures when enrichment finishes.
 2. SMS (Mishra & Soni) and Email (Nazario + Enron, de-artifacted) manifests + captures.
-3. Mendeley and TR-OP 500/500 samples for the PhishDebate comparison.
+3. Mendeley 500/500 for the PhishDebate comparison (TR-OP done). Mendeley Data is
+   behind a Cloudflare check: download manually.
 4. Exp 5: removal conditions use `Config.evidence_removal` (runtime withholding, no new
-   data); build the injected-conflict capture set.
+   data); the conflict set is `build_conflicts.py` -- rerun after test enrichment.
 5. Repeat/run-id handling and PR curves once arms produce scores.
