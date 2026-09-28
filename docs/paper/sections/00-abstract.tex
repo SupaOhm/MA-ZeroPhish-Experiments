@@ -1,0 +1,33 @@
+\begin{abstract}
+Zero-day phishing detection is challenging
+because unseen attacks lack reliable reputation
+signals and often involve incomplete, heterogeneous,
+or conflicting evidence. This paper proposes
+\textbf{MA-ZeroPhish}, an adaptive agentic
+multi-agent framework integrating provenance-aware
+reasoning, selective collaboration, and independent
+adjudication. An Orchestrator coordinates shared
+evidence acquisition and structurally guided
+selection of five specialists for URL,
+web-structure, rendered-content, SMS/email,
+and infrastructure-metadata analysis.
+Specialists independently generate
+provenance-bound findings under controlled
+tool access, with deterministic evidence-based
+confidence assessment. A Moderator identifies
+common-cause dependencies, conflicts, and
+coverage gaps, initiating targeted collaboration
+only when calibrated stopping-error estimates
+and actionable issues justify further
+investigation. Evidence-linked revisions
+are validated before an independent Judge
+assesses eligible observations and unresolved
+issues without access to specialist verdicts
+or confidence bands. A zero-day evaluation
+protocol incorporating temporal and campaign
+separation, reputation-source exclusion,
+controlled evidence degradation, and targeted
+ablations is specified to assess detection
+performance, investigation efficiency,
+and robustness.
+\end{abstract}

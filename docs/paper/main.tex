@@ -1,0 +1,74 @@
+
+\documentclass[conference]{IEEEtran}
+\IEEEoverridecommandlockouts
+
+\usepackage{cite}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath,amssymb}
+\usepackage{amsthm}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{ragged2e}
+\usepackage{url}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}
+
+\newcommand{\limsection}[1]{\subsection{#1}}
+\newcommand{\limhead}[1]{\subsubsection{#1}}
+
+% --- figure placeholders ---------------------------------------------------
+\usepackage{comment}
+
+\newcommand{\figplaceholder}{%
+  \setlength{\fboxsep}{0pt}%
+  \fbox{\parbox[c][24mm][c]{\dimexpr\linewidth-2\fboxrule\relax}{%
+    \centering\footnotesize\itshape
+    Fig.~\the\numexpr\value{figure}+1\relax\ goes here%
+  }}%
+}
+\specialcomment{tikzpicture}{\figplaceholder}{}
+
+\newcolumntype{L}[1]{>{\RaggedRight\arraybackslash}p{#1}}
+\renewcommand{\arraystretch}{1.15}
+
+\begin{document}
+
+\title{MA-ZeroPhish: Adaptive Multi-Agent Multimodal AI with Collaborative Reasoning for Zero-Day Phishing Detection}
+
+\author{\IEEEauthorblockN{Supakorn Prayongyam, Tinpat Vittayaphanpracha,
+Thanapat Wicharn, Korapin Na Songkhla, Somchart Fugkeaw}
+\IEEEauthorblockA{Sirindhorn International Institute of Technology,
+Thammasat University, Thailand \\
+6622781084@g.siit.tu.ac.th, 6622781860@g.siit.tu.ac.th,
+6622770822@g.siit.tu.ac.th, \\
+6622771499@g.siit.tu.ac.th, somchart@siit.tu.ac.th}}
+
+\maketitle
+
+\input{sections/00-abstract}
+
+\begin{IEEEkeywords}
+phishing detection, multi-agent systems, large language models, uncertainty
+quantification, evidence fusion, zero-day detection
+\end{IEEEkeywords}
+
+\input{sections/01-introduction}
+\input{sections/02-related-work}
+
+% --- III. The MA-ZeroPhish framework --------------------------------------
+\input{sections/03-framework}
+
+% --- IV. Experimental evaluation -------------------------------------------
+\input{sections/04-evaluation}
+
+% --- V. Conclusion ---------------------------------------------------------
+\input{sections/05-conclusion}
+
+\input{sections/06-references}
+
+\end{document}

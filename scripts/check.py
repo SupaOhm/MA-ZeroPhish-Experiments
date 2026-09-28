@@ -14,6 +14,20 @@ for directory, expected, pattern in (("experiments/handoffs", 6, "*.md"),
 for directory in ("prototype", "experiments", "docs"):
     if not (ROOT / directory).is_dir():
         errors.append(f"missing directory: {directory}")
+for required in ("AGENTS.md", "CLAUDE.md", "docs/paper/README.md", "docs/paper/main.tex"):
+    if not (ROOT / required).is_file():
+        errors.append(f"missing onboarding/reference file: {required}")
+paper = ROOT / "docs/paper"
+for tex in paper.rglob("*.tex"):
+    for kind, target in re.findall(
+        r"\\(input|include|includegraphics)(?:\[[^\]]*\])?\{([^}]+)\}",
+        tex.read_text(),
+    ):
+        destination = paper / target
+        if kind in {"input", "include"} and not destination.suffix:
+            destination = destination.with_suffix(".tex")
+        if not destination.is_file():
+            errors.append(f"{tex.relative_to(ROOT)}: missing paper asset {target}")
 for path in ROOT.rglob("*.md"):
     if any(part in {".git", ".venv", "runs", "data"} for part in path.relative_to(ROOT).parts):
         continue

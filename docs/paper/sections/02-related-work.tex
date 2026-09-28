@@ -1,0 +1,104 @@
+
+\section{Related Work}
+\label{sec:related}
+
+\subsection{ML, LLM, and Multi-Agent Phishing Detection}
+
+Traditional ML-based phishing detectors rely on
+URL, webpage, and infrastructure features, but
+their dependence on predefined features and
+training distributions limits generalization
+to unseen attacks. Reference-based and
+knowledge-based approaches incorporate visual
+and contextual evidence to reduce reliance on
+historical blacklists
+\cite{lin2021phishpedia,liu2023knowledge}.
+
+LLM-based approaches extend detection through
+semantic reasoning and tool-assisted investigation.
+Wang et al.~\cite{wang2025can} developed an
+agentic SMS analyzer that retrieves URL,
+domain, screenshot, and brand evidence,
+while Li et al.~\cite{li2026phishintentionllm}
+employed retrieval-augmented screenshot analysis.
+However, single-agent reasoning or pre-acquired
+evidence can constrain adaptive investigation
+across heterogeneous modalities.
+
+Multi-agent systems distribute analysis among
+specialists. Li et al.~\cite{li2025phishdebate}
+combined independent modality analysis,
+Moderator-guided debate, and Judge-based
+adjudication. Chiba et al.~\cite{chiba2026phishlumos}
+coordinated specialized agents for campaign-level
+mitigation, while Trad et al.~\cite{trad2025clasp}
+introduced cost-ordered escalation among URL,
+screenshot, and HTML agents. Nevertheless,
+agent agreement may reflect correlated evidence,
+while verdict-driven escalation and repeated
+debate may incur unnecessary costs without
+resolving specific evidence gaps.
+
+\subsection{Uncertainty-Aware Reasoning and
+Collaborative Verification}
+
+Calibrated uncertainty supports selective
+reasoning. Kamath et al.~\cite{kamath2020selective}
+studied error estimation under domain shift,
+while Chang et al.~\cite{chang2026cascadedebate}
+used calibrated confidence for cost-aware
+multi-agent cascading. However, confidence-based
+routing can degrade under distribution shift
+or heterogeneous specialist capabilities
+\cite{jitkrittum2023when,ovadia2019can}.
+
+LLM self-reported confidence is also unreliable
+for identifying errors~\cite{xiong2024can}.
+Repeated sampling improves estimation at
+additional inference cost, while logit-free
+conformal methods offer alternatives for
+black-box models~\cite{su2024api}.
+Neither directly establishes evidence-driven
+escalation among heterogeneous phishing agents.
+
+Collaborative reasoning introduces agent
+deference, whereby agents adopt peer conclusions
+without independently examining evidence.
+Pitre et al.~\cite{pitre2025consensagent}
+addressed debate sycophancy through an
+input-side intervention. However, such
+interventions do not enforce evidence-supported
+revisions. These limitations motivate
+record-derived confidence, provenance-aware
+collaboration, and output-side validation
+rather than reliance on self-reported
+confidence or consensus.
+
+\subsection{Zero-Day Evaluation and Research Gaps}
+
+Previous studies evaluated unseen phishing
+attacks using forward-in-time testing and
+reputation-source exclusion
+\cite{lin2021phishpedia,liu2023knowledge}.
+For LLM-based detectors, however, these
+conditions cannot exclude potential exposure
+during model pretraining. Distribution shift
+further challenges calibrated routing
+\cite{jitkrittum2023when}, highlighting the
+need to evaluate both detection and adaptive
+collaboration under unseen-attack conditions. A related study, \emph{Confidence-Gated
+Multi-agent Phishing Detection}
+\cite{li2026phishcascade}, addresses
+confidence-guided multi-agent detection.
+Its detailed methodology and results were
+unavailable for this review, preventing
+a mechanism-level comparison.
+To the best of our knowledge, MA-ZeroPhish
+introduces a novel agentic multi-agent framework
+for zero-day phishing detection that enables
+adaptive evidence acquisition, provenance-aware
+collaborative reasoning, and uncertainty-driven
+agent coordination with verifiable
+inter-agent revisions.
+
+

@@ -10,7 +10,7 @@ to the original research repository.
   configuration switches, metrics scaffold, eleven test files and eight sample captures.
 - `experiments/handoffs/`: six implementation briefs, one per paper experiment.
 - `experiments/registry.md`: only EXP-012 through EXP-017 and their shared setup.
-- `docs/`: system specification, governing decision, paper Sections III–IV and
+- `docs/`: system specification, governing decision, the complete main-paper source and
   figure, open protocol questions, and the latest implementation handoff.
 - `EXPORT-MANIFEST.json`: source revision, content hashes and documented export edits.
 
@@ -19,6 +19,13 @@ including the dispatch repair that was not yet committed in the source repositor
 Documentation links were adapted; this README and the two helper scripts are new.
 No source Git history, research archive, old experiment runs, literature library,
 agent/session configuration, credentials or live corpus is included.
+
+## Agent start here
+
+[AGENTS.md](AGENTS.md) defines the reading order, repository-only work boundary,
+implementation rules and checks for coding agents. [CLAUDE.md](CLAUDE.md) is Claude's
+entry point to those same instructions. Agents should read their assigned handoff
+and the local paper's evaluation/framework sections before changing code.
 
 ## Get started
 
@@ -56,11 +63,13 @@ and scoring changes before merging. Read [prototype status](prototype/README.md)
 
 ## Specification and remaining work
 
-The [paper framework](docs/paper/sections/03-framework.tex) and
-[evaluation](docs/paper/sections/04-evaluation.tex) are reference excerpts, not a
-standalone compilable LaTeX project. The readable [system model](docs/system-model.md)
+The complete [main-paper source](docs/paper/main.tex), all sections and its figure
+are included as a reference snapshot. Start with the [paper reading guide](docs/paper/README.md),
+[framework](docs/paper/sections/03-framework.tex) and
+[evaluation](docs/paper/sections/04-evaluation.tex). LaTeX compilation is not verified. The readable [system model](docs/system-model.md)
 is a dated translation, not a statement that every described feature is implemented.
-The paper's Overleaf version remains the authority; see
+The paper's Overleaf version is the upstream authority; agents use this local
+snapshot and must not fetch or sync external versions without a user request. See
 [contract precedence](docs/contract-authority.md) and
 [protocol questions](docs/protocol-open-items.md).
 

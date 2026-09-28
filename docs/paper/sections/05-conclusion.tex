@@ -1,0 +1,35 @@
+\section{Conclusion}
+
+This paper specified MA-ZeroPhish, a multi-agent multimodal architecture for
+detecting phishing sites that no blacklist has recorded. Its four-phase control
+structure organizes prior art rather than replacing it. What the framework adds
+is what happens at the point where heterogeneous evidence is combined: agreement discounted when it
+has a common cause, a conjunctive escalation rule that will not open a round
+without naming something actionable and an agent able to act on it, a confidence
+band computed from the record rather than reported by the agent, and a debate in
+which a revision naming no evidence item is rejected by a validator. Underneath
+them sits a property a reviewer can check without running anything --- that no
+component acts on an estimate that the input is malicious, each discretionary
+act being licensed by a named structural condition instead.
+
+Two of these mechanisms exist only because the agents hold genuinely different
+evidence and coverage varies per case, which is why they are absent from the
+role-prompt and vertical-cascade literatures rather than untried there. The
+collaboration loop of Section~\ref{sec:phase3} terminates independently of
+whether the estimator is any good: escalation is bounded by the round limit and
+the remaining collaboration budget rather than by the threshold, and a round
+costs only the agents the Moderator names where a full debate round is
+quadratic in tokens.
+
+The design is not validated. The evaluation protocol of
+Section~\ref{sec:exp-setup} separates development, calibration and testing
+chronologically and by campaign, excludes reputation and blacklist membership
+as features, and reports a post-cutoff subset where model cutoff dates are
+available; it strengthens the unseen condition without claiming complete
+exclusion from model pretraining. Executing the six experiments of
+Section~\ref{sec:evaluation} against a forward-collected corpus is the next
+step, and the claims above stand or fall on it. What this paper offers until
+then is a specification precise enough that a reader can say which of those
+claims each mechanism is answerable for, and one property --- that no component
+acts on an estimate that the input is malicious --- that can be checked before
+any of them is measured.

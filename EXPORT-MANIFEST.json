@@ -3,14 +3,17 @@
   "source_repository": "MA-ZeroPhish research repository",
   "source_base_commit": "746fea5d3182205b94e9a03b4d7d19f9be300eca",
   "includes_uncommitted_working_tree_changes": true,
-  "scope": "prototype, six experiment handoffs, and essential specification references only",
+  "scope": "prototype, six experiment handoffs, complete main-paper reference snapshot, essential specifications and local agent onboarding",
   "excluded": "source Git history/remotes/hooks, research archive, old experiments, literature, agent/session configuration, secrets, live datasets and caches",
   "new_files": [
     "README.md",
     ".gitignore",
     "scripts/check.py",
     "scripts/run_demo.py",
-    "EXPORT-MANIFEST.json"
+    "EXPORT-MANIFEST.json",
+    "AGENTS.md",
+    "CLAUDE.md",
+    "docs/paper/README.md"
   ],
   "files": [
     {
@@ -446,6 +449,53 @@
       "source_sha256": "5671d33f07e80148b94974f3ae6bcbbbc197a7e92aeac4c284002d8256f47665",
       "transformation": "phase-gap and zero-day question excerpt, with snapshot context; local links adapted",
       "export_sha256": "0d603a9a2c90020a29beee834a3ca1b5a561118ab023ab6dea4bc78f3312d397"
+    },
+    {
+      "source": "outputs/deliverables/paper/main/main.tex",
+      "destination": "docs/paper/main.tex",
+      "source_sha256": "ed2f224f763d202ef1b543c40f7c1904df68139baec486c9df4e1c138b2f406d",
+      "transformation": "none",
+      "export_sha256": "ed2f224f763d202ef1b543c40f7c1904df68139baec486c9df4e1c138b2f406d"
+    },
+    {
+      "source": "outputs/deliverables/paper/main/sections/00-abstract.tex",
+      "destination": "docs/paper/sections/00-abstract.tex",
+      "source_sha256": "63c91aa866dd68ba562a2b904aac62a1b2542a7d7c63e20d36425bc9d39d7ded",
+      "transformation": "none",
+      "export_sha256": "63c91aa866dd68ba562a2b904aac62a1b2542a7d7c63e20d36425bc9d39d7ded"
+    },
+    {
+      "source": "outputs/deliverables/paper/main/sections/01-introduction.tex",
+      "destination": "docs/paper/sections/01-introduction.tex",
+      "source_sha256": "bf45bd27259056bb64711d27cfcb435ce6b8872372d5a224003bc01424c2c24a",
+      "transformation": "none",
+      "export_sha256": "bf45bd27259056bb64711d27cfcb435ce6b8872372d5a224003bc01424c2c24a"
+    },
+    {
+      "source": "outputs/deliverables/paper/main/sections/02-related-work.tex",
+      "destination": "docs/paper/sections/02-related-work.tex",
+      "source_sha256": "c42b131a3516034f345ff0ba62f66621ee94002418227e3e5878c51e31345d80",
+      "transformation": "none",
+      "export_sha256": "c42b131a3516034f345ff0ba62f66621ee94002418227e3e5878c51e31345d80"
+    },
+    {
+      "source": "outputs/deliverables/paper/main/sections/05-conclusion.tex",
+      "destination": "docs/paper/sections/05-conclusion.tex",
+      "source_sha256": "daf6157e591a6a73975bb04a3b798c1f1cf002dcaf5c67b9bb3ac833be232a3d",
+      "transformation": "none",
+      "export_sha256": "daf6157e591a6a73975bb04a3b798c1f1cf002dcaf5c67b9bb3ac833be232a3d"
+    },
+    {
+      "source": "outputs/deliverables/paper/main/sections/06-references.tex",
+      "destination": "docs/paper/sections/06-references.tex",
+      "source_sha256": "37a569375d4c3434505386b388977b09c4c687c6d7b3e06c89b556ab0423933e",
+      "transformation": "none",
+      "export_sha256": "37a569375d4c3434505386b388977b09c4c687c6d7b3e06c89b556ab0423933e"
     }
-  ]
+  ],
+  "onboarding_update": {
+    "date": "2026-09-28",
+    "paper_reference": "complete local main-paper source, byte-identical to source mirror; not compiled",
+    "instruction_scope": "experiment repository only; no original-repository or external-paper access unless explicitly requested"
+  }
 }

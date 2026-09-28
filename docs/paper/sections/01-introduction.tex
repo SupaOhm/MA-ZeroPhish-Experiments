@@ -1,0 +1,132 @@
+
+\section{Introduction}
+
+Phishing combines social engineering and technical deception
+to impersonate legitimate services and steal sensitive
+information through websites, email, and SMS. Modern attacks
+coordinate deceptive information across URLs, HTML, rendered
+pages, messages, and hosting infrastructure, making
+single-source detection insufficient. The challenge is
+particularly severe for previously unseen attacks, which
+cannot be identified through existing reputation records.
+Lin et al.~\cite{lin2021phishpedia} identified 1,133 phishing
+pages undetected by any VirusTotal engine among 1,704
+collected pages, with 74.6\% remaining unreported after
+one week. Chiba et al.~\cite{chiba2026phishlumos} reported
+discovering previously unlisted phishing URLs a median
+of 192.8 hours before expert verification.
+
+Consider a phishing SMS directing recipients to a
+credential-harvesting page hosted on a legitimate cloud
+platform. The message and page display the same
+impersonated brand, while the URL appears ordinary and
+the hosting platform has a valid TLS certificate and a
+long registration history. Reputation-based indicators
+may therefore be unavailable or misleading. Even a
+multimodal detector may incorrectly interpret the
+repeated brand claim as independent corroboration,
+although both observations originate from a single
+attacker-controlled choice. Conversely, conflicting
+observations across modalities may reveal deception
+that individual agents cannot identify independently.
+Reliable detection thus requires item-level provenance,
+common-cause-aware evidence fusion, and explicit
+resolution of conflicting findings.
+
+Existing machine learning (ML)-based phishing detectors
+rely heavily on predefined features and labeled training
+data, limiting their ability to generalize to previously
+unseen attacks and evolving phishing strategies.
+Although large language models (LLMs) offer greater
+flexibility in interpreting heterogeneous evidence,
+their reasoning may be inconsistent, and self-reported
+confidence is often unreliable~\cite{xiong2024can}.
+These limitations are further exacerbated by
+distribution shift, which degrades calibration and
+the reliability of confidence-based
+decisions~\cite{ovadia2019can}. Recent multi-agent
+approaches employ modality-specialized analysis,
+but agreement among agents may reflect correlated
+evidence rather than independent corroboration.
+Moreover, confidence-based escalation can be
+ineffective when specialists have heterogeneous
+capabilities~\cite{jitkrittum2023when}, while
+repeatedly invoking all agents introduces
+unnecessary computational overhead.
+
+Collaborative reasoning introduces further challenges,
+as agents may adopt peer conclusions without sufficient
+supporting evidence, making their decisions difficult
+to verify. Furthermore, conventional evaluations may
+overestimate zero-day detection capabilities because
+test samples absent from experimental training data
+may still have appeared in an LLM's pretraining corpus.
+These limitations highlight the need for
+provenance-aware evidence fusion, reliable uncertainty
+estimation, selective and verifiable collaborative
+reasoning, and rigorous zero-day evaluation that
+accounts for both reputation-source absence and
+model knowledge cutoffs.
+
+
+
+To address these challenges, we propose
+\textbf{MA-ZeroPhish}, an adaptive agentic
+multi-agent framework for zero-day phishing
+detection. It integrates shared evidence
+acquisition, five modality-specialized agents,
+provenance-aware collaboration, and independent
+adjudication. An Orchestrator selects specialists
+using structural evidence conditions, while a
+Moderator reconciles dependent observations
+and initiates targeted investigation based on
+estimated stopping error and actionable issues.
+An independent Judge produces evidence-supported
+verdicts without access to specialist judgments
+or confidence bands. The main contributions
+are as follows:
+
+\begin{enumerate}
+
+\item \textbf{Adaptive evidence acquisition
+and specialist orchestration.}
+We develop a four-phase architecture integrating
+shared acquisition with five specialists for
+URL, web-structure, rendered-content, SMS/email,
+and infrastructure-metadata analysis.
+Structural triggers guide budget-constrained
+specialist selection, while declared tool
+predicates govern supplementary acquisition,
+enabling auditable, case-specific investigation.
+
+\item \textbf{Provenance-aware reasoning
+and uncertainty-driven collaboration.}
+We introduce validated specialist findings,
+deterministic evidence-based confidence bands,
+and common-cause-aware reconciliation to prevent
+correlated observations from being counted as
+independent support. A calibrated stopping-error
+estimator triggers targeted collaboration only
+when actionable evidence issues remain, subject
+to budget and round limits.
+
+\item \textbf{Auditable collaboration
+and independent adjudication.}
+We design evidence-linked collaboration with
+attributed conflict resolution, blinded
+investigation, and verifiable predecessor-linked
+revisions. An independent Judge evaluates
+eligible observations, provenance dependencies,
+and coverage limitations without specialist
+verdicts or confidence bands. We further
+specify a zero-day evaluation methodology
+using temporal and configuration-data
+separation, reputation-source exclusion,
+and targeted ablations to assess detection
+performance and investigation cost.
+
+\end{enumerate}
+
+
+
+
