@@ -62,7 +62,7 @@ def run_case(cfg: Config, capture, ledger: Ledger, adjudicator=None, estimator=N
     )
     classified = classify(submission)
     budget = BudgetLedger(cfg.budget)
-    replay = Replay(capture, withhold=cfg.evidence_removal)
+    replay = Replay(capture, withhold=cfg.evidence_removal, transient=cfg.transient_failures)
     reasoners_for = (specialists.make_reasoners(capture) if specialists is not None
                      else make_reasoners(capture))
 
@@ -218,6 +218,16 @@ def run_case(cfg: Config, capture, ledger: Ledger, adjudicator=None, estimator=N
             output_tokens=judge_out + getattr(specialists, "output_tokens", 0) - spec_before[1],
             judge_calls=judge_calls,
             score=getattr(adjudicator, "last_score", None),
+            # For Experiment 5's citation/disclosure audit: what the decision says and
+            # cites, what was materially missing, and what issues were open.
+            explanation=decision.explanation,
+            cited_provenance=[[p.artifact, p.instrument, p.capture_id]
+                              for p in decision.cited_provenance],
+            unresolved_issue_kinds=sorted(i.kind.value for i in decision.unresolved_issues),
+            coverage_gaps=sorted(f for f, a in context.coverage.availability.items()
+                                 if a.value == "applicable_unavailable"),
+            eligible_locators=sorted(o.locator for o in context.observations),
+            judge_disclosure=getattr(adjudicator, "last_disclosure", None),
             monetary_cost=round(budget.spent, 4),
             latency_s=round(time.monotonic() - started, 4),
             model_id=cfg.model_id,

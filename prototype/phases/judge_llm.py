@@ -156,6 +156,7 @@ class LLMJudge:
         self.model, self.repair_attempts, self.max_tokens = model, repair_attempts, max_tokens
         self.calls = self.input_tokens = self.output_tokens = 0
         self.last_score: float | None = None
+        self.last_disclosure: dict | None = None
 
     def _ask(self, user: str) -> dict | None:
         out = self.model.chat(RUBRIC, user, self.max_tokens, json_mode=True)
@@ -177,6 +178,7 @@ class LLMJudge:
                             "evidence assessment. Answer with JSON only.")
             errs = validate(d, context)
         self.last_score = None
+        self.last_disclosure = None
         if errs:
             decision = DecisionRecord(object_id=object_id, verdict=Verdict.INSUFFICIENT,
                                       explanation="finalization_error: " + "; ".join(errs)[:500],
@@ -184,6 +186,9 @@ class LLMJudge:
                                       unresolved_issues=context.issues)
             return decision, AuditFeedback(object_id=object_id, notes="finalization_error")
         verdict = decide(d["suf_phishing"], d["def_phishing"], d["suf_benign"], d["def_benign"])
+        self.last_disclosure = {k: d.get(k) for k in (
+            "cited", "phishing_support", "benign_support", "coverage_limitations",
+            "unresolved_issues", "suf_phishing", "def_phishing", "suf_benign", "def_benign")}
         p = d.get("p_phishing")
         if isinstance(p, (int, float)) and 0 <= p <= 1:
             self.last_score = float(p)

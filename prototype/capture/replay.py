@@ -24,6 +24,7 @@ from .model import Capture
 
 # The classifier's extraction pattern (phases/classify.py), repeated here because
 # capture/ must not import phases/. test_replay pins the two together.
+TRANSIENT_FAILURE = "transient_failure"
 _URL_RE = re.compile(r"https?://[^\s<>\"')]+")
 
 
@@ -38,9 +39,15 @@ class FetchResult:
 
 
 class Replay:
-    def __init__(self, capture: Capture, withhold: frozenset[str] = frozenset()):
+    def __init__(self, capture: Capture, withhold: frozenset[str] = frozenset(),
+                 transient: frozenset[str] = frozenset()):
+        """`transient` (Experiment 5's recoverable condition): the FIRST attempt at
+        each of these fields fails with `transient_failure`; a permitted retry is
+        served normally. `withhold` always wins -- a withheld field never recovers."""
         self._capture = capture
         self._withhold = withhold
+        self._transient = transient
+        self._attempts: dict[tuple, int] = {}
         self._artifacts = {a.field: a for a in capture.artifacts}
         self.not_captured = 0
 
@@ -58,6 +65,11 @@ class Replay:
         set of page artifacts, which belong to the FIRST link; link n >= 2 gets its
         own URL string (read from the submission, in the classifier's order) and
         every other field is `not_captured` -- never another link's artifact."""
+        key = (object_id, field)
+        self._attempts[key] = self._attempts.get(key, 0) + 1
+        if (field in self._transient and field not in self._withhold
+                and field not in self._capture.inapplicable and self._attempts[key] == 1):
+            return self._unavailable(field, TRANSIENT_FAILURE)
         m = re.fullmatch(r".+:page:(\d+)", object_id or "")
         if m and int(m.group(1)) >= 2 and field not in self._capture.inapplicable:
             if field in self._withhold:

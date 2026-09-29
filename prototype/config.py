@@ -53,6 +53,9 @@ class Config:
     cost_scale: float = 1000.0
     budget: CaseBudget = field(default_factory=lambda: CaseBudget(100.0, 100.0, 20.0))
     evidence_removal: frozenset[str] = frozenset()
+    # Experiment 5's recoverable condition: first attempt at these fields fails
+    # transiently; acquisition may retry up to r_max (capture/replay.py).
+    transient_failures: frozenset[str] = frozenset()
     model_id: str = "fake-deterministic"
 
 
