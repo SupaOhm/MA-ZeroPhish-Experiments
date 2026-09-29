@@ -112,6 +112,10 @@ def make_judge(client, *, unblinded: bool = False):
         system += "\n\n" + prompt_files.load("judge_unblinded")
 
     def judge(context, object_id: str, case_id: str):
+        if not unblinded and any(isinstance(o, UnblindedObservation) for o in context.observations):
+            # Only Ablation 5 may show a Judge specialist judgments; a blinded Judge
+            # handed them is a wiring bug, not something to pass through.
+            raise ValueError("blinded Judge received unblinded observations")
         payload = json.dumps(serialize_context(context), indent=1, sort_keys=True,
                              ensure_ascii=False)
         user = EVIDENCE_HEADER + payload

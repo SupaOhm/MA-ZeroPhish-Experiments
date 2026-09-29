@@ -164,6 +164,17 @@ class Blinding(unittest.TestCase):
         payload = client.requests[0]["user"].split(EVIDENCE_HEADER, 1)[1]
         self.assertEqual(len(json.loads(payload)["observations"]), 2)
 
+    def test_blinded_judge_refuses_unblinded_observations(self):
+        unblinded = UnblindedObservation(
+            observation="o", declared_field="url", locator="url@0:5#0",
+            provenance=Provenance("url", "submission", "c"),
+            direction=Direction.PHISHING, agent="url",
+        )
+        client = RecordedClient(lambda *a: judge_reply(["url@0:5#0", "html@0:5#0"]))
+        with self.assertRaises(ValueError):
+            make_judge(client)(context([unblinded, obs("html@0:5#0", "html")]), "o1", "c")
+        self.assertEqual(client.requests, [])
+
 
 if __name__ == "__main__":
     unittest.main()
