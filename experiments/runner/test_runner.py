@@ -147,9 +147,27 @@ class Runner(unittest.TestCase):
             "--provider", "gemini", "--model", "other-model",
             "--output", str(self.output), "--resume"])
         with self.assertRaises(SystemExit) as caught:
-            run_corpus.run(other, client=RecordedClient(grounded_responder()))
+            run_corpus.run(other, client=RecordedClient(grounded_responder(), model="other-model"))
+        self.assertIn("different configuration", str(caught.exception))
         self.assertIn("model", str(caught.exception))
         self.assertEqual(ledger.read_bytes(), before)
+
+    def test_provenance_comes_from_the_client(self):
+        run_corpus.run(args(self.dataset, self.output), client=RecordedClient(grounded_responder()))
+        events = read(str(self.output / "mazerophish.jsonl"))
+        header = events[0]
+        self.assertEqual((header["provider"], header["model"]), ("recorded", "recorded-fixture"))
+        self.assertEqual(header["config"]["model_id"], "recorded-fixture")
+        decisions = [e for e in events if e["kind"] == "decision"]
+        self.assertTrue(decisions)
+        self.assertEqual({e["model_id"] for e in decisions}, {"recorded-fixture"})
+
+    def test_client_model_different_from_the_argument_is_refused(self):
+        with self.assertRaises(SystemExit) as caught:
+            run_corpus.run(args(self.dataset, self.output),
+                           client=RecordedClient(grounded_responder(), model="gemma-4-31b-it"))
+        self.assertIn("gemma-4-31b-it", str(caught.exception))
+        self.assertFalse(self.output.exists())
 
     def test_crash_is_recorded_as_aborted_with_incomplete_arm(self):
         boom = lambda tag: RuntimeError("boom") if tag["case_id"] == "syn-web-001" else None

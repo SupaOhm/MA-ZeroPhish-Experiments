@@ -187,9 +187,13 @@ def run(args, client=None) -> dict:
             )
         except ValueError as exc:
             raise SystemExit(f"REFUSED: {exc}") from exc
+    # Provenance is the client's, which equals the arguments for a real client.
+    # An injected client that serves another model would mislabel every decision.
+    if client.model != args.model:
+        raise SystemExit(f"REFUSED: client model {client.model!r} != --model {args.model!r}")
 
     header = {
-        "provider": args.provider, "model": args.model, "split": args.split,
+        "provider": client.provider, "model": client.model, "split": args.split,
         "data": str(dataset_dir), "data_version": data_version, "repeat": args.repeat,
         "field_char_limit": args.field_char_limit,
         "structured": not args.no_structured, "system_role": not args.no_system_role,
@@ -211,7 +215,7 @@ def run(args, client=None) -> dict:
     progress = {"name": None, "path": None, "done": 0, "attempted": 0, "failed": 0}
     try:
         for name in names:
-            cfg = replace(ARMS[name], model_id=args.model)
+            cfg = replace(ARMS[name], model_id=client.model)
             judge = make_judge(client, unblinded=cfg.judge_input == "sees_verdicts")
             path = output / f"{cfg.name}.jsonl"
             done = decided_cases(path, args.repeat)
