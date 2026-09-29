@@ -20,8 +20,12 @@ done
 read observation text, so it establishes support for neither conclusion and every
 case returns `insufficient`; metrics report zero precision, recall and coverage.
 The information is in the abstention **cause** --- `contested`, `undirected`, or
-`insufficient_support`. A real model behind the seam is stage 6; the single-agent
-baseline, the one arm that is not a configuration, is stage 7.
+`insufficient_support`. Stage 6 is implemented as a code path: `models/` (Gemini and OpenRouter
+clients), `agents/llm.py` (five specialists with grounded quotes) and
+`agents/judge.py` (per-conclusion assessment, a code decision rule, one repair,
+then `finalization_error`). It is tested offline with recorded replies only; **no
+real-model result exists yet**. The single-agent baseline (stage 7) and the
+trained estimator are sub-projects B and C.
 
 The post-review dispatch repair is complete: collaboration applies initial
 validation to newly dispatched specialists and excludes unready targets before

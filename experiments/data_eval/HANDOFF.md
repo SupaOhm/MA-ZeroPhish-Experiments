@@ -106,6 +106,18 @@ the free run succeeds.
 The prototype's `run_arm` ledgers already use this shape; add `repeat`, `model_id`,
 `data_version`, and real token counts once models are connected.
 
+Additions from the model-backed runner (`experiments/runner/run_corpus.py`):
+- Each invocation writes a `header` event at the start of each ledger (provider,
+  model, data version, prompt SHA-256s, repo commit, estimator status). It is not scored.
+- `failure` events record model calls that failed after retries. The case has
+  no decision; `--resume` re-attempts it. Report how many there were.
+- `verdict` may be `finalization_error` (paper Phase 4 Step 4: the Judge's
+  decision failed validation after one repair). `evaluate.py` counts it as not
+  decided and as an error in the forced metrics, and reports its rate.
+- Decision events also carry `score` (the Judge's P(phishing)),
+  `judge_invalid_citations` and `judge_repairs`. Every event carries `repeat`.
+- The scorer refuses `recorded-fixture` (test replies), as it does `fake-deterministic`.
+
 ## 5. What each role does next
 **Repo owner (SupaOhm)**
 - Review and merge `data-eval` (or open a PR); add teammates as collaborators.

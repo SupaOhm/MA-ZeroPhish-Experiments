@@ -74,6 +74,34 @@ All verdicts are currently `insufficient`, deliberately: specialists replay auth
 findings and the Judge is a deterministic stand-in. Tokens are zero and cost is unit
 budget spend, not an API bill. These fixtures test the framework, not detection.
 
+## Running with a real model
+
+The model-backed path (specialists, Judge, corpus runner) is implemented and
+tested offline. **No real run has been made with it yet, and no result exists.**
+It spends API quota, so run it only deliberately:
+
+```bash
+export GEMINI_API_KEY=...            # or OPENROUTER_API_KEY=...
+python3 -B -m experiments.runner.run_corpus \
+  --data <unzipped package>/phreshphish --split dev --limit 5 \
+  --arms mazerophish --provider gemini --model <model id> \
+  --output runs/smoke-001
+```
+
+- Start with a small `--limit` on `dev` to confirm the provider accepts the
+  request format. Add `--no-structured` / `--no-system-role` if the model rejects
+  JSON-schema mode or system instructions, and `--min-interval` for free-tier
+  rate limits.
+- Output: `<arm>.jsonl` ledgers, `calls.jsonl` (every attempt, raw) and `run.json`.
+  A failed call writes a `failure` event and no decision; `--resume` re-attempts it.
+- `--resume` refuses to continue a run with a different provider, model, split,
+  data version, prompt set or request options; a crashed run is recorded in
+  `run.json` with `aborted`.
+- The stopping-error estimator is still the placeholder (sub-project C).
+  `run.json` says `"estimator": "placeholder"`; report no calibration figure.
+- Score with `python -m experiments.data_eval.evaluate` as described in
+  [the data handoff](experiments/data_eval/HANDOFF.md).
+
 ## Experiment handoffs
 
 | Paper experiment | Brief |
