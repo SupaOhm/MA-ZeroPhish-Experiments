@@ -8,7 +8,7 @@ import os
 PROMPT_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "prompts")
 NAMES = (
     "specialist_common", "url", "web_structure", "content", "message", "metadata",
-    "revision",
+    "revision", "judge", "judge_unblinded", "judge_repair",
 )
 
 

@@ -1,0 +1,1 @@
+Your previous answer cited locators that do not appear in the observations. They are listed below. Return the same JSON object with corrected cited_locators only: remove each invalid locator or replace it with a locator that appears in observations. Do not change your assessments and do not add new reasoning.
