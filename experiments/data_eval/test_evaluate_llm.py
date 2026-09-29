@@ -95,6 +95,16 @@ class PrAucWithMissingScores(unittest.TestCase):
         self.assertIsNone(m["pr_auc"])
 
 
+class CaseCostPreferred(unittest.TestCase):
+    def test_cost_means_prefer_the_case_figure(self):
+        costs = [{"input_tokens": 10, "case_input_tokens": 30, "monetary_cost": 1.0,
+                  "case_monetary_cost": 4.0},
+                 {"input_tokens": 20, "monetary_cost": 2.0}]
+        m = metrics(["phishing", "benign"], ["phishing", "benign"], None, costs)
+        self.assertEqual(m["mean_input_tokens"], 25)
+        self.assertEqual(m["mean_monetary_cost"], 3.0)
+
+
 class FixtureOutputRefused(unittest.TestCase):
     def test_recorded_fixture_is_simulated(self):
         decisions = {("a", 0): {"c": {"model_id": "recorded-fixture"}}}

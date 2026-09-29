@@ -80,6 +80,7 @@ def run_case(
     at call time so tests that patch `run.make_reasoners` keep working.
     """
     buffer = _CaseBuffer()
+    before = usage.snapshot() if usage is not None else None
     try:
         _run_objects(
             cfg, capture, buffer,
@@ -88,16 +89,42 @@ def run_case(
             usage, data_version,
         )
     except ModelCallFailed as exc:
+        # The tokens this case spent before failing, failed replies included:
+        # they were paid for even though no decision is written.
+        after = usage.snapshot() if usage is not None else (0, 0, 0)
+        spent = (after[1] - before[1], after[2] - before[2]) if usage is not None else (0, 0)
         ledger.event(
             "failure", capture.case_id,
             object_id=exc.tag.get("object_id"), role=exc.tag.get("role"),
             provider=exc.provider, reason=exc.reason, status=exc.status,
             attempts=exc.attempts, repeat=repeat, model_id=cfg.model_id,
+            data_version=data_version,
+            input_tokens=spent[0], output_tokens=spent[1],
         )
+        ledger.flush()
         return False
+    _add_case_cost(buffer.events)
     for kind, case_id, payload in buffer.events:
         ledger.event(kind, case_id, repeat=repeat, **payload)
+    ledger.flush()
     return True
+
+
+def _add_case_cost(events) -> None:
+    """Put the whole case's cost on the parent decision -- one scored sample is
+    one submission, and child URL work still counts toward it.
+
+    Calls and tokens are per-object deltas, so they are summed. `monetary_cost`
+    is `budget.spent`, and one budget ledger serves the whole case, so each
+    object's figure is already cumulative: the case figure is the maximum.
+    """
+    decisions = [payload for kind, _, payload in events if kind == "decision"]
+    parent = next((d for d in decisions if d.get("parent_object_id") is None), None)
+    if parent is None:
+        return
+    for key in ("model_calls", "input_tokens", "output_tokens"):
+        parent[f"case_{key}"] = sum(d[key] for d in decisions)
+    parent["case_monetary_cost"] = max(d["monetary_cost"] for d in decisions)
 
 
 def _run_objects(cfg, capture, ledger, reasoners_for, judge, usage, data_version) -> None:

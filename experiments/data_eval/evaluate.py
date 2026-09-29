@@ -8,7 +8,9 @@ must write `decision` events with at least:
      "parent_object_id": null, "repeat": int (optional, default 0),
      "score": float|null (optional P(phishing), for PR-AUC over the scored cases;
                           `n_scored` reports how many),
-     "model_calls", "input_tokens", "output_tokens", "monetary_cost", "latency_s" (optional)}
+     "model_calls", "input_tokens", "output_tokens", "monetary_cost", "latency_s" (optional),
+     "case_model_calls", "case_input_tokens", "case_output_tokens", "case_monetary_cost"
+     (optional: whole-case cost including child URLs; preferred for cost means)}
 Only parent decisions are scored (one row per submission). API/quota failures
 must NOT be written as decisions; a missing case is reported, never scored.
 
@@ -148,7 +150,10 @@ def metrics(labels: list[str], verdicts: list[str], scores: list | None = None,
                      if scored else None)
     if costs:
         for k in COST_KEYS:
-            vals = [c.get(k) for c in costs if c.get(k) is not None]
+            # `case_<key>` is the whole submission's cost (parent plus child
+            # URLs) where the ledger records it; the parent's own figure otherwise.
+            vals = [c.get(f"case_{k}", c.get(k)) for c in costs]
+            vals = [v for v in vals if v is not None]
             out[f"mean_{k}"] = sum(vals) / len(vals) if vals else None
     return out
 

@@ -20,6 +20,10 @@ class Ledger:
         record.update(payload)
         self._handle.write(json.dumps(record, sort_keys=True) + "\n")
 
+    def flush(self) -> None:
+        """Push written events to disk: a killed run loses at most the case in flight."""
+        self._handle.flush()
+
     def close(self) -> None:
         self._handle.close()
 

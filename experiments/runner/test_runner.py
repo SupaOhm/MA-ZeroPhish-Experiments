@@ -200,6 +200,18 @@ class Runner(unittest.TestCase):
                                           "--output", "o"])
         self.assertEqual((defaults.backoff, defaults.max_retry_after), (5.0, 120.0))
 
+    def test_resume_refuses_a_partial_last_line(self):
+        run_corpus.run(args(self.dataset, self.output), client=RecordedClient(grounded_responder()))
+        ledger = self.output / "mazerophish.jsonl"
+        n = len(ledger.read_text(encoding="utf-8").splitlines())
+        with ledger.open("a", encoding="utf-8") as handle:
+            handle.write('{"kind": "decis')
+        with self.assertRaises(SystemExit) as caught:
+            run_corpus.run(args(self.dataset, self.output, "--resume"),
+                           client=RecordedClient(grounded_responder()))
+        self.assertIn("mazerophish.jsonl", str(caught.exception))
+        self.assertIn(f"line {n + 1}", str(caught.exception))
+
     def test_provenance_comes_from_the_client(self):
         run_corpus.run(args(self.dataset, self.output), client=RecordedClient(grounded_responder()))
         events = read(str(self.output / "mazerophish.jsonl"))

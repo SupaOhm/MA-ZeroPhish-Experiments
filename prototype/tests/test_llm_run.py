@@ -178,6 +178,46 @@ class Failures(unittest.TestCase):
         self.assertEqual(decision["judge_repairs"], 1)
 
 
+class CaseCost(unittest.TestCase):
+    def test_parent_decision_carries_the_whole_case_cost(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = os.path.join(tmp, "a.jsonl")
+            _, _, events = run_with(config.MAZEROPHISH, (load_fixture("syn-msg-002"),),
+                                    grounded_responder(), path)
+        decisions = [e for e in events if e["kind"] == "decision"]
+        self.assertGreater(len(decisions), 1)
+        parent = next(e for e in decisions if e["parent_object_id"] is None)
+        for key in ("model_calls", "input_tokens", "output_tokens"):
+            self.assertEqual(parent[f"case_{key}"], sum(e[key] for e in decisions), key)
+        self.assertGreater(parent["case_input_tokens"], parent["input_tokens"])
+        # budget.spent is cumulative over the case, so the case figure is the maximum.
+        self.assertEqual(parent["case_monetary_cost"], max(e["monetary_cost"] for e in decisions))
+        for child in (e for e in decisions if e["parent_object_id"] is not None):
+            self.assertNotIn("case_input_tokens", child)
+
+
+class LedgerDurability(unittest.TestCase):
+    def test_a_completed_case_is_on_disk_before_the_ledger_closes(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = os.path.join(tmp, "a.jsonl")
+            with ledger_mod.Ledger(path, arm="x") as ledger:
+                run.run_case(config.MAZEROPHISH, load_captures(CAPTURE_DIR)[0], ledger)
+                with open(path, encoding="utf-8") as handle:
+                    on_disk = handle.read()
+            self.assertIn('"kind": "decision"', on_disk)
+
+    def test_failure_event_carries_data_version_and_tokens_spent(self):
+        fail = lambda tag: Fatal("blocked: SAFETY") if tag["object_id"] == "o1:page:2" else None
+        with tempfile.TemporaryDirectory() as tmp:
+            path = os.path.join(tmp, "a.jsonl")
+            _, _, events = run_with(config.MAZEROPHISH, (load_fixture("syn-msg-002"),),
+                                    grounded_responder(fail=fail), path, data_version="dv9")
+        failure = next(e for e in events if e["kind"] == "failure")
+        self.assertEqual(failure["data_version"], "dv9")
+        self.assertGreater(failure["input_tokens"], 0)
+        self.assertGreater(failure["output_tokens"], 0)
+
+
 class LedgerMode(unittest.TestCase):
     def test_append_mode_keeps_earlier_events(self):
         with tempfile.TemporaryDirectory() as tmp:

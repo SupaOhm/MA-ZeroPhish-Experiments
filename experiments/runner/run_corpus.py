@@ -130,6 +130,25 @@ def _now() -> str:
     return datetime.now(timezone.utc).isoformat()
 
 
+def check_ledger_tail(path: Path) -> None:
+    """Refuse to resume onto a ledger whose last line is a partial write.
+
+    Not truncated here: what to do with the fragment is the user's decision.
+    """
+    if not path.exists():
+        return
+    lines = path.read_text(encoding="utf-8").splitlines()
+    for number in range(len(lines), 0, -1):
+        if lines[number - 1].strip():
+            try:
+                json.loads(lines[number - 1])
+            except json.JSONDecodeError:
+                raise SystemExit(
+                    f"REFUSED: {path} line {number} is not valid JSON (a partial write?); "
+                    "inspect and repair the ledger before --resume") from None
+            return
+
+
 def check_resume_identity(output: Path, names, header: dict, configs: dict) -> dict:
     """Refuse a resume whose identity or arm configuration differs; flag repo drift.
 
@@ -229,6 +248,8 @@ def run(args, client=None) -> dict:
     configs = {name: _config_dict(replace(ARMS[name], model_id=client.model)) for name in names}
     drift = {}
     if args.resume:
+        for name in names:
+            check_ledger_tail(output / f"{name}.jsonl")
         drift = check_resume_identity(output, names, header, configs)
 
     output.mkdir(parents=True, exist_ok=True)
