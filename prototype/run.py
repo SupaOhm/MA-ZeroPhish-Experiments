@@ -44,7 +44,10 @@ def _counting(reasoners: dict, calls: list) -> dict:
     return {agent: wrap(agent, fn) for agent, fn in reasoners.items()}
 
 
-def run_case(cfg: Config, capture, ledger: Ledger) -> None:
+def run_case(cfg: Config, capture, ledger: Ledger, adjudicator=None) -> None:
+    """`adjudicator` defaults to the deterministic stand-in (`phases.judge.adjudicate`);
+    pass `phases.judge_llm.LLMJudge(model)` for a real Judge (stage 6)."""
+    adjudicator = adjudicator or adjudicate
     started = time.monotonic()
     submission = Submission(
         capture.case_id, SubmissionType(capture.submission_type), capture.payload
@@ -110,7 +113,12 @@ def run_case(cfg: Config, capture, ledger: Ledger) -> None:
         context = project_for_judge(
             records, issues, envelope, cfg.judge_input, cfg.reconciliation, accepted
         )
-        decision, feedback = adjudicate(context, ref.object_id)
+        judge_before = (getattr(adjudicator, "calls", 0), getattr(adjudicator, "input_tokens", 0),
+                        getattr(adjudicator, "output_tokens", 0))
+        decision, feedback = adjudicator(context, ref.object_id)
+        judge_calls = getattr(adjudicator, "calls", 0) - judge_before[0]
+        judge_in = getattr(adjudicator, "input_tokens", 0) - judge_before[1]
+        judge_out = getattr(adjudicator, "output_tokens", 0) - judge_before[2]
 
         for record in records:
             ledger.event(
@@ -140,7 +148,7 @@ def run_case(cfg: Config, capture, ledger: Ledger) -> None:
             # Counted at the call sites, so collaboration re-invocations are
             # included. A specialist re-invoked in a round is another model
             # call and another charge against the collaboration pool.
-            model_calls=len(calls),
+            model_calls=len(calls) + judge_calls,
             # `b_{i,g}` per record, counted by band. Phase 2 Step 5 computes it
             # from the record's own items; it is deliberately **not** given to
             # the Judge, which is the prohibition. Recording the distribution
@@ -154,15 +162,19 @@ def run_case(cfg: Config, capture, ledger: Ledger) -> None:
             # tokens. The columns exist because his metric set names them and
             # because a ledger that gains a column later cannot be compared with
             # one written before it. They carry real figures at stage 6.
-            input_tokens=0,
-            output_tokens=0,
+            # Specialist tokens stay 0 until stage 6 lands in Phase 2; the Judge's
+            # are real when a real adjudicator is passed in.
+            input_tokens=judge_in,
+            output_tokens=judge_out,
+            judge_calls=judge_calls,
+            score=getattr(adjudicator, "last_score", None),
             monetary_cost=round(budget.spent, 4),
             latency_s=round(time.monotonic() - started, 4),
             model_id=cfg.model_id,
         )
 
 
-def run_arm(cfg: Config, captures, ledger_path: str) -> None:
+def run_arm(cfg: Config, captures, ledger_path: str, adjudicator=None) -> None:
     with Ledger(ledger_path, arm=cfg.name) as ledger:
         for capture in captures:
-            run_case(cfg, capture, ledger)
+            run_case(cfg, capture, ledger, adjudicator)
