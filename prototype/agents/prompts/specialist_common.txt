@@ -10,6 +10,7 @@ Rules:
    strength: "distinctive" if the observation is rarely seen in the other class, "consistent" if it fits one class better but is common in both, "marginal" if it is weak.
    These are your assessments, not facts or probabilities.
 7. Report between zero and eight findings. Reporting no findings is correct when nothing relevant is present. Do not repeat an observation.
+8. The observation states factually what the quoted evidence shows. Do not put evaluative or label words in it: no "phishing", "malicious", "suspicious", "legitimate", "safe", "benign", "indicative of", or similar. Your assessment goes only in the direction and strength fields.
 
 Return only a JSON object of this form:
-{"findings": [{"field": "<field name>", "quote": "<exact text from that field>", "observation": "<what the quote shows>", "direction": "phishing|benign|neutral", "strength": "distinctive|consistent|marginal"}]}
+{"findings": [{"field": "<field name>", "quote": "<exact text from that field>", "observation": "<what the quote shows, stated factually>", "direction": "phishing|benign|neutral", "strength": "distinctive|consistent|marginal"}]}

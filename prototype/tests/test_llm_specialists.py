@@ -75,6 +75,16 @@ class Prompts(Setup):
         self.assertTrue(system.startswith(prompt_files.load("specialist_common")))
         self.assertIn(prompt_files.load("url"), system)
 
+    def test_observation_must_be_factual_without_label_words(self):
+        # The Judge sees observation text but not direction or strength; an
+        # observation that says "phishing" would carry the judgment through.
+        common = prompt_files.load("specialist_common")
+        rule = next(line for line in common.splitlines() if line.startswith("8."))
+        for word in ("phishing", "malicious", "suspicious", "legitimate", "safe", "benign",
+                     "indicative of"):
+            self.assertIn(f'"{word}"', rule)
+        self.assertIn("observation", rule)
+
     def test_prompt_digests_are_sha256(self):
         for name, digest in prompt_files.digests().items():
             self.assertEqual(len(digest), 64, name)
