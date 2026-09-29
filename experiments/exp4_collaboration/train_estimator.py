@@ -67,6 +67,8 @@ def main() -> None:
         "features": FEATURES,
     }
     est.meta.update(report)
+    # Held-out (p_hat, wrong) pairs, for freeze_gate.py's declared tau rule.
+    est.meta["eval_pairs"] = [[round(p, 6), y] for p, y in zip(pev, yev)]
     est.save(args.out)
     print(json.dumps({k: v for k, v in report.items() if k != "reliability_eval"}, indent=1))
     print(f"estimator -> {args.out}  (choose tau from this calib report, then freeze it)")

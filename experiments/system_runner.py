@@ -1,0 +1,158 @@
+"""Shared runner for every experiment that runs the full MA-ZeroPhish system (or an arm of
+it) with a real model: Exp 1 (MA-ZeroPhish row), Exp 2 end-to-end, Exp 4 arms, Exp 5
+conditions, Exp 6 ablations.
+
+* `frozen_system()` builds THE system: Experiment 2's frozen Phase 1
+  (`exp2_selection/frozen.json`) + Experiment 4's frozen gate
+  (`exp4_collaboration/frozen_gate.json`: trained estimator + tau). It REFUSES to run
+  without the frozen gate -- results from an unfrozen system are never produced.
+* `run_grid()` runs cases x arms CASE-MAJOR (every arm on a case before the next case),
+  so a run cut short by the daily quota still leaves complete pairs across arms.
+* Resumable: an (arm, case) pair is written to its ledger only if the whole case finished;
+  API/quota errors go to <tag>.failures.jsonl and are never scored. One shared model cache
+  (`--cache`): arms sending an identical prompt share one real answer, which is also what
+  "the same initial specialist records" across arms requires. Tokens are still counted
+  per arm (the cached record carries them), so cost comparisons stay fair.
+* Labels are not read here (the case subset uses the same deterministic hash order as
+  Experiment 1's `run_baselines.select`).
+"""
+
+from __future__ import annotations
+
+import argparse
+import hashlib
+import json
+import os
+import sys
+import tempfile
+import time
+from dataclasses import replace
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT / "prototype"))
+
+from agents.llm import LLMSpecialists  # noqa: E402
+from capture.store import load_capture  # noqa: E402
+from config import MAZEROPHISH  # noqa: E402
+from ledger import Ledger  # noqa: E402
+from models.adapter import APIError, ChatModel, QuotaExhausted  # noqa: E402
+from phases.estimator import LogisticEstimator  # noqa: E402
+from phases.judge_llm import LLMJudge  # noqa: E402
+from run import run_case  # noqa: E402
+
+PHASE1 = ROOT / "experiments" / "exp2_selection" / "frozen.json"
+GATE = ROOT / "experiments" / "exp4_collaboration" / "frozen_gate.json"
+DATA = ROOT / "experiments" / "data_eval" / "data"
+
+
+def phase1_config(base, model_id: str, trigger_cover: str = "all_fields"):
+    fz = json.loads(PHASE1.read_text(encoding="utf-8"))
+    return replace(base, model_id=model_id, cost_model="prompt_tokens",
+                   cost_scale=fz["cost_scale"], mu=fz["mu"],
+                   trigger_weights=tuple(sorted(fz["trigger_weights"].items())),
+                   trigger_cover=trigger_cover)
+
+
+def frozen_gate() -> tuple[LogisticEstimator, float, dict]:
+    if not GATE.exists():
+        raise SystemExit(
+            "REFUSED: no frozen gate (experiments/exp4_collaboration/frozen_gate.json). "
+            "Train the estimator on calib and freeze tau first (Experiment 4); results "
+            "from an unfrozen system are not produced.")
+    g = json.loads(GATE.read_text(encoding="utf-8"))
+    est = LogisticEstimator.load(str(ROOT / g["estimator"]))
+    return est, float(g["tau"]), g
+
+
+def frozen_system(model_id: str, base=MAZEROPHISH, trigger_cover: str = "all_fields"):
+    """(config, estimator) of the frozen system, applied to `base` (an arm/ablation)."""
+    est, tau, _ = frozen_gate()
+    return replace(phase1_config(base, model_id, trigger_cover), tau=tau), est
+
+
+def select_cases(dataset: str, split: str, per_label: int | None, limit: int | None,
+                 capture_dir: str | None = None) -> list[Path]:
+    """Same deterministic hash order as exp1_detection/run_baselines.select."""
+    d = Path(capture_dir) if capture_dir else DATA / dataset / "captures" / split
+    rows = [json.loads(l) for l in (DATA / dataset / "manifest.jsonl").open(encoding="utf-8")
+            if l.strip()]
+    rows = [r for r in rows if r["split"] == split]
+    rows = sorted(rows, key=lambda r: hashlib.sha256(r["case_id"].encode()).hexdigest())
+    if per_label:
+        out, n = [], {}
+        for r in rows:
+            if n.get(r["label"], 0) < per_label:
+                out.append(r)
+                n[r["label"]] = n.get(r["label"], 0) + 1
+        rows = out
+    rows = rows[:limit] if limit else rows
+    return [d / f"{r['case_id']}.json" for r in rows if (d / f"{r['case_id']}.json").exists()]
+
+
+def common_args(ap: argparse.ArgumentParser) -> None:
+    ap.add_argument("--model", required=True)
+    ap.add_argument("--env", default=None)
+    ap.add_argument("--key-env", default=None)
+    ap.add_argument("--min-interval", type=float, default=4.0)
+    ap.add_argument("--dataset", default="phreshphish")
+    ap.add_argument("--split", default="test")
+    ap.add_argument("--per-label", type=int, default=50, help="balanced subset, N per label")
+    ap.add_argument("--limit", type=int, default=None)
+    ap.add_argument("--cache", default=str(ROOT / "runs" / "llm_cache"))
+    ap.add_argument("--data-version", required=True, help="DATA_VERSION of the captures used")
+
+
+def run_grid(arms: dict, case_paths: list[Path], out_dir: Path, tag: str, args,
+             estimator=None, meta: dict | None = None) -> None:
+    """arms: {arm_name: Config}. Each arm writes <tag>__<arm>.jsonl in out_dir."""
+    out_dir.mkdir(parents=True, exist_ok=True)
+    model = ChatModel(args.model, env_path=args.env, cache_dir=args.cache,
+                      min_interval=args.min_interval, key_env=args.key_env)
+    ledgers = {a: out_dir / f"{tag}__{a}.jsonl" for a in arms}
+    failures = out_dir / f"{tag}.failures.jsonl"
+    done = {a: ({json.loads(l)["case_id"] for l in p.open(encoding="utf-8") if '"decision"' in l}
+                if p.exists() else set()) for a, p in ledgers.items()}
+    todo = [(c, a) for c in case_paths for a in arms if c.stem not in done[a]]
+    print(f"{tag}: {len(case_paths)} cases x {len(arms)} arms, {len(todo)} (case, arm) to run",
+          flush=True)
+    meta = {"data_version": args.data_version, "dataset": args.dataset, "split": args.split,
+            **(meta or {})}
+    n_ok = n_fail = 0
+    for path, arm in todo:
+        cfg = replace(arms[arm], name=arm)
+        capture = load_capture(str(path))
+        specialists, judge = LLMSpecialists(model), LLMJudge(model)
+        fd, scratch = tempfile.mkstemp(suffix=".jsonl")
+        os.close(fd)
+        t0 = time.time()
+        try:
+            with Ledger(scratch, arm=arm) as case_ledger:
+                run_case(cfg, capture, case_ledger, adjudicator=judge, estimator=estimator,
+                         specialists=specialists)
+        except (APIError, QuotaExhausted) as e:
+            n_fail += 1
+            with failures.open("a", encoding="utf-8") as f:
+                f.write(json.dumps({"case_id": capture.case_id, "arm": arm, "model_id": args.model,
+                                    "error": type(e).__name__, "detail": str(e)[:300],
+                                    "time": time.strftime("%Y-%m-%dT%H:%M:%S")}) + "\n")
+            os.unlink(scratch)
+            print(f"  {capture.case_id} [{arm}]: {type(e).__name__} (not scored)", flush=True)
+            if isinstance(e, QuotaExhausted):
+                print("Daily quota reached: re-run the same command later to resume.")
+                break
+            continue
+        with open(scratch, encoding="utf-8") as f:
+            events = [json.loads(l) for l in f if l.strip()]
+        os.unlink(scratch)
+        with ledgers[arm].open("a", encoding="utf-8") as f:
+            for e in events:
+                e.update(meta, key_env=model.key_env)
+                if e["kind"] == "decision" and not e.get("parent_object_id"):
+                    e.update(grounding=specialists.grounding(), wall_s=round(time.time() - t0, 2))
+                f.write(json.dumps(e, ensure_ascii=False, sort_keys=True) + "\n")
+        n_ok += 1
+        dec = next(e for e in events if e["kind"] == "decision" and not e.get("parent_object_id"))
+        print(f"  {capture.case_id} [{arm}]: {dec['verdict']:<12} calls={dec['model_calls']} "
+              f"{time.time() - t0:.0f}s", flush=True)
+    print(f"done {n_ok} failed {n_fail} (429s: {model.n_429})")

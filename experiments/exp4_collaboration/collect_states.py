@@ -38,15 +38,13 @@ from models.adapter import APIError, ChatModel, QuotaExhausted  # noqa: E402
 from phases.judge_llm import LLMJudge  # noqa: E402
 from run import run_case  # noqa: E402
 
-FROZEN = ROOT / "experiments" / "exp2_selection" / "frozen.json"
+sys.path.insert(0, str(ROOT / "experiments"))
+from system_runner import phase1_config  # noqa: E402
 
 
 def frozen_system(model_id: str, trigger_cover: str):
-    fz = json.loads(FROZEN.read_text(encoding="utf-8"))
-    return replace(MAZEROPHISH, model_id=model_id, cost_model="prompt_tokens",
-                   cost_scale=fz["cost_scale"], mu=fz["mu"],
-                   trigger_weights=tuple(sorted(fz["trigger_weights"].items())),
-                   trigger_cover=trigger_cover)
+    """Experiment 2's frozen Phase 1 (the gate is what this script trains data for)."""
+    return phase1_config(MAZEROPHISH, model_id, trigger_cover)
 
 
 def main() -> None:
@@ -61,13 +59,14 @@ def main() -> None:
     ap.add_argument("--min-interval", type=float, default=4.0)
     ap.add_argument("--seed", type=int, default=41)
     ap.add_argument("--out", default=str(ROOT / "runs" / "exp4"))
+    ap.add_argument("--cache", default=str(ROOT / "runs" / "llm_cache"))
     args = ap.parse_args()
     if args.split != "calib":
         raise SystemExit("REFUSED: estimator training states come from the calib split only.")
 
     out = Path(args.out)
     out.mkdir(parents=True, exist_ok=True)
-    model = ChatModel(args.model, env_path=args.env, cache_dir=out / "cache",
+    model = ChatModel(args.model, env_path=args.env, cache_dir=args.cache,
                       min_interval=args.min_interval, key_env=args.key_env)
     cfg = replace(frozen_system(args.model, args.trigger_cover), gate="always")
     tag = f"calib_states__{args.trigger_cover}"
