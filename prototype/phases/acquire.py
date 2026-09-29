@@ -55,11 +55,24 @@ class BudgetLedger:
         self._committed[reservation.pool] += measured - reservation.amount
 
 
+# eq:acquisition-permit's DepsReady: browser and URL-dependent network acquisition
+# need the URL, so the submission's own fields come first; then the browser capture,
+# then network metadata. Order only matters when the shared budget runs out.
+_STAGE = {"message_body": 0, "url": 0, "redirect_chain": 1,
+          "html": 2, "dom": 2, "page_content": 2, "screenshot": 2, "page_resources": 2,
+          "brand_reference": 3,
+          "dns": 4, "tls": 4, "ct": 4, "registration": 4, "hosting": 4}
+
+
+def acquisition_order(sources) -> list[str]:
+    return sorted(sources, key=lambda f: (_STAGE.get(f, 5), f))
+
+
 def acquire(
     plan: AcquisitionPlan, replay: Replay, ledger: BudgetLedger
 ) -> tuple[FetchResult, ...]:
     fetched = []
-    for field in sorted(plan.sources):
+    for field in acquisition_order(plan.sources):
         reservation = ledger.reserve(BudgetPool.SHARED, ATTEMPT_COST, f"acquire:{field}")
         if reservation is None:
             break                      # budget exhausted; his third termination condition
