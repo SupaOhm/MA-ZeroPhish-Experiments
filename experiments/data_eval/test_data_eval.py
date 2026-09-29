@@ -170,7 +170,13 @@ class CTCoveringTests(unittest.TestCase):
         self.assertIn("(exact_name=0, wildcard=2)", t)
         self.assertIn("first_covering_cert_valid_from=2024-01-01 (397 days", t)
         self.assertNotIn("queried_name", t)
-        self.assertTrue(t.startswith("cert_scope=platform_wildcard; platform_hosted=true (platform=webflow.io); "))
+        self.assertTrue(t.startswith(
+            "cert_scope=platform_wildcard (only the hosting platform's own wildcard certificate "
+            "covers this host); platform_hosted=true (host is on the shared hosting platform "
+            "webflow.io); "))
+        # every ';' piece is self-explanatory: no bare key=value line a model could misread
+        for piece in t.split(";")[:2]:
+            self.assertIn("(", piece)
 
     def test_cert_scope_three_values(self):
         from experiments.data_eval.build_captures import cert_scope

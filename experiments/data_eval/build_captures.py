@@ -58,8 +58,16 @@ def ct_text(c: dict, observed: str) -> str:
     last = c["certs_before"][-1]
     first = c["first_not_before"]
     names = " ".join((last.get("name_value") or "").split())[:300]
-    return (f"cert_scope={scope}; platform_hosted={'true' if plat else 'false'}"
-            f"{f' (platform={plat})' if plat else ''}; "
+    # Each ";"-separated piece becomes one evidence line for the Metadata Agent, so every
+    # piece must be self-explanatory: a bare "platform_hosted=false" was read by GPT-4o-mini
+    # as "not hosted on a legitimate service" (calib, 2026-09-30). Keys stay fixed
+    # (cert_scope=..., platform_hosted=...) for extractors; the meaning follows in brackets.
+    scope_txt = {"host": "a certificate names this exact host",
+                 "platform_wildcard": "only the hosting platform's own wildcard certificate covers this host",
+                 "own_wildcard": "only a wildcard certificate of the host's parent domain covers this host"}[scope]
+    plat_txt = (f"true (host is on the shared hosting platform {plat})" if plat
+                else "false (host is its own registered domain, not a shared hosting platform)")
+    return (f"cert_scope={scope} ({scope_txt}); platform_hosted={plat_txt}; "
             f"host={c['host']}; certs_covering_host_valid_on_or_before_observation={c['n_before']} "
             f"(exact_name={c['n_exact']}, wildcard={c['n_wildcard']}); "
             f"first_covering_cert_valid_from={first[:10]} ({_days(first, observed)} days before observation); "
