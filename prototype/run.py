@@ -45,13 +45,15 @@ def _counting(reasoners: dict, calls: list) -> dict:
 
 
 def run_case(cfg: Config, capture, ledger: Ledger, adjudicator=None, estimator=None,
-             state_sink=None) -> None:
+             state_sink=None, specialists=None) -> None:
     """`adjudicator` defaults to the deterministic stand-in (`phases.judge.adjudicate`);
     pass `phases.judge_llm.LLMJudge(model)` for a real Judge (stage 6).
     `estimator`: a trained `phases.estimator.LogisticEstimator` for the gate (default:
     the placeholder). `state_sink`: a list; when given, every intermediate Phase 3 state
     is judged by the (frozen) adjudicator and appended with its features -- training
-    data for the estimator, collected on the calib split only."""
+    data for the estimator, collected on the calib split only.
+    `specialists`: `agents.llm.LLMSpecialists(model)` for real specialists (stage 6);
+    default: the deterministic fakes (`agents.fake`), for tests only."""
     adjudicator = adjudicator or adjudicate
     started = time.monotonic()
     submission = Submission(
@@ -60,11 +62,14 @@ def run_case(cfg: Config, capture, ledger: Ledger, adjudicator=None, estimator=N
     classified = classify(submission)
     budget = BudgetLedger(cfg.budget)
     replay = Replay(capture, withhold=cfg.evidence_removal)
-    reasoners_for = make_reasoners(capture)
+    reasoners_for = (specialists.make_reasoners(capture) if specialists is not None
+                     else make_reasoners(capture))
 
     for ref in classified.objects:
         calls: list[str] = []
         reasoners = _counting(reasoners_for, calls)
+        spec_before = (getattr(specialists, "input_tokens", 0),
+                       getattr(specialists, "output_tokens", 0))
         plan = AcquisitionPlan(
             object_id=ref.object_id,
             sources=classified.applicable_sources[ref.object_id],
@@ -187,8 +192,8 @@ def run_case(cfg: Config, capture, ledger: Ledger, adjudicator=None, estimator=N
             # one written before it. They carry real figures at stage 6.
             # Specialist tokens stay 0 until stage 6 lands in Phase 2; the Judge's
             # are real when a real adjudicator is passed in.
-            input_tokens=judge_in,
-            output_tokens=judge_out,
+            input_tokens=judge_in + getattr(specialists, "input_tokens", 0) - spec_before[0],
+            output_tokens=judge_out + getattr(specialists, "output_tokens", 0) - spec_before[1],
             judge_calls=judge_calls,
             score=getattr(adjudicator, "last_score", None),
             monetary_cost=round(budget.spent, 4),
@@ -198,7 +203,7 @@ def run_case(cfg: Config, capture, ledger: Ledger, adjudicator=None, estimator=N
 
 
 def run_arm(cfg: Config, captures, ledger_path: str, adjudicator=None, estimator=None,
-            state_sink=None) -> None:
+            state_sink=None, specialists=None) -> None:
     with Ledger(ledger_path, arm=cfg.name) as ledger:
         for capture in captures:
-            run_case(cfg, capture, ledger, adjudicator, estimator, state_sink)
+            run_case(cfg, capture, ledger, adjudicator, estimator, state_sink, specialists)
