@@ -79,6 +79,21 @@ Held-out v2 test (80 cases, 2,599 pairs, 485 dependent):
 - T7 and the entity rule were designed together, so this is a stress test of a known risk,
   not evidence about the rule's error rate on real pages.
 
+## Status against the handoff (EXP-014)
+| item | status |
+|---|---|
+| constructed cases (v1 + v2 with trap), held-out annotations, frozen snapshots | done |
+| three policies on identical records (+ provenance with common cause) | done |
+| explicit frozen semantic method, threshold fitted on dev only (0.15) | done |
+| pair precision/recall, under- vs over-merging, duplicate support, per-case errors | done |
+| demonstrated common-cause edge (`phases/common_cause.py`) | done (v2) |
+| borrowed-observation edge from collaboration lineage (original kept, copy discounted) | done (commit d9c314f, unit-tested on capture c6; not exercised by the constructed cases, which have no collaboration) |
+| reconciliation policy reaches Phase 3 decisions (estimator features, Judge projection, training states) | done (commit d9c314f) |
+| escalation frequency, downstream verdict changes | **blocked**: needs real specialists (role 3) + real Judge; measuring with the fake agents would be simulation |
+| re-score on real specialist records | **blocked**: same |
+| manual verification of a sample of annotations | optional, not done (annotations follow mechanically from the stated rule) |
+
 ## Next
-Re-score all policies on REAL specialist records once stage 6 lands (the rule has no
-fitted parameters to re-tune), and measure escalation/verdict effects with the real Judge.
+When stage 6 lands: run MAZEROPHISH, ABLATION2_NO_RECONCILIATION and a semantic arm on the
+same real records with the real Judge; report escalation frequency and verdict changes per
+policy, and re-run this scorer on the real records (no parameter is re-tuned).
