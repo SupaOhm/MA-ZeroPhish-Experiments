@@ -141,5 +141,36 @@ class FingerprintTests(unittest.TestCase):
         self.assertIsNotNone(skeleton_key(kit.format("PayPal")))
 
 
+class CTCoveringTests(unittest.TestCase):
+    """CT v2: only certificates that cover the submitted host count as its history."""
+
+    def test_names_that_can_cover_a_host(self):
+        from experiments.data_eval.enrich import ct_names_covering
+        self.assertEqual(ct_names_covering("sso.x.webflow.io"), ("sso.x.webflow.io", "*.x.webflow.io"))
+        self.assertEqual(ct_names_covering("Example.com"), ("example.com", None))
+
+    def test_wildcard_covers_one_label_and_apex_cert_covers_nothing_below(self):
+        from experiments.data_eval.enrich import cert_covers
+        wild = {"name_value": "*.webflow.io\nwebflow.io"}
+        self.assertEqual(cert_covers(wild, "abc.webflow.io"), "wildcard")
+        self.assertIsNone(cert_covers(wild, "a.b.webflow.io"))
+        self.assertIsNone(cert_covers({"name_value": "webflow.io"}, "abc.webflow.io"))
+        self.assertEqual(cert_covers({"name_value": "www.x.com\nx.com"}, "x.com"), "exact")
+        self.assertEqual(cert_covers({"common_name": "x.com", "name_value": ""}, "x.com"), "exact")
+
+    def test_ct_text_states_host_and_cover_kind(self):
+        from experiments.data_eval.build_captures import ct_text
+        rec = {"host": "a.webflow.io", "n_before": 2, "n_exact": 0, "n_wildcard": 2,
+               "first_not_before": "2024-01-01T00:00:00",
+               "certs_before": [{"covers": "wildcard", "issuer_name": "CN=R11",
+                                 "not_before": "2024-12-18T00:00:00", "not_after": "2025-03-18",
+                                 "name_value": "*.webflow.io"}]}
+        t = ct_text(rec, "2025-02-01")
+        self.assertIn("host=a.webflow.io", t)
+        self.assertIn("(exact_name=0, wildcard=2)", t)
+        self.assertIn("first_covering_cert_valid_from=2024-01-01 (397 days", t)
+        self.assertNotIn("queried_name", t)
+
+
 if __name__ == "__main__":
     unittest.main()

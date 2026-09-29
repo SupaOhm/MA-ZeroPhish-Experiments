@@ -73,9 +73,8 @@ def arms(frozen: dict) -> dict:
                   mu=frozen["mu"], trigger_weights=tuple(sorted(frozen["trigger_weights"].items())))
     fixed = replace(BASELINE_FIXED_ALL, cost_model=ada.cost_model, cost_scale=ada.cost_scale,
                     mu=ada.mu, trigger_weights=ada.trigger_weights)
-    return {"adaptive": ada,
-            "adaptive_all_fields": replace(ada, name="mazerophish_all_fields_cover",
-                                           trigger_cover="all_fields"),
+    return {"adaptive": replace(ada, name="mazerophish_literal_eq10", trigger_cover="any_field"),
+            "adaptive_all_fields": replace(ada, name="mazerophish", trigger_cover="all_fields"),
             "fixed_all": fixed}
 
 

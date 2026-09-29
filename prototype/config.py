@@ -44,12 +44,15 @@ class Config:
     # the specialist's estimated tokens on THIS object (agents.llm.estimated_tokens)
     # / cost_scale, the per-object execution-cost estimate his c_{i,g} names.
     cost_model: str = "unit"
-    # When a selected set covers trigger theta=(t,f,f'). "any_field" is his
-    # eq:agent-trigger-coverage as written (some selected agent's F_g meets
-    # Fields(theta)); "all_fields" is the Experiment 2 variant: every field of theta
-    # is readable by some selected agent (a URL-only dispatch no longer covers a
-    # trigger that points into the page).
-    trigger_cover: str = "any_field"
+    # When a selected set covers trigger theta=(t,f,f'). "all_fields" (default,
+    # approved 2026-09-29): every field of theta is readable by some selected agent
+    # -- a trigger is covered only by specialists able to inspect what it points at,
+    # consistent with the dispatch focus Q_{i,g} = Fields(theta) & F_g. "any_field"
+    # is eq:agent-trigger-coverage as originally written (some selected agent's F_g
+    # meets Fields(theta)); kept as a reported comparison arm. On real pages ~99% of
+    # triggers involve the URL, so under "any_field" the URL Agent alone covered
+    # almost every trigger it cannot read (Experiment 2, dev).
+    trigger_cover: str = "all_fields"
     cost_scale: float = 1000.0
     budget: CaseBudget = field(default_factory=lambda: CaseBudget(100.0, 100.0, 20.0))
     evidence_removal: frozenset[str] = frozenset()

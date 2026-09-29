@@ -38,12 +38,15 @@ def _days(a: str, b: str) -> int:
 
 
 def ct_text(c: dict, observed: str) -> str:
+    """CT v2 (enrich.ct): certificates covering the submitted host only."""
     last = c["certs_before"][-1]
-    first = c["certs_before"][0]["not_before"]
+    first = c["first_not_before"]
     names = " ".join((last.get("name_value") or "").split())[:300]
-    return (f"queried_name={c['queried']}; certs_valid_on_or_before_observation={c['n_before']}; "
-            f"first_cert_valid_from={first[:10]} ({_days(first, observed)} days before observation); "
-            f"latest_cert_issuer={last.get('issuer_name')}; latest_not_before={last['not_before'][:10]}; "
+    return (f"host={c['host']}; certs_covering_host_valid_on_or_before_observation={c['n_before']} "
+            f"(exact_name={c['n_exact']}, wildcard={c['n_wildcard']}); "
+            f"first_covering_cert_valid_from={first[:10]} ({_days(first, observed)} days before observation); "
+            f"latest_cert_covers={last.get('covers')}; latest_cert_issuer={last.get('issuer_name')}; "
+            f"latest_not_before={last['not_before'][:10]}; "
             f"latest_not_after={(last.get('not_after') or '')[:10]}; latest_names={names}")
 
 

@@ -41,7 +41,11 @@ AGENT_REQUIRED = {
     "web_structure": frozenset({"html", "dom"}),
     "content": frozenset({"page_content", "screenshot"}),
     "message": frozenset({"message_body"}),
-    "metadata": frozenset({"dns", "registration", "tls", "hosting"}),
+    # CT added (2026-09-29, approved): his agent table names "DNS, registration, TLS,
+    # Certificate Transparency and hosting records" as this agent's responsibility,
+    # so CT alone is analysable metadata. Without it the agent was `no_data` on every
+    # retrospective corpus, where only CT is observable after the fact.
+    "metadata": frozenset({"dns", "registration", "tls", "ct", "hosting"}),
 }
 
 # `U_g` -- each agent's declared acquisition tools, from the table's

@@ -57,7 +57,7 @@ def main() -> None:
     ap.add_argument("--model", required=True)
     ap.add_argument("--env", default=None)
     ap.add_argument("--key-env", default=None)
-    ap.add_argument("--trigger-cover", default="any_field", choices=("any_field", "all_fields"))
+    ap.add_argument("--trigger-cover", default="all_fields", choices=("any_field", "all_fields"))
     ap.add_argument("--min-interval", type=float, default=4.0)
     ap.add_argument("--seed", type=int, default=41)
     ap.add_argument("--out", default=str(ROOT / "runs" / "exp4"))

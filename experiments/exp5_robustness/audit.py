@@ -133,7 +133,7 @@ def main() -> None:
     out = Path(args.out)
     out.mkdir(parents=True, exist_ok=True)
 
-    cfg = frozen_system("none:no-model-called", "any_field")
+    cfg = frozen_system("none:no-model-called", "all_fields")
     labels = {json.loads(l)["case_id"]: json.loads(l)["label"]
               for l in (DATA / "manifest.jsonl").open(encoding="utf-8") if l.strip()}
     conflict_notes = {}
