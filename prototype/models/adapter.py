@@ -104,12 +104,18 @@ def _http(method: str, url: str, headers: dict, body: dict | None, timeout: int)
 
 class ChatModel:
     def __init__(self, spec: str, env_path=None, cache_dir="runs/cache", extra: dict | None = None,
-                 min_interval: float = 2.0, verify: bool = True, timeout: int = 300):
+                 min_interval: float = 2.0, verify: bool = True, timeout: int = 300,
+                 key_env: str | None = None):
+        """`key_env` names a different environment variable for the key (e.g. a
+        teammate's own key for their share of the work); the NAME is recorded, never
+        the key."""
         provider, model = spec.split(":", 1)
         if provider not in PROVIDERS:
             raise SystemExit(f"unknown provider {provider!r}; use one of {sorted(PROVIDERS)}")
         load_env(env_path)
         base, key_name = PROVIDERS[provider]
+        key_name = key_env or key_name
+        self.key_env = key_name
         key = os.environ.get(key_name, "")
         if not key:
             raise SystemExit(f"{key_name} is not set. Refusing to run: no simulated fallback exists.")

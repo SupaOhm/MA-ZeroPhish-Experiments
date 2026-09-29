@@ -59,6 +59,9 @@ def main() -> None:
     ap.add_argument("--model", required=True, help="provider:model_id")
     ap.add_argument("--extra", default="", help="JSON of extra request params")
     ap.add_argument("--env", default=None)
+    ap.add_argument("--key-env", default=None,
+                    help="env var holding the API key (default: the provider's standard one); "
+                         "its NAME is recorded in every decision event")
     ap.add_argument("--repeat", type=int, default=0)
     ap.add_argument("--workers", type=int, default=1)
     ap.add_argument("--min-interval", type=float, default=2.0)
@@ -73,7 +76,7 @@ def main() -> None:
     data = Path(args.data)
     extra = json.loads(args.extra) if args.extra else {}
     model = ChatModel(args.model, env_path=args.env, cache_dir=Path(args.out) / "cache",
-                      extra=extra, min_interval=args.min_interval)
+                      extra=extra, min_interval=args.min_interval, key_env=args.key_env)
     kw = dict(html_chars=args.html_chars, text_chars=args.text_chars)
     if args.arm == "phishdebate":
         kw.update(r_max=args.r_max, tau=args.tau)
@@ -115,6 +118,7 @@ def main() -> None:
         event = {"kind": "decision", "arm": args.arm, "case_id": case_id, "verdict": res.verdict,
                  "parent_object_id": None, "repeat": args.repeat, "score": res.score,
                  "model_id": args.model, "model_extra": extra, "data_version": args.data_version,
+                 "key_env": model.key_env,
                  "dataset": data.name, "split": args.split, "model_calls": res.model_calls,
                  "input_tokens": res.input_tokens, "output_tokens": res.output_tokens,
                  "latency_s": round(res.latency_s, 2), "wall_s": round(time.time() - t0, 2),
