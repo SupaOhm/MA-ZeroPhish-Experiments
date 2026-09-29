@@ -35,11 +35,9 @@ from agents import prompt_files
 from contract.evidence import EvidenceItem, Provenance
 from contract.vocabulary import Direction, SourceAvailability, Strength
 from phases.grounding import (
-    image_locator, locate, normalize_ws, shown_text, span_locator, span_text,
+    IMAGE_FIELDS, image_locator, locate, normalize_ws, shown_text, span_locator, span_text,
     unresolved_locator,
 )
-
-IMAGE_FIELDS = frozenset({"screenshot"})
 DIRECTIONS = tuple(d.value for d in Direction)
 STRENGTHS = tuple(s.name.lower() for s in Strength)
 FINDING_KEYS = ("field", "quote", "observation", "direction", "strength")

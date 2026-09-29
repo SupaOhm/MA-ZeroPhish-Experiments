@@ -14,9 +14,15 @@ must write `decision` events with at least:
 Only parent decisions are scored (one row per submission). API/quota failures
 must NOT be written as decisions; a missing case is reported, never scored.
 
+Verdicts: `phishing`, `benign`, `insufficient` (abstention) and
+`finalization_error` (paper Phase 4 Step 4: the Judge's decision failed
+validation after its one repair). `finalization_error` is a system outcome, never
+a substantive verdict: it is not decided, lowers coverage, is counted and rated
+on its own, and carries no score.
+
 Forced-decision setting (paper Sec. IV / PhishDebate protocol): `insufficient`
-is an error on both classes -- on a phishing case it is a false negative, on a
-benign case a false positive.
+and `finalization_error` are errors on both classes -- on a phishing case a
+false negative, on a benign case a false positive.
 
     python -m experiments.data_eval.evaluate --manifest .../manifest.jsonl --split test \
         --ledgers runs/*.jsonl --reference mazerophish --out reports/exp1

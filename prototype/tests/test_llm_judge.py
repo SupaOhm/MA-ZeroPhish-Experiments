@@ -127,6 +127,13 @@ class ModelJudge(unittest.TestCase):
         self.assertIsNone(extras["score"])
         self.assertEqual(extras["judge_calls"], 2)
 
+    def test_invalid_citations_are_distinct_locators_across_both_attempts(self):
+        replies = [judge_reply(["nope@1:2#0"]), judge_reply(["nope@1:2#0", "ghost@0:1#0"])]
+        client = RecordedClient(lambda *a: replies.pop(0))
+        _, _, extras = make_judge(client)(context(), "o1", "c")
+        self.assertTrue(extras["finalization_error"])
+        self.assertEqual(extras["judge_invalid_citations"], 2)
+
     def test_wrong_shape_is_a_failed_call(self):
         bad = judge_reply(["url@0:5#0"])
         bad["p_phishing"] = 2.0

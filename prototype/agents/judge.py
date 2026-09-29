@@ -160,7 +160,9 @@ def make_judge(client, *, unblinded: bool = False):
             phishing = ConclusionAssessment(phishing.sufficient, phishing.defensible, repaired_p.cited)
             benign = ConclusionAssessment(benign.sufficient, benign.defensible, repaired_b.cited)
             still_bad = invalid_citations(context, phishing, benign)
-            extras["judge_invalid_citations"] += len(still_bad)
+            # Distinct invalid locators over both attempts: one repeated in the
+            # repair is one bad citation, not two.
+            extras["judge_invalid_citations"] = len(set(bad) | set(still_bad))
             if still_bad:
                 extras["score"] = None
                 extras["finalization_error"] = True

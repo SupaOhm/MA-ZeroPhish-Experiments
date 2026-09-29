@@ -16,13 +16,23 @@ Locator forms:
 - `field@start:end#n` -- a span in the normalized field text; `n` keeps two
   findings quoting the same span distinct.
 - `field@image#n` -- a finding about an attached image (the screenshot). It
-  resolves when the field was obtained; an image has no text to quote.
+  resolves when the field is in `IMAGE_FIELDS` and was obtained; an image has
+  no text to quote.
 - `field@unresolved#n` -- the quote was not found. Never resolves.
 - anything without `@` -- the deterministic fixtures' `field:index`, which keeps
   its original rule: the field must have been obtained.
 """
 
 from contract.vocabulary import SourceAvailability
+
+# Fields a specialist sees as an attached image. Only these take `@image`.
+IMAGE_FIELDS = frozenset({"screenshot"})
+
+
+def _ascii_digits(text: str) -> bool:
+    # `str.isdigit` accepts other scripts' digits and superscripts, which `int`
+    # either reads as a different number or cannot read at all.
+    return text.isascii() and text.isdigit()
 
 
 def normalize_ws(text: str) -> str:
@@ -62,7 +72,7 @@ def _span(locator: str) -> tuple[str, int, int] | None:
         return None
     body = rest.split("#", 1)[0]
     start, colon, end = body.partition(":")
-    if not colon or not start.isdigit() or not end.isdigit():
+    if not colon or not _ascii_digits(start) or not _ascii_digits(end):
         return None
     return field, int(start), int(end)
 
@@ -91,5 +101,5 @@ def resolves(item, envelope) -> bool:
     if field != item.declared_field:
         return False
     if rest.split("#", 1)[0] == "image":
-        return True
+        return field in IMAGE_FIELDS
     return span_text(locator, envelope) is not None

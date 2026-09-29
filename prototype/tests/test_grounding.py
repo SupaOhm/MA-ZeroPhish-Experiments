@@ -80,6 +80,18 @@ class Resolves(unittest.TestCase):
         env = envelope(screenshot="screens/x.png")
         self.assertTrue(resolves(item("screenshot", image_locator("screenshot", 0)), env))
 
+    def test_image_locator_resolves_only_for_image_fields(self):
+        from phases.grounding import IMAGE_FIELDS
+
+        self.assertEqual(IMAGE_FIELDS, frozenset({"screenshot"}))
+        self.assertFalse(resolves(item("html", image_locator("html", 0)), envelope(html=HTML)))
+
+    def test_non_ascii_digits_are_not_a_span(self):
+        env = envelope(html=HTML)
+        for locator in ("html@\u0660:\u0665#0", "html@0:\u00b2#0"):
+            self.assertIsNone(span_text(locator, env))
+            self.assertFalse(resolves(item("html", locator), env))
+
     def test_legacy_locator_keeps_old_rule(self):
         self.assertTrue(resolves(item("html", "html:0"), envelope(html=HTML)))
         self.assertFalse(resolves(item("dom", "dom:0"), envelope(html=HTML)))
