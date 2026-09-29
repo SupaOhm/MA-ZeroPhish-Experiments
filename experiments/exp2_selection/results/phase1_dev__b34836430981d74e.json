@@ -1,0 +1,1891 @@
+{
+ "split": "dev",
+ "frozen": {
+  "cost_scale": 998.6,
+  "mu": 0.5,
+  "trigger_weights": {
+   "shared_entity": 1.0,
+   "host_mismatch": 1.0,
+   "cross_origin": 1.0,
+   "populated_vs_empty": 1.0
+  },
+  "fitted_on": "phreshphish/dev complete (1162 ready specialist-object pairs)",
+  "per_agent_mean_est_tokens_dev": {
+   "content": 976.7,
+   "metadata": 774.9,
+   "url": 679.2,
+   "web_structure": 1555.9
+  },
+  "dev_mu_sensitivity": {
+   "0.1": {
+    "adaptive": {
+     "mean_specialists_dispatched_per_object": 1.003,
+     "mean_trigger_coverage": 1.0,
+     "mean_trigger_coverage_all_fields": 0.0391,
+     "mean_initial_est_tokens_per_case": 674.766
+    },
+    "adaptive_all_fields": {
+     "mean_specialists_dispatched_per_object": 2.04,
+     "mean_trigger_coverage": 1.0,
+     "mean_trigger_coverage_all_fields": 1.0,
+     "mean_initial_est_tokens_per_case": 2173.6657
+    }
+   },
+   "0.25": {
+    "adaptive": {
+     "mean_specialists_dispatched_per_object": 1.003,
+     "mean_trigger_coverage": 1.0,
+     "mean_trigger_coverage_all_fields": 0.0391,
+     "mean_initial_est_tokens_per_case": 674.766
+    },
+    "adaptive_all_fields": {
+     "mean_specialists_dispatched_per_object": 2.04,
+     "mean_trigger_coverage": 1.0,
+     "mean_trigger_coverage_all_fields": 1.0,
+     "mean_initial_est_tokens_per_case": 2173.6657
+    }
+   },
+   "0.5": {
+    "adaptive": {
+     "mean_specialists_dispatched_per_object": 1.003,
+     "mean_trigger_coverage": 1.0,
+     "mean_trigger_coverage_all_fields": 0.0391,
+     "mean_initial_est_tokens_per_case": 674.766
+    },
+    "adaptive_all_fields": {
+     "mean_specialists_dispatched_per_object": 2.04,
+     "mean_trigger_coverage": 1.0,
+     "mean_trigger_coverage_all_fields": 1.0,
+     "mean_initial_est_tokens_per_case": 2173.6657
+    }
+   },
+   "1.0": {
+    "adaptive": {
+     "mean_specialists_dispatched_per_object": 1.003,
+     "mean_trigger_coverage": 1.0,
+     "mean_trigger_coverage_all_fields": 0.0391,
+     "mean_initial_est_tokens_per_case": 674.766
+    },
+    "adaptive_all_fields": {
+     "mean_specialists_dispatched_per_object": 1.627,
+     "mean_trigger_coverage": 1.0,
+     "mean_trigger_coverage_all_fields": 0.7135,
+     "mean_initial_est_tokens_per_case": 1559.4607
+    }
+   },
+   "2.0": {
+    "adaptive": {
+     "mean_specialists_dispatched_per_object": 1.0,
+     "mean_trigger_coverage": 0.9987,
+     "mean_trigger_coverage_all_fields": 0.0365,
+     "mean_initial_est_tokens_per_case": 672.501
+    },
+    "adaptive_all_fields": {
+     "mean_specialists_dispatched_per_object": 1.13,
+     "mean_trigger_coverage": 0.9974,
+     "mean_trigger_coverage_all_fields": 0.1826,
+     "mean_initial_est_tokens_per_case": 805.048
+    }
+   }
+  }
+ },
+ "results": {
+  "complete/unrestricted": {
+   "adaptive": {
+    "objects": 300,
+    "cases": 300,
+    "mean_specialists_dispatched_per_object": 1.0,
+    "mean_trigger_coverage": 1.0,
+    "mean_trigger_coverage_all_fields": 0.0508,
+    "objects_with_triggers": 177,
+    "mean_modality_coverage_at_dispatch": 0.25,
+    "mean_initial_cost_units_per_case": 0.717,
+    "mean_initial_est_tokens_per_case": 715.959,
+    "mean_acquisition_requests_per_case": 13.0,
+    "acquisition_success": 0.4256,
+    "budget_refused_dispatches": 0,
+    "insufficient_resource_cases": 0,
+    "eligible_for_recovery_total": 838,
+    "cases_with_eligible_for_recovery": 300,
+    "selection_vectors": {
+     "url": 289,
+     "content": 11
+    },
+    "by_label": {
+     "benign": {
+      "cases": 150,
+      "mean_triggers_per_object": 2.9067,
+      "mean_specialists_dispatched_per_object": 1.0
+     },
+     "phishing": {
+      "cases": 150,
+      "mean_triggers_per_object": 0.6133,
+      "mean_specialists_dispatched_per_object": 1.0
+     }
+    }
+   },
+   "adaptive_all_fields": {
+    "objects": 300,
+    "cases": 300,
+    "mean_specialists_dispatched_per_object": 1.92,
+    "mean_trigger_coverage": 1.0,
+    "mean_trigger_coverage_all_fields": 1.0,
+    "objects_with_triggers": 177,
+    "mean_modality_coverage_at_dispatch": 0.48,
+    "mean_initial_cost_units_per_case": 2.1686,
+    "mean_initial_est_tokens_per_case": 2165.5647,
+    "mean_acquisition_requests_per_case": 13.0,
+    "acquisition_success": 0.4256,
+    "budget_refused_dispatches": 0,
+    "insufficient_resource_cases": 0,
+    "eligible_for_recovery_total": 562,
+    "cases_with_eligible_for_recovery": 296,
+    "selection_vectors": {
+     "url": 121,
+     "url+web_structure+content": 108,
+     "url+web_structure": 47,
+     "url+content": 13,
+     "content": 11
+    },
+    "by_label": {
+     "benign": {
+      "cases": 150,
+      "mean_triggers_per_object": 2.9067,
+      "mean_specialists_dispatched_per_object": 2.48
+     },
+     "phishing": {
+      "cases": 150,
+      "mean_triggers_per_object": 0.6133,
+      "mean_specialists_dispatched_per_object": 1.36
+     }
+    }
+   },
+   "fixed_all": {
+    "objects": 300,
+    "cases": 300,
+    "mean_specialists_dispatched_per_object": 3.793,
+    "mean_trigger_coverage": 1.0,
+    "mean_trigger_coverage_all_fields": 1.0,
+    "objects_with_triggers": 177,
+    "mean_modality_coverage_at_dispatch": 0.9483,
+    "mean_initial_cost_units_per_case": 4.0847,
+    "mean_initial_est_tokens_per_case": 4078.9703,
+    "mean_acquisition_requests_per_case": 13.0,
+    "acquisition_success": 0.4256,
+    "budget_refused_dispatches": 0,
+    "insufficient_resource_cases": 0,
+    "eligible_for_recovery_total": 0,
+    "cases_with_eligible_for_recovery": 0,
+    "selection_vectors": {
+     "url+web_structure+content+metadata": 240,
+     "url+web_structure+metadata": 37,
+     "url+web_structure+content": 21,
+     "url+web_structure": 2
+    },
+    "by_label": {
+     "benign": {
+      "cases": 150,
+      "mean_triggers_per_object": 2.9067,
+      "mean_specialists_dispatched_per_object": 3.8467
+     },
+     "phishing": {
+      "cases": 150,
+      "mean_triggers_per_object": 0.6133,
+      "mean_specialists_dispatched_per_object": 3.74
+     }
+    }
+   },
+   "paired_diff_adaptive_minus_fixed_cost": {
+    "mean": -3.3677,
+    "ci95": [
+     -3.472,
+     -3.2662
+    ],
+    "n": 300
+   },
+   "paired_diff_adaptive_minus_fixed_tokens": {
+    "mean": -3363.0113,
+    "ci95": [
+     -3467.119,
+     -3261.6193
+    ],
+    "n": 300
+   },
+   "paired_diff_adaptive_minus_fixed_dispatched": {
+    "mean": -2.7933,
+    "ci95": [
+     -2.8367,
+     -2.7467
+    ],
+    "n": 300
+   },
+   "initial_token_saving_fraction_adaptive": 0.8245,
+   "paired_diff_adaptive_all_fields_minus_fixed_cost": {
+    "mean": -1.9161,
+    "ci95": [
+     -2.0384,
+     -1.7922
+    ],
+    "n": 300
+   },
+   "paired_diff_adaptive_all_fields_minus_fixed_tokens": {
+    "mean": -1913.4057,
+    "ci95": [
+     -2035.595,
+     -1789.708
+    ],
+    "n": 300
+   },
+   "paired_diff_adaptive_all_fields_minus_fixed_dispatched": {
+    "mean": -1.8733,
+    "ci95": [
+     -1.9767,
+     -1.7733
+    ],
+    "n": 300
+   },
+   "initial_token_saving_fraction_adaptive_all_fields": 0.4691
+  },
+  "complete/tight_acquisition": {
+   "adaptive": {
+    "objects": 300,
+    "cases": 300,
+    "mean_specialists_dispatched_per_object": 1.0,
+    "mean_trigger_coverage": 1.0,
+    "mean_trigger_coverage_all_fields": 0.0,
+    "objects_with_triggers": 168,
+    "mean_modality_coverage_at_dispatch": 0.25,
+    "mean_initial_cost_units_per_case": 0.7168,
+    "mean_initial_est_tokens_per_case": 715.818,
+    "mean_acquisition_requests_per_case": 6.0,
+    "acquisition_success": 0.6233,
+    "budget_refused_dispatches": 0,
+    "insufficient_resource_cases": 0,
+    "eligible_for_recovery_total": 561,
+    "cases_with_eligible_for_recovery": 300,
+    "selection_vectors": {
+     "url": 295,
+     "content": 5
+    },
+    "by_label": {
+     "benign": {
+      "cases": 150,
+      "mean_triggers_per_object": 2.8733,
+      "mean_specialists_dispatched_per_object": 1.0
+     },
+     "phishing": {
+      "cases": 150,
+      "mean_triggers_per_object": 0.5867,
+      "mean_specialists_dispatched_per_object": 1.0
+     }
+    }
+   },
+   "adaptive_all_fields": {
+    "objects": 300,
+    "cases": 300,
+    "mean_specialists_dispatched_per_object": 1.92,
+    "mean_trigger_coverage": 1.0,
+    "mean_trigger_coverage_all_fields": 1.0,
+    "objects_with_triggers": 168,
+    "mean_modality_coverage_at_dispatch": 0.48,
+    "mean_initial_cost_units_per_case": 2.1685,
+    "mean_initial_est_tokens_per_case": 2165.4237,
+    "mean_acquisition_requests_per_case": 6.0,
+    "acquisition_success": 0.6233,
+    "budget_refused_dispatches": 0,
+    "insufficient_resource_cases": 0,
+    "eligible_for_recovery_total": 285,
+    "cases_with_eligible_for_recovery": 168,
+    "selection_vectors": {
+     "url": 127,
+     "url+web_structure+content": 108,
+     "url+web_structure": 47,
+     "url+content": 13,
+     "content": 5
+    },
+    "by_label": {
+     "benign": {
+      "cases": 150,
+      "mean_triggers_per_object": 2.8733,
+      "mean_specialists_dispatched_per_object": 2.48
+     },
+     "phishing": {
+      "cases": 150,
+      "mean_triggers_per_object": 0.5867,
+      "mean_specialists_dispatched_per_object": 1.36
+     }
+    }
+   },
+   "fixed_all": {
+    "objects": 300,
+    "cases": 300,
+    "mean_specialists_dispatched_per_object": 2.87,
+    "mean_trigger_coverage": 1.0,
+    "mean_trigger_coverage_all_fields": 1.0,
+    "objects_with_triggers": 168,
+    "mean_modality_coverage_at_dispatch": 0.7175,
+    "mean_initial_cost_units_per_case": 3.2696,
+    "mean_initial_est_tokens_per_case": 3264.9943,
+    "mean_acquisition_requests_per_case": 6.0,
+    "acquisition_success": 0.6233,
+    "budget_refused_dispatches": 0,
+    "insufficient_resource_cases": 0,
+    "eligible_for_recovery_total": 0,
+    "cases_with_eligible_for_recovery": 0,
+    "selection_vectors": {
+     "url+web_structure+content": 261,
+     "url+web_structure": 39
+    },
+    "by_label": {
+     "benign": {
+      "cases": 150,
+      "mean_triggers_per_object": 2.8733,
+      "mean_specialists_dispatched_per_object": 2.8733
+     },
+     "phishing": {
+      "cases": 150,
+      "mean_triggers_per_object": 0.5867,
+      "mean_specialists_dispatched_per_object": 2.8667
+     }
+    }
+   },
+   "paired_diff_adaptive_minus_fixed_cost": {
+    "mean": -2.5528,
+    "ci95": [
+     -2.6541,
+     -2.4596
+    ],
+    "n": 300
+   },
+   "paired_diff_adaptive_minus_fixed_tokens": {
+    "mean": -2549.1763,
+    "ci95": [
+     -2650.3447,
+     -2456.1773
+    ],
+    "n": 300
+   },
+   "paired_diff_adaptive_minus_fixed_dispatched": {
+    "mean": -1.87,
+    "ci95": [
+     -1.9067,
+     -1.83
+    ],
+    "n": 300
+   },
+   "initial_token_saving_fraction_adaptive": 0.7808,
+   "paired_diff_adaptive_all_fields_minus_fixed_cost": {
+    "mean": -1.1011,
+    "ci95": [
+     -1.2228,
+     -0.9763
+    ],
+    "n": 300
+   },
+   "paired_diff_adaptive_all_fields_minus_fixed_tokens": {
+    "mean": -1099.5707,
+    "ci95": [
+     -1221.0577,
+     -974.9487
+    ],
+    "n": 300
+   },
+   "paired_diff_adaptive_all_fields_minus_fixed_dispatched": {
+    "mean": -0.95,
+    "ci95": [
+     -1.05,
+     -0.85
+    ],
+    "n": 300
+   },
+   "initial_token_saving_fraction_adaptive_all_fields": 0.3368
+  },
+  "complete/matched_agent_2": {
+   "adaptive": {
+    "objects": 300,
+    "cases": 300,
+    "mean_specialists_dispatched_per_object": 1.0,
+    "mean_trigger_coverage": 1.0,
+    "mean_trigger_coverage_all_fields": 0.0508,
+    "objects_with_triggers": 177,
+    "mean_modality_coverage_at_dispatch": 0.25,
+    "mean_initial_cost_units_per_case": 0.717,
+    "mean_initial_est_tokens_per_case": 715.959,
+    "mean_acquisition_requests_per_case": 13.0,
+    "acquisition_success": 0.4256,
+    "budget_refused_dispatches": 0,
+    "insufficient_resource_cases": 0,
+    "eligible_for_recovery_total": 838,
+    "cases_with_eligible_for_recovery": 300,
+    "selection_vectors": {
+     "url": 289,
+     "content": 11
+    },
+    "by_label": {
+     "benign": {
+      "cases": 150,
+      "mean_triggers_per_object": 2.9067,
+      "mean_specialists_dispatched_per_object": 1.0
+     },
+     "phishing": {
+      "cases": 150,
+      "mean_triggers_per_object": 0.6133,
+      "mean_specialists_dispatched_per_object": 1.0
+     }
+    }
+   },
+   "adaptive_all_fields": {
+    "objects": 300,
+    "cases": 300,
+    "mean_specialists_dispatched_per_object": 1.38,
+    "mean_trigger_coverage": 1.0,
+    "mean_trigger_coverage_all_fields": 0.3446,
+    "objects_with_triggers": 177,
+    "mean_modality_coverage_at_dispatch": 0.345,
+    "mean_initial_cost_units_per_case": 1.122,
+    "mean_initial_est_tokens_per_case": 1120.3657,
+    "mean_acquisition_requests_per_case": 13.0,
+    "acquisition_success": 0.4256,
+    "budget_refused_dispatches": 0,
+    "insufficient_resource_cases": 0,
+    "eligible_for_recovery_total": 724,
+    "cases_with_eligible_for_recovery": 300,
+    "selection_vectors": {
+     "url": 175,
+     "url+content": 92,
+     "url+web_structure": 22,
+     "content": 11
+    },
+    "by_label": {
+     "benign": {
+      "cases": 150,
+      "mean_triggers_per_object": 2.9067,
+      "mean_specialists_dispatched_per_object": 1.58
+     },
+     "phishing": {
+      "cases": 150,
+      "mean_triggers_per_object": 0.6133,
+      "mean_specialists_dispatched_per_object": 1.18
+     }
+    }
+   },
+   "fixed_all": {
+    "objects": 300,
+    "cases": 300,
+    "mean_specialists_dispatched_per_object": 2.0,
+    "mean_trigger_coverage": 0.9718,
+    "mean_trigger_coverage_all_fields": 0.2825,
+    "objects_with_triggers": 177,
+    "mean_modality_coverage_at_dispatch": 0.5,
+    "mean_initial_cost_units_per_case": 1.6987,
+    "mean_initial_est_tokens_per_case": 1696.353,
+    "mean_acquisition_requests_per_case": 13.0,
+    "acquisition_success": 0.4256,
+    "budget_refused_dispatches": 538,
+    "insufficient_resource_cases": 0,
+    "eligible_for_recovery_total": 538,
+    "cases_with_eligible_for_recovery": 300,
+    "selection_vectors": {
+     "url+content": 155,
+     "url+web_structure": 95,
+     "url+metadata": 44,
+     "url": 3,
+     "url+web_structure+content": 2,
+     "url+content+metadata": 1
+    },
+    "by_label": {
+     "benign": {
+      "cases": 150,
+      "mean_triggers_per_object": 2.9067,
+      "mean_specialists_dispatched_per_object": 2.0133
+     },
+     "phishing": {
+      "cases": 150,
+      "mean_triggers_per_object": 0.6133,
+      "mean_specialists_dispatched_per_object": 1.9867
+     }
+    }
+   },
+   "paired_diff_adaptive_minus_fixed_cost": {
+    "mean": -0.9818,
+    "ci95": [
+     -1.0025,
+     -0.9595
+    ],
+    "n": 300
+   },
+   "paired_diff_adaptive_minus_fixed_tokens": {
+    "mean": -980.394,
+    "ci95": [
+     -1001.098,
+     -958.1673
+    ],
+    "n": 300
+   },
+   "paired_diff_adaptive_minus_fixed_dispatched": {
+    "mean": -1.0,
+    "ci95": [
+     -1.0167,
+     -0.9833
+    ],
+    "n": 300
+   },
+   "initial_token_saving_fraction_adaptive": 0.5779,
+   "paired_diff_adaptive_all_fields_minus_fixed_cost": {
+    "mean": -0.5768,
+    "ci95": [
+     -0.6291,
+     -0.5214
+    ],
+    "n": 300
+   },
+   "paired_diff_adaptive_all_fields_minus_fixed_tokens": {
+    "mean": -575.9873,
+    "ci95": [
+     -628.2537,
+     -520.6987
+    ],
+    "n": 300
+   },
+   "paired_diff_adaptive_all_fields_minus_fixed_dispatched": {
+    "mean": -0.62,
+    "ci95": [
+     -0.6767,
+     -0.5633
+    ],
+    "n": 300
+   },
+   "initial_token_saving_fraction_adaptive_all_fields": 0.3395
+  },
+  "partial_browser/unrestricted": {
+   "adaptive": {
+    "objects": 300,
+    "cases": 300,
+    "mean_specialists_dispatched_per_object": 1.0,
+    "mean_trigger_coverage": 1.0,
+    "mean_trigger_coverage_all_fields": 0.0,
+    "objects_with_triggers": 155,
+    "mean_modality_coverage_at_dispatch": 0.25,
+    "mean_initial_cost_units_per_case": 0.724,
+    "mean_initial_est_tokens_per_case": 723.0237,
+    "mean_acquisition_requests_per_case": 13.0,
+    "acquisition_success": 0.2249,
+    "budget_refused_dispatches": 0,
+    "insufficient_resource_cases": 0,
+    "eligible_for_recovery_total": 577,
+    "cases_with_eligible_for_recovery": 300,
+    "selection_vectors": {
+     "url": 299,
+     "web_structure": 1
+    },
+    "by_label": {
+     "benign": {
+      "cases": 150,
+      "mean_triggers_per_object": 1.22,
+      "mean_specialists_dispatched_per_object": 1.0
+     },
+     "phishing": {
+      "cases": 150,
+      "mean_triggers_per_object": 0.24,
+      "mean_specialists_dispatched_per_object": 1.0
+     }
+    }
+   },
+   "adaptive_all_fields": {
+    "objects": 300,
+    "cases": 300,
+    "mean_specialists_dispatched_per_object": 1.513,
+    "mean_trigger_coverage": 1.0,
+    "mean_trigger_coverage_all_fields": 0.9935,
+    "objects_with_triggers": 155,
+    "mean_modality_coverage_at_dispatch": 0.3783,
+    "mean_initial_cost_units_per_case": 1.4427,
+    "mean_initial_est_tokens_per_case": 1440.7097,
+    "mean_acquisition_requests_per_case": 13.0,
+    "acquisition_success": 0.2249,
+    "budget_refused_dispatches": 0,
+    "insufficient_resource_cases": 0,
+    "eligible_for_recovery_total": 423,
+    "cases_with_eligible_for_recovery": 294,
+    "selection_vectors": {
+     "url+web_structure": 154,
+     "url": 145,
+     "web_structure": 1
+    },
+    "by_label": {
+     "benign": {
+      "cases": 150,
+      "mean_triggers_per_object": 1.22,
+      "mean_specialists_dispatched_per_object": 1.8067
+     },
+     "phishing": {
+      "cases": 150,
+      "mean_triggers_per_object": 0.24,
+      "mean_specialists_dispatched_per_object": 1.22
+     }
+    }
+   },
+   "fixed_all": {
+    "objects": 300,
+    "cases": 300,
+    "mean_specialists_dispatched_per_object": 2.923,
+    "mean_trigger_coverage": 1.0,
+    "mean_trigger_coverage_all_fields": 1.0,
+    "objects_with_triggers": 155,
+    "mean_modality_coverage_at_dispatch": 0.7308,
+    "mean_initial_cost_units_per_case": 2.7654,
+    "mean_initial_est_tokens_per_case": 2761.507,
+    "mean_acquisition_requests_per_case": 13.0,
+    "acquisition_success": 0.2249,
+    "budget_refused_dispatches": 0,
+    "insufficient_resource_cases": 0,
+    "eligible_for_recovery_total": 0,
+    "cases_with_eligible_for_recovery": 0,
+    "selection_vectors": {
+     "url+web_structure+metadata": 277,
+     "url+web_structure": 23
+    },
+    "by_label": {
+     "benign": {
+      "cases": 150,
+      "mean_triggers_per_object": 1.22,
+      "mean_specialists_dispatched_per_object": 2.9733
+     },
+     "phishing": {
+      "cases": 150,
+      "mean_triggers_per_object": 0.24,
+      "mean_specialists_dispatched_per_object": 2.8733
+     }
+    }
+   },
+   "paired_diff_adaptive_minus_fixed_cost": {
+    "mean": -2.0413,
+    "ci95": [
+     -2.0899,
+     -1.9903
+    ],
+    "n": 300
+   },
+   "paired_diff_adaptive_minus_fixed_tokens": {
+    "mean": -2038.4833,
+    "ci95": [
+     -2086.9783,
+     -1987.534
+    ],
+    "n": 300
+   },
+   "paired_diff_adaptive_minus_fixed_dispatched": {
+    "mean": -1.9233,
+    "ci95": [
+     -1.9533,
+     -1.8933
+    ],
+    "n": 300
+   },
+   "initial_token_saving_fraction_adaptive": 0.7382,
+   "paired_diff_adaptive_all_fields_minus_fixed_cost": {
+    "mean": -1.3226,
+    "ci95": [
+     -1.3862,
+     -1.2563
+    ],
+    "n": 300
+   },
+   "paired_diff_adaptive_all_fields_minus_fixed_tokens": {
+    "mean": -1320.7973,
+    "ci95": [
+     -1384.2547,
+     -1254.579
+    ],
+    "n": 300
+   },
+   "paired_diff_adaptive_all_fields_minus_fixed_dispatched": {
+    "mean": -1.41,
+    "ci95": [
+     -1.47,
+     -1.3467
+    ],
+    "n": 300
+   },
+   "initial_token_saving_fraction_adaptive_all_fields": 0.4783
+  },
+  "partial_browser/tight_acquisition": {
+   "adaptive": {
+    "objects": 300,
+    "cases": 300,
+    "mean_specialists_dispatched_per_object": 1.0,
+    "mean_trigger_coverage": 1.0,
+    "mean_trigger_coverage_all_fields": 0.0,
+    "objects_with_triggers": 155,
+    "mean_modality_coverage_at_dispatch": 0.25,
+    "mean_initial_cost_units_per_case": 0.724,
+    "mean_initial_est_tokens_per_case": 723.0237,
+    "mean_acquisition_requests_per_case": 6.0,
+    "acquisition_success": 0.3333,
+    "budget_refused_dispatches": 0,
+    "insufficient_resource_cases": 0,
+    "eligible_for_recovery_total": 300,
+    "cases_with_eligible_for_recovery": 300,
+    "selection_vectors": {
+     "url": 299,
+     "web_structure": 1
+    },
+    "by_label": {
+     "benign": {
+      "cases": 150,
+      "mean_triggers_per_object": 1.22,
+      "mean_specialists_dispatched_per_object": 1.0
+     },
+     "phishing": {
+      "cases": 150,
+      "mean_triggers_per_object": 0.24,
+      "mean_specialists_dispatched_per_object": 1.0
+     }
+    }
+   },
+   "adaptive_all_fields": {
+    "objects": 300,
+    "cases": 300,
+    "mean_specialists_dispatched_per_object": 1.513,
+    "mean_trigger_coverage": 1.0,
+    "mean_trigger_coverage_all_fields": 0.9935,
+    "objects_with_triggers": 155,
+    "mean_modality_coverage_at_dispatch": 0.3783,
+    "mean_initial_cost_units_per_case": 1.4427,
+    "mean_initial_est_tokens_per_case": 1440.7097,
+    "mean_acquisition_requests_per_case": 6.0,
+    "acquisition_success": 0.3333,
+    "budget_refused_dispatches": 0,
+    "insufficient_resource_cases": 0,
+    "eligible_for_recovery_total": 146,
+    "cases_with_eligible_for_recovery": 146,
+    "selection_vectors": {
+     "url+web_structure": 154,
+     "url": 145,
+     "web_structure": 1
+    },
+    "by_label": {
+     "benign": {
+      "cases": 150,
+      "mean_triggers_per_object": 1.22,
+      "mean_specialists_dispatched_per_object": 1.8067
+     },
+     "phishing": {
+      "cases": 150,
+      "mean_triggers_per_object": 0.24,
+      "mean_specialists_dispatched_per_object": 1.22
+     }
+    }
+   },
+   "fixed_all": {
+    "objects": 300,
+    "cases": 300,
+    "mean_specialists_dispatched_per_object": 2.0,
+    "mean_trigger_coverage": 1.0,
+    "mean_trigger_coverage_all_fields": 1.0,
+    "objects_with_triggers": 155,
+    "mean_modality_coverage_at_dispatch": 0.5,
+    "mean_initial_cost_units_per_case": 1.9503,
+    "mean_initial_est_tokens_per_case": 1947.5287,
+    "mean_acquisition_requests_per_case": 6.0,
+    "acquisition_success": 0.3333,
+    "budget_refused_dispatches": 0,
+    "insufficient_resource_cases": 0,
+    "eligible_for_recovery_total": 0,
+    "cases_with_eligible_for_recovery": 0,
+    "selection_vectors": {
+     "url+web_structure": 300
+    },
+    "by_label": {
+     "benign": {
+      "cases": 150,
+      "mean_triggers_per_object": 1.22,
+      "mean_specialists_dispatched_per_object": 2.0
+     },
+     "phishing": {
+      "cases": 150,
+      "mean_triggers_per_object": 0.24,
+      "mean_specialists_dispatched_per_object": 2.0
+     }
+    }
+   },
+   "paired_diff_adaptive_minus_fixed_cost": {
+    "mean": -1.2262,
+    "ci95": [
+     -1.2648,
+     -1.1883
+    ],
+    "n": 300
+   },
+   "paired_diff_adaptive_minus_fixed_tokens": {
+    "mean": -1224.505,
+    "ci95": [
+     -1263.0047,
+     -1186.6517
+    ],
+    "n": 300
+   },
+   "paired_diff_adaptive_minus_fixed_dispatched": {
+    "mean": -1.0,
+    "ci95": [
+     -1.0,
+     -1.0
+    ],
+    "n": 300
+   },
+   "initial_token_saving_fraction_adaptive": 0.6287,
+   "paired_diff_adaptive_all_fields_minus_fixed_cost": {
+    "mean": -0.5075,
+    "ci95": [
+     -0.5695,
+     -0.4433
+    ],
+    "n": 300
+   },
+   "paired_diff_adaptive_all_fields_minus_fixed_tokens": {
+    "mean": -506.819,
+    "ci95": [
+     -568.6707,
+     -442.685
+    ],
+    "n": 300
+   },
+   "paired_diff_adaptive_all_fields_minus_fixed_dispatched": {
+    "mean": -0.4867,
+    "ci95": [
+     -0.5433,
+     -0.43
+    ],
+    "n": 300
+   },
+   "initial_token_saving_fraction_adaptive_all_fields": 0.2602
+  },
+  "partial_browser/matched_agent_2": {
+   "adaptive": {
+    "objects": 300,
+    "cases": 300,
+    "mean_specialists_dispatched_per_object": 1.0,
+    "mean_trigger_coverage": 1.0,
+    "mean_trigger_coverage_all_fields": 0.0,
+    "objects_with_triggers": 155,
+    "mean_modality_coverage_at_dispatch": 0.25,
+    "mean_initial_cost_units_per_case": 0.724,
+    "mean_initial_est_tokens_per_case": 723.0237,
+    "mean_acquisition_requests_per_case": 13.0,
+    "acquisition_success": 0.2249,
+    "budget_refused_dispatches": 0,
+    "insufficient_resource_cases": 0,
+    "eligible_for_recovery_total": 577,
+    "cases_with_eligible_for_recovery": 300,
+    "selection_vectors": {
+     "url": 299,
+     "web_structure": 1
+    },
+    "by_label": {
+     "benign": {
+      "cases": 150,
+      "mean_triggers_per_object": 1.22,
+      "mean_specialists_dispatched_per_object": 1.0
+     },
+     "phishing": {
+      "cases": 150,
+      "mean_triggers_per_object": 0.24,
+      "mean_specialists_dispatched_per_object": 1.0
+     }
+    }
+   },
+   "adaptive_all_fields": {
+    "objects": 300,
+    "cases": 300,
+    "mean_specialists_dispatched_per_object": 1.18,
+    "mean_trigger_coverage": 1.0,
+    "mean_trigger_coverage_all_fields": 0.3484,
+    "objects_with_triggers": 155,
+    "mean_modality_coverage_at_dispatch": 0.295,
+    "mean_initial_cost_units_per_case": 0.9106,
+    "mean_initial_est_tokens_per_case": 909.281,
+    "mean_acquisition_requests_per_case": 13.0,
+    "acquisition_success": 0.2249,
+    "budget_refused_dispatches": 0,
+    "insufficient_resource_cases": 0,
+    "eligible_for_recovery_total": 523,
+    "cases_with_eligible_for_recovery": 297,
+    "selection_vectors": {
+     "url": 245,
+     "url+web_structure": 54,
+     "web_structure": 1
+    },
+    "by_label": {
+     "benign": {
+      "cases": 150,
+      "mean_triggers_per_object": 1.22,
+      "mean_specialists_dispatched_per_object": 1.2067
+     },
+     "phishing": {
+      "cases": 150,
+      "mean_triggers_per_object": 0.24,
+      "mean_specialists_dispatched_per_object": 1.1533
+     }
+    }
+   },
+   "fixed_all": {
+    "objects": 300,
+    "cases": 300,
+    "mean_specialists_dispatched_per_object": 1.983,
+    "mean_trigger_coverage": 1.0,
+    "mean_trigger_coverage_all_fields": 0.3484,
+    "objects_with_triggers": 155,
+    "mean_modality_coverage_at_dispatch": 0.4958,
+    "mean_initial_cost_units_per_case": 1.659,
+    "mean_initial_est_tokens_per_case": 1656.685,
+    "mean_acquisition_requests_per_case": 13.0,
+    "acquisition_success": 0.2249,
+    "budget_refused_dispatches": 282,
+    "insufficient_resource_cases": 0,
+    "eligible_for_recovery_total": 282,
+    "cases_with_eligible_for_recovery": 282,
+    "selection_vectors": {
+     "url+web_structure": 182,
+     "url+metadata": 113,
+     "url": 5
+    },
+    "by_label": {
+     "benign": {
+      "cases": 150,
+      "mean_triggers_per_object": 1.22,
+      "mean_specialists_dispatched_per_object": 1.9867
+     },
+     "phishing": {
+      "cases": 150,
+      "mean_triggers_per_object": 0.24,
+      "mean_specialists_dispatched_per_object": 1.98
+     }
+    }
+   },
+   "paired_diff_adaptive_minus_fixed_cost": {
+    "mean": -0.935,
+    "ci95": [
+     -0.9557,
+     -0.9135
+    ],
+    "n": 300
+   },
+   "paired_diff_adaptive_minus_fixed_tokens": {
+    "mean": -933.6613,
+    "ci95": [
+     -954.4067,
+     -912.2657
+    ],
+    "n": 300
+   },
+   "paired_diff_adaptive_minus_fixed_dispatched": {
+    "mean": -0.9833,
+    "ci95": [
+     -0.9967,
+     -0.9667
+    ],
+    "n": 300
+   },
+   "initial_token_saving_fraction_adaptive": 0.5636,
+   "paired_diff_adaptive_all_fields_minus_fixed_cost": {
+    "mean": -0.7484,
+    "ci95": [
+     -0.7917,
+     -0.7018
+    ],
+    "n": 300
+   },
+   "paired_diff_adaptive_all_fields_minus_fixed_tokens": {
+    "mean": -747.404,
+    "ci95": [
+     -790.6127,
+     -700.7797
+    ],
+    "n": 300
+   },
+   "paired_diff_adaptive_all_fields_minus_fixed_dispatched": {
+    "mean": -0.8033,
+    "ci95": [
+     -0.8467,
+     -0.7567
+    ],
+    "n": 300
+   },
+   "initial_token_saving_fraction_adaptive_all_fields": 0.4511
+  },
+  "no_network_metadata/unrestricted": {
+   "adaptive": {
+    "objects": 300,
+    "cases": 300,
+    "mean_specialists_dispatched_per_object": 1.0,
+    "mean_trigger_coverage": 1.0,
+    "mean_trigger_coverage_all_fields": 0.0508,
+    "objects_with_triggers": 177,
+    "mean_modality_coverage_at_dispatch": 0.25,
+    "mean_initial_cost_units_per_case": 0.717,
+    "mean_initial_est_tokens_per_case": 715.959,
+    "mean_acquisition_requests_per_case": 13.0,
+    "acquisition_success": 0.3546,
+    "budget_refused_dispatches": 0,
+    "insufficient_resource_cases": 0,
+    "eligible_for_recovery_total": 561,
+    "cases_with_eligible_for_recovery": 300,
+    "selection_vectors": {
+     "url": 289,
+     "content": 11
+    },
+    "by_label": {
+     "benign": {
+      "cases": 150,
+      "mean_triggers_per_object": 2.9067,
+      "mean_specialists_dispatched_per_object": 1.0
+     },
+     "phishing": {
+      "cases": 150,
+      "mean_triggers_per_object": 0.6133,
+      "mean_specialists_dispatched_per_object": 1.0
+     }
+    }
+   },
+   "adaptive_all_fields": {
+    "objects": 300,
+    "cases": 300,
+    "mean_specialists_dispatched_per_object": 1.92,
+    "mean_trigger_coverage": 1.0,
+    "mean_trigger_coverage_all_fields": 1.0,
+    "objects_with_triggers": 177,
+    "mean_modality_coverage_at_dispatch": 0.48,
+    "mean_initial_cost_units_per_case": 2.1686,
+    "mean_initial_est_tokens_per_case": 2165.5647,
+    "mean_acquisition_requests_per_case": 13.0,
+    "acquisition_success": 0.3546,
+    "budget_refused_dispatches": 0,
+    "insufficient_resource_cases": 0,
+    "eligible_for_recovery_total": 285,
+    "cases_with_eligible_for_recovery": 168,
+    "selection_vectors": {
+     "url": 121,
+     "url+web_structure+content": 108,
+     "url+web_structure": 47,
+     "url+content": 13,
+     "content": 11
+    },
+    "by_label": {
+     "benign": {
+      "cases": 150,
+      "mean_triggers_per_object": 2.9067,
+      "mean_specialists_dispatched_per_object": 2.48
+     },
+     "phishing": {
+      "cases": 150,
+      "mean_triggers_per_object": 0.6133,
+      "mean_specialists_dispatched_per_object": 1.36
+     }
+    }
+   },
+   "fixed_all": {
+    "objects": 300,
+    "cases": 300,
+    "mean_specialists_dispatched_per_object": 2.87,
+    "mean_trigger_coverage": 1.0,
+    "mean_trigger_coverage_all_fields": 1.0,
+    "objects_with_triggers": 177,
+    "mean_modality_coverage_at_dispatch": 0.7175,
+    "mean_initial_cost_units_per_case": 3.2696,
+    "mean_initial_est_tokens_per_case": 3264.9943,
+    "mean_acquisition_requests_per_case": 13.0,
+    "acquisition_success": 0.3546,
+    "budget_refused_dispatches": 0,
+    "insufficient_resource_cases": 0,
+    "eligible_for_recovery_total": 0,
+    "cases_with_eligible_for_recovery": 0,
+    "selection_vectors": {
+     "url+web_structure+content": 261,
+     "url+web_structure": 39
+    },
+    "by_label": {
+     "benign": {
+      "cases": 150,
+      "mean_triggers_per_object": 2.9067,
+      "mean_specialists_dispatched_per_object": 2.8733
+     },
+     "phishing": {
+      "cases": 150,
+      "mean_triggers_per_object": 0.6133,
+      "mean_specialists_dispatched_per_object": 2.8667
+     }
+    }
+   },
+   "paired_diff_adaptive_minus_fixed_cost": {
+    "mean": -2.5526,
+    "ci95": [
+     -2.6539,
+     -2.4595
+    ],
+    "n": 300
+   },
+   "paired_diff_adaptive_minus_fixed_tokens": {
+    "mean": -2549.0353,
+    "ci95": [
+     -2650.151,
+     -2456.0863
+    ],
+    "n": 300
+   },
+   "paired_diff_adaptive_minus_fixed_dispatched": {
+    "mean": -1.87,
+    "ci95": [
+     -1.9067,
+     -1.83
+    ],
+    "n": 300
+   },
+   "initial_token_saving_fraction_adaptive": 0.7807,
+   "paired_diff_adaptive_all_fields_minus_fixed_cost": {
+    "mean": -1.101,
+    "ci95": [
+     -1.2226,
+     -0.9761
+    ],
+    "n": 300
+   },
+   "paired_diff_adaptive_all_fields_minus_fixed_tokens": {
+    "mean": -1099.4297,
+    "ci95": [
+     -1220.909,
+     -974.7377
+    ],
+    "n": 300
+   },
+   "paired_diff_adaptive_all_fields_minus_fixed_dispatched": {
+    "mean": -0.95,
+    "ci95": [
+     -1.05,
+     -0.85
+    ],
+    "n": 300
+   },
+   "initial_token_saving_fraction_adaptive_all_fields": 0.3367
+  },
+  "no_network_metadata/tight_acquisition": {
+   "adaptive": {
+    "objects": 300,
+    "cases": 300,
+    "mean_specialists_dispatched_per_object": 1.0,
+    "mean_trigger_coverage": 1.0,
+    "mean_trigger_coverage_all_fields": 0.0,
+    "objects_with_triggers": 168,
+    "mean_modality_coverage_at_dispatch": 0.25,
+    "mean_initial_cost_units_per_case": 0.7168,
+    "mean_initial_est_tokens_per_case": 715.818,
+    "mean_acquisition_requests_per_case": 6.0,
+    "acquisition_success": 0.6233,
+    "budget_refused_dispatches": 0,
+    "insufficient_resource_cases": 0,
+    "eligible_for_recovery_total": 561,
+    "cases_with_eligible_for_recovery": 300,
+    "selection_vectors": {
+     "url": 295,
+     "content": 5
+    },
+    "by_label": {
+     "benign": {
+      "cases": 150,
+      "mean_triggers_per_object": 2.8733,
+      "mean_specialists_dispatched_per_object": 1.0
+     },
+     "phishing": {
+      "cases": 150,
+      "mean_triggers_per_object": 0.5867,
+      "mean_specialists_dispatched_per_object": 1.0
+     }
+    }
+   },
+   "adaptive_all_fields": {
+    "objects": 300,
+    "cases": 300,
+    "mean_specialists_dispatched_per_object": 1.92,
+    "mean_trigger_coverage": 1.0,
+    "mean_trigger_coverage_all_fields": 1.0,
+    "objects_with_triggers": 168,
+    "mean_modality_coverage_at_dispatch": 0.48,
+    "mean_initial_cost_units_per_case": 2.1685,
+    "mean_initial_est_tokens_per_case": 2165.4237,
+    "mean_acquisition_requests_per_case": 6.0,
+    "acquisition_success": 0.6233,
+    "budget_refused_dispatches": 0,
+    "insufficient_resource_cases": 0,
+    "eligible_for_recovery_total": 285,
+    "cases_with_eligible_for_recovery": 168,
+    "selection_vectors": {
+     "url": 127,
+     "url+web_structure+content": 108,
+     "url+web_structure": 47,
+     "url+content": 13,
+     "content": 5
+    },
+    "by_label": {
+     "benign": {
+      "cases": 150,
+      "mean_triggers_per_object": 2.8733,
+      "mean_specialists_dispatched_per_object": 2.48
+     },
+     "phishing": {
+      "cases": 150,
+      "mean_triggers_per_object": 0.5867,
+      "mean_specialists_dispatched_per_object": 1.36
+     }
+    }
+   },
+   "fixed_all": {
+    "objects": 300,
+    "cases": 300,
+    "mean_specialists_dispatched_per_object": 2.87,
+    "mean_trigger_coverage": 1.0,
+    "mean_trigger_coverage_all_fields": 1.0,
+    "objects_with_triggers": 168,
+    "mean_modality_coverage_at_dispatch": 0.7175,
+    "mean_initial_cost_units_per_case": 3.2696,
+    "mean_initial_est_tokens_per_case": 3264.9943,
+    "mean_acquisition_requests_per_case": 6.0,
+    "acquisition_success": 0.6233,
+    "budget_refused_dispatches": 0,
+    "insufficient_resource_cases": 0,
+    "eligible_for_recovery_total": 0,
+    "cases_with_eligible_for_recovery": 0,
+    "selection_vectors": {
+     "url+web_structure+content": 261,
+     "url+web_structure": 39
+    },
+    "by_label": {
+     "benign": {
+      "cases": 150,
+      "mean_triggers_per_object": 2.8733,
+      "mean_specialists_dispatched_per_object": 2.8733
+     },
+     "phishing": {
+      "cases": 150,
+      "mean_triggers_per_object": 0.5867,
+      "mean_specialists_dispatched_per_object": 2.8667
+     }
+    }
+   },
+   "paired_diff_adaptive_minus_fixed_cost": {
+    "mean": -2.5528,
+    "ci95": [
+     -2.6541,
+     -2.4596
+    ],
+    "n": 300
+   },
+   "paired_diff_adaptive_minus_fixed_tokens": {
+    "mean": -2549.1763,
+    "ci95": [
+     -2650.3447,
+     -2456.1773
+    ],
+    "n": 300
+   },
+   "paired_diff_adaptive_minus_fixed_dispatched": {
+    "mean": -1.87,
+    "ci95": [
+     -1.9067,
+     -1.83
+    ],
+    "n": 300
+   },
+   "initial_token_saving_fraction_adaptive": 0.7808,
+   "paired_diff_adaptive_all_fields_minus_fixed_cost": {
+    "mean": -1.1011,
+    "ci95": [
+     -1.2228,
+     -0.9763
+    ],
+    "n": 300
+   },
+   "paired_diff_adaptive_all_fields_minus_fixed_tokens": {
+    "mean": -1099.5707,
+    "ci95": [
+     -1221.0577,
+     -974.9487
+    ],
+    "n": 300
+   },
+   "paired_diff_adaptive_all_fields_minus_fixed_dispatched": {
+    "mean": -0.95,
+    "ci95": [
+     -1.05,
+     -0.85
+    ],
+    "n": 300
+   },
+   "initial_token_saving_fraction_adaptive_all_fields": 0.3368
+  },
+  "no_network_metadata/matched_agent_2": {
+   "adaptive": {
+    "objects": 300,
+    "cases": 300,
+    "mean_specialists_dispatched_per_object": 1.0,
+    "mean_trigger_coverage": 1.0,
+    "mean_trigger_coverage_all_fields": 0.0508,
+    "objects_with_triggers": 177,
+    "mean_modality_coverage_at_dispatch": 0.25,
+    "mean_initial_cost_units_per_case": 0.717,
+    "mean_initial_est_tokens_per_case": 715.959,
+    "mean_acquisition_requests_per_case": 13.0,
+    "acquisition_success": 0.3546,
+    "budget_refused_dispatches": 0,
+    "insufficient_resource_cases": 0,
+    "eligible_for_recovery_total": 561,
+    "cases_with_eligible_for_recovery": 300,
+    "selection_vectors": {
+     "url": 289,
+     "content": 11
+    },
+    "by_label": {
+     "benign": {
+      "cases": 150,
+      "mean_triggers_per_object": 2.9067,
+      "mean_specialists_dispatched_per_object": 1.0
+     },
+     "phishing": {
+      "cases": 150,
+      "mean_triggers_per_object": 0.6133,
+      "mean_specialists_dispatched_per_object": 1.0
+     }
+    }
+   },
+   "adaptive_all_fields": {
+    "objects": 300,
+    "cases": 300,
+    "mean_specialists_dispatched_per_object": 1.38,
+    "mean_trigger_coverage": 1.0,
+    "mean_trigger_coverage_all_fields": 0.3446,
+    "objects_with_triggers": 177,
+    "mean_modality_coverage_at_dispatch": 0.345,
+    "mean_initial_cost_units_per_case": 1.122,
+    "mean_initial_est_tokens_per_case": 1120.3657,
+    "mean_acquisition_requests_per_case": 13.0,
+    "acquisition_success": 0.3546,
+    "budget_refused_dispatches": 0,
+    "insufficient_resource_cases": 0,
+    "eligible_for_recovery_total": 447,
+    "cases_with_eligible_for_recovery": 300,
+    "selection_vectors": {
+     "url": 175,
+     "url+content": 92,
+     "url+web_structure": 22,
+     "content": 11
+    },
+    "by_label": {
+     "benign": {
+      "cases": 150,
+      "mean_triggers_per_object": 2.9067,
+      "mean_specialists_dispatched_per_object": 1.58
+     },
+     "phishing": {
+      "cases": 150,
+      "mean_triggers_per_object": 0.6133,
+      "mean_specialists_dispatched_per_object": 1.18
+     }
+    }
+   },
+   "fixed_all": {
+    "objects": 300,
+    "cases": 300,
+    "mean_specialists_dispatched_per_object": 1.85,
+    "mean_trigger_coverage": 0.9718,
+    "mean_trigger_coverage_all_fields": 0.2825,
+    "objects_with_triggers": 177,
+    "mean_modality_coverage_at_dispatch": 0.4625,
+    "mean_initial_cost_units_per_case": 1.5665,
+    "mean_initial_est_tokens_per_case": 1564.329,
+    "mean_acquisition_requests_per_case": 13.0,
+    "acquisition_success": 0.3546,
+    "budget_refused_dispatches": 306,
+    "insufficient_resource_cases": 0,
+    "eligible_for_recovery_total": 306,
+    "cases_with_eligible_for_recovery": 283,
+    "selection_vectors": {
+     "url+content": 156,
+     "url+web_structure": 95,
+     "url": 47,
+     "url+web_structure+content": 2
+    },
+    "by_label": {
+     "benign": {
+      "cases": 150,
+      "mean_triggers_per_object": 2.9067,
+      "mean_specialists_dispatched_per_object": 1.78
+     },
+     "phishing": {
+      "cases": 150,
+      "mean_triggers_per_object": 0.6133,
+      "mean_specialists_dispatched_per_object": 1.92
+     }
+    }
+   },
+   "paired_diff_adaptive_minus_fixed_cost": {
+    "mean": -0.8496,
+    "ci95": [
+     -0.8928,
+     -0.8065
+    ],
+    "n": 300
+   },
+   "paired_diff_adaptive_minus_fixed_tokens": {
+    "mean": -848.37,
+    "ci95": [
+     -891.533,
+     -805.393
+    ],
+    "n": 300
+   },
+   "paired_diff_adaptive_minus_fixed_dispatched": {
+    "mean": -0.85,
+    "ci95": [
+     -0.89,
+     -0.8067
+    ],
+    "n": 300
+   },
+   "initial_token_saving_fraction_adaptive": 0.5423,
+   "paired_diff_adaptive_all_fields_minus_fixed_cost": {
+    "mean": -0.4446,
+    "ci95": [
+     -0.4999,
+     -0.3908
+    ],
+    "n": 300
+   },
+   "paired_diff_adaptive_all_fields_minus_fixed_tokens": {
+    "mean": -443.9633,
+    "ci95": [
+     -499.1677,
+     -390.262
+    ],
+    "n": 300
+   },
+   "paired_diff_adaptive_all_fields_minus_fixed_dispatched": {
+    "mean": -0.47,
+    "ci95": [
+     -0.5267,
+     -0.4133
+    ],
+    "n": 300
+   },
+   "initial_token_saving_fraction_adaptive_all_fields": 0.2838
+  },
+  "multi_url_message/unrestricted": {
+   "adaptive": {
+    "objects": 6,
+    "cases": 2,
+    "mean_specialists_dispatched_per_object": 1.0,
+    "mean_trigger_coverage": null,
+    "mean_trigger_coverage_all_fields": null,
+    "objects_with_triggers": 0,
+    "mean_modality_coverage_at_dispatch": 0.5,
+    "mean_initial_cost_units_per_case": 2.9804,
+    "mean_initial_est_tokens_per_case": 2976.25,
+    "mean_acquisition_requests_per_case": 27.0,
+    "acquisition_success": 0.3846,
+    "budget_refused_dispatches": 0,
+    "insufficient_resource_cases": 0,
+    "eligible_for_recovery_total": 0,
+    "cases_with_eligible_for_recovery": 0,
+    "selection_vectors": {
+     "url": 4,
+     "message": 2
+    },
+    "by_label": {
+     "benign": {
+      "cases": 2,
+      "mean_triggers_per_object": 0.0,
+      "mean_specialists_dispatched_per_object": 1.0
+     }
+    }
+   },
+   "adaptive_all_fields": {
+    "objects": 6,
+    "cases": 2,
+    "mean_specialists_dispatched_per_object": 1.0,
+    "mean_trigger_coverage": null,
+    "mean_trigger_coverage_all_fields": null,
+    "objects_with_triggers": 0,
+    "mean_modality_coverage_at_dispatch": 0.5,
+    "mean_initial_cost_units_per_case": 2.9804,
+    "mean_initial_est_tokens_per_case": 2976.25,
+    "mean_acquisition_requests_per_case": 27.0,
+    "acquisition_success": 0.3846,
+    "budget_refused_dispatches": 0,
+    "insufficient_resource_cases": 0,
+    "eligible_for_recovery_total": 0,
+    "cases_with_eligible_for_recovery": 0,
+    "selection_vectors": {
+     "url": 4,
+     "message": 2
+    },
+    "by_label": {
+     "benign": {
+      "cases": 2,
+      "mean_triggers_per_object": 0.0,
+      "mean_specialists_dispatched_per_object": 1.0
+     }
+    }
+   },
+   "fixed_all": {
+    "objects": 6,
+    "cases": 2,
+    "mean_specialists_dispatched_per_object": 1.0,
+    "mean_trigger_coverage": null,
+    "mean_trigger_coverage_all_fields": null,
+    "objects_with_triggers": 0,
+    "mean_modality_coverage_at_dispatch": 0.5,
+    "mean_initial_cost_units_per_case": 2.9804,
+    "mean_initial_est_tokens_per_case": 2976.25,
+    "mean_acquisition_requests_per_case": 27.0,
+    "acquisition_success": 0.3846,
+    "budget_refused_dispatches": 0,
+    "insufficient_resource_cases": 0,
+    "eligible_for_recovery_total": 0,
+    "cases_with_eligible_for_recovery": 0,
+    "selection_vectors": {
+     "url": 4,
+     "message": 2
+    },
+    "by_label": {
+     "benign": {
+      "cases": 2,
+      "mean_triggers_per_object": 0.0,
+      "mean_specialists_dispatched_per_object": 1.0
+     }
+    }
+   },
+   "paired_diff_adaptive_minus_fixed_cost": {
+    "mean": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ],
+    "n": 2
+   },
+   "paired_diff_adaptive_minus_fixed_tokens": {
+    "mean": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ],
+    "n": 2
+   },
+   "paired_diff_adaptive_minus_fixed_dispatched": {
+    "mean": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ],
+    "n": 2
+   },
+   "initial_token_saving_fraction_adaptive": 0.0,
+   "paired_diff_adaptive_all_fields_minus_fixed_cost": {
+    "mean": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ],
+    "n": 2
+   },
+   "paired_diff_adaptive_all_fields_minus_fixed_tokens": {
+    "mean": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ],
+    "n": 2
+   },
+   "paired_diff_adaptive_all_fields_minus_fixed_dispatched": {
+    "mean": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ],
+    "n": 2
+   },
+   "initial_token_saving_fraction_adaptive_all_fields": 0.0
+  },
+  "multi_url_message/tight_acquisition": {
+   "adaptive": {
+    "objects": 6,
+    "cases": 2,
+    "mean_specialists_dispatched_per_object": 0.667,
+    "mean_trigger_coverage": null,
+    "mean_trigger_coverage_all_fields": null,
+    "objects_with_triggers": 0,
+    "mean_modality_coverage_at_dispatch": 0.4167,
+    "mean_initial_cost_units_per_case": 2.26,
+    "mean_initial_est_tokens_per_case": 2256.85,
+    "mean_acquisition_requests_per_case": 6.0,
+    "acquisition_success": 0.6,
+    "budget_refused_dispatches": 0,
+    "insufficient_resource_cases": 0,
+    "eligible_for_recovery_total": 0,
+    "cases_with_eligible_for_recovery": 0,
+    "selection_vectors": {
+     "message": 2,
+     "url": 2,
+     "(none)": 2
+    },
+    "by_label": {
+     "benign": {
+      "cases": 2,
+      "mean_triggers_per_object": 0.0,
+      "mean_specialists_dispatched_per_object": 0.6667
+     }
+    }
+   },
+   "adaptive_all_fields": {
+    "objects": 6,
+    "cases": 2,
+    "mean_specialists_dispatched_per_object": 0.667,
+    "mean_trigger_coverage": null,
+    "mean_trigger_coverage_all_fields": null,
+    "objects_with_triggers": 0,
+    "mean_modality_coverage_at_dispatch": 0.4167,
+    "mean_initial_cost_units_per_case": 2.26,
+    "mean_initial_est_tokens_per_case": 2256.85,
+    "mean_acquisition_requests_per_case": 6.0,
+    "acquisition_success": 0.6,
+    "budget_refused_dispatches": 0,
+    "insufficient_resource_cases": 0,
+    "eligible_for_recovery_total": 0,
+    "cases_with_eligible_for_recovery": 0,
+    "selection_vectors": {
+     "message": 2,
+     "url": 2,
+     "(none)": 2
+    },
+    "by_label": {
+     "benign": {
+      "cases": 2,
+      "mean_triggers_per_object": 0.0,
+      "mean_specialists_dispatched_per_object": 0.6667
+     }
+    }
+   },
+   "fixed_all": {
+    "objects": 6,
+    "cases": 2,
+    "mean_specialists_dispatched_per_object": 0.667,
+    "mean_trigger_coverage": null,
+    "mean_trigger_coverage_all_fields": null,
+    "objects_with_triggers": 0,
+    "mean_modality_coverage_at_dispatch": 0.4167,
+    "mean_initial_cost_units_per_case": 2.26,
+    "mean_initial_est_tokens_per_case": 2256.85,
+    "mean_acquisition_requests_per_case": 6.0,
+    "acquisition_success": 0.6,
+    "budget_refused_dispatches": 0,
+    "insufficient_resource_cases": 0,
+    "eligible_for_recovery_total": 0,
+    "cases_with_eligible_for_recovery": 0,
+    "selection_vectors": {
+     "message": 2,
+     "url": 2,
+     "(none)": 2
+    },
+    "by_label": {
+     "benign": {
+      "cases": 2,
+      "mean_triggers_per_object": 0.0,
+      "mean_specialists_dispatched_per_object": 0.6667
+     }
+    }
+   },
+   "paired_diff_adaptive_minus_fixed_cost": {
+    "mean": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ],
+    "n": 2
+   },
+   "paired_diff_adaptive_minus_fixed_tokens": {
+    "mean": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ],
+    "n": 2
+   },
+   "paired_diff_adaptive_minus_fixed_dispatched": {
+    "mean": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ],
+    "n": 2
+   },
+   "initial_token_saving_fraction_adaptive": 0.0,
+   "paired_diff_adaptive_all_fields_minus_fixed_cost": {
+    "mean": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ],
+    "n": 2
+   },
+   "paired_diff_adaptive_all_fields_minus_fixed_tokens": {
+    "mean": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ],
+    "n": 2
+   },
+   "paired_diff_adaptive_all_fields_minus_fixed_dispatched": {
+    "mean": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ],
+    "n": 2
+   },
+   "initial_token_saving_fraction_adaptive_all_fields": 0.0
+  },
+  "multi_url_message/matched_agent_2": {
+   "adaptive": {
+    "objects": 6,
+    "cases": 2,
+    "mean_specialists_dispatched_per_object": 0.333,
+    "mean_trigger_coverage": null,
+    "mean_trigger_coverage_all_fields": null,
+    "objects_with_triggers": 0,
+    "mean_modality_coverage_at_dispatch": 0.3333,
+    "mean_initial_cost_units_per_case": 1.5395,
+    "mean_initial_est_tokens_per_case": 1537.35,
+    "mean_acquisition_requests_per_case": 27.0,
+    "acquisition_success": 0.3846,
+    "budget_refused_dispatches": 0,
+    "insufficient_resource_cases": 2,
+    "eligible_for_recovery_total": 4,
+    "cases_with_eligible_for_recovery": 2,
+    "selection_vectors": {
+     "(none)": 4,
+     "message": 2
+    },
+    "by_label": {
+     "benign": {
+      "cases": 2,
+      "mean_triggers_per_object": 0.0,
+      "mean_specialists_dispatched_per_object": 0.3333
+     }
+    }
+   },
+   "adaptive_all_fields": {
+    "objects": 6,
+    "cases": 2,
+    "mean_specialists_dispatched_per_object": 0.333,
+    "mean_trigger_coverage": null,
+    "mean_trigger_coverage_all_fields": null,
+    "objects_with_triggers": 0,
+    "mean_modality_coverage_at_dispatch": 0.3333,
+    "mean_initial_cost_units_per_case": 1.5395,
+    "mean_initial_est_tokens_per_case": 1537.35,
+    "mean_acquisition_requests_per_case": 27.0,
+    "acquisition_success": 0.3846,
+    "budget_refused_dispatches": 0,
+    "insufficient_resource_cases": 2,
+    "eligible_for_recovery_total": 4,
+    "cases_with_eligible_for_recovery": 2,
+    "selection_vectors": {
+     "(none)": 4,
+     "message": 2
+    },
+    "by_label": {
+     "benign": {
+      "cases": 2,
+      "mean_triggers_per_object": 0.0,
+      "mean_specialists_dispatched_per_object": 0.3333
+     }
+    }
+   },
+   "fixed_all": {
+    "objects": 6,
+    "cases": 2,
+    "mean_specialists_dispatched_per_object": 0.333,
+    "mean_trigger_coverage": null,
+    "mean_trigger_coverage_all_fields": null,
+    "objects_with_triggers": 0,
+    "mean_modality_coverage_at_dispatch": 0.3333,
+    "mean_initial_cost_units_per_case": 1.5395,
+    "mean_initial_est_tokens_per_case": 1537.35,
+    "mean_acquisition_requests_per_case": 27.0,
+    "acquisition_success": 0.3846,
+    "budget_refused_dispatches": 4,
+    "insufficient_resource_cases": 2,
+    "eligible_for_recovery_total": 4,
+    "cases_with_eligible_for_recovery": 2,
+    "selection_vectors": {
+     "(none)": 4,
+     "message": 2
+    },
+    "by_label": {
+     "benign": {
+      "cases": 2,
+      "mean_triggers_per_object": 0.0,
+      "mean_specialists_dispatched_per_object": 0.3333
+     }
+    }
+   },
+   "paired_diff_adaptive_minus_fixed_cost": {
+    "mean": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ],
+    "n": 2
+   },
+   "paired_diff_adaptive_minus_fixed_tokens": {
+    "mean": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ],
+    "n": 2
+   },
+   "paired_diff_adaptive_minus_fixed_dispatched": {
+    "mean": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ],
+    "n": 2
+   },
+   "initial_token_saving_fraction_adaptive": 0.0,
+   "paired_diff_adaptive_all_fields_minus_fixed_cost": {
+    "mean": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ],
+    "n": 2
+   },
+   "paired_diff_adaptive_all_fields_minus_fixed_tokens": {
+    "mean": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ],
+    "n": 2
+   },
+   "paired_diff_adaptive_all_fields_minus_fixed_dispatched": {
+    "mean": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ],
+    "n": 2
+   },
+   "initial_token_saving_fraction_adaptive_all_fields": 0.0
+  }
+ }
+}
