@@ -254,9 +254,13 @@ def main() -> None:
     ap.add_argument("--retry", action="store_true", help="render: redo failed renders")
     ap.add_argument("--timeout", type=int, default=60)
     ap.add_argument("--pause", type=float, default=3.0)
+    ap.add_argument("--manifest", default="manifest.jsonl",
+                    help="manifest file inside --data (e.g. manifest_v2_with_platform.jsonl)")
+    ap.add_argument("--shard", default="0/1", help="k/n: every n-th row from k (parallel runs)")
     args = ap.parse_args()
     data = Path(args.data)
-    rows = [r for r in read(str(data / "manifest.jsonl")) if args.split in ("all", r.split)]
+    k, n = (int(x) for x in args.shard.split("/"))
+    rows = [r for r in read(str(data / args.manifest)) if args.split in ("all", r.split)][k::n]
     {"render": render, "ct": ct, "rdap": rdap}[args.step](rows, data, args)
 
 
