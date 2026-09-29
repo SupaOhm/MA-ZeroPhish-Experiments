@@ -18,7 +18,7 @@ from dataclasses import replace
 
 import fields
 from contract.evidence import EvidenceEnvelope
-from contract.issues import Issue, IssueKind, IssueSets
+from contract.issues import Issue, IssueKind, IssueSets, RevisionRequest
 from contract.judge import DependencyGroup
 from contract.record import FindingRecord
 from contract.vocabulary import Direction, SourceAvailability, Status
@@ -336,6 +336,31 @@ def _targets(issues, attempted, k, collaboration, applicable, current):
     return targets, cites, focus_of
 
 
+def revision_request(agent, current, issue, cited_refs, collaboration) -> RevisionRequest:
+    """`Q_{i,g}^{(r)}` for one target. His Phase 3 Step 4.
+
+    `own_items` are the agent's current findings, unless its record is
+    `not_dispatched` (an initial dispatch has none) or `error` ("invalid findings
+    do not enter subsequent reasoning"). `cited` are **other** agents' `ran`
+    items -- the agent's own are already in `own_items`: in a targeted round those
+    whose locator the issue cites, in full debate all of them.
+    """
+    record = next(r for r in current if r.agent == agent)
+    initial = record.status is Status.NOT_DISPATCHED
+    own = () if initial or record.status is Status.ERROR else tuple(record.items)
+    refs = set(cited_refs)
+    cited = tuple(
+        h
+        for r in current
+        if r.status is Status.RAN and r.agent != agent
+        for h in r.items
+        if collaboration == "full_debate" or h.locator in refs
+    )
+    return RevisionRequest(
+        issue=issue, mode=collaboration, initial=initial, own_items=own, cited=cited
+    )
+
+
 def actionable(issues: IssueSets, attempted: frozenset[str]) -> tuple[Issue, ...]:
     """An issue is actionable only when a named specialist has a route not yet tried.
 
@@ -506,7 +531,10 @@ def collaborate(
             )
             if reservation is None:
                 break
-            items = reasoners[agent](envelope, focus_of.get(agent))
+            request = revision_request(
+                agent, current, focus_of.get(agent), cites.get(agent, ()), collaboration
+            )
+            items = reasoners[agent](envelope, request)
             ledger.charge(reservation, ATTEMPT_COST)
             attempted.add(agent)
             for n, record in enumerate(current):

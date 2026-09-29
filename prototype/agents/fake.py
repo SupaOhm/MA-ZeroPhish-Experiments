@@ -25,14 +25,18 @@ def make_reasoners(capture: Capture):
         authorized = fields.AGENT_FIELDS[agent]
 
         def reason(envelope: EvidenceEnvelope, focus=None) -> tuple[EvidenceItem, ...]:
-            # `focus` is the issue this specialist is being asked to address --
-            # his Phase 3 Step 4 re-invokes with a targeted request. On first
+            # `focus` is the RevisionRequest a collaboration round passes (his
+            # Phase 3 Step 4 re-invokes with a targeted request). On first
             # sight there is no focus and the agent reports its findings; when
             # re-invoked it reports what the capture scripts for a revision, or
             # the same findings if nothing is scripted. Without this the second
             # call sees the same envelope and returns the same items, so a round
             # costs budget and changes nothing.
-            source = scripted if focus is None else (revised or scripted)
+            # A full-debate round carries no issue and reads the scripted
+            # findings, as it did when it passed None; a targeted round,
+            # including an initial dispatch answering a selection issue, reads
+            # the scripted revision, as it did when it passed the Issue.
+            source = scripted if (focus is None or focus.issue is None) else (revised or scripted)
             obtained = {
                 f
                 for f, availability in envelope.availability.items()

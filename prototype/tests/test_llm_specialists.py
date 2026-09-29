@@ -9,9 +9,12 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 import fields
 from agents import prompt_files
-from agents.llm import GAPS_HEADER, ISSUE_HEADER, TRUNC_HEADER, make_reasoners
-from contract.issues import Issue, IssueKind
-from contract.vocabulary import Status
+from agents.llm import (
+    DISCUSSION_HEADER, GAPS_HEADER, ISSUE_HEADER, OWN_HEADER, TRUNC_HEADER, make_reasoners,
+)
+from contract.evidence import EvidenceItem, Provenance
+from contract.issues import Issue, IssueKind, RevisionRequest
+from contract.vocabulary import Direction, Status, Strength
 from llm_fixtures import FIXTURE_DIR, envelope_for, grounded_responder, load_fixture
 from models.client import ModelCallFailed
 from models.recorded import RecordedClient
@@ -134,22 +137,83 @@ class Validation(Setup):
 
 
 class Revision(Setup):
-    def test_focus_adds_the_issue_and_the_cited_span_text(self):
+    """A re-invocation carries a `RevisionRequest`: own findings, the evidence under
+    discussion with its provenance and quoted text, never a peer's judgment."""
+
+    def peer_item(self):
         html = normalize_ws(self.envelope.normalized["html"])
         span = locate('<input type="password" name="pw">', html)
-        issue = Issue(
-            kind=IssueKind.CONFLICT, object_id="o1",
-            affected_fields=frozenset({"html"}),
-            relevant_agents=frozenset({"url"}),
-            evidence_refs=(span_locator("html", span, 0),),
+        binding = next(b for b in self.envelope.provenance if b.source == "html")
+        return EvidenceItem(
+            observation="PEER-OBSERVATION a password input posts cross-origin",
+            declared_field="html", locator=span_locator("html", span, 0),
+            direction=Direction.BENIGN, strength=Strength.DISTINCTIVE,
+            provenance=Provenance("html", binding.instrument, binding.capture_id),
         )
-        client, _ = self.run_agent("url", reply(), focus=issue)
+
+    def own_item(self):
+        url = normalize_ws(self.envelope.normalized["url"])
+        span = locate("login-verify", url)
+        return EvidenceItem(
+            observation="OWN-OBSERVATION the host contains login-verify",
+            declared_field="url", locator=span_locator("url", span, 0),
+            direction=Direction.PHISHING, strength=Strength.CONSISTENT,
+            provenance=Provenance("url", "submission", self.envelope.case_id),
+        )
+
+    def conflict(self):
+        return Issue(
+            kind=IssueKind.CONFLICT, object_id="o1",
+            affected_fields=frozenset({"html", "url"}),
+            relevant_agents=frozenset({"url", "web_structure"}),
+            evidence_refs=(self.peer_item().locator, self.own_item().locator),
+        )
+
+    def test_targeted_revision_shows_own_findings_and_the_opposing_observation(self):
+        focus = RevisionRequest(issue=self.conflict(), mode="targeted", initial=False,
+                                own_items=(self.own_item(),), cited=(self.peer_item(),))
+        client, _ = self.run_agent("url", reply(), focus=focus)
         request = client.requests[0]
         self.assertEqual(request["tag"]["phase"], "revision:conf")
         self.assertIn(prompt_files.load("revision"), request["system"])
-        block = request["user"].split(ISSUE_HEADER, 1)[1]
-        self.assertIn("kind: conf", block)
+        user = request["user"]
+        issue = user.split(ISSUE_HEADER, 1)[1]
+        self.assertIn("kind: conf", issue)
+        self.assertIn("html, url", issue)
+        own = user.split(OWN_HEADER, 1)[1].split(DISCUSSION_HEADER, 1)[0]
+        self.assertIn("OWN-OBSERVATION", own)
+        self.assertIn("login-verify", own)
+        self.assertIn("phishing", own)
+        self.assertIn("consistent", own)
+        block = user.split(DISCUSSION_HEADER, 1)[1]
+        self.assertIn("PEER-OBSERVATION", block)
         self.assertIn('<input type="password" name="pw">', block)
+        self.assertIn(self.peer_item().locator, block)
+        self.assertIn(self.peer_item().provenance.instrument, block)
+        for word in ("benign", "distinctive", "direction", "strength", "verdict", "band",
+                     self.envelope.case_id):
+            self.assertNotIn(word, block)
+
+    def test_full_debate_revision_is_tagged_and_carries_no_issue(self):
+        focus = RevisionRequest(issue=None, mode="full_debate", initial=False,
+                                own_items=(self.own_item(),), cited=(self.peer_item(),))
+        client, _ = self.run_agent("url", reply(), focus=focus)
+        request = client.requests[0]
+        self.assertEqual(request["tag"]["phase"], "revision:full_debate")
+        self.assertIn(prompt_files.load("revision"), request["system"])
+        self.assertIn("PEER-OBSERVATION", request["user"].split(DISCUSSION_HEADER, 1)[1])
+        self.assertNotIn("kind: ", request["user"])
+
+    def test_initial_dispatch_in_a_round_gets_the_initial_prompt(self):
+        focus = RevisionRequest(issue=self.conflict(), mode="targeted", initial=True,
+                                own_items=(), cited=(self.peer_item(),))
+        client, _ = self.run_agent("url", reply(), focus=focus)
+        plain, _ = self.run_agent("url", reply())
+        request = client.requests[0]
+        self.assertEqual(request["tag"]["phase"], "initial:collaboration")
+        self.assertNotIn(prompt_files.load("revision"), request["system"])
+        self.assertEqual(request["system"], plain.requests[0]["system"])
+        self.assertEqual(request["user"], plain.requests[0]["user"])
 
 
 if __name__ == "__main__":

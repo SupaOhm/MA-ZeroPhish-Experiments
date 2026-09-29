@@ -10,10 +10,12 @@ import unittest
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 import config
+import fields
 import ledger as ledger_mod
 import run
+from agents import prompt_files
 from agents.judge import make_judge
-from agents.llm import make_reasoners
+from agents.llm import DISCUSSION_HEADER, make_reasoners
 from capture.store import load_captures
 from llm_fixtures import FIXTURE_DIR, grounded_responder, load_fixture
 from models.client import Fatal
@@ -103,6 +105,40 @@ class NoLabels(unittest.TestCase):
                 for request in client.requests:
                     self.assertNotIn(sentinel, request["system"] + request["user"],
                                      (cfg.name, request["tag"]))
+
+
+class Collaboration(unittest.TestCase):
+    def test_full_debate_re_invocation_is_a_revision_request_not_a_resend(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            client, _, _ = run_with(config.BASELINE_FULL_DEBATE, (load_fixture("syn-web-001"),),
+                                    grounded_responder(), os.path.join(tmp, "a.jsonl"))
+        revisions = [r for r in client.requests if r["tag"]["phase"] == "revision:full_debate"]
+        self.assertTrue(revisions)
+        for request in revisions:
+            role = request["tag"]["role"]
+            first = next(r for r in client.requests
+                         if r["tag"]["role"] == role and r["tag"]["phase"] == "initial")
+            self.assertNotEqual(request["user"], first["user"])
+            self.assertIn(prompt_files.load("revision"), request["system"])
+            block = request["user"].split(DISCUSSION_HEADER, 1)[1]
+            peer_fields = set(fields.FIELDS) - fields.AGENT_FIELDS[role]
+            self.assertTrue(any(f"fixture observation on {f}" in block for f in peer_fields),
+                            role)
+            # grounded_responder's peers all said phishing / consistent.
+            for word in ("phishing", "consistent", "direction", "strength"):
+                self.assertNotIn(word, block, role)
+
+    def test_a_never_dispatched_specialist_gets_the_initial_prompt(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            client, _, _ = run_with(config.MAZEROPHISH, (load_fixture("syn-web-001"),),
+                                    grounded_responder(), os.path.join(tmp, "a.jsonl"))
+        late = [r for r in client.requests if r["tag"]["phase"] == "initial:collaboration"]
+        self.assertTrue(late)
+        revision = prompt_files.load("revision")
+        for request in late:
+            self.assertNotIn(revision, request["system"])
+            self.assertNotIn(DISCUSSION_HEADER, request["user"])
+        self.assertFalse([r for r in client.requests if r["tag"]["phase"] == "revision:select"])
 
 
 class Failures(unittest.TestCase):

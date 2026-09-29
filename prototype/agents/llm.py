@@ -12,9 +12,15 @@ that cannot resolve, and the common validator rejects the whole record, as his
 eq:record-validity requires. A reply of the wrong shape is a failed call
 (`ModelCallFailed`), re-run rather than scored.
 
-A re-invocation (`focus` is an Issue) adds the revision instructions and the
-issue's kind, affected fields and cited evidence -- the quoted artifact text for
-span locators. Never a peer's direction, verdict or band.
+A collaboration re-invocation passes a `RevisionRequest` (contract/issues.py).
+A newly selected specialist (`initial`) gets the initial prompt, tagged
+`initial:collaboration`. Otherwise the revision instructions are added and the
+user turn gains the issue (kind and affected fields; none in full debate), the
+agent's own current findings, and the evidence under discussion: each cited
+item's locator, field, observation, provenance (artifact and instrument, never
+the capture id, which is the case id) and quoted text. Never a peer's direction,
+strength, verdict or band. Tagged `revision:<issue kind>` or
+`revision:full_debate`.
 """
 
 import os
@@ -38,6 +44,8 @@ IMAGE_HEADER = "## Attached images"
 GAPS_HEADER = "## Fields you cannot see"
 TRUNC_HEADER = "## Truncated fields"
 ISSUE_HEADER = "## Issue to address"
+OWN_HEADER = "## Your current findings"
+DISCUSSION_HEADER = "## Evidence under discussion"
 
 
 def finding_schema(agent: str) -> dict:
@@ -97,22 +105,54 @@ def _load_png(relative: str, data_dir: str) -> bytes | None:
         return handle.read()
 
 
-def focus_block(issue, envelope) -> str:
-    lines = [
-        ISSUE_HEADER,
-        f"kind: {issue.kind.value}",
-        f"affected fields: {', '.join(sorted(issue.affected_fields)) or 'none'}",
-        "cited evidence:",
-    ]
-    for ref in issue.evidence_refs:
-        text = span_text(ref, envelope)
-        lines.append(f"- {ref}: {text}" if text is not None else f"- {ref}")
-    if not issue.evidence_refs:
+def _quote(locator: str, envelope) -> str | None:
+    if locator.partition("@")[2].split("#", 1)[0] == "image":
+        return "(attached image)"
+    text = span_text(locator, envelope)
+    # Unescaped, so it reads exactly as the field does.
+    return None if text is None else f'"{text}"'
+
+
+def revision_block(focus, envelope) -> str:
+    """The request part of a re-invocation. His Phase 3 Step 4: the opposing
+    observation, its provenance and the disagreement -- never a peer's
+    direction, strength, verdict or band, and never a capture id (a case id)."""
+    lines = []
+    if focus.issue is not None:
+        lines += [
+            ISSUE_HEADER,
+            f"kind: {focus.issue.kind.value}",
+            f"affected fields: {', '.join(sorted(focus.issue.affected_fields)) or 'none'}",
+            "",
+        ]
+    else:
+        lines += [ISSUE_HEADER, "full debate: re-examine all of your findings", ""]
+    lines.append(OWN_HEADER)
+    for h in focus.own_items:
+        quote = _quote(h.locator, envelope)
+        lines.append(
+            f"- field: {h.declared_field}; quote: {quote if quote is not None else '(not shown)'}; "
+            f"observation: {h.observation}; direction: {h.direction.value}; "
+            f"strength: {h.strength.name.lower()}"
+        )
+    if not focus.own_items:
+        lines.append("- none")
+    lines += ["", DISCUSSION_HEADER]
+    for h in focus.cited:
+        entry = (
+            f"- {h.locator}: field {h.declared_field}; observation: {h.observation}; "
+            f"provenance: artifact {h.provenance.artifact}, instrument {h.provenance.instrument}"
+        )
+        quote = _quote(h.locator, envelope)
+        if quote is not None:
+            entry += f"; quoted text: {quote}"
+        lines.append(entry)
+    if not focus.cited:
         lines.append("- none")
     return "\n".join(lines)
 
 
-def build_user_prompt(agent, envelope, shown, full_lengths, image_fields, focus=None) -> str:
+def build_user_prompt(agent, envelope, shown, full_lengths, image_fields) -> str:
     lines = [CITE_HEADER]
     for field in sorted(shown):
         lines += [f'### field "{field}"', shown[field], ""]
@@ -140,8 +180,6 @@ def build_user_prompt(agent, envelope, shown, full_lengths, image_fields, focus=
             f"- {f}: first {len(shown[f])} of {full_lengths[f]} characters shown"
             for f in truncated
         ]
-    if focus is not None:
-        lines += ["", focus_block(focus, envelope)]
     return "\n".join(lines)
 
 
@@ -179,6 +217,7 @@ def _items(findings, shown, image_fields, envelope) -> tuple[EvidenceItem, ...]:
 
 def make_reasoners(client, *, field_char_limit: int = 12000, data_dir: str | None = None):
     common = prompt_files.load("specialist_common")
+    revision = prompt_files.load("revision")
 
     def reasoner_for(agent: str):
         system = common + "\n\n" + prompt_files.load(agent)
@@ -195,11 +234,18 @@ def make_reasoners(client, *, field_char_limit: int = 12000, data_dir: str | Non
                     continue
                 shown[field] = shown_text(content, field_char_limit)
                 full_lengths[field] = len(normalize_ws(content))
-            user = build_user_prompt(agent, envelope, shown, full_lengths, image_fields, focus)
+            user = build_user_prompt(agent, envelope, shown, full_lengths, image_fields)
             system_text, phase = system, "initial"
-            if focus is not None:
-                system_text = system + "\n\n" + prompt_files.load("revision")
-                phase = f"revision:{focus.kind.value}"
+            if focus is not None and focus.initial:
+                # A newly selected specialist submits an initial record.
+                phase = "initial:collaboration"
+            elif focus is not None:
+                system_text = system + "\n\n" + revision
+                user = user + "\n\n" + revision_block(focus, envelope)
+                phase = (
+                    f"revision:{focus.issue.kind.value}" if focus.issue is not None
+                    else "revision:full_debate"
+                )
             response = client.generate(
                 system_text,
                 user,
