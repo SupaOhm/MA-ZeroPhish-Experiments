@@ -114,7 +114,8 @@ class RunWiringTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as d:
             path = os.path.join(d, "l.jsonl")
             run_arm(MAZEROPHISH, [cap], path, adjudicator=judge)
-            events = [json.loads(l) for l in open(path, encoding="utf-8")]
+            with open(path, encoding="utf-8") as fh:
+                events = [json.loads(l) for l in fh]
         dec = [e for e in events if e["kind"] == "decision"]
         self.assertEqual(len(dec), 1)
         self.assertEqual(dec[0]["cause"], "finalization_error")

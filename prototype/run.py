@@ -44,9 +44,14 @@ def _counting(reasoners: dict, calls: list) -> dict:
     return {agent: wrap(agent, fn) for agent, fn in reasoners.items()}
 
 
-def run_case(cfg: Config, capture, ledger: Ledger, adjudicator=None) -> None:
+def run_case(cfg: Config, capture, ledger: Ledger, adjudicator=None, estimator=None,
+             state_sink=None) -> None:
     """`adjudicator` defaults to the deterministic stand-in (`phases.judge.adjudicate`);
-    pass `phases.judge_llm.LLMJudge(model)` for a real Judge (stage 6)."""
+    pass `phases.judge_llm.LLMJudge(model)` for a real Judge (stage 6).
+    `estimator`: a trained `phases.estimator.LogisticEstimator` for the gate (default:
+    the placeholder). `state_sink`: a list; when given, every intermediate Phase 3 state
+    is judged by the (frozen) adjudicator and appended with its features -- training
+    data for the estimator, collected on the calib split only."""
     adjudicator = adjudicator or adjudicate
     started = time.monotonic()
     submission = Submission(
@@ -103,11 +108,24 @@ def run_case(cfg: Config, capture, ledger: Ledger, adjudicator=None) -> None:
                 failed_conjuncts=list(failed_conjuncts(validity)),
                 items=len(record.items),
             )
+        hook = None
+        if state_sink is not None:
+            from phases.estimator import features as _features
+
+            def hook(round_index, recs, iss, solicited, p_hat, _ref=ref, _env=envelope):
+                ctx = project_for_judge(recs, iss, _env, cfg.judge_input, cfg.reconciliation)
+                dec, fb = adjudicator(ctx, _ref.object_id)
+                state_sink.append({
+                    "case_id": capture.case_id, "object_id": _ref.object_id,
+                    "parent_object_id": _ref.parent_object_id, "round": round_index,
+                    "features": _features(recs, iss, _env, solicited), "p_hat": p_hat,
+                    "judge_verdict": dec.verdict.value, "judge_cause": fb.notes,
+                })
         records, accepted = collaborate(
             records, envelope, reasoners, budget,
             tau=cfg.tau, r_max_coll=cfg.r_max_coll, k=cfg.k,
             gate=cfg.gate, collaboration=cfg.collaboration,
-            return_revisions=True,
+            return_revisions=True, estimator=estimator, state_hook=hook,
         )
         issues = moderate(records, envelope)
         context = project_for_judge(
@@ -174,7 +192,8 @@ def run_case(cfg: Config, capture, ledger: Ledger, adjudicator=None) -> None:
         )
 
 
-def run_arm(cfg: Config, captures, ledger_path: str, adjudicator=None) -> None:
+def run_arm(cfg: Config, captures, ledger_path: str, adjudicator=None, estimator=None,
+            state_sink=None) -> None:
     with Ledger(ledger_path, arm=cfg.name) as ledger:
         for capture in captures:
-            run_case(cfg, capture, ledger, adjudicator)
+            run_case(cfg, capture, ledger, adjudicator, estimator, state_sink)

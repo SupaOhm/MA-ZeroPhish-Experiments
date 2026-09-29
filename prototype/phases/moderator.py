@@ -452,7 +452,7 @@ def revision_accepted(candidate: FindingRecord, cited_refs, envelope) -> bool:
 def collaborate(
     records, envelope, reasoners, ledger, tau: float, r_max_coll: int, k: int,
     gate: str = "calibrated", collaboration: str = "targeted",
-    return_revisions: bool = False,
+    return_revisions: bool = False, estimator=None, state_hook=None,
 ) -> tuple[FindingRecord, ...]:
     """Steps 4-5 -- targeted re-invocation under the gate, then termination.
 
@@ -471,7 +471,15 @@ def collaborate(
 
     for round_index in range(r_max_coll):
         issues = moderate(tuple(current), envelope)
-        p_hat = stopping_error(tuple(current), issues, envelope)
+        # `estimator` (a trained phases.estimator.LogisticEstimator) replaces the
+        # placeholder; `state_hook` records intermediate states for training it.
+        if estimator is not None:
+            p_hat = estimator(tuple(current), issues, envelope,
+                              solicited=len(accepted_revisions))
+        else:
+            p_hat = stopping_error(tuple(current), issues, envelope)
+        if state_hook is not None:
+            state_hook(round_index, tuple(current), issues, len(accepted_revisions), p_hat)
 
         if not gate_admits(
             gate, p_hat, issues, round_index, tau, r_max_coll, ledger,
