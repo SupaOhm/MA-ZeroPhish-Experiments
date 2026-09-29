@@ -1,12 +1,15 @@
 """The corpus runner over a tiny synthetic package. Offline: a RecordedClient is injected."""
 
+import dataclasses
 import hashlib
+import io
 import json
 import shutil
 import sys
 import tempfile
 import unittest
 from pathlib import Path
+from unittest import mock
 
 ROOT = Path(__file__).resolve().parents[2]
 
@@ -151,6 +154,27 @@ class Runner(unittest.TestCase):
         self.assertIn("different configuration", str(caught.exception))
         self.assertIn("model", str(caught.exception))
         self.assertEqual(ledger.read_bytes(), before)
+
+    def test_resume_with_a_different_arm_configuration_is_refused(self):
+        run_corpus.run(args(self.dataset, self.output), client=RecordedClient(grounded_responder()))
+        changed = dict(run_corpus.ARMS)
+        changed["mazerophish"] = dataclasses.replace(changed["mazerophish"], tau=0.9)
+        with mock.patch.object(run_corpus, "ARMS", changed):
+            with self.assertRaises(SystemExit) as caught:
+                run_corpus.run(args(self.dataset, self.output, "--resume"),
+                               client=RecordedClient(grounded_responder()))
+        self.assertIn("config", str(caught.exception))
+
+    def test_resume_after_a_repo_change_warns_and_records_it(self):
+        run_corpus.run(args(self.dataset, self.output), client=RecordedClient(grounded_responder()))
+        moved = {"repo_commit": "0" * 40, "repo_dirty": True}
+        with mock.patch.object(run_corpus, "repo_state", return_value=moved), \
+                mock.patch("sys.stderr", new_callable=io.StringIO) as err:
+            invocation = run_corpus.run(args(self.dataset, self.output, "--resume"),
+                                        client=RecordedClient(grounded_responder()))
+        self.assertTrue(invocation["repo_changed_since_first_header"])
+        self.assertTrue(invocation["repo_dirty"])
+        self.assertIn("WARNING", err.getvalue())
 
     def test_provenance_comes_from_the_client(self):
         run_corpus.run(args(self.dataset, self.output), client=RecordedClient(grounded_responder()))

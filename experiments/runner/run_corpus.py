@@ -125,7 +125,13 @@ def _now() -> str:
     return datetime.now(timezone.utc).isoformat()
 
 
-def check_resume_identity(output: Path, names, header: dict) -> None:
+def check_resume_identity(output: Path, names, header: dict, configs: dict) -> dict:
+    """Refuse a resume whose identity or arm configuration differs; flag repo drift.
+
+    A changed or dirty repository is recorded and warned about, not refused: a
+    documentation commit between invocations should not strand a run.
+    """
+    drift = {"repo_changed_since_first_header": False, "repo_dirty": bool(header.get("repo_dirty"))}
     for name in names:
         path = output / f"{name}.jsonl"
         if not path.exists():
@@ -138,6 +144,17 @@ def check_resume_identity(output: Path, names, header: dict) -> None:
                 raise SystemExit(
                     f"REFUSED: --resume with a different configuration for {name}: "
                     f"{key}: {first.get(key)} != {header[key]}")
+        if first.get("config") != configs[name]:
+            raise SystemExit(
+                f"REFUSED: --resume with a different configuration for {name}: "
+                f"config: {first.get('config')} != {configs[name]}")
+        if first.get("repo_commit") != header.get("repo_commit"):
+            drift["repo_changed_since_first_header"] = True
+    if drift["repo_changed_since_first_header"] or drift["repo_dirty"]:
+        print(f"WARNING: resuming with repository changes: repo_commit {header.get('repo_commit')}"
+              f" (changed since first header: {drift['repo_changed_since_first_header']}),"
+              f" dirty: {drift['repo_dirty']}", file=sys.stderr)
+    return drift
 
 
 def _load_record(record_path: Path) -> dict:
@@ -203,15 +220,17 @@ def run(args, client=None) -> dict:
         "started": _now(),
         **repo_state(),
     }
+    configs = {name: _config_dict(replace(ARMS[name], model_id=client.model)) for name in names}
+    drift = {}
     if args.resume:
-        check_resume_identity(output, names, header)
+        drift = check_resume_identity(output, names, header, configs)
 
     output.mkdir(parents=True, exist_ok=True)
     call_log = CallLog(str(output / "calls.jsonl"))
     client.call_log = call_log
     reasoners = make_reasoners(client, field_char_limit=args.field_char_limit,
                                data_dir=str(dataset_dir))
-    invocation = {**header, "arms": {}, "stopped": None, "aborted": None}
+    invocation = {**header, **drift, "arms": {}, "stopped": None, "aborted": None}
     progress = {"name": None, "path": None, "done": 0, "attempted": 0, "failed": 0}
     try:
         for name in names:
@@ -223,7 +242,7 @@ def run(args, client=None) -> dict:
             attempted = failed = 0
             progress.update(name=cfg.name, path=path, done=len(done), attempted=0, failed=0)
             with Ledger(str(path), arm=cfg.name, mode="a") as ledger:
-                ledger.event("header", "", config=_config_dict(cfg), **header)
+                ledger.event("header", "", config=configs[name], **header)
                 for capture in captures:
                     if capture.case_id in done:
                         continue

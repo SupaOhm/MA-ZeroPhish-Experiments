@@ -70,6 +70,15 @@ def load_decisions(paths: list[str]) -> dict[tuple[str, int], dict[str, dict]]:
                 if e["case_id"] in out[key]:
                     raise ValueError(f"{p}: duplicate decision for {key} {e['case_id']}")
                 out[key][e["case_id"]] = e
+    # One (arm, repeat) is one run: decisions from two models or two data
+    # versions (e.g. a resumed run against a rebuilt package) are never mixed.
+    for key, dec in out.items():
+        models = {e.get("model_id") for e in dec.values()}
+        if len(models) > 1:
+            raise ValueError(f"{key}: decisions from more than one model_id {sorted(map(str, models))}")
+        versions = {e["data_version"] for e in dec.values() if e.get("data_version") is not None}
+        if len(versions) > 1:
+            raise ValueError(f"{key}: decisions from more than one data_version {sorted(versions)}")
     return out
 
 
