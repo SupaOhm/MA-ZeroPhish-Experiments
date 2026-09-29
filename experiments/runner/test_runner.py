@@ -136,6 +136,40 @@ class Runner(unittest.TestCase):
             "--provider", "gemini", "--model", "m", "--output", str(self.output)])
         with self.assertRaises(SystemExit):
             run_corpus.run(bad, client=RecordedClient(grounded_responder()))
+        self.assertFalse(self.output.exists())
+
+    def test_resume_with_a_different_configuration_is_refused(self):
+        run_corpus.run(args(self.dataset, self.output), client=RecordedClient(grounded_responder()))
+        ledger = self.output / "mazerophish.jsonl"
+        before = ledger.read_bytes()
+        other = run_corpus.parse_args([
+            "--data", str(self.dataset), "--split", "dev", "--arms", ARMS,
+            "--provider", "gemini", "--model", "other-model",
+            "--output", str(self.output), "--resume"])
+        with self.assertRaises(SystemExit) as caught:
+            run_corpus.run(other, client=RecordedClient(grounded_responder()))
+        self.assertIn("model", str(caught.exception))
+        self.assertEqual(ledger.read_bytes(), before)
+
+    def test_crash_is_recorded_as_aborted_with_incomplete_arm(self):
+        boom = lambda tag: RuntimeError("boom") if tag["case_id"] == "syn-web-001" else None
+        with self.assertRaises(RuntimeError):
+            run_corpus.run(args(self.dataset, self.output),
+                           client=RecordedClient(grounded_responder(fail=boom)))
+        record = json.loads((self.output / "run.json").read_text(encoding="utf-8"))
+        last = record["invocations"][-1]
+        self.assertIn("RuntimeError: boom", last["aborted"])
+        self.assertTrue(last["arms"]["mazerophish"]["incomplete"])
+
+    def test_corrupt_run_record_is_moved_and_resume_succeeds(self):
+        run_corpus.run(args(self.dataset, self.output), client=RecordedClient(grounded_responder()))
+        (self.output / "run.json").write_text("{garbage", encoding="utf-8")
+        run_corpus.run(args(self.dataset, self.output, "--resume"),
+                       client=RecordedClient(grounded_responder()))
+        record = json.loads((self.output / "run.json").read_text(encoding="utf-8"))
+        self.assertEqual(len(record["invocations"]), 1)
+        self.assertEqual(len(list(self.output.glob("run.json.corrupt-*"))), 1)
+        self.assertIn("run.json.corrupt-", record["previous_record_moved"])
 
 
 class Corpus(unittest.TestCase):

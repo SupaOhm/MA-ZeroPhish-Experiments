@@ -15,6 +15,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import subprocess
 import sys
 from collections import Counter
@@ -39,6 +40,8 @@ from experiments.runner.corpus import load_split, package_root, verify_package  
 
 ARMS = {cfg.name: cfg for cfg in prototype_config.ARMS}
 EXECUTED = frozenset({"ran", "no_data", "error"})
+IDENTITY_KEYS = ("provider", "model", "split", "data_version", "field_char_limit",
+                 "structured", "system_role", "prompt_sha256")
 
 
 def parse_args(argv=None):
@@ -122,6 +125,37 @@ def _now() -> str:
     return datetime.now(timezone.utc).isoformat()
 
 
+def check_resume_identity(output: Path, names, header: dict) -> None:
+    for name in names:
+        path = output / f"{name}.jsonl"
+        if not path.exists():
+            continue
+        first = next((e for e in read(str(path)) if e["kind"] == "header"), None)
+        if first is None:
+            continue
+        for key in IDENTITY_KEYS:
+            if first.get(key) != header[key]:
+                raise SystemExit(
+                    f"REFUSED: --resume with a different configuration for {name}: "
+                    f"{key}: {first.get(key)} != {header[key]}")
+
+
+def _load_record(record_path: Path) -> dict:
+    """Read run.json tolerantly; a corrupt one is moved aside, never overwritten."""
+    if not record_path.exists():
+        return {"invocations": []}
+    try:
+        record = json.loads(record_path.read_text(encoding="utf-8"))
+        if isinstance(record, dict) and isinstance(record.get("invocations"), list):
+            return record
+    except (json.JSONDecodeError, UnicodeDecodeError):
+        pass
+    stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%S%fZ")
+    moved = f"run.json.corrupt-{stamp}"
+    os.replace(record_path, record_path.with_name(moved))
+    return {"invocations": [], "previous_record_moved": moved}
+
+
 def run(args, client=None) -> dict:
     output = Path(args.output)
     if output.exists() and not args.resume:
@@ -154,11 +188,6 @@ def run(args, client=None) -> dict:
         except ValueError as exc:
             raise SystemExit(f"REFUSED: {exc}") from exc
 
-    output.mkdir(parents=True, exist_ok=True)
-    call_log = CallLog(str(output / "calls.jsonl"))
-    client.call_log = call_log
-    reasoners = make_reasoners(client, field_char_limit=args.field_char_limit,
-                               data_dir=str(dataset_dir))
     header = {
         "provider": args.provider, "model": args.model, "split": args.split,
         "data": str(dataset_dir), "data_version": data_version, "repeat": args.repeat,
@@ -170,7 +199,16 @@ def run(args, client=None) -> dict:
         "started": _now(),
         **repo_state(),
     }
-    invocation = {**header, "arms": {}, "stopped": None}
+    if args.resume:
+        check_resume_identity(output, names, header)
+
+    output.mkdir(parents=True, exist_ok=True)
+    call_log = CallLog(str(output / "calls.jsonl"))
+    client.call_log = call_log
+    reasoners = make_reasoners(client, field_char_limit=args.field_char_limit,
+                               data_dir=str(dataset_dir))
+    invocation = {**header, "arms": {}, "stopped": None, "aborted": None}
+    progress = {"name": None, "path": None, "done": 0, "attempted": 0, "failed": 0}
     try:
         for name in names:
             cfg = replace(ARMS[name], model_id=args.model)
@@ -179,6 +217,7 @@ def run(args, client=None) -> dict:
             done = decided_cases(path, args.repeat)
             call_log.context = {"arm": cfg.name, "repeat": args.repeat}
             attempted = failed = 0
+            progress.update(name=cfg.name, path=path, done=len(done), attempted=0, failed=0)
             with Ledger(str(path), arm=cfg.name, mode="a") as ledger:
                 ledger.event("header", "", config=_config_dict(cfg), **header)
                 for capture in captures:
@@ -191,6 +230,7 @@ def run(args, client=None) -> dict:
                         usage=client.usage, repeat=args.repeat, data_version=data_version,
                     )
                     failed += not ok
+                    progress.update(attempted=attempted, failed=failed)
                     if (attempted >= args.min_cases_for_stop
                             and failed / attempted > args.max_failure_rate):
                         invocation["stopped"] = {
@@ -203,17 +243,32 @@ def run(args, client=None) -> dict:
                 "attempted": attempted, "failed": failed,
                 **ledger_stats(path, args.repeat),
             }
+            progress["name"] = None
             if invocation["stopped"]:
                 break
+    except BaseException as exc:
+        invocation["aborted"] = f"{type(exc).__name__}: {exc}"
+        if progress["name"] is not None:
+            partial = {"selected_cases": len(captures), "already_decided": progress["done"],
+                       "attempted": progress["attempted"], "failed": progress["failed"],
+                       "incomplete": True}
+            if progress["path"].exists():
+                try:
+                    partial.update(ledger_stats(progress["path"], args.repeat))
+                except Exception:
+                    pass
+            invocation["arms"][progress["name"]] = partial
+        raise
     finally:
         call_log.close()
         invocation["finished"] = _now()
         invocation["usage"] = asdict(client.usage)
         record_path = output / "run.json"
-        record = (json.loads(record_path.read_text(encoding="utf-8"))
-                  if record_path.exists() else {"invocations": []})
+        record = _load_record(record_path)
         record["invocations"].append(invocation)
-        record_path.write_text(json.dumps(record, indent=1, sort_keys=True) + "\n", encoding="utf-8")
+        tmp_path = output / "run.json.tmp"
+        tmp_path.write_text(json.dumps(record, indent=1, sort_keys=True) + "\n", encoding="utf-8")
+        os.replace(tmp_path, record_path)
     return invocation
 
 
