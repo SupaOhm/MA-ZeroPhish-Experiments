@@ -161,7 +161,10 @@ def ct(rows, data: Path, args) -> None:
         d = data / "evidence" / r.case_id
         out = d / "ct.json"
         old = _load_json(out)
-        if old and old.get("rule") == "covering_v2" and not args.force:
+        # Done unless crt.sh was unreachable: a transport failure is not evidence and is
+        # retried on the next pass (never kept as the case's CT outcome).
+        if (old and old.get("rule") == "covering_v2" and not args.force
+                and old.get("failure_reason") != "crtsh_unreachable"):
             continue
         if old and not (d / "ct_v1.json").exists():
             _save(d, "ct_v1.json", old)
