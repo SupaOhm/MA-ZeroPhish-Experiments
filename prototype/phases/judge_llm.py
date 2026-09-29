@@ -125,14 +125,18 @@ def validate(d: dict | None, context: JudgeContext) -> list[str]:
     verdict = decide(d["suf_phishing"], d["def_phishing"], d["suf_benign"], d["def_benign"])
     if verdict is not Verdict.INSUFFICIENT and not d.get("cited"):
         errs.append("a substantive verdict must cite supporting observations")
-    discounted = set()
-    for g in context.dependencies:
-        if g.edge_type in DISCOUNTABLE_EDGES:
-            discounted.update(g.observation_refs[1:])
+    groups = [g.observation_refs for g in context.dependencies if g.edge_type in DISCOUNTABLE_EDGES]
     for cls in ("phishing", "benign"):
         if d.get(f"suf_{cls}"):
-            fields = {eligible[c] for c in d.get(f"{cls}_support", []) or []
-                      if c in eligible and c not in discounted}
+            support = [c for c in d.get(f"{cls}_support", []) or [] if c in eligible]
+            # Discount WITHIN this conclusion's support: each dependency group keeps its
+            # first member present here. A global head would let a group whose head
+            # supports the other conclusion erase this side's field entirely.
+            discounted = set()
+            for refs in groups:
+                present = [r for r in refs if r in support]
+                discounted.update(present[1:])
+            fields = {eligible[c] for c in support if c not in discounted}
             if len(fields) < MIN_SUPPORTING_FIELDS:
                 errs.append(f"suf_{cls} needs >= {MIN_SUPPORTING_FIELDS} distinct non-discounted "
                             f"fields in {cls}_support (got {sorted(fields)})")

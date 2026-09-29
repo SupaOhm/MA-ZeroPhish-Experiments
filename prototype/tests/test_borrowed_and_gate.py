@@ -87,5 +87,31 @@ class ReconciliationReachesGateTests(unittest.TestCase):
             self.assertEqual(set(spy.modes), {expected})
 
 
+class RewordingIsNotBorrowingTests(unittest.TestCase):
+    def test_same_line_reworded_is_not_lineage(self):
+        """A real model re-emits its own finding on the same line in new words when
+        re-invoked; only a (field, line) it did not hold before is borrowed."""
+        _, envelope, records = phase1and2("c6")
+        cap = next(c for c in load_captures(CAPTURE_DIR) if c.case_id.startswith("c6"))
+        base = make_reasoners(cap)
+
+        def reworded(agent):
+            def reason(env, focus=None):
+                items = base[agent](env, None)
+                if focus is None:
+                    return items
+                return tuple(replace(h, observation=h.observation + " (restated)") for h in items)
+            return reason
+
+        lineage = {}
+        after, accepted = collaborate(records, envelope, {a: reworded(a) for a in base},
+                                      BudgetLedger(CaseBudget(100, 100, 100)), tau=0.0,
+                                      r_max_coll=2, k=2, return_revisions=True,
+                                      lineage_sink=lineage)
+        self.assertTrue(accepted, "a reworded revision must actually be accepted")
+        self.assertTrue(any("(restated)" in h.observation for r in after for h in r.items))
+        self.assertEqual(lineage, {})
+
+
 if __name__ == "__main__":
     unittest.main()

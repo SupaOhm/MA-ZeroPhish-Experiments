@@ -12,8 +12,8 @@ ONLY when the evidence itself shows one attacker choice behind both:
      already the shared-artifact edge);
   3. both observations name the same specific entity token (length >= 3, not in the
      GENERIC list of phishing/web vocabulary); and
-  4. that token occurs in the actual content of BOTH artifacts (checked against the
-     evidence envelope, not only against the observations' wording).
+  4. that token occurs as a whole token in the actual content of BOTH artifacts
+     (checked against the evidence envelope, not only against the observations' wording).
 
 Example that links: "brand token 'paypal' in the subdomain" (url) and "page claims to
 be the PayPal sign-in page" (page_content), with "paypal" present in the URL string
@@ -44,11 +44,18 @@ sent send external third party endpoint iframe hidden overlay runtime asks reque
 request name names imitates imitate does owns own claims presents company support
 the and for are not was but its has had can you our who why how all any new now com www net org
 use via per too off out get got set one two see say saw via app web api url png jpg css
+dom list lists rendered served markup duplicate duplicates count counts extra includes include
+different missing absent multiple several legitimate phishing benign suspicious typical
+common indicating indicates expected consistent matches match uses using contains contain
 """.split())
 
 
 def _entities(text: str) -> set[str]:
     return {t for t in re.findall(r"[a-z][a-z0-9]{2,}", text.lower()) if t not in GENERIC}
+
+
+def _occurs(token: str, content: str) -> bool:
+    return re.search(rf"(?<![a-z0-9]){re.escape(token)}(?![a-z0-9])", content) is not None
 
 
 def links(items, normalized: dict) -> list[tuple[str, str]]:
@@ -67,6 +74,8 @@ def links(items, normalized: dict) -> list[tuple[str, str]]:
             shared = ea & _entities(b.observation)
             ca = normalized[a.declared_field].lower()
             cb = normalized[b.declared_field].lower()
-            if any(t in ca and t in cb for t in shared):
+            # Whole-token occurrence in BOTH artifacts (a substring such as 'dom' in
+            # 'react-dom' or 'random' is not the entity).
+            if any(_occurs(t, ca) and _occurs(t, cb) for t in shared):
                 out.append((a.locator, b.locator))
     return out

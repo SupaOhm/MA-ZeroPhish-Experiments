@@ -24,6 +24,11 @@ from contract.record import FindingRecord
 from contract.vocabulary import Direction, SourceAvailability, Status
 
 
+def _line(locator: str) -> str:
+    """The cited line of a locator: `url:L0.1` (second finding on url:L0) -> `url:L0`."""
+    return locator.split(".", 1)[0]
+
+
 def _valid_items(records):
     # An invalid record now carries `Status.ERROR` from Phase 2, so filtering on
     # `RAN` is sufficient and the re-validation that used to happen here is not.
@@ -619,11 +624,14 @@ def collaborate(
                     # Borrowed-observation lineage, from the actual request: an
                     # observation the agent did NOT hold before this accepted
                     # revision was made after it was shown these peer refs.
-                    before = {(h.locator, h.observation) for h in record.items}
+                    # "New" = a (field, cited line) the agent did not hold before: a
+                    # model re-wording its finding on the SAME line is a revision, not
+                    # an observation borrowed from what it was shown.
+                    before = {(h.declared_field, _line(h.locator)) for h in record.items}
                     shown = tuple(r for r in cites.get(agent, ()) if not
                                   r.startswith(tuple(f"{f}:" for f in fields.AGENT_FIELDS[agent])))
                     for h in items:
-                        if (h.locator, h.observation) not in before and shown:
+                        if (h.declared_field, _line(h.locator)) not in before and shown:
                             lineage_sink[h.locator] = shown
                 current[n] = candidate
                 break

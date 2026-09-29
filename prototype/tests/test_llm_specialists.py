@@ -110,6 +110,24 @@ class GroundingTests(unittest.TestCase):
         _, reason, env = self.reasoner("content", model)
         self.assertEqual(len(reason(env)), 1)
 
+    def test_bare_line_id_resolves_only_when_the_quote_pins_one_own_line(self):
+        # content agent on c6 sees page_content:L0 and brand_reference:L0.
+        model = Scripted({"page_content:L0": [
+            finding("L0", "delivery address"),       # only in page_content:L0
+            finding("L0", "paypal.com"),             # quote nowhere
+            finding("L9", "delivery address")]})     # no such number
+        spec, reason, env = self.reasoner("content", model, "c6")
+        self.assertEqual([i.locator for i in reason(env)], ["page_content:L0"])
+        g = spec.grounding()
+        self.assertEqual((g["resolved_bare_line"], g["dropped_bad_line"]), (1, 2))
+
+    def test_bare_line_id_is_dropped_when_two_own_lines_match(self):
+        # c1: the url line's text also appears on redirect_chain:L0, so "L0" is ambiguous.
+        model = Scripted({"url:L0": [finding("L0", "account-verify")]})
+        spec, reason, env = self.reasoner("url", model)
+        self.assertEqual(reason(env), ())
+        self.assertEqual(spec.grounding()["dropped_bad_line"], 1)
+
     def test_repeated_line_gets_distinct_locators(self):
         model = Scripted({"url:L0": [finding("url:L0", "account-verify"),
                                      finding("url:L0", "signin", "neutral", "marginal")]})

@@ -68,6 +68,27 @@ class ValidateTests(unittest.TestCase):
         dep = [DependencyGroup("shared_artifact", ("html:0", "url:0"))]
         self.assertTrue(any(">= 2" in e for e in validate(GOOD, ctx(deps=dep))))
 
+    def test_discount_is_per_conclusion_not_by_global_group_head(self):
+        # Pilot regression: the group's head supports phishing; the benign side cites
+        # a later member plus another field. The benign side keeps its field.
+        p = Provenance("html", "headless_browser", "case1")
+        obs = (EligibleObservation("GET form, empty action", "html", "html:14", p),
+               EligibleObservation("no password fields", "html", "html:33", p),
+               EligibleObservation("analytics scripts", "html", "html:34", p),
+               EligibleObservation(".gov domain", "url", "url:0", p))
+        c = JudgeContext(obs, (DependencyGroup("shared_artifact", ("html:14", "html:33", "html:34")),),
+                         CoverageReport(frozenset({"url"}), frozenset({"url"}),
+                                        {"url": SourceAvailability.OBTAINED}), ())
+        benign = {"suf_phishing": False, "def_phishing": False, "suf_benign": True,
+                  "def_benign": True, "phishing_support": ["html:14"],
+                  "benign_support": ["url:0", "html:33", "html:34"],
+                  "cited": ["url:0", "html:33", "html:34"], "coverage_limitations": [],
+                  "unresolved_issues": [], "explanation": "x"}
+        self.assertEqual(validate(benign, c), [])
+        # ...but two members of one group on the same side still count as one field.
+        one_field = dict(benign, benign_support=["html:33", "html:34"])
+        self.assertTrue(any(">= 2" in e for e in validate(one_field, c)))
+
     def test_gap_must_be_disclosed(self):
         bad = dict(GOOD, coverage_limitations=[])
         self.assertTrue(any("coverage gaps" in e for e in validate(bad, ctx(gaps=True))))

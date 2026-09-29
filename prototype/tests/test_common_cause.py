@@ -41,6 +41,19 @@ class CommonCauseTests(unittest.TestCase):
         b = item("page_content", "asks the user to login to the account")
         self.assertEqual(links([a, b], ART), [])
 
+    def test_structure_vocabulary_and_substrings_do_not_link(self):
+        # Pilot regression: 'dom' linked a DOM finding to an HTML finding because
+        # the HTML contained 'react-dom'.
+        art = {"html": '<script src="https://cdn.x/react-dom.js"></script> list',
+               "dom": '<script src="https://cdn.x/react-dom.js"></script> list'}
+        a = item("dom", "script present in the rendered DOM list but not in served html")
+        b = item("html", "the served list of hosts differs from the DOM")
+        self.assertEqual(links([a, b], art), [])
+        art2 = {"url": "https://randomshop.example", "page_content": "random offers"}
+        c = item("url", "host contains the token rand")
+        d = item("page_content", "page text mentions rand")
+        self.assertEqual(links([c, d], art2), [])      # 'rand' is only a substring
+
     def test_third_party_records_never_link(self):
         a = item("url", "brand token 'paypal' in the host")
         b = item("registration", "registrar record names paypal-account-7")

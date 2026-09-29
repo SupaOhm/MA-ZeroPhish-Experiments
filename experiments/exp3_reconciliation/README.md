@@ -79,6 +79,12 @@ Held-out v2 test (80 cases, 2,599 pairs, 485 dependent):
 - T7 and the entity rule were designed together, so this is a stress test of a known risk,
   not evidence about the rule's error rate on real pages.
 
+**Rule tightened after the first real-model pilot (PhreshPhish dev, stage 6):** the entity
+must occur as a whole token in both artifacts (a substring such as `dom` inside `react-dom`
+had linked unrelated DOM/HTML findings), and page-structure vocabulary (`dom`, `list`,
+`rendered`, ...) was added to the stop list. Re-scoring v2 dev and test gives
+byte-identical results to the table above.
+
 ## Status against the handoff (EXP-014)
 | item | status |
 |---|---|
