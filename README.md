@@ -101,11 +101,24 @@ python3 -B -m experiments.runner.run_corpus \
 - Quotes must match the raw field text (whitespace collapsed); HTML entities
   such as `&amp;` are not decoded. Watch the web_structure rejection rate
   (`rejections_by_agent` in `run.json`) on the dev smoke run.
-- Output: `<arm>.jsonl` ledgers, `calls.jsonl` (every attempt, raw) and `run.json`.
-  A failed call writes a `failure` event and no decision; `--resume` re-attempts it.
+- Output: `<arm>.jsonl` ledgers, `calls.jsonl` (every attempt, raw, failed
+  replies included with their payload and tokens) and `run.json`. A failed call
+  writes a `failure` event (with the tokens the case spent and the data version)
+  and no decision; `--resume` re-attempts it. Each completed case is flushed to
+  disk, so a killed run loses at most the case in flight.
+- The recorded provider/model come from the client; they equal `--provider` /
+  `--model` for a real client, and a mismatch is refused.
 - `--resume` refuses to continue a run with a different provider, model, split,
-  data version, prompt set or request options; a crashed run is recorded in
-  `run.json` with `aborted`.
+  data version, prompt set, request options or arm configuration, and refuses
+  an arm ledger whose last line is a partial write (repair it yourself). A
+  changed repository commit or a dirty tree is warned about and recorded in
+  `run.json` (`repo_changed_since_first_header`, `repo_dirty`). A crashed run is
+  recorded in `run.json` with `aborted`.
+- Collaboration re-invocations show a specialist its own current findings and
+  the evidence under discussion (observation, provenance, quoted text), never a
+  peer's direction, strength or verdict; a specialist first dispatched in a
+  round gets the initial prompt. The Judge sees capture ids only as opaque
+  aliases (`capture-1`, ...), never the case id.
 - The stopping-error estimator is still the placeholder (sub-project C).
   `run.json` says `"estimator": "placeholder"`; report no calibration figure.
 - Score with `python -m experiments.data_eval.evaluate` as described in
