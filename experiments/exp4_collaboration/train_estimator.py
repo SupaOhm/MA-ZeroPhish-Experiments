@@ -33,6 +33,11 @@ def main() -> None:
     ap.add_argument("--states", required=True, nargs="+", help="one or more state files (shards)")
     ap.add_argument("--manifest", required=True)
     ap.add_argument("--out", required=True)
+    ap.add_argument("--target", default="substantive_error", choices=("substantive_error", "stop_failure"),
+                    help="substantive_error (frozen v1): y = Judge's substantive verdict wrong, "
+                         "abstaining states excluded. stop_failure (PROPOSAL v2, not frozen): y = "
+                         "stopping now does not yield a correct verdict (abstention counts as a "
+                         "failure, as in the forced-decision metric); all states used.")
     ap.add_argument("--holdout", type=float, default=0.3, help="share of cases kept for evaluation")
     ap.add_argument("--seed", type=int, default=7)
     args = ap.parse_args()
@@ -58,7 +63,8 @@ def main() -> None:
         raise SystemExit(f"REFUSED: {len(wrong_split)} states are not from the calib split "
                          f"(e.g. {wrong_split[:3]}). Train only on calib.")
     abstain = [s for s in states if s["judge_verdict"] == "insufficient"]
-    usable = [s for s in states if s["judge_verdict"] != "insufficient"]
+    usable = ([s for s in states if s["judge_verdict"] != "insufficient"]
+              if args.target == "substantive_error" else list(states))
     cases = sorted({s["case_id"] for s in usable})
     random.Random(args.seed).shuffle(cases)
     held = set(cases[: int(len(cases) * args.holdout)])        # split by CASE, not by state
@@ -79,6 +85,7 @@ def main() -> None:
         "features": FEATURES,
     }
     report["state_model_id"] = models[0]
+    report["target"] = args.target
     est.meta.update(report)
     # Held-out (p_hat, wrong) pairs, for freeze_gate.py's declared tau rule.
     est.meta["eval_pairs"] = [[round(p, 6), y] for p, y in zip(pev, yev)]
