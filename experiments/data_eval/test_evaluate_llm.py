@@ -110,6 +110,13 @@ class FixtureOutputRefused(unittest.TestCase):
         decisions = {("a", 0): {"c": {"model_id": "recorded-fixture"}}}
         self.assertTrue(check_real(decisions))
 
+    def test_null_or_missing_model_id_is_unnamed(self):
+        for entry in ({"model_id": None}, {}):
+            self.assertTrue(check_real({("a", 0): {"c": entry}}), entry)
+
+    def test_a_real_model_id_passes(self):
+        self.assertEqual(check_real({("a", 0): {"c": {"model_id": "gemma-4-31b-it"}}}), [])
+
 
 if __name__ == "__main__":
     unittest.main()

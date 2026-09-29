@@ -206,11 +206,26 @@ class Runner(unittest.TestCase):
         n = len(ledger.read_text(encoding="utf-8").splitlines())
         with ledger.open("a", encoding="utf-8") as handle:
             handle.write('{"kind": "decis')
+        before = ledger.read_bytes()
         with self.assertRaises(SystemExit) as caught:
             run_corpus.run(args(self.dataset, self.output, "--resume"),
                            client=RecordedClient(grounded_responder()))
         self.assertIn("mazerophish.jsonl", str(caught.exception))
         self.assertIn(f"line {n + 1}", str(caught.exception))
+        self.assertEqual(ledger.read_bytes(), before)
+
+    def test_resume_refuses_a_ledger_without_a_trailing_newline(self):
+        run_corpus.run(args(self.dataset, self.output), client=RecordedClient(grounded_responder()))
+        ledger = self.output / "mazerophish.jsonl"
+        data = ledger.read_bytes()
+        self.assertTrue(data.endswith(b"\n"))
+        ledger.write_bytes(data[:-1])
+        before = ledger.read_bytes()
+        with self.assertRaises(SystemExit) as caught:
+            run_corpus.run(args(self.dataset, self.output, "--resume"),
+                           client=RecordedClient(grounded_responder()))
+        self.assertIn("mazerophish.jsonl", str(caught.exception))
+        self.assertEqual(ledger.read_bytes(), before)
 
     def test_provenance_comes_from_the_client(self):
         run_corpus.run(args(self.dataset, self.output), client=RecordedClient(grounded_responder()))

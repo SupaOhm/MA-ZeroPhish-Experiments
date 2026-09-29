@@ -137,7 +137,8 @@ def check_ledger_tail(path: Path) -> None:
     """
     if not path.exists():
         return
-    lines = path.read_text(encoding="utf-8").splitlines()
+    text = path.read_text(encoding="utf-8")
+    lines = text.splitlines()
     for number in range(len(lines), 0, -1):
         if lines[number - 1].strip():
             try:
@@ -146,7 +147,11 @@ def check_ledger_tail(path: Path) -> None:
                 raise SystemExit(
                     f"REFUSED: {path} line {number} is not valid JSON (a partial write?); "
                     "inspect and repair the ledger before --resume") from None
-            return
+            break
+    if text and not text.endswith("\n"):
+        raise SystemExit(
+            f"REFUSED: {path} does not end with a newline (an interrupted write?); "
+            "inspect and repair the ledger before --resume")
 
 
 def check_resume_identity(output: Path, names, header: dict, configs: dict) -> dict:

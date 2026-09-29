@@ -4,7 +4,7 @@ coverage, selective risk, strata/subsets, paired bootstrap CIs, McNemar test.
 Input is the prototype ledger format (JSON lines). Every arm -- the framework
 configurations AND the separate baselines (single-agent, PhishDebate, CoT) --
 must write `decision` events with at least:
-    {"kind": "decision", "arm": str, "case_id": str, "verdict": "phishing"|"benign"|"insufficient",
+    {"kind": "decision", "arm": str, "case_id": str, "verdict": "phishing"|"benign"|"insufficient"|"finalization_error",
      "parent_object_id": null, "repeat": int (optional, default 0),
      "score": float|null (optional P(phishing), for PR-AUC over the scored cases;
                           `n_scored` reports how many),
@@ -53,7 +53,7 @@ def check_real(decisions: dict) -> list[str]:
     """Return problems if any scored decision did not come from a real, named model."""
     problems = []
     for (arm, rep), dec in decisions.items():
-        ids = {str(e.get("model_id", "")).strip().lower() for e in dec.values()}
+        ids = {str(e.get("model_id") or "").strip().lower() for e in dec.values()}
         fake = ids & SIMULATED_MODEL_IDS
         if fake:
             problems.append(f"{arm}#r{rep}: decisions from simulated/unnamed model {sorted(fake)}")
@@ -278,7 +278,7 @@ def main() -> None:
     (out / "missing_cases.json").write_text(json.dumps(missing, indent=1), encoding="utf-8")
     fmt = lambda v: "-" if v is None else (f"{v:.3f}" if isinstance(v, float) else str(v))
     cols = ["arm", "repeat", "subset", "n", "coverage", "precision", "recall", "f1", "fpr",
-            "forced_f1", "forced_accuracy", "selective_risk", "pr_auc"]
+            "forced_f1", "forced_accuracy", "selective_risk", "pr_auc", "n_scored"]
     print(" | ".join(cols))
     for r in table:
         print(" | ".join(fmt(r.get(c)) for c in cols))

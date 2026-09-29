@@ -159,7 +159,7 @@ class FailedAttemptsKeepTheirRecord(unittest.TestCase):
             with CallLog(path) as log:
                 client = RecordedClient(responder, call_log=log, **kw)
                 try:
-                    client.generate("s", "u", tag=TAG, validate=kw.pop("validate", None))
+                    client.generate("s", "u", tag=TAG, validate=None)
                 except ModelCallFailed:
                     pass
                 outcome = client
