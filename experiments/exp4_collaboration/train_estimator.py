@@ -30,7 +30,7 @@ from phases.estimator import FEATURES, LogisticEstimator, auroc, brier, reliabil
 
 def main() -> None:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--states", required=True)
+    ap.add_argument("--states", required=True, nargs="+", help="one or more state files (shards)")
     ap.add_argument("--manifest", required=True)
     ap.add_argument("--out", required=True)
     ap.add_argument("--holdout", type=float, default=0.3, help="share of cases kept for evaluation")
@@ -39,7 +39,8 @@ def main() -> None:
 
     man = {json.loads(l)["case_id"]: json.loads(l)
            for l in open(args.manifest, encoding="utf-8") if l.strip()}
-    states = [json.loads(l) for l in open(args.states, encoding="utf-8") if l.strip()]
+    states = [json.loads(l) for path in args.states for l in open(path, encoding="utf-8")
+              if l.strip()]
     states = [s for s in states if not s.get("parent_object_id")]
     wrong_split = sorted({s["case_id"] for s in states if man.get(s["case_id"], {}).get("split") != "calib"})
     if wrong_split:

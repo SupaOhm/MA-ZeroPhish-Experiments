@@ -60,7 +60,10 @@ def main() -> None:
     ap.add_argument("--seed", type=int, default=41)
     ap.add_argument("--out", default=str(ROOT / "runs" / "exp4"))
     ap.add_argument("--cache", default=str(ROOT / "runs" / "llm_cache"))
+    ap.add_argument("--shard", default="0/1",
+                    help="k/n: this process takes every n-th case from k (one key per shard)")
     args = ap.parse_args()
+    k, n = (int(x) for x in args.shard.split("/"))
     if args.split != "calib":
         raise SystemExit("REFUSED: estimator training states come from the calib split only.")
 
@@ -69,7 +72,7 @@ def main() -> None:
     model = ChatModel(args.model, env_path=args.env, cache_dir=args.cache,
                       min_interval=args.min_interval, key_env=args.key_env)
     cfg = replace(frozen_system(args.model, args.trigger_cover), gate="always")
-    tag = f"calib_states__{args.trigger_cover}"
+    tag = f"calib_states__{args.trigger_cover}" + (f"__shard{k}of{n}" if n > 1 else "")
     states_path, ledger_path = out / f"{tag}.jsonl", out / f"{tag}__ledger.jsonl"
     failures = out / f"{tag}.failures.jsonl"
     done = set()
@@ -80,7 +83,7 @@ def main() -> None:
     cap_dir = Path(args.data) / "captures" / args.split
     ids = sorted(p.stem for p in cap_dir.glob("*.json"))
     random.Random(args.seed).shuffle(ids)
-    ids = ids[: args.limit]
+    ids = ids[: args.limit][k::n]
     todo = [c for c in ids if c not in done]
     print(f"calib states ({args.trigger_cover}): {len(ids)} selected, {len(ids) - len(todo)} done, "
           f"{len(todo)} to run", flush=True)

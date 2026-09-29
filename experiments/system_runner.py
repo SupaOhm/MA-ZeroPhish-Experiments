@@ -101,6 +101,8 @@ def common_args(ap: argparse.ArgumentParser) -> None:
     ap.add_argument("--limit", type=int, default=None)
     ap.add_argument("--cache", default=str(ROOT / "runs" / "llm_cache"))
     ap.add_argument("--data-version", required=True, help="DATA_VERSION of the captures used")
+    ap.add_argument("--shard", default="0/1",
+                    help="k/n: this process takes every n-th case from k (one key per shard)")
 
 
 def run_grid(arms: dict, case_paths: list[Path], out_dir: Path, tag: str, args,
@@ -109,6 +111,9 @@ def run_grid(arms: dict, case_paths: list[Path], out_dir: Path, tag: str, args,
     out_dir.mkdir(parents=True, exist_ok=True)
     model = ChatModel(args.model, env_path=args.env, cache_dir=args.cache,
                       min_interval=args.min_interval, key_env=args.key_env)
+    k, n = (int(x) for x in getattr(args, "shard", "0/1").split("/"))
+    if n > 1:
+        case_paths, tag = case_paths[k::n], f"{tag}__shard{k}of{n}"
     ledgers = {a: out_dir / f"{tag}__{a}.jsonl" for a in arms}
     failures = out_dir / f"{tag}.failures.jsonl"
     done = {a: ({json.loads(l)["case_id"] for l in p.open(encoding="utf-8") if '"decision"' in l}
