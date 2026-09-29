@@ -43,7 +43,7 @@ def features(records, issues, envelope, solicited: int = 0) -> dict[str, float]:
 
     items = [(r, it) for r in ran for it in r.items]
     discounted = set()
-    for g in dependency_groups(tuple(records), mode="provenance"):
+    for g in dependency_groups(tuple(records), mode="provenance", envelope=envelope):
         if g.edge_type in DISCOUNTABLE_EDGES:
             discounted.update(g.observation_refs[1:])
     p = b = 0

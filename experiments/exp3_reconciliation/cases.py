@@ -100,16 +100,63 @@ def t6(rng, b):
              None)]
 
 
+def t7(rng, b):
+    """Trap (v2): two INDEPENDENT facts that share an entity (Google) in two
+    attacker-controlled artifacts -- a reCAPTCHA badge vs an analytics script."""
+    return [("page_content", "the page shows a Google reCAPTCHA badge", "benign", "marginal", None),
+            ("html", "it loads an analytics script from google-analytics.com", "neutral", "marginal",
+             None)]
+
+
 TEMPLATES = {"T1": t1, "T2": t2, "T3": t3, "T4": t4, "T5": t5, "T6": t6}
+TEMPLATES_V2 = dict(TEMPLATES, T7=t7)
 
 
-def build_case(case_id: str, rng: random.Random) -> tuple[dict, dict]:
+def artifacts_for(chosen: list[str], brand: str, has_message: bool, n: int) -> dict[str, str]:
+    """v2: the artifact CONTENT the specialists' observations are about, so the
+    common-cause rule can be checked against evidence rather than wording."""
+    b = brand.capitalize()
+    url = (f"https://{brand}-account-{n}.example/login" if "T5" in chosen
+           else f"https://portal-{n}.example/start")
+    head = f"<title>{b + ' Sign In' if 'T5' in chosen else 'Portal'}</title>"
+    if "T7" in chosen:
+        head += '<script src="https://www.google-analytics.com/analytics.js"></script>'
+    body = ""
+    if "T1" in chosen or "T6" in chosen:
+        body += f'<form action="https://collect-{n}.example/p"><input type="password"></form>'
+    html = f"<html><head>{head}</head><body>{body}</body></html>"
+    page = []
+    if "T5" in chosen:
+        page.append(f"Welcome to {b}. Sign in to your {b} account.")
+    if "T2" in chosen:
+        page.append("Your account will be suspended. Verify within 24 hours.")
+    if "T7" in chosen:
+        page.append("This site is protected by Google reCAPTCHA.")
+    out = {"url": url, "redirect_chain": f"301 -> {url}", "html": html,
+           "dom": html.replace("</body>", "<iframe style='display:none'></iframe></body>")
+           if "T2" in chosen else html,
+           "page_content": " ".join(page) or "Welcome.",
+           "dns": "A 203.0.113.10", "registration": "created recently",
+           "ct": "certificate recently issued"}
+    if has_message:
+        out["message_body"] = f"{b} support: your account is on hold, verify at {url}"
+    return out
+
+
+def build_case(case_id: str, rng: random.Random, version: int = 1) -> tuple[dict, dict]:
+    templates = TEMPLATES_V2 if version == 2 else TEMPLATES
     brand = rng.choice(BRANDS)
-    chosen = rng.sample(sorted(TEMPLATES), rng.randint(3, 5))
+    chosen = rng.sample(sorted(templates), rng.randint(3, 5))
+    has_message = False
     raw = []
     for t in chosen:
-        for f, obs, d, s, cause in (t5(rng, brand, rng.random() < 0.4) if t == "T5"
-                                    else TEMPLATES[t](rng, brand)):
+        if t == "T5":
+            # drawn here, as in v1, so v1 cases regenerate byte-for-byte
+            has_message = rng.random() < 0.4
+            gen = t5(rng, brand, has_message)
+        else:
+            gen = templates[t](rng, brand)
+        for f, obs, d, s, cause in gen:
             raw.append({"field": f, "observation": obs, "direction": d, "strength": s,
                         "template": t, "cause": cause})
     count, items = {}, []
@@ -121,6 +168,8 @@ def build_case(case_id: str, rng: random.Random) -> tuple[dict, dict]:
     record_view = {"case_id": case_id, "items": [
         {k: it[k] for k in ("locator", "agent", "field", "observation", "direction", "strength",
                             "artifact", "instrument", "capture_id")} for it in items]}
+    if version == 2:
+        record_view["artifacts"] = artifacts_for(chosen, brand, has_message, int(case_id[-3:]))
     truth_pairs = []
     for i, a in enumerate(items):
         for b in items[i + 1:]:
@@ -143,6 +192,8 @@ def main() -> None:
     ap.add_argument("--n-dev", type=int, default=40)
     ap.add_argument("--n-test", type=int, default=80)
     ap.add_argument("--seed", type=int, default=314)
+    ap.add_argument("--version", type=int, default=1, choices=[1, 2],
+                    help="1: original six templates; 2: + artifact content and trap T7")
     args = ap.parse_args()
     out = Path(args.out)
     rng = random.Random(args.seed)
@@ -150,7 +201,8 @@ def main() -> None:
         (out / split).mkdir(parents=True, exist_ok=True)
         recs, anns = [], []
         for k in range(n):
-            r, a = build_case(f"exp3-{split}-{k:03d}", rng)
+            r, a = build_case(f"exp3v{args.version}-{split}-{k:03d}" if args.version == 2
+                              else f"exp3-{split}-{k:03d}", rng, args.version)
             recs.append(r)
             anns.append(a)
         (out / split / "records.jsonl").write_text(

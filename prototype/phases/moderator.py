@@ -60,8 +60,11 @@ def _refs_from_other_agents(records, exclude: str) -> tuple[str, ...]:
 
 
 def dependency_groups(
-    records: tuple[FindingRecord, ...], mode: str = "provenance"
+    records: tuple[FindingRecord, ...], mode: str = "provenance", envelope=None
 ) -> tuple[DependencyGroup, ...]:
+    """`envelope` (optional) enables demonstrated common-cause edges in provenance
+    mode (phases/common_cause.py): they are checked against artifact CONTENT, so
+    without the envelope none is inferred."""
     if mode == "independent":
         return ()
 
@@ -99,6 +102,26 @@ def dependency_groups(
                 semantic_items.append((ref, item.observation))
             else:
                 raise ValueError(f"unknown reconciliation mode: {mode!r}")
+
+    if mode == "provenance" and envelope is not None:
+        from phases.common_cause import links
+        ran_items = [it for r in records if r.status is Status.RAN for it in r.items]
+        parent = {}
+
+        def find(x):
+            parent.setdefault(x, x)
+            while parent[x] != x:
+                parent[x] = parent[parent[x]]
+                x = parent[x]
+            return x
+
+        for a, b in links(ran_items, envelope.normalized):
+            parent[find(b)] = find(a)
+        comps: dict[str, list[str]] = {}
+        for ref in parent:
+            comps.setdefault(find(ref), []).append(ref)
+        for n, comp in enumerate(sorted(sorted(c) for c in comps.values() if len(c) >= 2)):
+            buckets[("common_cause", n)] = comp
 
     if mode == "semantic":
         # The explicit, frozen similarity method (phases/semantic.py), replacing

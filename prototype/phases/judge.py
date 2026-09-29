@@ -122,7 +122,7 @@ def project_for_judge(
 
     return JudgeContext(
         observations=tuple(observations),
-        dependencies=dependency_groups(records, mode=reconciliation),
+        dependencies=dependency_groups(records, mode=reconciliation, envelope=envelope),
         coverage=_coverage(records, envelope),
         issues=tuple(
             JudgeVisibleIssue(i.kind, i.object_id, i.affected_fields)
@@ -137,7 +137,7 @@ def project_for_judge(
 # claim", and only observations "linked to the same demonstrated underlying
 # cause are discounted as independent corroboration". So a shared-acquisition
 # edge is recorded and reported, and does not reduce support.
-DISCOUNTABLE_EDGES = frozenset({"shared_artifact"})
+DISCOUNTABLE_EDGES = frozenset({"shared_artifact", "common_cause"})
 
 
 def _discounted_fields(context: JudgeContext) -> set[str]:

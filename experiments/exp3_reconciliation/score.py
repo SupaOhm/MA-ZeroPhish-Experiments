@@ -27,14 +27,16 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "prototype"))
 
-from contract.evidence import EvidenceItem, Provenance  # noqa: E402
+from contract.evidence import EvidenceEnvelope, EvidenceItem, Provenance  # noqa: E402
 from contract.record import FindingRecord  # noqa: E402
 from contract.vocabulary import Direction, Status, Strength  # noqa: E402
 from phases import semantic  # noqa: E402
 from phases.judge import DISCOUNTABLE_EDGES  # noqa: E402
 from phases.moderator import dependency_groups  # noqa: E402
 
-POLICIES = ("provenance", "semantic", "independent")
+# provenance_cc = provenance + demonstrated common-cause edges (phases/common_cause.py),
+# checked against artifact content; needs v2 cases (records carry "artifacts").
+POLICIES = ("provenance", "provenance_cc", "semantic", "independent")
 
 
 def load(split_dir: Path):
@@ -56,7 +58,8 @@ def to_records(rv: dict) -> tuple[FindingRecord, ...]:
                  for a, items in sorted(by_agent.items()))
 
 
-def merged_pairs(records, policy: str, threshold: float | None = None) -> tuple[set, int]:
+def merged_pairs(records, policy: str, threshold: float | None = None,
+                 envelope=None) -> tuple[set, int]:
     if policy == "semantic" and threshold is not None:
         old, semantic.THRESHOLD = semantic.THRESHOLD, threshold
         try:
@@ -64,12 +67,15 @@ def merged_pairs(records, policy: str, threshold: float | None = None) -> tuple[
         finally:
             semantic.THRESHOLD = old
     else:
-        groups = dependency_groups(records, mode=policy)
+        mode = "provenance" if policy == "provenance_cc" else policy
+        groups = dependency_groups(records, mode=mode,
+                                   envelope=envelope if policy == "provenance_cc" else None)
     pairs, recorded_acq = set(), 0
     for g in groups:
         if g.edge_type == "shared_acquisition":
             recorded_acq += 1
-        discount = (g.edge_type in DISCOUNTABLE_EDGES) if policy == "provenance" else True
+        discount = ((g.edge_type in DISCOUNTABLE_EDGES)
+                    if policy in ("provenance", "provenance_cc") else True)
         if discount:
             pairs.update(frozenset(p) for p in combinations(g.observation_refs, 2))
     return pairs, recorded_acq
@@ -98,7 +104,11 @@ def evaluate(recs, anns, policy, threshold=None) -> dict:
     per_case = []
     for rv in recs:
         records = to_records(rv)
-        pred, acq = merged_pairs(records, policy, threshold)
+        env = None
+        if rv.get("artifacts"):
+            env = EvidenceEnvelope(object_id="o1", case_id=rv["case_id"],
+                                   normalized=dict(rv["artifacts"]))
+        pred, acq = merged_pairs(records, policy, threshold, env)
         acq_recorded += acq
         ann = anns[rv["case_id"]]
         c_err = []
