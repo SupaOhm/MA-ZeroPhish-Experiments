@@ -1,0 +1,315 @@
+{
+ "split": "dev",
+ "min_supporting_fields": 2,
+ "results": {
+  "base": {
+   "kind": "reference",
+   "cases": 300,
+   "violations": 0,
+   "mean_ready_agents": 3.793,
+   "mean_analyzable_agents": 3.793,
+   "mean_coverage_ceiling": 0.9483,
+   "coverage_ceiling_below_half": 0,
+   "mean_readable_fields": 4.663,
+   "substantive_verdict_possible": 1.0,
+   "forced_abstention_structural": 0.0,
+   "lost_vs_base": 0,
+   "mean_gaps_to_disclose": 7.467,
+   "mean_acquisition_attempts": 13.0,
+   "transient_failures": 0,
+   "recovered": 0,
+   "recovery_rate": null,
+   "by_label": {
+    "phishing": {
+     "cases": 150,
+     "substantive_verdict_possible": 1.0
+    },
+    "benign": {
+     "cases": 150,
+     "substantive_verdict_possible": 1.0
+    }
+   }
+  },
+  "no_html": {
+   "kind": "single",
+   "cases": 300,
+   "violations": 0,
+   "mean_ready_agents": 3.663,
+   "mean_analyzable_agents": 3.663,
+   "mean_coverage_ceiling": 0.9158,
+   "coverage_ceiling_below_half": 2,
+   "mean_readable_fields": 3.663,
+   "substantive_verdict_possible": 0.9933,
+   "forced_abstention_structural": 0.0067,
+   "lost_vs_base": 2,
+   "mean_gaps_to_disclose": 8.467,
+   "mean_acquisition_attempts": 13.0,
+   "transient_failures": 0,
+   "recovered": 0,
+   "recovery_rate": null,
+   "by_label": {
+    "phishing": {
+     "cases": 150,
+     "substantive_verdict_possible": 0.9933
+    },
+    "benign": {
+     "cases": 150,
+     "substantive_verdict_possible": 0.9933
+    }
+   }
+  },
+  "no_dom": {
+   "kind": "single",
+   "cases": 300,
+   "violations": 0,
+   "mean_ready_agents": 3.793,
+   "mean_analyzable_agents": 2.923,
+   "mean_coverage_ceiling": 0.7308,
+   "coverage_ceiling_below_half": 0,
+   "mean_readable_fields": 2.923,
+   "substantive_verdict_possible": 1.0,
+   "forced_abstention_structural": 0.0,
+   "lost_vs_base": 0,
+   "mean_gaps_to_disclose": 9.207,
+   "mean_acquisition_attempts": 13.0,
+   "transient_failures": 0,
+   "recovered": 0,
+   "recovery_rate": null,
+   "by_label": {
+    "phishing": {
+     "cases": 150,
+     "substantive_verdict_possible": 1.0
+    },
+    "benign": {
+     "cases": 150,
+     "substantive_verdict_possible": 1.0
+    }
+   }
+  },
+  "no_screenshot": {
+   "kind": "single",
+   "cases": 300,
+   "violations": 0,
+   "mean_ready_agents": 3.793,
+   "mean_analyzable_agents": 3.793,
+   "mean_coverage_ceiling": 0.9483,
+   "coverage_ceiling_below_half": 0,
+   "mean_readable_fields": 4.663,
+   "substantive_verdict_possible": 1.0,
+   "forced_abstention_structural": 0.0,
+   "lost_vs_base": 0,
+   "mean_gaps_to_disclose": 8.337,
+   "mean_acquisition_attempts": 13.0,
+   "transient_failures": 0,
+   "recovered": 0,
+   "recovery_rate": null,
+   "by_label": {
+    "phishing": {
+     "cases": 150,
+     "substantive_verdict_possible": 1.0
+    },
+    "benign": {
+     "cases": 150,
+     "substantive_verdict_possible": 1.0
+    }
+   }
+  },
+  "no_network_metadata": {
+   "kind": "single",
+   "cases": 300,
+   "violations": 0,
+   "mean_ready_agents": 2.87,
+   "mean_analyzable_agents": 2.87,
+   "mean_coverage_ceiling": 0.7175,
+   "coverage_ceiling_below_half": 0,
+   "mean_readable_fields": 3.74,
+   "substantive_verdict_possible": 1.0,
+   "forced_abstention_structural": 0.0,
+   "lost_vs_base": 0,
+   "mean_gaps_to_disclose": 8.39,
+   "mean_acquisition_attempts": 13.0,
+   "transient_failures": 0,
+   "recovered": 0,
+   "recovery_rate": null,
+   "by_label": {
+    "phishing": {
+     "cases": 150,
+     "substantive_verdict_possible": 1.0
+    },
+    "benign": {
+     "cases": 150,
+     "substantive_verdict_possible": 1.0
+    }
+   }
+  },
+  "cum1_screenshot": {
+   "kind": "cumulative",
+   "cases": 300,
+   "violations": 0,
+   "mean_ready_agents": 3.793,
+   "mean_analyzable_agents": 3.793,
+   "mean_coverage_ceiling": 0.9483,
+   "coverage_ceiling_below_half": 0,
+   "mean_readable_fields": 4.663,
+   "substantive_verdict_possible": 1.0,
+   "forced_abstention_structural": 0.0,
+   "lost_vs_base": 0,
+   "mean_gaps_to_disclose": 8.337,
+   "mean_acquisition_attempts": 13.0,
+   "transient_failures": 0,
+   "recovered": 0,
+   "recovery_rate": null,
+   "by_label": {
+    "phishing": {
+     "cases": 150,
+     "substantive_verdict_possible": 1.0
+    },
+    "benign": {
+     "cases": 150,
+     "substantive_verdict_possible": 1.0
+    }
+   }
+  },
+  "cum2_+render": {
+   "kind": "cumulative",
+   "cases": 300,
+   "violations": 0,
+   "mean_ready_agents": 2.923,
+   "mean_analyzable_agents": 2.923,
+   "mean_coverage_ceiling": 0.7308,
+   "coverage_ceiling_below_half": 0,
+   "mean_readable_fields": 2.923,
+   "substantive_verdict_possible": 1.0,
+   "forced_abstention_structural": 0.0,
+   "lost_vs_base": 0,
+   "mean_gaps_to_disclose": 10.077,
+   "mean_acquisition_attempts": 13.0,
+   "transient_failures": 0,
+   "recovered": 0,
+   "recovery_rate": null,
+   "by_label": {
+    "phishing": {
+     "cases": 150,
+     "substantive_verdict_possible": 1.0
+    },
+    "benign": {
+     "cases": 150,
+     "substantive_verdict_possible": 1.0
+    }
+   }
+  },
+  "cum3_+html_no_browser": {
+   "kind": "cumulative",
+   "cases": 300,
+   "violations": 0,
+   "mean_ready_agents": 1.923,
+   "mean_analyzable_agents": 1.923,
+   "mean_coverage_ceiling": 0.4808,
+   "coverage_ceiling_below_half": 23,
+   "mean_readable_fields": 1.923,
+   "substantive_verdict_possible": 0.9233,
+   "forced_abstention_structural": 0.0767,
+   "lost_vs_base": 23,
+   "mean_gaps_to_disclose": 11.077,
+   "mean_acquisition_attempts": 13.0,
+   "transient_failures": 0,
+   "recovered": 0,
+   "recovery_rate": null,
+   "by_label": {
+    "phishing": {
+     "cases": 150,
+     "substantive_verdict_possible": 0.8733
+    },
+    "benign": {
+     "cases": 150,
+     "substantive_verdict_possible": 0.9733
+    }
+   }
+  },
+  "cum4_+network_url_only": {
+   "kind": "cumulative",
+   "cases": 300,
+   "violations": 0,
+   "mean_ready_agents": 1.0,
+   "mean_analyzable_agents": 1.0,
+   "mean_coverage_ceiling": 0.25,
+   "coverage_ceiling_below_half": 300,
+   "mean_readable_fields": 1.0,
+   "substantive_verdict_possible": 0.0,
+   "forced_abstention_structural": 1.0,
+   "lost_vs_base": 300,
+   "mean_gaps_to_disclose": 12.0,
+   "mean_acquisition_attempts": 13.0,
+   "transient_failures": 0,
+   "recovered": 0,
+   "recovery_rate": null,
+   "by_label": {
+    "phishing": {
+     "cases": 150,
+     "substantive_verdict_possible": 0.0
+    },
+    "benign": {
+     "cases": 150,
+     "substantive_verdict_possible": 0.0
+    }
+   }
+  },
+  "transient_browser_recoverable": {
+   "kind": "recovery",
+   "cases": 300,
+   "violations": 0,
+   "mean_ready_agents": 3.793,
+   "mean_analyzable_agents": 3.793,
+   "mean_coverage_ceiling": 0.9483,
+   "coverage_ceiling_below_half": 0,
+   "mean_readable_fields": 4.663,
+   "substantive_verdict_possible": 1.0,
+   "forced_abstention_structural": 0.0,
+   "lost_vs_base": 0,
+   "mean_gaps_to_disclose": 7.467,
+   "mean_acquisition_attempts": 17.0,
+   "transient_failures": 1200,
+   "recovered": 1083,
+   "recovery_rate": 0.9025,
+   "by_label": {
+    "phishing": {
+     "cases": 150,
+     "substantive_verdict_possible": 1.0
+    },
+    "benign": {
+     "cases": 150,
+     "substantive_verdict_possible": 1.0
+    }
+   }
+  },
+  "transient_browser_no_retry": {
+   "kind": "recovery",
+   "cases": 300,
+   "violations": 0,
+   "mean_ready_agents": 1.923,
+   "mean_analyzable_agents": 1.923,
+   "mean_coverage_ceiling": 0.4808,
+   "coverage_ceiling_below_half": 23,
+   "mean_readable_fields": 1.923,
+   "substantive_verdict_possible": 0.9233,
+   "forced_abstention_structural": 0.0767,
+   "lost_vs_base": 23,
+   "mean_gaps_to_disclose": 11.077,
+   "mean_acquisition_attempts": 13.0,
+   "transient_failures": 1200,
+   "recovered": 0,
+   "recovery_rate": 0.0,
+   "by_label": {
+    "phishing": {
+     "cases": 150,
+     "substantive_verdict_possible": 0.8733
+    },
+    "benign": {
+     "cases": 150,
+     "substantive_verdict_possible": 0.9733
+    }
+   }
+  },
+  "conflict_swaps": "captures not built"
+ }
+}

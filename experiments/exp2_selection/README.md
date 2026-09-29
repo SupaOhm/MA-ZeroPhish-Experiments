@@ -65,7 +65,29 @@ served HTML kept); `no_network_metadata` (DNS, registration, TLS, CT, hosting wi
 `multi_url_message` (SMS/email with ≥ 2 extracted links). Budgets (shared / agent / coll):
 `unrestricted` 100/100/20, `tight_acquisition` 6/100/20, `matched_agent_2` 100/2/20.
 
-## Results — held-out test (PhreshPhish test 200 URLs, 100/100; messages test 9 multi-link)
+## Current results — DATA_VERSION `c6a34395591a59c2` (own-domain selection, CT v2; frozen Phase 1 unchanged)
+Generated from `results/phase1_test__c6a34395591a59c2.json`. Tables further below are on the
+earlier data version (with platform-hosted pages, CT v1) and are superseded.
+
+| condition / budget | arm | specialists / object | modality cov. at dispatch | trigger cov. (literal / all-fields) | est. tokens / case | Δ tokens vs fixed [95% CI] | saving |
+|---|---|---|---|---|---|---|---|
+| complete/unrestricted | fixed_all | 3.81 | 0.95 | 1.00 / 1.00 | 3,985 | — | — |
+|  | adaptive (literal) | 1.00 | 0.25 | 1.00 / 0.07 | 670 | -3,315 [-3,437, -3,195] | 83% |
+|  | adaptive_all_fields | 1.95 | 0.49 | 1.00 / 1.00 | 2,186 | -1,799 [-1,956, -1,650] | 45% |
+| partial_browser/unrestricted | fixed_all | 2.89 | 0.72 | 1.00 / 1.00 | 2,586 | — | — |
+|  | adaptive (literal) | 1.00 | 0.25 | 1.00 / 0.00 | 679 | -1,907 [-1,975, -1,843] | 74% |
+|  | adaptive_all_fields | 1.56 | 0.39 | 1.00 / 0.99 | 1,435 | -1,152 [-1,234, -1,073] | 45% |
+| no_network_metadata/unrestricted | fixed_all | 2.92 | 0.73 | 1.00 / 1.00 | 3,265 | — | — |
+|  | adaptive (literal) | 1.00 | 0.25 | 1.00 / 0.07 | 670 | -2,595 [-2,710, -2,478] | 79% |
+|  | adaptive_all_fields | 1.95 | 0.49 | 1.00 / 1.00 | 2,186 | -1,079 [-1,235, -930] | 33% |
+| complete/matched_agent_2 | fixed_all | 2.00 | 0.50 | 0.97 / 0.29 | 1,652 | — | — |
+|  | adaptive (literal) | 1.00 | 0.25 | 1.00 / 0.07 | 670 | -982 [-1,008, -952] | 59% |
+|  | adaptive_all_fields | 1.39 | 0.35 | 1.00 / 0.35 | 1,079 | -572 [-642, -508] | 35% |
+
+By class (complete): triggers per object phishing 0.93 vs benign 2.89; all-fields arm dispatches 1.42 (phishing) vs 2.48 (benign) specialists per object.
+
+
+## (Superseded, earlier data version) Results — held-out test (PhreshPhish test 200 URLs, 100/100; messages test 9 multi-link)
 Initial Phase 1 only. *tokens* = estimated prompt+reply tokens of the dispatched
 specialists (not a provider bill). Δ = paired mean difference vs `fixed_all`, bootstrap 95% CI.
 

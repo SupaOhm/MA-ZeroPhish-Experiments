@@ -3,7 +3,7 @@
  "system": {
   "cost_scale": 998.6,
   "mu": 0.5,
-  "trigger_cover": "any_field"
+  "trigger_cover": "all_fields"
  },
  "conditions": {
   "base": {
@@ -148,6 +148,6 @@
   }
  },
  "base_capture_count": 200,
- "base_captures_sha256": "0e7d95890e6c27aded76add163b33d16b1674dcc37e246312673978448ca5d7f",
- "conflict_captures_sha256": "750ee2ad8e3b06f287a56e56188e50cc780e5a4753b8410410dafbc3345fa662"
+ "base_captures_sha256": "c20f119c9a58fa3b582646d37688e5cc0a966ae57cf8cd4bc7d3d0a6e4c8eb0d",
+ "conflict_captures_sha256": "db913b51dc446285e44cbb8b67d38a3f4d94f3e566967ea310b43c91d6933f15"
 }

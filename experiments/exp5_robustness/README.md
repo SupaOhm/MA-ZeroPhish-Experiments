@@ -53,7 +53,29 @@ restricted to certificates valid on or before the observation date. Artifacts th
 not be observed retrospectively (DNS, TLS, WHOIS, hosting) are recorded as unavailable
 with their reason, never filled in. A live-capture deployment would still need the policy.
 
-## Tier A results — held-out test (PhreshPhish test, 200 URLs, 100/100; conflicts 560)
+## Current results — DATA_VERSION `c6a34395591a59c2` (own-domain selection, CT v2; Metadata requires CT)
+Generated from `results/audit_test__c6a34395591a59c2.json`. The Tier A table further below is on the
+earlier data version and is superseded.
+
+| condition | cases | withholding violations | analyzable / 4 | coverage ceiling | verdict possible | lost vs base | gaps to disclose | acquisition attempts | recovery |
+|---|---|---|---|---|---|---|---|---|---|
+| base | 200 | 0 | 3.81 | 0.95 | 100.0% | 0 | 7.33 | 13.0 | — |
+| no_html | 200 | 0 | 3.74 | 0.94 | 100.0% | 0 | 8.34 | 13.0 | — |
+| no_dom | 200 | 0 | 2.89 | 0.72 | 100.0% | 0 | 9.19 | 13.0 | — |
+| no_screenshot | 200 | 0 | 3.81 | 0.95 | 100.0% | 0 | 8.26 | 13.0 | — |
+| no_network_metadata | 200 | 0 | 2.92 | 0.73 | 100.0% | 0 | 8.22 | 13.0 | — |
+| cum1_screenshot | 200 | 0 | 3.81 | 0.95 | 100.0% | 0 | 8.26 | 13.0 | — |
+| cum2_+render | 200 | 0 | 2.89 | 0.72 | 100.0% | 0 | 10.11 | 13.0 | — |
+| cum3_+html_no_browser | 200 | 0 | 1.89 | 0.47 | 89.0% | 22 | 11.11 | 13.0 | — |
+| cum4_+network_url_only | 200 | 0 | 1.00 | 0.25 | 0.0% | 200 | 12.00 | 13.0 | — |
+| transient_browser_recoverable | 200 | 0 | 3.81 | 0.95 | 100.0% | 0 | 7.33 | 17.0 | 94.4% |
+| transient_browser_no_retry | 200 | 0 | 1.89 | 0.47 | 89.0% | 22 | 11.11 | 13.0 | 0.0% |
+| conflict_swaps | 548 | 0 | 3.89 | 0.97 | 100.0% | 0 | 7.16 | 13.0 | — |
+
+No browser capture: verdict still possible for 82% of phishing vs 96% of benign test cases (URL + CT are two fields; cases with no certificate covering the host before observation -- more often phishing -- fall below the 2-field minimum).
+
+
+## (Superseded, earlier data version) Tier A results — held-out test (PhreshPhish test, 200 URLs, 100/100; conflicts 560)
 *analyzable* = specialists that can reach `ran` (a required field obtained and readable);
 *coverage ceiling* = analyzable ÷ applicable, the highest modality coverage any run can
 reach; *verdict possible* = at least 2 distinct fields readable by analyzable agents, the
