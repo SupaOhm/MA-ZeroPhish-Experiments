@@ -37,6 +37,17 @@ snapshot; e.g. webflow.io, vercel.app, pages.dev, github.io). Measured on the UR
   (and the phishing-side error) can be measured; false-positive rate on platform-hosted
   benign sites is **not measurable** with this test set.
 - Report detection results **stratified by platform_hosted** alongside the pooled numbers.
+- **Action taken (2026-09-29, same dataset, new sample-selection rule):** the dataset is
+  unchanged (PhreshPhish); the selection now EXCLUDES platform-hosted pages from every
+  split (`build_phreshphish.py --exclude-platform --keep-manifest ... --cutoff 2025-07-06`).
+  Every own-domain case already selected was kept; only the dropped cases were replaced,
+  drawn uniformly from the remaining own-domain candidates of the same split window with
+  their own seed (dev 54, calib 31, test 22 phishing/benign-balanced replacements; the
+  validator reports no errors). Main results are therefore on own-domain websites; the
+  107 platform-hosted phishing pages (`captures_platform_supplementary/`) are reported
+  separately as a recall-only study. The table above describes the earlier selection
+  (`manifest_v2_with_platform.jsonl`); the replaced ids are in
+  `platform_exclusion_changes.json`.
 - PSL coverage is incomplete (e.g. weebly.com and edgeone.app are not listed and count
   as own-domain); the definition is kept as published rather than patched by hand.
 
