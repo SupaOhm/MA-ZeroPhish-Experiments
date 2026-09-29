@@ -1,0 +1,26 @@
+{
+  "case_id": "syn-msg-002",
+  "submission_type": "message",
+  "payload": "Your parcel is on hold. Pay the fee at http://parcel-fee.example.test/pay or update details at http://parcel-help.example.test/form",
+  "label": "phishing",
+  "inapplicable": [],
+  "artifacts": [
+    {"field": "message_body", "content": "Your parcel is on hold. Pay the fee at http://parcel-fee.example.test/pay or update details at http://parcel-help.example.test/form", "instrument": "submission"},
+    {"field": "url", "content": "http://parcel-fee.example.test/pay", "instrument": "link_processor"},
+    {"field": "html", "content": "<form action=\"http://collect.example.test/card\"><input name=\"card\"></form>", "instrument": "headless_browser"},
+    {"field": "dom", "content": "<form action=\"http://collect.example.test/card\"><input name=\"card\"></form>", "instrument": "headless_browser"},
+    {"field": "page_content", "content": "Pay 1.99 to release your parcel", "instrument": "headless_browser"}
+  ],
+  "failures": {
+    "redirect_chain": "not_in_source_dataset",
+    "page_resources": "not_in_source_dataset",
+    "screenshot": "not_collected",
+    "dns": "not_retrospectively_observable",
+    "registration": "excluded_retrospective_lookup_leaks_future_takedown",
+    "tls": "not_retrospectively_observable",
+    "ct": "not_collected",
+    "hosting": "not_retrospectively_observable"
+  },
+  "findings": {},
+  "revisions": {}
+}

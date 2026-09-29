@@ -10,8 +10,9 @@ import json
 
 
 class Ledger:
-    def __init__(self, path: str, arm: str):
-        self._handle = open(path, "w", encoding="utf-8")
+    def __init__(self, path: str, arm: str, mode: str = "w"):
+        # "a" for a resumed corpus run: earlier cases' events are kept.
+        self._handle = open(path, mode, encoding="utf-8")
         self._arm = arm
 
     def event(self, kind: str, case_id: str, **payload) -> None:
