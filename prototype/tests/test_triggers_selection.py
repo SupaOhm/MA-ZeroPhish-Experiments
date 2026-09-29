@@ -41,7 +41,7 @@ class TriggerTests(unittest.TestCase):
         self.assertEqual(registrable("shop.example.co.uk"), "example.co.uk")
 
     def test_entity_elsewhere_in_url_repeated_by_page(self):
-        e = env(url="https://paypal.secure-check.example/login", page_content="Welcome to PayPal")
+        e = env(url="https://paypal.secure-check.com/login", page_content="Welcome to PayPal")
         self.assertIn(("shared_entity", "url", "page_content"), kinds(e))
 
     def test_site_naming_itself_is_not_a_trigger(self):

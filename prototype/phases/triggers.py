@@ -19,8 +19,8 @@ over NORMALIZED fields. The four predicate families are the ones his text lists:
 
 Every predicate reads evidence structure only. No finding, verdict, band, label or
 reputation list is read, so the Orchestrator's prohibition holds by construction.
-Registrable domains use a small built-in public-suffix approximation (stdlib only);
-this is stated as a limitation, not hidden.
+Registrable domains come from the Public Suffix List bundled with tldextract
+(pinned in prototype/requirements.txt), identical to the data-building code.
 """
 
 from __future__ import annotations
@@ -30,17 +30,12 @@ from dataclasses import dataclass
 from html.parser import HTMLParser
 from urllib.parse import urljoin, urlsplit
 
+import tldextract
+
 from contract.evidence import EvidenceEnvelope
 from contract.vocabulary import SourceAvailability
 
 TYPES = ("shared_entity", "host_mismatch", "cross_origin", "populated_vs_empty")
-
-# Two-label public suffixes common in the corpora; everything else uses the last label.
-_SECOND_LEVEL = frozenset("""
-co.uk org.uk ac.uk gov.uk com.au net.au org.au edu.au gov.au co.jp ne.jp or.jp co.kr
-com.br com.cn com.tw com.hk com.sg com.my co.in net.in org.in co.th in.th ac.th go.th
-co.id co.nz co.za com.mx com.ar com.tr com.vn com.ph com.pk com.ng
-""".split())
 
 _GENERIC = frozenset("""
 www com net org gov edu info biz html htm php asp aspx jsp index home page pages login
@@ -52,6 +47,8 @@ get set one two see what when where your with from this that into about more mos
 blog post posts article articles category tag tags search view item items product
 products shop store en us uk de fr es jp
 """.split())
+
+_PSL = tldextract.TLDExtract(suffix_list_urls=())   # bundled PSL snapshot, no network
 
 MIN_TEXT = 40          # characters of visible text below which a field counts as empty
 
@@ -74,11 +71,13 @@ def host(u: str) -> str:
 
 
 def registrable(h: str) -> str:
-    labels = [l for l in h.split(".") if l]
-    if len(labels) < 2 or re.fullmatch(r"[\d.]+", h):
+    """Registrable domain by the Public Suffix List (ICANN section), via the bundled
+    tldextract snapshot -- the same call as experiments/data_eval/fingerprint.registrable,
+    so runtime triggers and data building agree. No network access."""
+    if not h or re.fullmatch(r"[\d.]+", h):
         return h
-    n = 3 if ".".join(labels[-2:]) in _SECOND_LEVEL and len(labels) >= 3 else 2
-    return ".".join(labels[-n:])
+    e = _PSL(h)
+    return f"{e.domain}.{e.suffix}" if e.domain and e.suffix else h
 
 
 def _url_tokens(url: str) -> set[str]:

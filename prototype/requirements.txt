@@ -1,0 +1,3 @@
+# The prototype is standard-library only, except the Public Suffix List used for
+# registrable domains (phases/triggers.py), pinned to match experiments/data_eval.
+tldextract==5.3.2

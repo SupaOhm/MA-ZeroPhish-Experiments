@@ -15,3 +15,37 @@ each row states the strongest evidence actually found.
 ## Note on PhreshPhish
 PhreshPhish is the only corpus observed after every candidate model's knowledge cutoff, so
 it carries the zero-day claim; its prior IEEE use is PhishLite (IEEE SVCC 2026).
+
+## Threats to validity found in the data (report in every experiment)
+
+**Platform hosting is tied to the label in PhreshPhish.** "Platform-hosted" = the URL's
+host sits under a Public Suffix List *private* suffix (tldextract 5.3.2 bundled
+snapshot; e.g. webflow.io, vercel.app, pages.dev, github.io). Measured on the URL alone:
+
+| split | phishing platform-hosted | benign platform-hosted |
+|---|---|---|
+| dev | 54/150 (36.0%) | 0/150 (0.0%) |
+| calib | 29/150 (19.3%) | 2/150 (1.3%) |
+| test | 22/100 (22.0%) | 0/100 (0.0%) |
+
+- This is a property of the corpus (its benign sample has almost no user-hosted
+  platform sites), not of our processing. Any method that sees the URL -- MA-ZeroPhish's
+  URL Agent and all three Experiment 1 baselines -- can exploit it, so comparisons
+  between arms remain like-for-like, but absolute scores may be optimistic relative to a
+  deployment where legitimate platform-hosted sites are common.
+- **The test split has no benign platform-hosted case**, so in that stratum only recall
+  (and the phishing-side error) can be measured; false-positive rate on platform-hosted
+  benign sites is **not measurable** with this test set.
+- Report detection results **stratified by platform_hosted** alongside the pooled numbers.
+- PSL coverage is incomplete (e.g. weebly.com and edgeone.app are not listed and count
+  as own-domain); the definition is kept as published rather than patched by hand.
+
+**CT evidence v1 artifact (fixed in v2).** CT v1 fell back to the registrable domain's
+certificates when the host had none, which gave shared platforms' certificate history to
+phishing subdomains (dev 68 / calib 23 / test 5 cases, all phishing). CT v2 keeps only
+certificates covering the host (exact name or one-label wildcard) and states
+`cert_scope` / `platform_hosted` explicitly. v1 records remain as `ct_v1.json`.
+
+**No retrospective redirect chain.** The source dataset has no redirect information and a
+re-crawl today would observe post-takedown behaviour (future information); the
+`host_mismatch` trigger's URL-vs-redirect case therefore never fires on PhreshPhish.
