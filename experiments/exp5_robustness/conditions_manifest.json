@@ -1,0 +1,153 @@
+{
+ "split": "test",
+ "system": {
+  "cost_scale": 998.6,
+  "mu": 0.5,
+  "trigger_cover": "any_field"
+ },
+ "conditions": {
+  "base": {
+   "withhold": [],
+   "transient": [],
+   "r_max": 2,
+   "captures": "split",
+   "kind": "reference",
+   "sha256": "b8eb1f16342fefeb7bb83c70c2c4ab4e5365b93b4618ba99a36379b7aade28b1"
+  },
+  "no_html": {
+   "withhold": [
+    "html"
+   ],
+   "transient": [],
+   "r_max": 2,
+   "captures": "split",
+   "kind": "single",
+   "sha256": "7f344ba308afd4b9990303fd11cbf5607b52523b38ecaef143a55ee381cb1afd"
+  },
+  "no_dom": {
+   "withhold": [
+    "dom",
+    "page_content"
+   ],
+   "transient": [],
+   "r_max": 2,
+   "captures": "split",
+   "kind": "single",
+   "sha256": "c6f79c325fc3d1bdc133e7fd71b3d4f676ba87f0e24eb793fa2acbb0b01129d0"
+  },
+  "no_screenshot": {
+   "withhold": [
+    "screenshot"
+   ],
+   "transient": [],
+   "r_max": 2,
+   "captures": "split",
+   "kind": "single",
+   "sha256": "8217461a3739a909f0dd35d6d6de4d8c0dbcb404f062f73f85a36becb9844490"
+  },
+  "no_network_metadata": {
+   "withhold": [
+    "dns",
+    "registration",
+    "tls",
+    "ct",
+    "hosting"
+   ],
+   "transient": [],
+   "r_max": 2,
+   "captures": "split",
+   "kind": "single",
+   "sha256": "640f22bc49f010b90bea27f8c6e7a51149c34824b35d44db0b23022ca65983c6"
+  },
+  "cum1_screenshot": {
+   "withhold": [
+    "screenshot"
+   ],
+   "transient": [],
+   "r_max": 2,
+   "captures": "split",
+   "kind": "cumulative",
+   "sha256": "c6a8632f74fe995a23d384ee7c9b61ae9a821b9129e15467c42f6191a5ac2735"
+  },
+  "cum2_+render": {
+   "withhold": [
+    "screenshot",
+    "dom",
+    "page_content"
+   ],
+   "transient": [],
+   "r_max": 2,
+   "captures": "split",
+   "kind": "cumulative",
+   "sha256": "65d00d07ea95471fb7b6a834195f1ec29d5dc8c70b74ab684853e60f1d8c1de2"
+  },
+  "cum3_+html_no_browser": {
+   "withhold": [
+    "html",
+    "dom",
+    "page_content",
+    "screenshot"
+   ],
+   "transient": [],
+   "r_max": 2,
+   "captures": "split",
+   "kind": "cumulative",
+   "sha256": "be6b9ff02bec2433b74ea61dec77054943ce7f1c1ca97ab07de4c23f60cb9287"
+  },
+  "cum4_+network_url_only": {
+   "withhold": [
+    "html",
+    "dom",
+    "page_content",
+    "screenshot",
+    "dns",
+    "registration",
+    "tls",
+    "ct",
+    "hosting"
+   ],
+   "transient": [],
+   "r_max": 2,
+   "captures": "split",
+   "kind": "cumulative",
+   "sha256": "9d7a6179e4ea0770d82210f0bdbdb149e45a990539ab9bec83bcf6c8f3778171"
+  },
+  "transient_browser_recoverable": {
+   "withhold": [],
+   "transient": [
+    "html",
+    "dom",
+    "page_content",
+    "screenshot"
+   ],
+   "r_max": 2,
+   "captures": "split",
+   "kind": "recovery",
+   "sha256": "ae60769cd9ed0ae7a6e76aa3a267f2e8139aec74d0f78ac3bd774480084778b3"
+  },
+  "transient_browser_no_retry": {
+   "withhold": [],
+   "transient": [
+    "html",
+    "dom",
+    "page_content",
+    "screenshot"
+   ],
+   "r_max": 1,
+   "captures": "split",
+   "kind": "recovery",
+   "sha256": "91d8c9ceaf7c06b5344af48c91819daa1acdef35798bf1b95461ba70343bee4c"
+  },
+  "conflict_swaps": {
+   "withhold": [],
+   "transient": [],
+   "r_max": 2,
+   "captures": "conflict",
+   "kind": "conflict",
+   "sha256": "4176f1bd828e76afad35279e231a13167869362b30e2fbd0918efc32599a4ae9"
+  }
+ },
+ "base_capture_count": 200,
+ "base_captures_sha256": "0e7d95890e6c27aded76add163b33d16b1674dcc37e246312673978448ca5d7f",
+ "conflict_captures_sha256": "750ee2ad8e3b06f287a56e56188e50cc780e5a4753b8410410dafbc3345fa662"
+}
