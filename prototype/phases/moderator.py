@@ -66,6 +66,7 @@ def dependency_groups(
         return ()
 
     buckets = defaultdict(list)
+    semantic_items: list[tuple[str, str]] = []
     for record in records:
         if record.status is not Status.RAN:
             continue
@@ -95,9 +96,17 @@ def dependency_groups(
                      item.provenance.capture_id)
                 ].append(ref)
             elif mode == "semantic":
-                buckets[("semantic_similarity", item.observation)].append(ref)
+                semantic_items.append((ref, item.observation))
             else:
                 raise ValueError(f"unknown reconciliation mode: {mode!r}")
+
+    if mode == "semantic":
+        # The explicit, frozen similarity method (phases/semantic.py), replacing
+        # exact-text equality: paraphrases can now group, which is the point of
+        # the arm -- measuring what similarity-based grouping over-merges.
+        from phases import semantic
+        for n, comp in enumerate(semantic.groups(semantic_items)):
+            buckets[("semantic_similarity", n)] = comp
 
     return tuple(
         DependencyGroup(edge_type=key[0], observation_refs=tuple(refs))

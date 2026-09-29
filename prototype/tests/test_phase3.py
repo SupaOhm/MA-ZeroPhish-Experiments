@@ -119,14 +119,32 @@ class Reconciliation(unittest.TestCase):
 
     def test_agreement_alone_does_not_create_a_group(self):
         # His rule, stated outright: semantic similarity is not dependency.
-        # c1's observations are all textually distinct, so semantic mode finds
-        # nothing while provenance mode finds real edges. Both halves asserted,
-        # so this cannot pass by both being empty.
+        # The framework's policy (provenance) finds real edges and never merges
+        # observations merely because they read alike. The `semantic` arm is the
+        # Experiment 3 strawman: since it became a real similarity method
+        # (phases/semantic.py, threshold fitted on Exp 3 dev cases) it DOES merge
+        # textually different observations that provenance keeps apart -- the
+        # over-merging the experiment measures. (Previously this half asserted
+        # `semantic == ()`, which only held while "semantic" meant exact-text
+        # equality.) Both halves asserted, so neither can pass vacuously.
         _, _, records = phase1and2("c1")
         provenance = dependency_groups(records, mode="provenance")
         semantic = dependency_groups(records, mode="semantic")
         self.assertTrue(provenance)
-        self.assertEqual(semantic, ())
+        prov_pairs = {frozenset((a, b)) for g in provenance
+                      for i, a in enumerate(g.observation_refs) for b in g.observation_refs[i + 1:]}
+        sem_pairs = {frozenset((a, b)) for g in semantic
+                     for i, a in enumerate(g.observation_refs) for b in g.observation_refs[i + 1:]}
+        self.assertTrue(sem_pairs - prov_pairs,
+                        "the semantic strawman should merge something provenance keeps apart")
+
+    def test_semantic_arm_groups_paraphrases_not_only_identical_text(self):
+        from phases.semantic import THRESHOLD, similarity
+        a = "the login form posts the password to collect-42.example"
+        b = "a credential form submits to collect-42.example"
+        self.assertNotEqual(a, b)
+        self.assertGreaterEqual(similarity(a, b), THRESHOLD)
+        self.assertLess(similarity(a, "domain registered 3 days before observation"), THRESHOLD)
 
 
 class Issues(unittest.TestCase):
