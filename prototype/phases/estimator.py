@@ -36,14 +36,15 @@ SUF_CAP = 5
 BAND_RANK = {"none": 0, "thin": 1, "suggestive": 2, "strong": 3, "decisive": 4}
 
 
-def features(records, issues, envelope, solicited: int = 0) -> dict[str, float]:
+def features(records, issues, envelope, solicited: int = 0, mode: str = "provenance",
+             lineage: dict | None = None) -> dict[str, float]:
     applicable = [r for r in records if r.status is not Status.SKIPPED]
     ran = [r for r in applicable if r.status is Status.RAN]
     cov = len(ran) / len(applicable) if applicable else 0.0
 
     items = [(r, it) for r in ran for it in r.items]
     discounted = set()
-    for g in dependency_groups(tuple(records), mode="provenance", envelope=envelope):
+    for g in dependency_groups(tuple(records), mode=mode, envelope=envelope, lineage=lineage):
         if g.edge_type in DISCOUNTABLE_EDGES:
             discounted.update(g.observation_refs[1:])
     p = b = 0
@@ -80,8 +81,9 @@ class LogisticEstimator:
     def predict(self, phi: dict[str, float]) -> float:
         return _sigmoid(self.beta0 + sum(self.beta[f] * phi[f] for f in FEATURES))
 
-    def __call__(self, records, issues, envelope, solicited: int = 0) -> float:
-        return self.predict(features(records, issues, envelope, solicited))
+    def __call__(self, records, issues, envelope, solicited: int = 0,
+                 mode: str = "provenance", lineage: dict | None = None) -> float:
+        return self.predict(features(records, issues, envelope, solicited, mode, lineage))
 
     @classmethod
     def fit(cls, X: list[dict], y: list[int], l2: float = 1e-2, lr: float = 0.5,

@@ -108,17 +108,20 @@ def run_case(cfg: Config, capture, ledger: Ledger, adjudicator=None, estimator=N
                 failed_conjuncts=list(failed_conjuncts(validity)),
                 items=len(record.items),
             )
+        lineage: dict = {}
         hook = None
         if state_sink is not None:
             from phases.estimator import features as _features
 
             def hook(round_index, recs, iss, solicited, p_hat, _ref=ref, _env=envelope):
-                ctx = project_for_judge(recs, iss, _env, cfg.judge_input, cfg.reconciliation)
+                ctx = project_for_judge(recs, iss, _env, cfg.judge_input, cfg.reconciliation,
+                                        lineage=lineage)
                 dec, fb = adjudicator(ctx, _ref.object_id)
                 state_sink.append({
                     "case_id": capture.case_id, "object_id": _ref.object_id,
                     "parent_object_id": _ref.parent_object_id, "round": round_index,
-                    "features": _features(recs, iss, _env, solicited), "p_hat": p_hat,
+                    "features": _features(recs, iss, _env, solicited, cfg.reconciliation, lineage),
+                    "p_hat": p_hat,
                     "judge_verdict": dec.verdict.value, "judge_cause": fb.notes,
                 })
         records, accepted = collaborate(
@@ -126,10 +129,12 @@ def run_case(cfg: Config, capture, ledger: Ledger, adjudicator=None, estimator=N
             tau=cfg.tau, r_max_coll=cfg.r_max_coll, k=cfg.k,
             gate=cfg.gate, collaboration=cfg.collaboration,
             return_revisions=True, estimator=estimator, state_hook=hook,
+            reconciliation=cfg.reconciliation, lineage_sink=lineage,
         )
         issues = moderate(records, envelope)
         context = project_for_judge(
-            records, issues, envelope, cfg.judge_input, cfg.reconciliation, accepted
+            records, issues, envelope, cfg.judge_input, cfg.reconciliation, accepted,
+            lineage=lineage,
         )
         judge_before = (getattr(adjudicator, "calls", 0), getattr(adjudicator, "input_tokens", 0),
                         getattr(adjudicator, "output_tokens", 0))

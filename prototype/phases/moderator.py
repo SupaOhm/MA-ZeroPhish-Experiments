@@ -60,11 +60,17 @@ def _refs_from_other_agents(records, exclude: str) -> tuple[str, ...]:
 
 
 def dependency_groups(
-    records: tuple[FindingRecord, ...], mode: str = "provenance", envelope=None
+    records: tuple[FindingRecord, ...], mode: str = "provenance", envelope=None,
+    lineage: dict | None = None,
 ) -> tuple[DependencyGroup, ...]:
     """`envelope` (optional) enables demonstrated common-cause edges in provenance
     mode (phases/common_cause.py): they are checked against artifact CONTENT, so
-    without the envelope none is inferred."""
+    without the envelope none is inferred.
+    `lineage` (optional, {new_locator: peer refs shown}) comes from `collaborate`
+    and adds borrowed-observation edges: one two-member group per (original,
+    borrowed) pair, original FIRST, so discounting keeps the original and drops
+    the borrowed copy ("borrowed observations retain their original provenance and
+    cannot provide independent corroboration")."""
     if mode == "independent":
         return ()
 
@@ -122,6 +128,17 @@ def dependency_groups(
             comps.setdefault(find(ref), []).append(ref)
         for n, comp in enumerate(sorted(sorted(c) for c in comps.values() if len(c) >= 2)):
             buckets[("common_cause", n)] = comp
+
+    if mode == "provenance" and lineage:
+        current_refs = {it.locator for r in records if r.status is Status.RAN for it in r.items}
+        n = 0
+        for borrowed, shown in sorted(lineage.items()):
+            if borrowed not in current_refs:
+                continue          # superseded since; nothing to discount
+            for original in sorted(shown):
+                if original in current_refs and original != borrowed:
+                    buckets[("borrowed_observation", n)] = [original, borrowed]
+                    n += 1
 
     if mode == "semantic":
         # The explicit, frozen similarity method (phases/semantic.py), replacing
@@ -485,6 +502,7 @@ def collaborate(
     records, envelope, reasoners, ledger, tau: float, r_max_coll: int, k: int,
     gate: str = "calibrated", collaboration: str = "targeted",
     return_revisions: bool = False, estimator=None, state_hook=None,
+    reconciliation: str = "provenance", lineage_sink: dict | None = None,
 ) -> tuple[FindingRecord, ...]:
     """Steps 4-5 -- targeted re-invocation under the gate, then termination.
 
@@ -506,8 +524,11 @@ def collaborate(
         # `estimator` (a trained phases.estimator.LogisticEstimator) replaces the
         # placeholder; `state_hook` records intermediate states for training it.
         if estimator is not None:
+            # The arm's reconciliation policy now reaches the gate: features are
+            # computed over the SAME dependency groups the Judge will see.
             p_hat = estimator(tuple(current), issues, envelope,
-                              solicited=len(accepted_revisions))
+                              solicited=len(accepted_revisions), mode=reconciliation,
+                              lineage=lineage_sink)
         else:
             p_hat = stopping_error(tuple(current), issues, envelope)
         if state_hook is not None:
@@ -594,6 +615,16 @@ def collaborate(
                 if not revision_accepted(candidate, cites.get(agent, ()), envelope):
                     break
                 accepted_revisions.update(h.locator for h in items)
+                if lineage_sink is not None:
+                    # Borrowed-observation lineage, from the actual request: an
+                    # observation the agent did NOT hold before this accepted
+                    # revision was made after it was shown these peer refs.
+                    before = {(h.locator, h.observation) for h in record.items}
+                    shown = tuple(r for r in cites.get(agent, ()) if not
+                                  r.startswith(tuple(f"{f}:" for f in fields.AGENT_FIELDS[agent])))
+                    for h in items:
+                        if (h.locator, h.observation) not in before and shown:
+                            lineage_sink[h.locator] = shown
                 current[n] = candidate
                 break
     if return_revisions:
