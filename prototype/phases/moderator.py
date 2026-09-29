@@ -513,6 +513,7 @@ def collaborate(
     return_revisions: bool = False, estimator=None, state_hook=None,
     reconciliation: str = "provenance", lineage_sink: dict | None = None,
     dispatch_sink: list | None = None, costs: dict | None = None,
+    unreadable: frozenset[str] = frozenset(),
 ) -> tuple[FindingRecord, ...]:
     """Steps 4-5 -- targeted re-invocation under the gate, then termination.
 
@@ -597,7 +598,7 @@ def collaborate(
                     # Phase 3 Step 5: newly dispatched specialists undergo
                     # initial validation, not ValidRev. No predecessor/citation
                     # requirement, and no locators marked as accepted revisions.
-                    current[n], _ = initial_record(agent, items, envelope)
+                    current[n], _ = initial_record(agent, items, envelope, unreadable)
                     if dispatch_sink is not None:
                         dispatch_sink.append({"agent": agent, "round": round_index,
                                               "issue": _issue_kind(focus_of.get(agent)),
@@ -613,7 +614,7 @@ def collaborate(
                 # A revision cannot manufacture availability: a specialist
                 # still missing required evidence remains no_data even if an
                 # auxiliary artifact supplies directional items.
-                status = analysis_status(agent, envelope)
+                status = analysis_status(agent, envelope, unreadable)
                 candidate = replace(
                     record,
                     status=status,

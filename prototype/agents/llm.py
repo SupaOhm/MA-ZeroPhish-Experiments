@@ -104,6 +104,8 @@ def estimated_tokens(agent: str, envelope) -> float:
 class LLMSpecialists:
     """Factory with usage and grounding counters (read by run.run_case)."""
 
+    unreadable_fields = TEXT_ONLY_EXCLUDED      # run.py: such evidence cannot make a record `ran`
+
     def __init__(self, model, max_findings: int = 6, max_tokens: int = 2048):
         self.model, self.max_findings, self.max_tokens = model, max_findings, max_tokens
         self.calls = self.input_tokens = self.output_tokens = 0

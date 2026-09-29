@@ -194,5 +194,21 @@ class RunCaseTests(unittest.TestCase):
         self.assertEqual(recs["url"]["items"], 1)
 
 
+class UnreadableEvidenceTests(unittest.TestCase):
+    def test_screenshot_only_content_agent_is_no_data_not_ran(self):
+        from dataclasses import replace as _replace
+        cap = next(c for c in load_captures(CAPTURE_DIR) if c.case_id.startswith("c1"))
+        cfg = _replace(MAZEROPHISH, selection="all_applicable",
+                       evidence_removal=frozenset({"page_content", "brand_reference"}))
+        spec = LLMSpecialists(Scripted())
+        path = os.path.join(tempfile.mkdtemp(), "l.jsonl")
+        with Ledger(path, arm="t") as ledger:
+            run_case(cfg, cap, ledger, specialists=spec)
+        with open(path, encoding="utf-8") as fh:
+            events = [json.loads(l) for l in fh]
+        content = next(e for e in events if e.get("kind") == "record" and e["agent"] == "content")
+        self.assertEqual(content["status"], "no_data")
+
+
 if __name__ == "__main__":
     unittest.main()

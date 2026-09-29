@@ -65,6 +65,7 @@ def run_case(cfg: Config, capture, ledger: Ledger, adjudicator=None, estimator=N
     replay = Replay(capture, withhold=cfg.evidence_removal, transient=cfg.transient_failures)
     reasoners_for = (specialists.make_reasoners(capture) if specialists is not None
                      else make_reasoners(capture))
+    unreadable = frozenset(getattr(specialists, "unreadable_fields", ()))
 
     for ref in classified.objects:
         calls: list[str] = []
@@ -98,7 +99,7 @@ def run_case(cfg: Config, capture, ledger: Ledger, adjudicator=None, estimator=N
         )
         records, rejections = run_phase2(
             envelope, plan, dispatched, reasoners, budget, return_rejections=True,
-            costs=costs,
+            costs=costs, unreadable=unreadable,
         )
         executed = sorted(r.agent for r in records
                           if r.status not in (Status.SKIPPED, Status.NOT_DISPATCHED))
@@ -154,7 +155,7 @@ def run_case(cfg: Config, capture, ledger: Ledger, adjudicator=None, estimator=N
             gate=cfg.gate, collaboration=cfg.collaboration,
             return_revisions=True, estimator=estimator, state_hook=hook,
             reconciliation=cfg.reconciliation, lineage_sink=lineage,
-            dispatch_sink=later, costs=costs,
+            dispatch_sink=later, costs=costs, unreadable=unreadable,
         )
         for d in later:
             ledger.event("later_dispatch", capture.case_id, object_id=ref.object_id, **d)

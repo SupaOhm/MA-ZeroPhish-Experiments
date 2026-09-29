@@ -76,6 +76,7 @@ def run_phase2(
     ledger: BudgetLedger,
     return_rejections: bool = False,
     costs: dict | None = None,
+    unreadable: frozenset[str] = frozenset(),
 ) -> tuple[FindingRecord, ...]:
     """His Phase 2 over the five specialists.
 
@@ -119,7 +120,7 @@ def run_phase2(
         items = reasoners[agent](envelope)
         ledger.charge(reservation, cost)
 
-        record, validity = initial_record(agent, items, envelope)
+        record, validity = initial_record(agent, items, envelope, unreadable)
         if not validity.is_valid:
             rejections.append((record, validity))
         records.append(record)
@@ -128,16 +129,24 @@ def run_phase2(
     return tuple(records)
 
 
-def analysis_status(agent, envelope: EvidenceEnvelope) -> Status:
-    """The same required-evidence rule for initial and revised analyses."""
+def analysis_status(agent, envelope: EvidenceEnvelope,
+                    unreadable: frozenset[str] = frozenset()) -> Status:
+    """The same required-evidence rule for initial and revised analyses.
+
+    `unreadable`: fields obtained but not readable by the specialist implementation
+    (the text-only model adapter cannot read `screenshot`). Required evidence the
+    specialist could not read does not make its analysis `ran` -- otherwise a
+    screenshot-only Content Agent would count as analysed coverage while having
+    read nothing."""
     return (
         Status.RAN
-        if fields.AGENT_REQUIRED[agent] & set(envelope.normalized)
+        if fields.AGENT_REQUIRED[agent] & (set(envelope.normalized) - unreadable)
         else Status.NO_DATA
     )
 
 
-def initial_record(agent, items, envelope: EvidenceEnvelope):
+def initial_record(agent, items, envelope: EvidenceEnvelope,
+                   unreadable: frozenset[str] = frozenset()):
     """Build and validate a first analysis, in Phase 2 or a later dispatch.
 
     Readiness requires any authorized field; `ran` requires an obtained required
@@ -148,8 +157,8 @@ def initial_record(agent, items, envelope: EvidenceEnvelope):
     Return the original validity alongside an auditable error record on failure:
     clearing its verdict must not erase the reason it was rejected.
     """
-    obtained = set(envelope.normalized)
-    status = analysis_status(agent, envelope)
+    obtained = set(envelope.normalized) - unreadable
+    status = analysis_status(agent, envelope, unreadable)
     record = FindingRecord(
         object_id=envelope.object_id,
         agent=agent,
