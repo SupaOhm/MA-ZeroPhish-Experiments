@@ -77,6 +77,24 @@ class MixedRuns(unittest.TestCase):
         self.assertEqual(len(decisions[("a", 0)]), 2)
 
 
+class PrAucWithMissingScores(unittest.TestCase):
+    LABELS = ["phishing", "benign", "phishing", "benign"]
+    VERDICTS = ["phishing", "benign", "finalization_error", "benign"]
+
+    def test_computed_over_the_scored_cases(self):
+        m = metrics(self.LABELS, self.VERDICTS, [0.9, 0.2, None, 0.1])
+        self.assertEqual(m["n_scored"], 3)
+        self.assertEqual(m["pr_auc"], 1.0)
+
+    def test_none_only_when_nothing_is_scored(self):
+        m = metrics(self.LABELS, self.VERDICTS, [None] * 4)
+        self.assertEqual(m["n_scored"], 0)
+        self.assertIsNone(m["pr_auc"])
+        m = metrics(self.LABELS, self.VERDICTS)
+        self.assertEqual(m["n_scored"], 0)
+        self.assertIsNone(m["pr_auc"])
+
+
 class FixtureOutputRefused(unittest.TestCase):
     def test_recorded_fixture_is_simulated(self):
         decisions = {("a", 0): {"c": {"model_id": "recorded-fixture"}}}

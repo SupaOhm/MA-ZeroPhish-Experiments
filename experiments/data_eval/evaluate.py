@@ -6,7 +6,8 @@ configurations AND the separate baselines (single-agent, PhishDebate, CoT) --
 must write `decision` events with at least:
     {"kind": "decision", "arm": str, "case_id": str, "verdict": "phishing"|"benign"|"insufficient",
      "parent_object_id": null, "repeat": int (optional, default 0),
-     "score": float|null (optional P(phishing), for PR-AUC),
+     "score": float|null (optional P(phishing), for PR-AUC over the scored cases;
+                          `n_scored` reports how many),
      "model_calls", "input_tokens", "output_tokens", "monetary_cost", "latency_s" (optional)}
 Only parent decisions are scored (one row per submission). API/quota failures
 must NOT be written as decisions; a missing case is reported, never scored.
@@ -139,10 +140,12 @@ def metrics(labels: list[str], verdicts: list[str], scores: list | None = None,
         "forced_f1": _div(2 * fp_ * fr, fp_ + fr) if fp_ is not None and fr is not None else None,
         "forced_fpr": _div(ffp, ffp + ftn), "forced_accuracy": _div(tp + tn, n),
     }
-    if scores is not None and all(s is not None for s in scores) and scores:
-        out["pr_auc"] = average_precision(labels, scores)
-    else:
-        out["pr_auc"] = None          # no ranking score produced by this arm
+    # Over the cases that carry a score (a finalization_error has none);
+    # n_scored says how many. None only when no case has a score.
+    scored = [(y, s) for y, s in zip(labels, scores or []) if s is not None]
+    out["n_scored"] = len(scored)
+    out["pr_auc"] = (average_precision([y for y, _ in scored], [s for _, s in scored])
+                     if scored else None)
     if costs:
         for k in COST_KEYS:
             vals = [c.get(k) for c in costs if c.get(k) is not None]
