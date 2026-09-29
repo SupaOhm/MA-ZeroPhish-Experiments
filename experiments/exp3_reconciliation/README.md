@@ -54,6 +54,31 @@ shared acquisition 0%. Semantic: 81%, 69%, 9.3%, 2.3%.
 6. Constructed cases use template wording; real specialist text may differ. Re-run the
    scorer on real records once stage 6 lands.
 
+## v2: demonstrated common-cause edge (commit 3022813)
+Rule (`prototype/phases/common_cause.py`): link two observations only if both come from
+attacker-controlled artifacts (different artifacts, same capture), both name the same
+specific entity (>= 3 chars, not generic vocabulary), and that entity occurs in BOTH
+artifacts' content. `cases.py --version 2 --seed 2718` adds artifact content and trap T7
+(Google reCAPTCHA badge vs Google Analytics script: shared entity, independent facts).
+Dev check (only) found 3-letter brands (DHL) missed; min length lowered 4 -> 3 with
+3-letter stop words, then frozen before scoring test. Semantic threshold kept at 0.15.
+
+Held-out v2 test (80 cases, 2,599 pairs, 485 dependent):
+| policy | precision | recall | F1 | under-merge | over-merge | duplicate support | lost independent support |
+|---|---|---|---|---|---|---|---|
+| provenance | 1.000 | 0.819 | 0.900 | 18.1% | 0.0% | 19.6% | 0.0% |
+| **provenance + common cause** | 0.908 | **1.000** | **0.952** | **0.0%** | 2.3% | **0.0%** | 0.0% |
+| semantic | 0.616 | 0.546 | 0.579 | 45.4% | 7.8% | 14.7% | 6.6% |
+| independent | — | 0.000 | 0.000 | 100% | 0.0% | 48.3% | 0.0% |
+
+- The common-cause edge removes all duplicate support (19.6% -> 0%) and never merges
+  genuinely independent pairs (0% of `independent` kind).
+- **All 49 of its over-merges are the T7 trap** (a shared third-party entity behind two
+  independent facts): the rule's known weakness, measured rather than hidden. Here it cost
+  no independent support because T7 carries at most one directional observation.
+- T7 and the entity rule were designed together, so this is a stress test of a known risk,
+  not evidence about the rule's error rate on real pages.
+
 ## Next
 Implement a *demonstrated* common-cause edge from real records (e.g. the same
 attacker-controlled entity token extracted from the same capture, as Phase 1's shared-

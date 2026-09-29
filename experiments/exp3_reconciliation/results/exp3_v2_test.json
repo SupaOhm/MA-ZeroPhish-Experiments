@@ -1,0 +1,8329 @@
+[
+ {
+  "policy": "provenance",
+  "threshold": null,
+  "pairs": 2599,
+  "tp": 397,
+  "fp": 0,
+  "fn": 88,
+  "tn": 2114,
+  "precision": 1.0,
+  "recall": 0.8185567010309278,
+  "f1": 0.9002267573696145,
+  "under_merge_rate": 0.18144329896907216,
+  "over_merge_rate": 0.0,
+  "merge_rate_by_kind": {
+   "common_cause": 0.0,
+   "independent": 0.0,
+   "same_artifact": 1.0,
+   "shared_acquisition_only": 0.0
+  },
+  "support_units_policy": 341,
+  "support_units_truth": 274,
+  "duplicate_support_rate": 0.19648093841642228,
+  "lost_independent_support_rate": 0.0,
+  "shared_acquisition_groups_recorded": 101,
+  "escalation_and_verdict_effects": "not measured (needs real specialists + real Judge)",
+  "per_case": [
+   {
+    "case_id": "exp3v2-test-000",
+    "errors": [
+     [
+      "under",
+      "url:0",
+      "page_content:1",
+      "common_cause"
+     ]
+    ],
+    "units": 3,
+    "gt_units": 2
+   },
+   {
+    "case_id": "exp3v2-test-001",
+    "errors": [],
+    "units": 4,
+    "gt_units": 4
+   },
+   {
+    "case_id": "exp3v2-test-002",
+    "errors": [
+     [
+      "under",
+      "url:0",
+      "page_content:0",
+      "common_cause"
+     ]
+    ],
+    "units": 4,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-test-003",
+    "errors": [
+     [
+      "under",
+      "url:0",
+      "page_content:0",
+      "common_cause"
+     ],
+     [
+      "under",
+      "url:0",
+      "message_body:0",
+      "common_cause"
+     ],
+     [
+      "under",
+      "page_content:0",
+      "message_body:0",
+      "common_cause"
+     ]
+    ],
+    "units": 6,
+    "gt_units": 4
+   },
+   {
+    "case_id": "exp3v2-test-004",
+    "errors": [],
+    "units": 3,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-test-005",
+    "errors": [],
+    "units": 5,
+    "gt_units": 5
+   },
+   {
+    "case_id": "exp3v2-test-006",
+    "errors": [],
+    "units": 3,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-test-007",
+    "errors": [
+     [
+      "under",
+      "url:0",
+      "page_content:0",
+      "common_cause"
+     ],
+     [
+      "under",
+      "url:0",
+      "message_body:0",
+      "common_cause"
+     ],
+     [
+      "under",
+      "page_content:0",
+      "message_body:0",
+      "common_cause"
+     ]
+    ],
+    "units": 4,
+    "gt_units": 2
+   },
+   {
+    "case_id": "exp3v2-test-008",
+    "errors": [],
+    "units": 5,
+    "gt_units": 5
+   },
+   {
+    "case_id": "exp3v2-test-009",
+    "errors": [
+     [
+      "under",
+      "url:0",
+      "page_content:1",
+      "common_cause"
+     ]
+    ],
+    "units": 4,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-test-010",
+    "errors": [
+     [
+      "under",
+      "url:0",
+      "page_content:0",
+      "common_cause"
+     ],
+     [
+      "under",
+      "url:0",
+      "message_body:0",
+      "common_cause"
+     ],
+     [
+      "under",
+      "page_content:0",
+      "message_body:0",
+      "common_cause"
+     ]
+    ],
+    "units": 7,
+    "gt_units": 5
+   },
+   {
+    "case_id": "exp3v2-test-011",
+    "errors": [],
+    "units": 3,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-test-012",
+    "errors": [
+     [
+      "under",
+      "url:0",
+      "page_content:0",
+      "common_cause"
+     ],
+     [
+      "under",
+      "url:0",
+      "message_body:0",
+      "common_cause"
+     ],
+     [
+      "under",
+      "page_content:0",
+      "message_body:0",
+      "common_cause"
+     ]
+    ],
+    "units": 5,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-test-013",
+    "errors": [],
+    "units": 4,
+    "gt_units": 4
+   },
+   {
+    "case_id": "exp3v2-test-014",
+    "errors": [
+     [
+      "under",
+      "url:0",
+      "page_content:1",
+      "common_cause"
+     ],
+     [
+      "under",
+      "url:0",
+      "message_body:0",
+      "common_cause"
+     ],
+     [
+      "under",
+      "page_content:1",
+      "message_body:0",
+      "common_cause"
+     ]
+    ],
+    "units": 5,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-test-015",
+    "errors": [
+     [
+      "under",
+      "url:0",
+      "page_content:1",
+      "common_cause"
+     ]
+    ],
+    "units": 4,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-test-016",
+    "errors": [
+     [
+      "under",
+      "url:0",
+      "page_content:1",
+      "common_cause"
+     ],
+     [
+      "under",
+      "url:0",
+      "message_body:0",
+      "common_cause"
+     ],
+     [
+      "under",
+      "page_content:1",
+      "message_body:0",
+      "common_cause"
+     ]
+    ],
+    "units": 6,
+    "gt_units": 4
+   },
+   {
+    "case_id": "exp3v2-test-017",
+    "errors": [],
+    "units": 5,
+    "gt_units": 5
+   },
+   {
+    "case_id": "exp3v2-test-018",
+    "errors": [],
+    "units": 3,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-test-019",
+    "errors": [
+     [
+      "under",
+      "url:0",
+      "page_content:1",
+      "common_cause"
+     ],
+     [
+      "under",
+      "url:0",
+      "message_body:0",
+      "common_cause"
+     ],
+     [
+      "under",
+      "page_content:1",
+      "message_body:0",
+      "common_cause"
+     ]
+    ],
+    "units": 5,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-test-020",
+    "errors": [
+     [
+      "under",
+      "url:0",
+      "page_content:1",
+      "common_cause"
+     ]
+    ],
+    "units": 5,
+    "gt_units": 4
+   },
+   {
+    "case_id": "exp3v2-test-021",
+    "errors": [
+     [
+      "under",
+      "url:0",
+      "page_content:0",
+      "common_cause"
+     ]
+    ],
+    "units": 5,
+    "gt_units": 4
+   },
+   {
+    "case_id": "exp3v2-test-022",
+    "errors": [
+     [
+      "under",
+      "url:0",
+      "page_content:0",
+      "common_cause"
+     ],
+     [
+      "under",
+      "url:0",
+      "message_body:0",
+      "common_cause"
+     ],
+     [
+      "under",
+      "page_content:0",
+      "message_body:0",
+      "common_cause"
+     ]
+    ],
+    "units": 5,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-test-023",
+    "errors": [
+     [
+      "under",
+      "url:0",
+      "page_content:0",
+      "common_cause"
+     ],
+     [
+      "under",
+      "url:0",
+      "message_body:0",
+      "common_cause"
+     ],
+     [
+      "under",
+      "page_content:0",
+      "message_body:0",
+      "common_cause"
+     ]
+    ],
+    "units": 6,
+    "gt_units": 4
+   },
+   {
+    "case_id": "exp3v2-test-024",
+    "errors": [
+     [
+      "under",
+      "url:0",
+      "page_content:2",
+      "common_cause"
+     ]
+    ],
+    "units": 6,
+    "gt_units": 5
+   },
+   {
+    "case_id": "exp3v2-test-025",
+    "errors": [
+     [
+      "under",
+      "url:0",
+      "page_content:1",
+      "common_cause"
+     ]
+    ],
+    "units": 6,
+    "gt_units": 5
+   },
+   {
+    "case_id": "exp3v2-test-026",
+    "errors": [],
+    "units": 5,
+    "gt_units": 5
+   },
+   {
+    "case_id": "exp3v2-test-027",
+    "errors": [],
+    "units": 4,
+    "gt_units": 4
+   },
+   {
+    "case_id": "exp3v2-test-028",
+    "errors": [],
+    "units": 3,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-test-029",
+    "errors": [],
+    "units": 4,
+    "gt_units": 4
+   },
+   {
+    "case_id": "exp3v2-test-030",
+    "errors": [],
+    "units": 5,
+    "gt_units": 5
+   },
+   {
+    "case_id": "exp3v2-test-031",
+    "errors": [],
+    "units": 2,
+    "gt_units": 2
+   },
+   {
+    "case_id": "exp3v2-test-032",
+    "errors": [
+     [
+      "under",
+      "url:0",
+      "page_content:1",
+      "common_cause"
+     ]
+    ],
+    "units": 6,
+    "gt_units": 5
+   },
+   {
+    "case_id": "exp3v2-test-033",
+    "errors": [],
+    "units": 5,
+    "gt_units": 5
+   },
+   {
+    "case_id": "exp3v2-test-034",
+    "errors": [
+     [
+      "under",
+      "url:0",
+      "page_content:0",
+      "common_cause"
+     ]
+    ],
+    "units": 2,
+    "gt_units": 1
+   },
+   {
+    "case_id": "exp3v2-test-035",
+    "errors": [
+     [
+      "under",
+      "url:0",
+      "page_content:1",
+      "common_cause"
+     ],
+     [
+      "under",
+      "url:0",
+      "message_body:0",
+      "common_cause"
+     ],
+     [
+      "under",
+      "page_content:1",
+      "message_body:0",
+      "common_cause"
+     ]
+    ],
+    "units": 5,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-test-036",
+    "errors": [
+     [
+      "under",
+      "url:0",
+      "page_content:0",
+      "common_cause"
+     ],
+     [
+      "under",
+      "url:0",
+      "message_body:0",
+      "common_cause"
+     ],
+     [
+      "under",
+      "page_content:0",
+      "message_body:0",
+      "common_cause"
+     ]
+    ],
+    "units": 6,
+    "gt_units": 4
+   },
+   {
+    "case_id": "exp3v2-test-037",
+    "errors": [],
+    "units": 3,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-test-038",
+    "errors": [],
+    "units": 5,
+    "gt_units": 5
+   },
+   {
+    "case_id": "exp3v2-test-039",
+    "errors": [
+     [
+      "under",
+      "url:0",
+      "page_content:0",
+      "common_cause"
+     ]
+    ],
+    "units": 3,
+    "gt_units": 2
+   },
+   {
+    "case_id": "exp3v2-test-040",
+    "errors": [
+     [
+      "under",
+      "url:0",
+      "page_content:0",
+      "common_cause"
+     ]
+    ],
+    "units": 4,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-test-041",
+    "errors": [],
+    "units": 3,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-test-042",
+    "errors": [
+     [
+      "under",
+      "url:0",
+      "page_content:0",
+      "common_cause"
+     ]
+    ],
+    "units": 3,
+    "gt_units": 2
+   },
+   {
+    "case_id": "exp3v2-test-043",
+    "errors": [
+     [
+      "under",
+      "url:0",
+      "page_content:0",
+      "common_cause"
+     ],
+     [
+      "under",
+      "url:0",
+      "message_body:0",
+      "common_cause"
+     ],
+     [
+      "under",
+      "page_content:0",
+      "message_body:0",
+      "common_cause"
+     ]
+    ],
+    "units": 5,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-test-044",
+    "errors": [
+     [
+      "under",
+      "url:0",
+      "page_content:0",
+      "common_cause"
+     ],
+     [
+      "under",
+      "url:0",
+      "message_body:0",
+      "common_cause"
+     ],
+     [
+      "under",
+      "page_content:0",
+      "message_body:0",
+      "common_cause"
+     ]
+    ],
+    "units": 4,
+    "gt_units": 2
+   },
+   {
+    "case_id": "exp3v2-test-045",
+    "errors": [
+     [
+      "under",
+      "url:0",
+      "page_content:1",
+      "common_cause"
+     ]
+    ],
+    "units": 3,
+    "gt_units": 2
+   },
+   {
+    "case_id": "exp3v2-test-046",
+    "errors": [],
+    "units": 3,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-test-047",
+    "errors": [
+     [
+      "under",
+      "url:0",
+      "page_content:2",
+      "common_cause"
+     ],
+     [
+      "under",
+      "url:0",
+      "message_body:0",
+      "common_cause"
+     ],
+     [
+      "under",
+      "page_content:2",
+      "message_body:0",
+      "common_cause"
+     ]
+    ],
+    "units": 7,
+    "gt_units": 5
+   },
+   {
+    "case_id": "exp3v2-test-048",
+    "errors": [
+     [
+      "under",
+      "url:0",
+      "page_content:0",
+      "common_cause"
+     ]
+    ],
+    "units": 3,
+    "gt_units": 2
+   },
+   {
+    "case_id": "exp3v2-test-049",
+    "errors": [
+     [
+      "under",
+      "url:0",
+      "page_content:0",
+      "common_cause"
+     ],
+     [
+      "under",
+      "url:0",
+      "message_body:0",
+      "common_cause"
+     ],
+     [
+      "under",
+      "page_content:0",
+      "message_body:0",
+      "common_cause"
+     ]
+    ],
+    "units": 4,
+    "gt_units": 2
+   },
+   {
+    "case_id": "exp3v2-test-050",
+    "errors": [
+     [
+      "under",
+      "url:0",
+      "page_content:0",
+      "common_cause"
+     ]
+    ],
+    "units": 3,
+    "gt_units": 2
+   },
+   {
+    "case_id": "exp3v2-test-051",
+    "errors": [
+     [
+      "under",
+      "url:0",
+      "page_content:0",
+      "common_cause"
+     ],
+     [
+      "under",
+      "url:0",
+      "message_body:0",
+      "common_cause"
+     ],
+     [
+      "under",
+      "page_content:0",
+      "message_body:0",
+      "common_cause"
+     ]
+    ],
+    "units": 7,
+    "gt_units": 5
+   },
+   {
+    "case_id": "exp3v2-test-052",
+    "errors": [],
+    "units": 4,
+    "gt_units": 4
+   },
+   {
+    "case_id": "exp3v2-test-053",
+    "errors": [],
+    "units": 2,
+    "gt_units": 2
+   },
+   {
+    "case_id": "exp3v2-test-054",
+    "errors": [
+     [
+      "under",
+      "url:0",
+      "page_content:0",
+      "common_cause"
+     ],
+     [
+      "under",
+      "url:0",
+      "message_body:0",
+      "common_cause"
+     ],
+     [
+      "under",
+      "page_content:0",
+      "message_body:0",
+      "common_cause"
+     ]
+    ],
+    "units": 5,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-test-055",
+    "errors": [],
+    "units": 3,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-test-056",
+    "errors": [],
+    "units": 4,
+    "gt_units": 4
+   },
+   {
+    "case_id": "exp3v2-test-057",
+    "errors": [
+     [
+      "under",
+      "url:0",
+      "page_content:1",
+      "common_cause"
+     ],
+     [
+      "under",
+      "url:0",
+      "message_body:0",
+      "common_cause"
+     ],
+     [
+      "under",
+      "page_content:1",
+      "message_body:0",
+      "common_cause"
+     ]
+    ],
+    "units": 4,
+    "gt_units": 2
+   },
+   {
+    "case_id": "exp3v2-test-058",
+    "errors": [
+     [
+      "under",
+      "url:0",
+      "page_content:1",
+      "common_cause"
+     ]
+    ],
+    "units": 3,
+    "gt_units": 2
+   },
+   {
+    "case_id": "exp3v2-test-059",
+    "errors": [],
+    "units": 2,
+    "gt_units": 2
+   },
+   {
+    "case_id": "exp3v2-test-060",
+    "errors": [
+     [
+      "under",
+      "url:0",
+      "page_content:0",
+      "common_cause"
+     ],
+     [
+      "under",
+      "url:0",
+      "message_body:0",
+      "common_cause"
+     ],
+     [
+      "under",
+      "page_content:0",
+      "message_body:0",
+      "common_cause"
+     ]
+    ],
+    "units": 5,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-test-061",
+    "errors": [],
+    "units": 3,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-test-062",
+    "errors": [],
+    "units": 3,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-test-063",
+    "errors": [
+     [
+      "under",
+      "url:0",
+      "page_content:0",
+      "common_cause"
+     ],
+     [
+      "under",
+      "url:0",
+      "message_body:0",
+      "common_cause"
+     ],
+     [
+      "under",
+      "page_content:0",
+      "message_body:0",
+      "common_cause"
+     ]
+    ],
+    "units": 6,
+    "gt_units": 4
+   },
+   {
+    "case_id": "exp3v2-test-064",
+    "errors": [],
+    "units": 3,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-test-065",
+    "errors": [
+     [
+      "under",
+      "url:0",
+      "page_content:1",
+      "common_cause"
+     ]
+    ],
+    "units": 3,
+    "gt_units": 2
+   },
+   {
+    "case_id": "exp3v2-test-066",
+    "errors": [
+     [
+      "under",
+      "url:0",
+      "page_content:1",
+      "common_cause"
+     ]
+    ],
+    "units": 4,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-test-067",
+    "errors": [],
+    "units": 3,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-test-068",
+    "errors": [
+     [
+      "under",
+      "url:0",
+      "page_content:0",
+      "common_cause"
+     ]
+    ],
+    "units": 5,
+    "gt_units": 4
+   },
+   {
+    "case_id": "exp3v2-test-069",
+    "errors": [],
+    "units": 5,
+    "gt_units": 5
+   },
+   {
+    "case_id": "exp3v2-test-070",
+    "errors": [
+     [
+      "under",
+      "url:0",
+      "page_content:1",
+      "common_cause"
+     ]
+    ],
+    "units": 5,
+    "gt_units": 4
+   },
+   {
+    "case_id": "exp3v2-test-071",
+    "errors": [],
+    "units": 3,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-test-072",
+    "errors": [],
+    "units": 5,
+    "gt_units": 5
+   },
+   {
+    "case_id": "exp3v2-test-073",
+    "errors": [
+     [
+      "under",
+      "url:0",
+      "page_content:0",
+      "common_cause"
+     ]
+    ],
+    "units": 4,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-test-074",
+    "errors": [],
+    "units": 3,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-test-075",
+    "errors": [
+     [
+      "under",
+      "url:0",
+      "page_content:1",
+      "common_cause"
+     ]
+    ],
+    "units": 3,
+    "gt_units": 2
+   },
+   {
+    "case_id": "exp3v2-test-076",
+    "errors": [
+     [
+      "under",
+      "url:0",
+      "page_content:1",
+      "common_cause"
+     ],
+     [
+      "under",
+      "url:0",
+      "message_body:0",
+      "common_cause"
+     ],
+     [
+      "under",
+      "page_content:1",
+      "message_body:0",
+      "common_cause"
+     ]
+    ],
+    "units": 6,
+    "gt_units": 4
+   },
+   {
+    "case_id": "exp3v2-test-077",
+    "errors": [
+     [
+      "under",
+      "url:0",
+      "page_content:1",
+      "common_cause"
+     ]
+    ],
+    "units": 6,
+    "gt_units": 5
+   },
+   {
+    "case_id": "exp3v2-test-078",
+    "errors": [
+     [
+      "under",
+      "url:0",
+      "page_content:0",
+      "common_cause"
+     ]
+    ],
+    "units": 6,
+    "gt_units": 5
+   },
+   {
+    "case_id": "exp3v2-test-079",
+    "errors": [],
+    "units": 5,
+    "gt_units": 5
+   }
+  ]
+ },
+ {
+  "policy": "provenance_cc",
+  "threshold": null,
+  "pairs": 2599,
+  "tp": 485,
+  "fp": 49,
+  "fn": 0,
+  "tn": 2065,
+  "precision": 0.9082397003745318,
+  "recall": 1.0,
+  "f1": 0.9519136408243376,
+  "under_merge_rate": 0.0,
+  "over_merge_rate": 0.023178807947019868,
+  "merge_rate_by_kind": {
+   "common_cause": 1.0,
+   "independent": 0.0,
+   "same_artifact": 1.0,
+   "shared_acquisition_only": 0.056
+  },
+  "support_units_policy": 274,
+  "support_units_truth": 274,
+  "duplicate_support_rate": 0.0,
+  "lost_independent_support_rate": 0.0,
+  "shared_acquisition_groups_recorded": 101,
+  "escalation_and_verdict_effects": "not measured (needs real specialists + real Judge)",
+  "per_case": [
+   {
+    "case_id": "exp3v2-test-000",
+    "errors": [],
+    "units": 2,
+    "gt_units": 2
+   },
+   {
+    "case_id": "exp3v2-test-001",
+    "errors": [
+     [
+      "over",
+      "page_content:1",
+      "html:0",
+      "shared_acquisition_only"
+     ]
+    ],
+    "units": 4,
+    "gt_units": 4
+   },
+   {
+    "case_id": "exp3v2-test-002",
+    "errors": [
+     [
+      "over",
+      "page_content:1",
+      "html:0",
+      "shared_acquisition_only"
+     ]
+    ],
+    "units": 3,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-test-003",
+    "errors": [
+     [
+      "over",
+      "page_content:1",
+      "html:2",
+      "shared_acquisition_only"
+     ]
+    ],
+    "units": 4,
+    "gt_units": 4
+   },
+   {
+    "case_id": "exp3v2-test-004",
+    "errors": [],
+    "units": 3,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-test-005",
+    "errors": [
+     [
+      "over",
+      "page_content:1",
+      "html:2",
+      "shared_acquisition_only"
+     ]
+    ],
+    "units": 5,
+    "gt_units": 5
+   },
+   {
+    "case_id": "exp3v2-test-006",
+    "errors": [
+     [
+      "over",
+      "page_content:1",
+      "html:0",
+      "shared_acquisition_only"
+     ]
+    ],
+    "units": 3,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-test-007",
+    "errors": [
+     [
+      "over",
+      "page_content:1",
+      "html:0",
+      "shared_acquisition_only"
+     ]
+    ],
+    "units": 2,
+    "gt_units": 2
+   },
+   {
+    "case_id": "exp3v2-test-008",
+    "errors": [
+     [
+      "over",
+      "page_content:1",
+      "html:2",
+      "shared_acquisition_only"
+     ]
+    ],
+    "units": 5,
+    "gt_units": 5
+   },
+   {
+    "case_id": "exp3v2-test-009",
+    "errors": [
+     [
+      "over",
+      "page_content:2",
+      "html:2",
+      "shared_acquisition_only"
+     ]
+    ],
+    "units": 3,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-test-010",
+    "errors": [],
+    "units": 5,
+    "gt_units": 5
+   },
+   {
+    "case_id": "exp3v2-test-011",
+    "errors": [
+     [
+      "over",
+      "page_content:1",
+      "html:4",
+      "shared_acquisition_only"
+     ]
+    ],
+    "units": 3,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-test-012",
+    "errors": [],
+    "units": 3,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-test-013",
+    "errors": [
+     [
+      "over",
+      "page_content:0",
+      "html:2",
+      "shared_acquisition_only"
+     ]
+    ],
+    "units": 4,
+    "gt_units": 4
+   },
+   {
+    "case_id": "exp3v2-test-014",
+    "errors": [
+     [
+      "over",
+      "page_content:2",
+      "html:4",
+      "shared_acquisition_only"
+     ]
+    ],
+    "units": 3,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-test-015",
+    "errors": [],
+    "units": 3,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-test-016",
+    "errors": [
+     [
+      "over",
+      "page_content:2",
+      "html:0",
+      "shared_acquisition_only"
+     ]
+    ],
+    "units": 4,
+    "gt_units": 4
+   },
+   {
+    "case_id": "exp3v2-test-017",
+    "errors": [],
+    "units": 5,
+    "gt_units": 5
+   },
+   {
+    "case_id": "exp3v2-test-018",
+    "errors": [
+     [
+      "over",
+      "page_content:1",
+      "html:4",
+      "shared_acquisition_only"
+     ]
+    ],
+    "units": 3,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-test-019",
+    "errors": [],
+    "units": 3,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-test-020",
+    "errors": [
+     [
+      "over",
+      "page_content:0",
+      "html:0",
+      "shared_acquisition_only"
+     ]
+    ],
+    "units": 4,
+    "gt_units": 4
+   },
+   {
+    "case_id": "exp3v2-test-021",
+    "errors": [],
+    "units": 4,
+    "gt_units": 4
+   },
+   {
+    "case_id": "exp3v2-test-022",
+    "errors": [
+     [
+      "over",
+      "page_content:1",
+      "html:0",
+      "shared_acquisition_only"
+     ]
+    ],
+    "units": 3,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-test-023",
+    "errors": [],
+    "units": 4,
+    "gt_units": 4
+   },
+   {
+    "case_id": "exp3v2-test-024",
+    "errors": [
+     [
+      "over",
+      "page_content:1",
+      "html:0",
+      "shared_acquisition_only"
+     ]
+    ],
+    "units": 5,
+    "gt_units": 5
+   },
+   {
+    "case_id": "exp3v2-test-025",
+    "errors": [],
+    "units": 5,
+    "gt_units": 5
+   },
+   {
+    "case_id": "exp3v2-test-026",
+    "errors": [],
+    "units": 5,
+    "gt_units": 5
+   },
+   {
+    "case_id": "exp3v2-test-027",
+    "errors": [
+     [
+      "over",
+      "page_content:0",
+      "html:0",
+      "shared_acquisition_only"
+     ]
+    ],
+    "units": 4,
+    "gt_units": 4
+   },
+   {
+    "case_id": "exp3v2-test-028",
+    "errors": [],
+    "units": 3,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-test-029",
+    "errors": [
+     [
+      "over",
+      "page_content:0",
+      "html:2",
+      "shared_acquisition_only"
+     ]
+    ],
+    "units": 4,
+    "gt_units": 4
+   },
+   {
+    "case_id": "exp3v2-test-030",
+    "errors": [
+     [
+      "over",
+      "page_content:1",
+      "html:2",
+      "shared_acquisition_only"
+     ]
+    ],
+    "units": 5,
+    "gt_units": 5
+   },
+   {
+    "case_id": "exp3v2-test-031",
+    "errors": [
+     [
+      "over",
+      "page_content:0",
+      "html:2",
+      "shared_acquisition_only"
+     ]
+    ],
+    "units": 2,
+    "gt_units": 2
+   },
+   {
+    "case_id": "exp3v2-test-032",
+    "errors": [],
+    "units": 5,
+    "gt_units": 5
+   },
+   {
+    "case_id": "exp3v2-test-033",
+    "errors": [],
+    "units": 5,
+    "gt_units": 5
+   },
+   {
+    "case_id": "exp3v2-test-034",
+    "errors": [
+     [
+      "over",
+      "page_content:1",
+      "html:0",
+      "shared_acquisition_only"
+     ]
+    ],
+    "units": 1,
+    "gt_units": 1
+   },
+   {
+    "case_id": "exp3v2-test-035",
+    "errors": [
+     [
+      "over",
+      "page_content:0",
+      "html:0",
+      "shared_acquisition_only"
+     ]
+    ],
+    "units": 3,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-test-036",
+    "errors": [
+     [
+      "over",
+      "page_content:1",
+      "html:2",
+      "shared_acquisition_only"
+     ]
+    ],
+    "units": 4,
+    "gt_units": 4
+   },
+   {
+    "case_id": "exp3v2-test-037",
+    "errors": [
+     [
+      "over",
+      "page_content:0",
+      "html:0",
+      "shared_acquisition_only"
+     ]
+    ],
+    "units": 3,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-test-038",
+    "errors": [
+     [
+      "over",
+      "page_content:1",
+      "html:0",
+      "shared_acquisition_only"
+     ]
+    ],
+    "units": 5,
+    "gt_units": 5
+   },
+   {
+    "case_id": "exp3v2-test-039",
+    "errors": [
+     [
+      "over",
+      "page_content:1",
+      "html:0",
+      "shared_acquisition_only"
+     ]
+    ],
+    "units": 2,
+    "gt_units": 2
+   },
+   {
+    "case_id": "exp3v2-test-040",
+    "errors": [],
+    "units": 3,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-test-041",
+    "errors": [],
+    "units": 3,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-test-042",
+    "errors": [
+     [
+      "over",
+      "page_content:1",
+      "html:2",
+      "shared_acquisition_only"
+     ]
+    ],
+    "units": 2,
+    "gt_units": 2
+   },
+   {
+    "case_id": "exp3v2-test-043",
+    "errors": [
+     [
+      "over",
+      "page_content:1",
+      "html:0",
+      "shared_acquisition_only"
+     ]
+    ],
+    "units": 3,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-test-044",
+    "errors": [],
+    "units": 2,
+    "gt_units": 2
+   },
+   {
+    "case_id": "exp3v2-test-045",
+    "errors": [
+     [
+      "over",
+      "page_content:0",
+      "html:2",
+      "shared_acquisition_only"
+     ]
+    ],
+    "units": 2,
+    "gt_units": 2
+   },
+   {
+    "case_id": "exp3v2-test-046",
+    "errors": [],
+    "units": 3,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-test-047",
+    "errors": [
+     [
+      "over",
+      "page_content:0",
+      "html:0",
+      "shared_acquisition_only"
+     ]
+    ],
+    "units": 5,
+    "gt_units": 5
+   },
+   {
+    "case_id": "exp3v2-test-048",
+    "errors": [],
+    "units": 2,
+    "gt_units": 2
+   },
+   {
+    "case_id": "exp3v2-test-049",
+    "errors": [
+     [
+      "over",
+      "page_content:2",
+      "html:0",
+      "shared_acquisition_only"
+     ]
+    ],
+    "units": 2,
+    "gt_units": 2
+   },
+   {
+    "case_id": "exp3v2-test-050",
+    "errors": [
+     [
+      "over",
+      "page_content:1",
+      "html:2",
+      "shared_acquisition_only"
+     ]
+    ],
+    "units": 2,
+    "gt_units": 2
+   },
+   {
+    "case_id": "exp3v2-test-051",
+    "errors": [],
+    "units": 5,
+    "gt_units": 5
+   },
+   {
+    "case_id": "exp3v2-test-052",
+    "errors": [
+     [
+      "over",
+      "page_content:0",
+      "html:0",
+      "shared_acquisition_only"
+     ]
+    ],
+    "units": 4,
+    "gt_units": 4
+   },
+   {
+    "case_id": "exp3v2-test-053",
+    "errors": [
+     [
+      "over",
+      "page_content:0",
+      "html:0",
+      "shared_acquisition_only"
+     ]
+    ],
+    "units": 2,
+    "gt_units": 2
+   },
+   {
+    "case_id": "exp3v2-test-054",
+    "errors": [],
+    "units": 3,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-test-055",
+    "errors": [
+     [
+      "over",
+      "page_content:1",
+      "html:2",
+      "shared_acquisition_only"
+     ]
+    ],
+    "units": 3,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-test-056",
+    "errors": [],
+    "units": 4,
+    "gt_units": 4
+   },
+   {
+    "case_id": "exp3v2-test-057",
+    "errors": [
+     [
+      "over",
+      "page_content:0",
+      "html:0",
+      "shared_acquisition_only"
+     ]
+    ],
+    "units": 2,
+    "gt_units": 2
+   },
+   {
+    "case_id": "exp3v2-test-058",
+    "errors": [
+     [
+      "over",
+      "page_content:0",
+      "html:0",
+      "shared_acquisition_only"
+     ]
+    ],
+    "units": 2,
+    "gt_units": 2
+   },
+   {
+    "case_id": "exp3v2-test-059",
+    "errors": [
+     [
+      "over",
+      "page_content:0",
+      "html:4",
+      "shared_acquisition_only"
+     ]
+    ],
+    "units": 2,
+    "gt_units": 2
+   },
+   {
+    "case_id": "exp3v2-test-060",
+    "errors": [
+     [
+      "over",
+      "page_content:2",
+      "html:0",
+      "shared_acquisition_only"
+     ]
+    ],
+    "units": 3,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-test-061",
+    "errors": [
+     [
+      "over",
+      "page_content:0",
+      "html:0",
+      "shared_acquisition_only"
+     ]
+    ],
+    "units": 3,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-test-062",
+    "errors": [],
+    "units": 3,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-test-063",
+    "errors": [],
+    "units": 4,
+    "gt_units": 4
+   },
+   {
+    "case_id": "exp3v2-test-064",
+    "errors": [
+     [
+      "over",
+      "page_content:0",
+      "html:0",
+      "shared_acquisition_only"
+     ]
+    ],
+    "units": 3,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-test-065",
+    "errors": [
+     [
+      "over",
+      "page_content:0",
+      "html:2",
+      "shared_acquisition_only"
+     ]
+    ],
+    "units": 2,
+    "gt_units": 2
+   },
+   {
+    "case_id": "exp3v2-test-066",
+    "errors": [
+     [
+      "over",
+      "page_content:2",
+      "html:2",
+      "shared_acquisition_only"
+     ]
+    ],
+    "units": 3,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-test-067",
+    "errors": [
+     [
+      "over",
+      "page_content:0",
+      "html:0",
+      "shared_acquisition_only"
+     ]
+    ],
+    "units": 3,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-test-068",
+    "errors": [],
+    "units": 4,
+    "gt_units": 4
+   },
+   {
+    "case_id": "exp3v2-test-069",
+    "errors": [
+     [
+      "over",
+      "page_content:1",
+      "html:2",
+      "shared_acquisition_only"
+     ]
+    ],
+    "units": 5,
+    "gt_units": 5
+   },
+   {
+    "case_id": "exp3v2-test-070",
+    "errors": [],
+    "units": 4,
+    "gt_units": 4
+   },
+   {
+    "case_id": "exp3v2-test-071",
+    "errors": [],
+    "units": 3,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-test-072",
+    "errors": [],
+    "units": 5,
+    "gt_units": 5
+   },
+   {
+    "case_id": "exp3v2-test-073",
+    "errors": [
+     [
+      "over",
+      "page_content:2",
+      "html:4",
+      "shared_acquisition_only"
+     ]
+    ],
+    "units": 3,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-test-074",
+    "errors": [],
+    "units": 3,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-test-075",
+    "errors": [
+     [
+      "over",
+      "page_content:0",
+      "html:0",
+      "shared_acquisition_only"
+     ]
+    ],
+    "units": 2,
+    "gt_units": 2
+   },
+   {
+    "case_id": "exp3v2-test-076",
+    "errors": [
+     [
+      "over",
+      "page_content:0",
+      "html:2",
+      "shared_acquisition_only"
+     ]
+    ],
+    "units": 4,
+    "gt_units": 4
+   },
+   {
+    "case_id": "exp3v2-test-077",
+    "errors": [],
+    "units": 5,
+    "gt_units": 5
+   },
+   {
+    "case_id": "exp3v2-test-078",
+    "errors": [],
+    "units": 5,
+    "gt_units": 5
+   },
+   {
+    "case_id": "exp3v2-test-079",
+    "errors": [
+     [
+      "over",
+      "page_content:1",
+      "html:2",
+      "shared_acquisition_only"
+     ]
+    ],
+    "units": 5,
+    "gt_units": 5
+   }
+  ]
+ },
+ {
+  "policy": "semantic",
+  "threshold": null,
+  "pairs": 2599,
+  "tp": 265,
+  "fp": 165,
+  "fn": 220,
+  "tn": 1949,
+  "precision": 0.6162790697674418,
+  "recall": 0.5463917525773195,
+  "f1": 0.5792349726775955,
+  "under_merge_rate": 0.4536082474226804,
+  "over_merge_rate": 0.07805108798486282,
+  "merge_rate_by_kind": {
+   "common_cause": 0.455,
+   "independent": 0.097,
+   "same_artifact": 0.567,
+   "shared_acquisition_only": 0.05
+  },
+  "support_units_policy": 300,
+  "support_units_truth": 274,
+  "duplicate_support_rate": 0.14666666666666667,
+  "lost_independent_support_rate": 0.06569343065693431,
+  "shared_acquisition_groups_recorded": 0,
+  "escalation_and_verdict_effects": "not measured (needs real specialists + real Judge)",
+  "per_case": [
+   {
+    "case_id": "exp3v2-test-000",
+    "errors": [
+     [
+      "under",
+      "page_content:0",
+      "page_content:1",
+      "same_artifact"
+     ],
+     [
+      "over",
+      "dns:0",
+      "redirect_chain:0",
+      "independent"
+     ],
+     [
+      "under",
+      "url:0",
+      "page_content:1",
+      "common_cause"
+     ]
+    ],
+    "units": 4,
+    "gt_units": 2
+   },
+   {
+    "case_id": "exp3v2-test-001",
+    "errors": [
+     [
+      "under",
+      "page_content:0",
+      "page_content:1",
+      "same_artifact"
+     ],
+     [
+      "over",
+      "registration:0",
+      "ct:0",
+      "independent"
+     ]
+    ],
+    "units": 4,
+    "gt_units": 4
+   },
+   {
+    "case_id": "exp3v2-test-002",
+    "errors": [
+     [
+      "under",
+      "url:0",
+      "page_content:0",
+      "common_cause"
+     ],
+     [
+      "over",
+      "registration:0",
+      "ct:0",
+      "independent"
+     ],
+     [
+      "over",
+      "dns:0",
+      "redirect_chain:0",
+      "independent"
+     ]
+    ],
+    "units": 3,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-test-003",
+    "errors": [
+     [
+      "under",
+      "html:0",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "over",
+      "url:0",
+      "page_content:1",
+      "independent"
+     ],
+     [
+      "over",
+      "message_body:0",
+      "page_content:1",
+      "independent"
+     ],
+     [
+      "over",
+      "registration:0",
+      "ct:0",
+      "independent"
+     ],
+     [
+      "over",
+      "dns:0",
+      "redirect_chain:0",
+      "independent"
+     ]
+    ],
+    "units": 3,
+    "gt_units": 4
+   },
+   {
+    "case_id": "exp3v2-test-004",
+    "errors": [
+     [
+      "over",
+      "registration:0",
+      "ct:0",
+      "independent"
+     ],
+     [
+      "over",
+      "dns:0",
+      "redirect_chain:0",
+      "independent"
+     ]
+    ],
+    "units": 2,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-test-005",
+    "errors": [
+     [
+      "over",
+      "dns:0",
+      "redirect_chain:0",
+      "independent"
+     ],
+     [
+      "over",
+      "registration:0",
+      "ct:0",
+      "independent"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "page_content:0",
+      "page_content:1",
+      "same_artifact"
+     ]
+    ],
+    "units": 5,
+    "gt_units": 5
+   },
+   {
+    "case_id": "exp3v2-test-006",
+    "errors": [
+     [
+      "under",
+      "page_content:0",
+      "page_content:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:2",
+      "same_artifact"
+     ]
+    ],
+    "units": 4,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-test-007",
+    "errors": [
+     [
+      "under",
+      "url:0",
+      "page_content:0",
+      "common_cause"
+     ],
+     [
+      "under",
+      "url:0",
+      "message_body:0",
+      "common_cause"
+     ],
+     [
+      "over",
+      "page_content:0",
+      "html:1",
+      "shared_acquisition_only"
+     ],
+     [
+      "over",
+      "page_content:0",
+      "html:2",
+      "shared_acquisition_only"
+     ],
+     [
+      "over",
+      "message_body:0",
+      "page_content:1",
+      "independent"
+     ],
+     [
+      "over",
+      "message_body:0",
+      "html:1",
+      "independent"
+     ],
+     [
+      "over",
+      "message_body:0",
+      "html:2",
+      "independent"
+     ],
+     [
+      "over",
+      "dns:0",
+      "redirect_chain:0",
+      "independent"
+     ],
+     [
+      "over",
+      "page_content:1",
+      "html:1",
+      "shared_acquisition_only"
+     ],
+     [
+      "over",
+      "page_content:1",
+      "html:2",
+      "shared_acquisition_only"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:2",
+      "same_artifact"
+     ]
+    ],
+    "units": 2,
+    "gt_units": 2
+   },
+   {
+    "case_id": "exp3v2-test-008",
+    "errors": [
+     [
+      "under",
+      "page_content:0",
+      "page_content:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "over",
+      "registration:0",
+      "ct:0",
+      "independent"
+     ]
+    ],
+    "units": 5,
+    "gt_units": 5
+   },
+   {
+    "case_id": "exp3v2-test-009",
+    "errors": [
+     [
+      "under",
+      "page_content:0",
+      "page_content:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "page_content:0",
+      "page_content:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "url:0",
+      "page_content:1",
+      "common_cause"
+     ],
+     [
+      "over",
+      "page_content:1",
+      "html:0",
+      "shared_acquisition_only"
+     ],
+     [
+      "over",
+      "page_content:1",
+      "html:1",
+      "shared_acquisition_only"
+     ],
+     [
+      "over",
+      "page_content:1",
+      "html:3",
+      "shared_acquisition_only"
+     ],
+     [
+      "over",
+      "page_content:1",
+      "html:4",
+      "shared_acquisition_only"
+     ],
+     [
+      "over",
+      "html:0",
+      "page_content:2",
+      "shared_acquisition_only"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "over",
+      "html:1",
+      "page_content:2",
+      "shared_acquisition_only"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "over",
+      "page_content:2",
+      "html:3",
+      "shared_acquisition_only"
+     ],
+     [
+      "over",
+      "page_content:2",
+      "html:4",
+      "shared_acquisition_only"
+     ],
+     [
+      "under",
+      "html:2",
+      "html:3",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:2",
+      "html:4",
+      "same_artifact"
+     ]
+    ],
+    "units": 4,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-test-010",
+    "errors": [
+     [
+      "under",
+      "url:0",
+      "page_content:0",
+      "common_cause"
+     ],
+     [
+      "under",
+      "url:0",
+      "message_body:0",
+      "common_cause"
+     ],
+     [
+      "under",
+      "page_content:0",
+      "message_body:0",
+      "common_cause"
+     ],
+     [
+      "over",
+      "registration:0",
+      "ct:0",
+      "independent"
+     ],
+     [
+      "over",
+      "dns:0",
+      "redirect_chain:0",
+      "independent"
+     ]
+    ],
+    "units": 6,
+    "gt_units": 5
+   },
+   {
+    "case_id": "exp3v2-test-011",
+    "errors": [
+     [
+      "under",
+      "html:0",
+      "html:4",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:4",
+      "same_artifact"
+     ],
+     [
+      "over",
+      "dns:0",
+      "redirect_chain:0",
+      "independent"
+     ],
+     [
+      "under",
+      "html:2",
+      "html:4",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:3",
+      "html:4",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "page_content:0",
+      "page_content:1",
+      "same_artifact"
+     ]
+    ],
+    "units": 4,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-test-012",
+    "errors": [
+     [
+      "over",
+      "dns:0",
+      "redirect_chain:0",
+      "independent"
+     ],
+     [
+      "over",
+      "url:0",
+      "page_content:1",
+      "independent"
+     ],
+     [
+      "over",
+      "message_body:0",
+      "page_content:1",
+      "independent"
+     ]
+    ],
+    "units": 3,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-test-013",
+    "errors": [
+     [
+      "under",
+      "html:0",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:2",
+      "html:3",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:2",
+      "html:4",
+      "same_artifact"
+     ],
+     [
+      "over",
+      "dns:0",
+      "redirect_chain:0",
+      "independent"
+     ],
+     [
+      "over",
+      "registration:0",
+      "ct:0",
+      "independent"
+     ]
+    ],
+    "units": 3,
+    "gt_units": 4
+   },
+   {
+    "case_id": "exp3v2-test-014",
+    "errors": [
+     [
+      "under",
+      "page_content:0",
+      "page_content:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "page_content:0",
+      "page_content:2",
+      "same_artifact"
+     ],
+     [
+      "over",
+      "url:0",
+      "page_content:2",
+      "independent"
+     ],
+     [
+      "over",
+      "message_body:0",
+      "page_content:2",
+      "independent"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:3",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:4",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:3",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:4",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:2",
+      "html:4",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:3",
+      "html:4",
+      "same_artifact"
+     ]
+    ],
+    "units": 5,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-test-015",
+    "errors": [
+     [
+      "over",
+      "dns:0",
+      "redirect_chain:0",
+      "independent"
+     ],
+     [
+      "under",
+      "page_content:0",
+      "page_content:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "url:0",
+      "page_content:1",
+      "common_cause"
+     ]
+    ],
+    "units": 5,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-test-016",
+    "errors": [
+     [
+      "over",
+      "page_content:0",
+      "message_body:0",
+      "independent"
+     ],
+     [
+      "under",
+      "page_content:0",
+      "page_content:2",
+      "same_artifact"
+     ],
+     [
+      "over",
+      "registration:0",
+      "ct:0",
+      "independent"
+     ],
+     [
+      "under",
+      "url:0",
+      "page_content:1",
+      "common_cause"
+     ],
+     [
+      "under",
+      "url:0",
+      "message_body:0",
+      "common_cause"
+     ],
+     [
+      "under",
+      "page_content:1",
+      "page_content:2",
+      "same_artifact"
+     ]
+    ],
+    "units": 5,
+    "gt_units": 4
+   },
+   {
+    "case_id": "exp3v2-test-017",
+    "errors": [
+     [
+      "over",
+      "registration:0",
+      "ct:0",
+      "independent"
+     ]
+    ],
+    "units": 4,
+    "gt_units": 5
+   },
+   {
+    "case_id": "exp3v2-test-018",
+    "errors": [
+     [
+      "under",
+      "html:0",
+      "html:4",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:4",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "page_content:0",
+      "page_content:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:2",
+      "html:4",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:3",
+      "html:4",
+      "same_artifact"
+     ]
+    ],
+    "units": 4,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-test-019",
+    "errors": [
+     [
+      "over",
+      "page_content:0",
+      "message_body:0",
+      "independent"
+     ],
+     [
+      "under",
+      "url:0",
+      "page_content:1",
+      "common_cause"
+     ],
+     [
+      "under",
+      "url:0",
+      "message_body:0",
+      "common_cause"
+     ],
+     [
+      "over",
+      "dns:0",
+      "redirect_chain:0",
+      "independent"
+     ]
+    ],
+    "units": 4,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-test-020",
+    "errors": [
+     [
+      "under",
+      "page_content:0",
+      "page_content:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:3",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:4",
+      "same_artifact"
+     ],
+     [
+      "over",
+      "registration:0",
+      "ct:0",
+      "independent"
+     ],
+     [
+      "under",
+      "url:0",
+      "page_content:1",
+      "common_cause"
+     ]
+    ],
+    "units": 5,
+    "gt_units": 4
+   },
+   {
+    "case_id": "exp3v2-test-021",
+    "errors": [
+     [
+      "under",
+      "url:0",
+      "page_content:0",
+      "common_cause"
+     ],
+     [
+      "over",
+      "registration:0",
+      "ct:0",
+      "independent"
+     ]
+    ],
+    "units": 4,
+    "gt_units": 4
+   },
+   {
+    "case_id": "exp3v2-test-022",
+    "errors": [
+     [
+      "under",
+      "url:0",
+      "page_content:0",
+      "common_cause"
+     ],
+     [
+      "under",
+      "url:0",
+      "message_body:0",
+      "common_cause"
+     ],
+     [
+      "over",
+      "message_body:0",
+      "page_content:1",
+      "independent"
+     ],
+     [
+      "over",
+      "message_body:0",
+      "page_content:2",
+      "independent"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:2",
+      "same_artifact"
+     ]
+    ],
+    "units": 4,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-test-023",
+    "errors": [
+     [
+      "under",
+      "url:0",
+      "page_content:0",
+      "common_cause"
+     ],
+     [
+      "under",
+      "url:0",
+      "message_body:0",
+      "common_cause"
+     ],
+     [
+      "over",
+      "registration:0",
+      "ct:0",
+      "independent"
+     ]
+    ],
+    "units": 4,
+    "gt_units": 4
+   },
+   {
+    "case_id": "exp3v2-test-024",
+    "errors": [
+     [
+      "under",
+      "page_content:0",
+      "page_content:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "page_content:0",
+      "page_content:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "page_content:1",
+      "page_content:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "over",
+      "registration:0",
+      "ct:0",
+      "independent"
+     ]
+    ],
+    "units": 6,
+    "gt_units": 5
+   },
+   {
+    "case_id": "exp3v2-test-025",
+    "errors": [
+     [
+      "over",
+      "registration:0",
+      "ct:0",
+      "independent"
+     ],
+     [
+      "over",
+      "dns:0",
+      "redirect_chain:0",
+      "independent"
+     ],
+     [
+      "under",
+      "url:0",
+      "page_content:1",
+      "common_cause"
+     ]
+    ],
+    "units": 5,
+    "gt_units": 5
+   },
+   {
+    "case_id": "exp3v2-test-026",
+    "errors": [
+     [
+      "over",
+      "dns:0",
+      "redirect_chain:0",
+      "independent"
+     ],
+     [
+      "over",
+      "registration:0",
+      "ct:0",
+      "independent"
+     ]
+    ],
+    "units": 4,
+    "gt_units": 5
+   },
+   {
+    "case_id": "exp3v2-test-027",
+    "errors": [
+     [
+      "over",
+      "registration:0",
+      "ct:0",
+      "independent"
+     ],
+     [
+      "under",
+      "page_content:0",
+      "page_content:1",
+      "same_artifact"
+     ]
+    ],
+    "units": 4,
+    "gt_units": 4
+   },
+   {
+    "case_id": "exp3v2-test-028",
+    "errors": [
+     [
+      "over",
+      "registration:0",
+      "ct:0",
+      "independent"
+     ]
+    ],
+    "units": 2,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-test-029",
+    "errors": [
+     [
+      "under",
+      "html:0",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "over",
+      "registration:0",
+      "ct:0",
+      "independent"
+     ]
+    ],
+    "units": 3,
+    "gt_units": 4
+   },
+   {
+    "case_id": "exp3v2-test-030",
+    "errors": [
+     [
+      "under",
+      "page_content:0",
+      "page_content:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:2",
+      "html:3",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:2",
+      "html:4",
+      "same_artifact"
+     ],
+     [
+      "over",
+      "registration:0",
+      "ct:0",
+      "independent"
+     ]
+    ],
+    "units": 5,
+    "gt_units": 5
+   },
+   {
+    "case_id": "exp3v2-test-031",
+    "errors": [
+     [
+      "under",
+      "html:0",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "over",
+      "dns:0",
+      "redirect_chain:0",
+      "independent"
+     ]
+    ],
+    "units": 2,
+    "gt_units": 2
+   },
+   {
+    "case_id": "exp3v2-test-032",
+    "errors": [
+     [
+      "over",
+      "registration:0",
+      "ct:0",
+      "independent"
+     ],
+     [
+      "under",
+      "page_content:0",
+      "page_content:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "url:0",
+      "page_content:1",
+      "common_cause"
+     ]
+    ],
+    "units": 6,
+    "gt_units": 5
+   },
+   {
+    "case_id": "exp3v2-test-033",
+    "errors": [
+     [
+      "over",
+      "dns:0",
+      "redirect_chain:0",
+      "independent"
+     ],
+     [
+      "over",
+      "registration:0",
+      "ct:0",
+      "independent"
+     ]
+    ],
+    "units": 4,
+    "gt_units": 5
+   },
+   {
+    "case_id": "exp3v2-test-034",
+    "errors": [
+     [
+      "under",
+      "url:0",
+      "page_content:0",
+      "common_cause"
+     ],
+     [
+      "over",
+      "dns:0",
+      "redirect_chain:0",
+      "independent"
+     ]
+    ],
+    "units": 2,
+    "gt_units": 1
+   },
+   {
+    "case_id": "exp3v2-test-035",
+    "errors": [
+     [
+      "over",
+      "page_content:0",
+      "html:1",
+      "shared_acquisition_only"
+     ],
+     [
+      "over",
+      "page_content:0",
+      "html:2",
+      "shared_acquisition_only"
+     ],
+     [
+      "over",
+      "page_content:0",
+      "html:3",
+      "shared_acquisition_only"
+     ],
+     [
+      "over",
+      "page_content:0",
+      "html:4",
+      "shared_acquisition_only"
+     ],
+     [
+      "over",
+      "page_content:0",
+      "message_body:0",
+      "independent"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:3",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:4",
+      "same_artifact"
+     ],
+     [
+      "over",
+      "html:1",
+      "page_content:1",
+      "shared_acquisition_only"
+     ],
+     [
+      "over",
+      "html:1",
+      "message_body:0",
+      "independent"
+     ],
+     [
+      "over",
+      "html:1",
+      "page_content:2",
+      "shared_acquisition_only"
+     ],
+     [
+      "over",
+      "html:2",
+      "page_content:1",
+      "shared_acquisition_only"
+     ],
+     [
+      "over",
+      "html:2",
+      "message_body:0",
+      "independent"
+     ],
+     [
+      "over",
+      "html:2",
+      "page_content:2",
+      "shared_acquisition_only"
+     ],
+     [
+      "over",
+      "html:3",
+      "page_content:1",
+      "shared_acquisition_only"
+     ],
+     [
+      "over",
+      "html:3",
+      "message_body:0",
+      "independent"
+     ],
+     [
+      "over",
+      "html:3",
+      "page_content:2",
+      "shared_acquisition_only"
+     ],
+     [
+      "over",
+      "html:4",
+      "page_content:1",
+      "shared_acquisition_only"
+     ],
+     [
+      "over",
+      "html:4",
+      "message_body:0",
+      "independent"
+     ],
+     [
+      "over",
+      "html:4",
+      "page_content:2",
+      "shared_acquisition_only"
+     ],
+     [
+      "under",
+      "url:0",
+      "page_content:1",
+      "common_cause"
+     ],
+     [
+      "under",
+      "url:0",
+      "message_body:0",
+      "common_cause"
+     ],
+     [
+      "over",
+      "message_body:0",
+      "page_content:2",
+      "independent"
+     ]
+    ],
+    "units": 3,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-test-036",
+    "errors": [
+     [
+      "over",
+      "registration:0",
+      "ct:0",
+      "independent"
+     ],
+     [
+      "under",
+      "page_content:0",
+      "page_content:1",
+      "same_artifact"
+     ],
+     [
+      "over",
+      "dns:0",
+      "redirect_chain:0",
+      "independent"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:2",
+      "same_artifact"
+     ]
+    ],
+    "units": 4,
+    "gt_units": 4
+   },
+   {
+    "case_id": "exp3v2-test-037",
+    "errors": [
+     [
+      "under",
+      "page_content:0",
+      "page_content:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "over",
+      "dns:0",
+      "redirect_chain:0",
+      "independent"
+     ]
+    ],
+    "units": 4,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-test-038",
+    "errors": [
+     [
+      "under",
+      "page_content:0",
+      "page_content:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "over",
+      "dns:0",
+      "redirect_chain:0",
+      "independent"
+     ],
+     [
+      "over",
+      "registration:0",
+      "ct:0",
+      "independent"
+     ]
+    ],
+    "units": 5,
+    "gt_units": 5
+   },
+   {
+    "case_id": "exp3v2-test-039",
+    "errors": [
+     [
+      "over",
+      "dns:0",
+      "redirect_chain:0",
+      "independent"
+     ],
+     [
+      "under",
+      "url:0",
+      "page_content:0",
+      "common_cause"
+     ],
+     [
+      "under",
+      "page_content:0",
+      "page_content:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:3",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:4",
+      "same_artifact"
+     ]
+    ],
+    "units": 4,
+    "gt_units": 2
+   },
+   {
+    "case_id": "exp3v2-test-040",
+    "errors": [
+     [
+      "over",
+      "dns:0",
+      "redirect_chain:0",
+      "independent"
+     ],
+     [
+      "over",
+      "url:0",
+      "page_content:1",
+      "independent"
+     ]
+    ],
+    "units": 3,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-test-041",
+    "errors": [
+     [
+      "over",
+      "registration:0",
+      "ct:0",
+      "independent"
+     ],
+     [
+      "over",
+      "dns:0",
+      "redirect_chain:0",
+      "independent"
+     ]
+    ],
+    "units": 2,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-test-042",
+    "errors": [
+     [
+      "under",
+      "html:0",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "url:0",
+      "page_content:0",
+      "common_cause"
+     ]
+    ],
+    "units": 3,
+    "gt_units": 2
+   },
+   {
+    "case_id": "exp3v2-test-043",
+    "errors": [
+     [
+      "over",
+      "dns:0",
+      "redirect_chain:0",
+      "independent"
+     ],
+     [
+      "under",
+      "url:0",
+      "page_content:0",
+      "common_cause"
+     ],
+     [
+      "under",
+      "url:0",
+      "message_body:0",
+      "common_cause"
+     ],
+     [
+      "under",
+      "page_content:0",
+      "page_content:1",
+      "same_artifact"
+     ],
+     [
+      "over",
+      "registration:0",
+      "ct:0",
+      "independent"
+     ]
+    ],
+    "units": 4,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-test-044",
+    "errors": [
+     [
+      "under",
+      "url:0",
+      "page_content:0",
+      "common_cause"
+     ],
+     [
+      "under",
+      "url:0",
+      "message_body:0",
+      "common_cause"
+     ],
+     [
+      "over",
+      "page_content:0",
+      "html:0",
+      "shared_acquisition_only"
+     ],
+     [
+      "over",
+      "page_content:0",
+      "html:1",
+      "shared_acquisition_only"
+     ],
+     [
+      "over",
+      "page_content:0",
+      "html:2",
+      "shared_acquisition_only"
+     ],
+     [
+      "over",
+      "page_content:0",
+      "html:3",
+      "shared_acquisition_only"
+     ],
+     [
+      "over",
+      "message_body:0",
+      "html:0",
+      "independent"
+     ],
+     [
+      "over",
+      "message_body:0",
+      "html:1",
+      "independent"
+     ],
+     [
+      "over",
+      "message_body:0",
+      "html:2",
+      "independent"
+     ],
+     [
+      "over",
+      "message_body:0",
+      "html:3",
+      "independent"
+     ],
+     [
+      "over",
+      "dns:0",
+      "redirect_chain:0",
+      "independent"
+     ]
+    ],
+    "units": 2,
+    "gt_units": 2
+   },
+   {
+    "case_id": "exp3v2-test-045",
+    "errors": [
+     [
+      "over",
+      "dns:0",
+      "redirect_chain:0",
+      "independent"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "page_content:0",
+      "page_content:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "url:0",
+      "page_content:1",
+      "common_cause"
+     ]
+    ],
+    "units": 4,
+    "gt_units": 2
+   },
+   {
+    "case_id": "exp3v2-test-046",
+    "errors": [
+     [
+      "over",
+      "registration:0",
+      "ct:0",
+      "independent"
+     ],
+     [
+      "over",
+      "dns:0",
+      "redirect_chain:0",
+      "independent"
+     ]
+    ],
+    "units": 2,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-test-047",
+    "errors": [
+     [
+      "under",
+      "page_content:0",
+      "page_content:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "page_content:0",
+      "page_content:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "over",
+      "registration:0",
+      "ct:0",
+      "independent"
+     ],
+     [
+      "under",
+      "page_content:1",
+      "page_content:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "url:0",
+      "page_content:2",
+      "common_cause"
+     ],
+     [
+      "under",
+      "url:0",
+      "message_body:0",
+      "common_cause"
+     ]
+    ],
+    "units": 7,
+    "gt_units": 5
+   },
+   {
+    "case_id": "exp3v2-test-048",
+    "errors": [
+     [
+      "over",
+      "dns:0",
+      "redirect_chain:0",
+      "independent"
+     ]
+    ],
+    "units": 2,
+    "gt_units": 2
+   },
+   {
+    "case_id": "exp3v2-test-049",
+    "errors": [
+     [
+      "over",
+      "url:0",
+      "page_content:1",
+      "independent"
+     ],
+     [
+      "under",
+      "page_content:0",
+      "page_content:2",
+      "same_artifact"
+     ],
+     [
+      "over",
+      "message_body:0",
+      "page_content:1",
+      "independent"
+     ],
+     [
+      "under",
+      "page_content:1",
+      "page_content:2",
+      "same_artifact"
+     ]
+    ],
+    "units": 3,
+    "gt_units": 2
+   },
+   {
+    "case_id": "exp3v2-test-050",
+    "errors": [
+     [
+      "over",
+      "url:0",
+      "html:0",
+      "independent"
+     ],
+     [
+      "over",
+      "url:0",
+      "html:1",
+      "independent"
+     ],
+     [
+      "over",
+      "url:0",
+      "page_content:1",
+      "independent"
+     ],
+     [
+      "over",
+      "page_content:0",
+      "html:0",
+      "shared_acquisition_only"
+     ],
+     [
+      "over",
+      "page_content:0",
+      "html:1",
+      "shared_acquisition_only"
+     ],
+     [
+      "over",
+      "dns:0",
+      "redirect_chain:0",
+      "independent"
+     ],
+     [
+      "over",
+      "html:0",
+      "page_content:1",
+      "shared_acquisition_only"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "over",
+      "html:1",
+      "page_content:1",
+      "shared_acquisition_only"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:2",
+      "same_artifact"
+     ]
+    ],
+    "units": 1,
+    "gt_units": 2
+   },
+   {
+    "case_id": "exp3v2-test-051",
+    "errors": [
+     [
+      "over",
+      "dns:0",
+      "redirect_chain:0",
+      "independent"
+     ],
+     [
+      "over",
+      "registration:0",
+      "ct:0",
+      "independent"
+     ],
+     [
+      "under",
+      "url:0",
+      "page_content:0",
+      "common_cause"
+     ],
+     [
+      "under",
+      "url:0",
+      "message_body:0",
+      "common_cause"
+     ],
+     [
+      "over",
+      "message_body:0",
+      "page_content:1",
+      "independent"
+     ]
+    ],
+    "units": 5,
+    "gt_units": 5
+   },
+   {
+    "case_id": "exp3v2-test-052",
+    "errors": [
+     [
+      "under",
+      "html:0",
+      "html:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:3",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:4",
+      "same_artifact"
+     ],
+     [
+      "over",
+      "registration:0",
+      "ct:0",
+      "independent"
+     ],
+     [
+      "over",
+      "dns:0",
+      "redirect_chain:0",
+      "independent"
+     ]
+    ],
+    "units": 3,
+    "gt_units": 4
+   },
+   {
+    "case_id": "exp3v2-test-053",
+    "errors": [
+     [
+      "under",
+      "html:0",
+      "html:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "over",
+      "dns:0",
+      "redirect_chain:0",
+      "independent"
+     ]
+    ],
+    "units": 2,
+    "gt_units": 2
+   },
+   {
+    "case_id": "exp3v2-test-054",
+    "errors": [
+     [
+      "under",
+      "page_content:0",
+      "page_content:1",
+      "same_artifact"
+     ]
+    ],
+    "units": 4,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-test-055",
+    "errors": [
+     [
+      "under",
+      "html:0",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "page_content:0",
+      "page_content:1",
+      "same_artifact"
+     ]
+    ],
+    "units": 4,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-test-056",
+    "errors": [
+     [
+      "over",
+      "dns:0",
+      "redirect_chain:0",
+      "independent"
+     ],
+     [
+      "over",
+      "registration:0",
+      "ct:0",
+      "independent"
+     ]
+    ],
+    "units": 3,
+    "gt_units": 4
+   },
+   {
+    "case_id": "exp3v2-test-057",
+    "errors": [
+     [
+      "over",
+      "page_content:0",
+      "message_body:0",
+      "independent"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "url:0",
+      "page_content:1",
+      "common_cause"
+     ],
+     [
+      "under",
+      "url:0",
+      "message_body:0",
+      "common_cause"
+     ]
+    ],
+    "units": 3,
+    "gt_units": 2
+   },
+   {
+    "case_id": "exp3v2-test-058",
+    "errors": [
+     [
+      "under",
+      "html:0",
+      "html:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:3",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:4",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "url:0",
+      "page_content:1",
+      "common_cause"
+     ]
+    ],
+    "units": 3,
+    "gt_units": 2
+   },
+   {
+    "case_id": "exp3v2-test-059",
+    "errors": [
+     [
+      "under",
+      "html:0",
+      "html:4",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:4",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:2",
+      "html:4",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:3",
+      "html:4",
+      "same_artifact"
+     ],
+     [
+      "over",
+      "dns:0",
+      "redirect_chain:0",
+      "independent"
+     ]
+    ],
+    "units": 2,
+    "gt_units": 2
+   },
+   {
+    "case_id": "exp3v2-test-060",
+    "errors": [
+     [
+      "under",
+      "url:0",
+      "page_content:0",
+      "common_cause"
+     ],
+     [
+      "under",
+      "url:0",
+      "message_body:0",
+      "common_cause"
+     ],
+     [
+      "under",
+      "page_content:0",
+      "message_body:0",
+      "common_cause"
+     ],
+     [
+      "under",
+      "page_content:0",
+      "page_content:1",
+      "same_artifact"
+     ],
+     [
+      "over",
+      "page_content:0",
+      "html:1",
+      "shared_acquisition_only"
+     ],
+     [
+      "over",
+      "page_content:0",
+      "html:2",
+      "shared_acquisition_only"
+     ],
+     [
+      "under",
+      "page_content:1",
+      "page_content:2",
+      "same_artifact"
+     ],
+     [
+      "over",
+      "page_content:2",
+      "html:1",
+      "shared_acquisition_only"
+     ],
+     [
+      "over",
+      "page_content:2",
+      "html:2",
+      "shared_acquisition_only"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "over",
+      "dns:0",
+      "redirect_chain:0",
+      "independent"
+     ]
+    ],
+    "units": 5,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-test-061",
+    "errors": [
+     [
+      "under",
+      "page_content:0",
+      "page_content:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:3",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:4",
+      "same_artifact"
+     ]
+    ],
+    "units": 4,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-test-062",
+    "errors": [
+     [
+      "over",
+      "dns:0",
+      "redirect_chain:0",
+      "independent"
+     ]
+    ],
+    "units": 3,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-test-063",
+    "errors": [
+     [
+      "over",
+      "dns:0",
+      "redirect_chain:0",
+      "independent"
+     ],
+     [
+      "over",
+      "registration:0",
+      "ct:0",
+      "independent"
+     ]
+    ],
+    "units": 3,
+    "gt_units": 4
+   },
+   {
+    "case_id": "exp3v2-test-064",
+    "errors": [
+     [
+      "over",
+      "dns:0",
+      "redirect_chain:0",
+      "independent"
+     ],
+     [
+      "over",
+      "registration:0",
+      "ct:0",
+      "independent"
+     ]
+    ],
+    "units": 2,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-test-065",
+    "errors": [
+     [
+      "under",
+      "html:0",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "over",
+      "page_content:0",
+      "url:0",
+      "independent"
+     ],
+     [
+      "under",
+      "html:2",
+      "html:3",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:2",
+      "html:4",
+      "same_artifact"
+     ],
+     [
+      "over",
+      "dns:0",
+      "redirect_chain:0",
+      "independent"
+     ]
+    ],
+    "units": 2,
+    "gt_units": 2
+   },
+   {
+    "case_id": "exp3v2-test-066",
+    "errors": [
+     [
+      "under",
+      "page_content:0",
+      "page_content:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "page_content:0",
+      "page_content:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "url:0",
+      "page_content:1",
+      "common_cause"
+     ],
+     [
+      "under",
+      "page_content:1",
+      "page_content:2",
+      "same_artifact"
+     ],
+     [
+      "over",
+      "dns:0",
+      "redirect_chain:0",
+      "independent"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:2",
+      "same_artifact"
+     ]
+    ],
+    "units": 6,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-test-067",
+    "errors": [
+     [
+      "under",
+      "page_content:0",
+      "page_content:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:2",
+      "same_artifact"
+     ]
+    ],
+    "units": 4,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-test-068",
+    "errors": [
+     [
+      "over",
+      "registration:0",
+      "ct:0",
+      "independent"
+     ]
+    ],
+    "units": 3,
+    "gt_units": 4
+   },
+   {
+    "case_id": "exp3v2-test-069",
+    "errors": [
+     [
+      "under",
+      "page_content:0",
+      "page_content:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "over",
+      "registration:0",
+      "ct:0",
+      "independent"
+     ],
+     [
+      "over",
+      "dns:0",
+      "redirect_chain:0",
+      "independent"
+     ]
+    ],
+    "units": 5,
+    "gt_units": 5
+   },
+   {
+    "case_id": "exp3v2-test-070",
+    "errors": [
+     [
+      "over",
+      "registration:0",
+      "ct:0",
+      "independent"
+     ],
+     [
+      "under",
+      "page_content:0",
+      "page_content:1",
+      "same_artifact"
+     ],
+     [
+      "over",
+      "dns:0",
+      "redirect_chain:0",
+      "independent"
+     ]
+    ],
+    "units": 4,
+    "gt_units": 4
+   },
+   {
+    "case_id": "exp3v2-test-071",
+    "errors": [
+     [
+      "over",
+      "dns:0",
+      "redirect_chain:0",
+      "independent"
+     ]
+    ],
+    "units": 3,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-test-072",
+    "errors": [
+     [
+      "over",
+      "dns:0",
+      "redirect_chain:0",
+      "independent"
+     ],
+     [
+      "over",
+      "registration:0",
+      "ct:0",
+      "independent"
+     ]
+    ],
+    "units": 4,
+    "gt_units": 5
+   },
+   {
+    "case_id": "exp3v2-test-073",
+    "errors": [
+     [
+      "under",
+      "url:0",
+      "page_content:0",
+      "common_cause"
+     ],
+     [
+      "under",
+      "page_content:0",
+      "page_content:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "page_content:1",
+      "page_content:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:3",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:4",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:3",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:4",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:2",
+      "html:4",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:3",
+      "html:4",
+      "same_artifact"
+     ]
+    ],
+    "units": 6,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-test-074",
+    "errors": [
+     [
+      "over",
+      "registration:0",
+      "ct:0",
+      "independent"
+     ]
+    ],
+    "units": 2,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-test-075",
+    "errors": [
+     [
+      "over",
+      "page_content:0",
+      "html:1",
+      "shared_acquisition_only"
+     ],
+     [
+      "over",
+      "page_content:0",
+      "html:2",
+      "shared_acquisition_only"
+     ],
+     [
+      "over",
+      "page_content:0",
+      "html:3",
+      "shared_acquisition_only"
+     ],
+     [
+      "over",
+      "page_content:0",
+      "html:4",
+      "shared_acquisition_only"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:3",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:4",
+      "same_artifact"
+     ],
+     [
+      "over",
+      "html:1",
+      "page_content:1",
+      "shared_acquisition_only"
+     ],
+     [
+      "over",
+      "html:2",
+      "page_content:1",
+      "shared_acquisition_only"
+     ],
+     [
+      "over",
+      "html:3",
+      "page_content:1",
+      "shared_acquisition_only"
+     ],
+     [
+      "over",
+      "html:4",
+      "page_content:1",
+      "shared_acquisition_only"
+     ],
+     [
+      "under",
+      "url:0",
+      "page_content:1",
+      "common_cause"
+     ],
+     [
+      "over",
+      "dns:0",
+      "redirect_chain:0",
+      "independent"
+     ]
+    ],
+    "units": 2,
+    "gt_units": 2
+   },
+   {
+    "case_id": "exp3v2-test-076",
+    "errors": [
+     [
+      "under",
+      "html:0",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "over",
+      "page_content:0",
+      "message_body:0",
+      "independent"
+     ],
+     [
+      "under",
+      "html:2",
+      "html:3",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:2",
+      "html:4",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "url:0",
+      "page_content:1",
+      "common_cause"
+     ],
+     [
+      "under",
+      "url:0",
+      "message_body:0",
+      "common_cause"
+     ],
+     [
+      "over",
+      "registration:0",
+      "ct:0",
+      "independent"
+     ]
+    ],
+    "units": 4,
+    "gt_units": 4
+   },
+   {
+    "case_id": "exp3v2-test-077",
+    "errors": [
+     [
+      "under",
+      "page_content:0",
+      "page_content:1",
+      "same_artifact"
+     ],
+     [
+      "over",
+      "registration:0",
+      "ct:0",
+      "independent"
+     ],
+     [
+      "under",
+      "url:0",
+      "page_content:1",
+      "common_cause"
+     ],
+     [
+      "over",
+      "dns:0",
+      "redirect_chain:0",
+      "independent"
+     ]
+    ],
+    "units": 6,
+    "gt_units": 5
+   },
+   {
+    "case_id": "exp3v2-test-078",
+    "errors": [
+     [
+      "under",
+      "url:0",
+      "page_content:0",
+      "common_cause"
+     ],
+     [
+      "under",
+      "page_content:0",
+      "page_content:1",
+      "same_artifact"
+     ],
+     [
+      "over",
+      "registration:0",
+      "ct:0",
+      "independent"
+     ]
+    ],
+    "units": 6,
+    "gt_units": 5
+   },
+   {
+    "case_id": "exp3v2-test-079",
+    "errors": [
+     [
+      "over",
+      "registration:0",
+      "ct:0",
+      "independent"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "page_content:0",
+      "page_content:1",
+      "same_artifact"
+     ]
+    ],
+    "units": 5,
+    "gt_units": 5
+   }
+  ]
+ },
+ {
+  "policy": "independent",
+  "threshold": null,
+  "pairs": 2599,
+  "tp": 0,
+  "fp": 0,
+  "fn": 485,
+  "tn": 2114,
+  "precision": null,
+  "recall": 0.0,
+  "f1": 0.0,
+  "under_merge_rate": 1.0,
+  "over_merge_rate": 0.0,
+  "merge_rate_by_kind": {
+   "common_cause": 0.0,
+   "independent": 0.0,
+   "same_artifact": 0.0,
+   "shared_acquisition_only": 0.0
+  },
+  "support_units_policy": 530,
+  "support_units_truth": 274,
+  "duplicate_support_rate": 0.4830188679245283,
+  "lost_independent_support_rate": 0.0,
+  "shared_acquisition_groups_recorded": 0,
+  "escalation_and_verdict_effects": "not measured (needs real specialists + real Judge)",
+  "per_case": [
+   {
+    "case_id": "exp3v2-test-000",
+    "errors": [
+     [
+      "under",
+      "page_content:0",
+      "page_content:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "url:0",
+      "page_content:1",
+      "common_cause"
+     ]
+    ],
+    "units": 4,
+    "gt_units": 2
+   },
+   {
+    "case_id": "exp3v2-test-001",
+    "errors": [
+     [
+      "under",
+      "page_content:0",
+      "page_content:1",
+      "same_artifact"
+     ]
+    ],
+    "units": 5,
+    "gt_units": 4
+   },
+   {
+    "case_id": "exp3v2-test-002",
+    "errors": [
+     [
+      "under",
+      "url:0",
+      "page_content:0",
+      "common_cause"
+     ],
+     [
+      "under",
+      "page_content:0",
+      "page_content:1",
+      "same_artifact"
+     ]
+    ],
+    "units": 5,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-test-003",
+    "errors": [
+     [
+      "under",
+      "html:0",
+      "html:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "url:0",
+      "page_content:0",
+      "common_cause"
+     ],
+     [
+      "under",
+      "url:0",
+      "message_body:0",
+      "common_cause"
+     ],
+     [
+      "under",
+      "page_content:0",
+      "message_body:0",
+      "common_cause"
+     ],
+     [
+      "under",
+      "page_content:0",
+      "page_content:1",
+      "same_artifact"
+     ]
+    ],
+    "units": 8,
+    "gt_units": 4
+   },
+   {
+    "case_id": "exp3v2-test-004",
+    "errors": [
+     [
+      "under",
+      "html:0",
+      "html:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:3",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:3",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:2",
+      "html:3",
+      "same_artifact"
+     ]
+    ],
+    "units": 6,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-test-005",
+    "errors": [
+     [
+      "under",
+      "html:0",
+      "html:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "page_content:0",
+      "page_content:1",
+      "same_artifact"
+     ]
+    ],
+    "units": 7,
+    "gt_units": 5
+   },
+   {
+    "case_id": "exp3v2-test-006",
+    "errors": [
+     [
+      "under",
+      "page_content:0",
+      "page_content:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:2",
+      "same_artifact"
+     ]
+    ],
+    "units": 5,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-test-007",
+    "errors": [
+     [
+      "under",
+      "url:0",
+      "page_content:0",
+      "common_cause"
+     ],
+     [
+      "under",
+      "url:0",
+      "message_body:0",
+      "common_cause"
+     ],
+     [
+      "under",
+      "page_content:0",
+      "message_body:0",
+      "common_cause"
+     ],
+     [
+      "under",
+      "page_content:0",
+      "page_content:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:2",
+      "same_artifact"
+     ]
+    ],
+    "units": 6,
+    "gt_units": 2
+   },
+   {
+    "case_id": "exp3v2-test-008",
+    "errors": [
+     [
+      "under",
+      "page_content:0",
+      "page_content:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:2",
+      "same_artifact"
+     ]
+    ],
+    "units": 7,
+    "gt_units": 5
+   },
+   {
+    "case_id": "exp3v2-test-009",
+    "errors": [
+     [
+      "under",
+      "page_content:0",
+      "page_content:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "page_content:0",
+      "page_content:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "url:0",
+      "page_content:1",
+      "common_cause"
+     ],
+     [
+      "under",
+      "page_content:1",
+      "page_content:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:3",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:4",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:3",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:4",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:2",
+      "html:3",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:2",
+      "html:4",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:3",
+      "html:4",
+      "same_artifact"
+     ]
+    ],
+    "units": 9,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-test-010",
+    "errors": [
+     [
+      "under",
+      "url:0",
+      "page_content:0",
+      "common_cause"
+     ],
+     [
+      "under",
+      "url:0",
+      "message_body:0",
+      "common_cause"
+     ],
+     [
+      "under",
+      "page_content:0",
+      "message_body:0",
+      "common_cause"
+     ],
+     [
+      "under",
+      "page_content:0",
+      "page_content:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:1",
+      "same_artifact"
+     ]
+    ],
+    "units": 9,
+    "gt_units": 5
+   },
+   {
+    "case_id": "exp3v2-test-011",
+    "errors": [
+     [
+      "under",
+      "html:0",
+      "html:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:3",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:4",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:3",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:4",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:2",
+      "html:3",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:2",
+      "html:4",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:3",
+      "html:4",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "page_content:0",
+      "page_content:1",
+      "same_artifact"
+     ]
+    ],
+    "units": 7,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-test-012",
+    "errors": [
+     [
+      "under",
+      "html:0",
+      "html:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "url:0",
+      "page_content:0",
+      "common_cause"
+     ],
+     [
+      "under",
+      "url:0",
+      "message_body:0",
+      "common_cause"
+     ],
+     [
+      "under",
+      "page_content:0",
+      "message_body:0",
+      "common_cause"
+     ],
+     [
+      "under",
+      "page_content:0",
+      "page_content:1",
+      "same_artifact"
+     ]
+    ],
+    "units": 7,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-test-013",
+    "errors": [
+     [
+      "under",
+      "html:0",
+      "html:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:3",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:4",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:3",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:4",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:2",
+      "html:3",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:2",
+      "html:4",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:3",
+      "html:4",
+      "same_artifact"
+     ]
+    ],
+    "units": 7,
+    "gt_units": 4
+   },
+   {
+    "case_id": "exp3v2-test-014",
+    "errors": [
+     [
+      "under",
+      "page_content:0",
+      "page_content:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "page_content:0",
+      "page_content:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "url:0",
+      "page_content:1",
+      "common_cause"
+     ],
+     [
+      "under",
+      "url:0",
+      "message_body:0",
+      "common_cause"
+     ],
+     [
+      "under",
+      "page_content:1",
+      "message_body:0",
+      "common_cause"
+     ],
+     [
+      "under",
+      "page_content:1",
+      "page_content:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:3",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:4",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:3",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:4",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:2",
+      "html:3",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:2",
+      "html:4",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:3",
+      "html:4",
+      "same_artifact"
+     ]
+    ],
+    "units": 10,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-test-015",
+    "errors": [
+     [
+      "under",
+      "html:0",
+      "html:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "page_content:0",
+      "page_content:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "url:0",
+      "page_content:1",
+      "common_cause"
+     ]
+    ],
+    "units": 6,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-test-016",
+    "errors": [
+     [
+      "under",
+      "page_content:0",
+      "page_content:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "page_content:0",
+      "page_content:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "url:0",
+      "page_content:1",
+      "common_cause"
+     ],
+     [
+      "under",
+      "url:0",
+      "message_body:0",
+      "common_cause"
+     ],
+     [
+      "under",
+      "page_content:1",
+      "message_body:0",
+      "common_cause"
+     ],
+     [
+      "under",
+      "page_content:1",
+      "page_content:2",
+      "same_artifact"
+     ]
+    ],
+    "units": 8,
+    "gt_units": 4
+   },
+   {
+    "case_id": "exp3v2-test-017",
+    "errors": [
+     [
+      "under",
+      "html:0",
+      "html:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:3",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:3",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:2",
+      "html:3",
+      "same_artifact"
+     ]
+    ],
+    "units": 8,
+    "gt_units": 5
+   },
+   {
+    "case_id": "exp3v2-test-018",
+    "errors": [
+     [
+      "under",
+      "html:0",
+      "html:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:3",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:4",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:3",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:4",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "page_content:0",
+      "page_content:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:2",
+      "html:3",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:2",
+      "html:4",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:3",
+      "html:4",
+      "same_artifact"
+     ]
+    ],
+    "units": 7,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-test-019",
+    "errors": [
+     [
+      "under",
+      "page_content:0",
+      "page_content:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "url:0",
+      "page_content:1",
+      "common_cause"
+     ],
+     [
+      "under",
+      "url:0",
+      "message_body:0",
+      "common_cause"
+     ],
+     [
+      "under",
+      "page_content:1",
+      "message_body:0",
+      "common_cause"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:1",
+      "same_artifact"
+     ]
+    ],
+    "units": 7,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-test-020",
+    "errors": [
+     [
+      "under",
+      "page_content:0",
+      "page_content:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:3",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:4",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:3",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:4",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:2",
+      "html:3",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:2",
+      "html:4",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:3",
+      "html:4",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "url:0",
+      "page_content:1",
+      "common_cause"
+     ]
+    ],
+    "units": 9,
+    "gt_units": 4
+   },
+   {
+    "case_id": "exp3v2-test-021",
+    "errors": [
+     [
+      "under",
+      "html:0",
+      "html:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "url:0",
+      "page_content:0",
+      "common_cause"
+     ]
+    ],
+    "units": 6,
+    "gt_units": 4
+   },
+   {
+    "case_id": "exp3v2-test-022",
+    "errors": [
+     [
+      "under",
+      "url:0",
+      "page_content:0",
+      "common_cause"
+     ],
+     [
+      "under",
+      "url:0",
+      "message_body:0",
+      "common_cause"
+     ],
+     [
+      "under",
+      "page_content:0",
+      "message_body:0",
+      "common_cause"
+     ],
+     [
+      "under",
+      "page_content:0",
+      "page_content:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "page_content:0",
+      "page_content:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "page_content:1",
+      "page_content:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:2",
+      "same_artifact"
+     ]
+    ],
+    "units": 8,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-test-023",
+    "errors": [
+     [
+      "under",
+      "url:0",
+      "page_content:0",
+      "common_cause"
+     ],
+     [
+      "under",
+      "url:0",
+      "message_body:0",
+      "common_cause"
+     ],
+     [
+      "under",
+      "page_content:0",
+      "message_body:0",
+      "common_cause"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:1",
+      "same_artifact"
+     ]
+    ],
+    "units": 7,
+    "gt_units": 4
+   },
+   {
+    "case_id": "exp3v2-test-024",
+    "errors": [
+     [
+      "under",
+      "page_content:0",
+      "page_content:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "page_content:0",
+      "page_content:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "page_content:1",
+      "page_content:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "url:0",
+      "page_content:2",
+      "common_cause"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:2",
+      "same_artifact"
+     ]
+    ],
+    "units": 9,
+    "gt_units": 5
+   },
+   {
+    "case_id": "exp3v2-test-025",
+    "errors": [
+     [
+      "under",
+      "page_content:0",
+      "page_content:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "url:0",
+      "page_content:1",
+      "common_cause"
+     ]
+    ],
+    "units": 8,
+    "gt_units": 5
+   },
+   {
+    "case_id": "exp3v2-test-026",
+    "errors": [
+     [
+      "under",
+      "html:0",
+      "html:1",
+      "same_artifact"
+     ]
+    ],
+    "units": 6,
+    "gt_units": 5
+   },
+   {
+    "case_id": "exp3v2-test-027",
+    "errors": [
+     [
+      "under",
+      "page_content:0",
+      "page_content:1",
+      "same_artifact"
+     ]
+    ],
+    "units": 5,
+    "gt_units": 4
+   },
+   {
+    "case_id": "exp3v2-test-028",
+    "errors": [
+     [
+      "under",
+      "html:0",
+      "html:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:3",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:3",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:2",
+      "html:3",
+      "same_artifact"
+     ]
+    ],
+    "units": 6,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-test-029",
+    "errors": [
+     [
+      "under",
+      "html:0",
+      "html:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:2",
+      "same_artifact"
+     ]
+    ],
+    "units": 5,
+    "gt_units": 4
+   },
+   {
+    "case_id": "exp3v2-test-030",
+    "errors": [
+     [
+      "under",
+      "page_content:0",
+      "page_content:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:3",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:4",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:3",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:4",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:2",
+      "html:3",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:2",
+      "html:4",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:3",
+      "html:4",
+      "same_artifact"
+     ]
+    ],
+    "units": 9,
+    "gt_units": 5
+   },
+   {
+    "case_id": "exp3v2-test-031",
+    "errors": [
+     [
+      "under",
+      "html:0",
+      "html:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:2",
+      "same_artifact"
+     ]
+    ],
+    "units": 3,
+    "gt_units": 2
+   },
+   {
+    "case_id": "exp3v2-test-032",
+    "errors": [
+     [
+      "under",
+      "page_content:0",
+      "page_content:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "url:0",
+      "page_content:1",
+      "common_cause"
+     ]
+    ],
+    "units": 8,
+    "gt_units": 5
+   },
+   {
+    "case_id": "exp3v2-test-033",
+    "errors": [
+     [
+      "under",
+      "html:0",
+      "html:1",
+      "same_artifact"
+     ]
+    ],
+    "units": 6,
+    "gt_units": 5
+   },
+   {
+    "case_id": "exp3v2-test-034",
+    "errors": [
+     [
+      "under",
+      "url:0",
+      "page_content:0",
+      "common_cause"
+     ],
+     [
+      "under",
+      "page_content:0",
+      "page_content:1",
+      "same_artifact"
+     ]
+    ],
+    "units": 3,
+    "gt_units": 1
+   },
+   {
+    "case_id": "exp3v2-test-035",
+    "errors": [
+     [
+      "under",
+      "page_content:0",
+      "page_content:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "page_content:0",
+      "page_content:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:3",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:4",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:3",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:4",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:2",
+      "html:3",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:2",
+      "html:4",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:3",
+      "html:4",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "url:0",
+      "page_content:1",
+      "common_cause"
+     ],
+     [
+      "under",
+      "url:0",
+      "message_body:0",
+      "common_cause"
+     ],
+     [
+      "under",
+      "page_content:1",
+      "message_body:0",
+      "common_cause"
+     ],
+     [
+      "under",
+      "page_content:1",
+      "page_content:2",
+      "same_artifact"
+     ]
+    ],
+    "units": 10,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-test-036",
+    "errors": [
+     [
+      "under",
+      "url:0",
+      "page_content:0",
+      "common_cause"
+     ],
+     [
+      "under",
+      "url:0",
+      "message_body:0",
+      "common_cause"
+     ],
+     [
+      "under",
+      "page_content:0",
+      "message_body:0",
+      "common_cause"
+     ],
+     [
+      "under",
+      "page_content:0",
+      "page_content:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:2",
+      "same_artifact"
+     ]
+    ],
+    "units": 8,
+    "gt_units": 4
+   },
+   {
+    "case_id": "exp3v2-test-037",
+    "errors": [
+     [
+      "under",
+      "page_content:0",
+      "page_content:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:2",
+      "same_artifact"
+     ]
+    ],
+    "units": 5,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-test-038",
+    "errors": [
+     [
+      "under",
+      "page_content:0",
+      "page_content:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:2",
+      "same_artifact"
+     ]
+    ],
+    "units": 7,
+    "gt_units": 5
+   },
+   {
+    "case_id": "exp3v2-test-039",
+    "errors": [
+     [
+      "under",
+      "url:0",
+      "page_content:0",
+      "common_cause"
+     ],
+     [
+      "under",
+      "page_content:0",
+      "page_content:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:3",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:4",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:3",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:4",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:2",
+      "html:3",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:2",
+      "html:4",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:3",
+      "html:4",
+      "same_artifact"
+     ]
+    ],
+    "units": 7,
+    "gt_units": 2
+   },
+   {
+    "case_id": "exp3v2-test-040",
+    "errors": [
+     [
+      "under",
+      "html:0",
+      "html:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:3",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:3",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "url:0",
+      "page_content:0",
+      "common_cause"
+     ],
+     [
+      "under",
+      "page_content:0",
+      "page_content:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:2",
+      "html:3",
+      "same_artifact"
+     ]
+    ],
+    "units": 8,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-test-041",
+    "errors": [
+     [
+      "under",
+      "html:0",
+      "html:1",
+      "same_artifact"
+     ]
+    ],
+    "units": 4,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-test-042",
+    "errors": [
+     [
+      "under",
+      "html:0",
+      "html:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "url:0",
+      "page_content:0",
+      "common_cause"
+     ],
+     [
+      "under",
+      "page_content:0",
+      "page_content:1",
+      "same_artifact"
+     ]
+    ],
+    "units": 5,
+    "gt_units": 2
+   },
+   {
+    "case_id": "exp3v2-test-043",
+    "errors": [
+     [
+      "under",
+      "url:0",
+      "page_content:0",
+      "common_cause"
+     ],
+     [
+      "under",
+      "url:0",
+      "message_body:0",
+      "common_cause"
+     ],
+     [
+      "under",
+      "page_content:0",
+      "message_body:0",
+      "common_cause"
+     ],
+     [
+      "under",
+      "page_content:0",
+      "page_content:1",
+      "same_artifact"
+     ]
+    ],
+    "units": 6,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-test-044",
+    "errors": [
+     [
+      "under",
+      "url:0",
+      "page_content:0",
+      "common_cause"
+     ],
+     [
+      "under",
+      "url:0",
+      "message_body:0",
+      "common_cause"
+     ],
+     [
+      "under",
+      "page_content:0",
+      "message_body:0",
+      "common_cause"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:3",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:3",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:2",
+      "html:3",
+      "same_artifact"
+     ]
+    ],
+    "units": 7,
+    "gt_units": 2
+   },
+   {
+    "case_id": "exp3v2-test-045",
+    "errors": [
+     [
+      "under",
+      "html:0",
+      "html:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "page_content:0",
+      "page_content:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "url:0",
+      "page_content:1",
+      "common_cause"
+     ]
+    ],
+    "units": 5,
+    "gt_units": 2
+   },
+   {
+    "case_id": "exp3v2-test-046",
+    "errors": [
+     [
+      "under",
+      "html:0",
+      "html:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:3",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:3",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:2",
+      "html:3",
+      "same_artifact"
+     ]
+    ],
+    "units": 6,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-test-047",
+    "errors": [
+     [
+      "under",
+      "page_content:0",
+      "page_content:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "page_content:0",
+      "page_content:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "page_content:1",
+      "page_content:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "url:0",
+      "page_content:2",
+      "common_cause"
+     ],
+     [
+      "under",
+      "url:0",
+      "message_body:0",
+      "common_cause"
+     ],
+     [
+      "under",
+      "page_content:2",
+      "message_body:0",
+      "common_cause"
+     ]
+    ],
+    "units": 10,
+    "gt_units": 5
+   },
+   {
+    "case_id": "exp3v2-test-048",
+    "errors": [
+     [
+      "under",
+      "html:0",
+      "html:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "url:0",
+      "page_content:0",
+      "common_cause"
+     ]
+    ],
+    "units": 4,
+    "gt_units": 2
+   },
+   {
+    "case_id": "exp3v2-test-049",
+    "errors": [
+     [
+      "under",
+      "url:0",
+      "page_content:0",
+      "common_cause"
+     ],
+     [
+      "under",
+      "url:0",
+      "message_body:0",
+      "common_cause"
+     ],
+     [
+      "under",
+      "page_content:0",
+      "message_body:0",
+      "common_cause"
+     ],
+     [
+      "under",
+      "page_content:0",
+      "page_content:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "page_content:0",
+      "page_content:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "page_content:1",
+      "page_content:2",
+      "same_artifact"
+     ]
+    ],
+    "units": 6,
+    "gt_units": 2
+   },
+   {
+    "case_id": "exp3v2-test-050",
+    "errors": [
+     [
+      "under",
+      "url:0",
+      "page_content:0",
+      "common_cause"
+     ],
+     [
+      "under",
+      "page_content:0",
+      "page_content:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:2",
+      "same_artifact"
+     ]
+    ],
+    "units": 5,
+    "gt_units": 2
+   },
+   {
+    "case_id": "exp3v2-test-051",
+    "errors": [
+     [
+      "under",
+      "url:0",
+      "page_content:0",
+      "common_cause"
+     ],
+     [
+      "under",
+      "url:0",
+      "message_body:0",
+      "common_cause"
+     ],
+     [
+      "under",
+      "page_content:0",
+      "message_body:0",
+      "common_cause"
+     ],
+     [
+      "under",
+      "page_content:0",
+      "page_content:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:1",
+      "same_artifact"
+     ]
+    ],
+    "units": 9,
+    "gt_units": 5
+   },
+   {
+    "case_id": "exp3v2-test-052",
+    "errors": [
+     [
+      "under",
+      "html:0",
+      "html:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:3",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:4",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:3",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:4",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:2",
+      "html:3",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:2",
+      "html:4",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:3",
+      "html:4",
+      "same_artifact"
+     ]
+    ],
+    "units": 7,
+    "gt_units": 4
+   },
+   {
+    "case_id": "exp3v2-test-053",
+    "errors": [
+     [
+      "under",
+      "html:0",
+      "html:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:2",
+      "same_artifact"
+     ]
+    ],
+    "units": 3,
+    "gt_units": 2
+   },
+   {
+    "case_id": "exp3v2-test-054",
+    "errors": [
+     [
+      "under",
+      "url:0",
+      "page_content:0",
+      "common_cause"
+     ],
+     [
+      "under",
+      "url:0",
+      "message_body:0",
+      "common_cause"
+     ],
+     [
+      "under",
+      "page_content:0",
+      "message_body:0",
+      "common_cause"
+     ],
+     [
+      "under",
+      "page_content:0",
+      "page_content:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:1",
+      "same_artifact"
+     ]
+    ],
+    "units": 7,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-test-055",
+    "errors": [
+     [
+      "under",
+      "html:0",
+      "html:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "page_content:0",
+      "page_content:1",
+      "same_artifact"
+     ]
+    ],
+    "units": 5,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-test-056",
+    "errors": [],
+    "units": 4,
+    "gt_units": 4
+   },
+   {
+    "case_id": "exp3v2-test-057",
+    "errors": [
+     [
+      "under",
+      "page_content:0",
+      "page_content:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "url:0",
+      "page_content:1",
+      "common_cause"
+     ],
+     [
+      "under",
+      "url:0",
+      "message_body:0",
+      "common_cause"
+     ],
+     [
+      "under",
+      "page_content:1",
+      "message_body:0",
+      "common_cause"
+     ]
+    ],
+    "units": 6,
+    "gt_units": 2
+   },
+   {
+    "case_id": "exp3v2-test-058",
+    "errors": [
+     [
+      "under",
+      "page_content:0",
+      "page_content:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:3",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:4",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:3",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:4",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:2",
+      "html:3",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:2",
+      "html:4",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "url:0",
+      "page_content:1",
+      "common_cause"
+     ],
+     [
+      "under",
+      "html:3",
+      "html:4",
+      "same_artifact"
+     ]
+    ],
+    "units": 7,
+    "gt_units": 2
+   },
+   {
+    "case_id": "exp3v2-test-059",
+    "errors": [
+     [
+      "under",
+      "html:0",
+      "html:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:3",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:4",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:3",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:4",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:2",
+      "html:3",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:2",
+      "html:4",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:3",
+      "html:4",
+      "same_artifact"
+     ]
+    ],
+    "units": 5,
+    "gt_units": 2
+   },
+   {
+    "case_id": "exp3v2-test-060",
+    "errors": [
+     [
+      "under",
+      "url:0",
+      "page_content:0",
+      "common_cause"
+     ],
+     [
+      "under",
+      "url:0",
+      "message_body:0",
+      "common_cause"
+     ],
+     [
+      "under",
+      "page_content:0",
+      "message_body:0",
+      "common_cause"
+     ],
+     [
+      "under",
+      "page_content:0",
+      "page_content:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "page_content:0",
+      "page_content:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "page_content:1",
+      "page_content:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:2",
+      "same_artifact"
+     ]
+    ],
+    "units": 8,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-test-061",
+    "errors": [
+     [
+      "under",
+      "page_content:0",
+      "page_content:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:3",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:4",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:3",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:4",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:2",
+      "html:3",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:2",
+      "html:4",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:3",
+      "html:4",
+      "same_artifact"
+     ]
+    ],
+    "units": 7,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-test-062",
+    "errors": [
+     [
+      "under",
+      "html:0",
+      "html:1",
+      "same_artifact"
+     ]
+    ],
+    "units": 4,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-test-063",
+    "errors": [
+     [
+      "under",
+      "url:0",
+      "page_content:0",
+      "common_cause"
+     ],
+     [
+      "under",
+      "url:0",
+      "message_body:0",
+      "common_cause"
+     ],
+     [
+      "under",
+      "page_content:0",
+      "message_body:0",
+      "common_cause"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:1",
+      "same_artifact"
+     ]
+    ],
+    "units": 7,
+    "gt_units": 4
+   },
+   {
+    "case_id": "exp3v2-test-064",
+    "errors": [],
+    "units": 3,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-test-065",
+    "errors": [
+     [
+      "under",
+      "html:0",
+      "html:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:3",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:4",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:3",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:4",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "page_content:0",
+      "page_content:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:2",
+      "html:3",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:2",
+      "html:4",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:3",
+      "html:4",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "url:0",
+      "page_content:1",
+      "common_cause"
+     ]
+    ],
+    "units": 7,
+    "gt_units": 2
+   },
+   {
+    "case_id": "exp3v2-test-066",
+    "errors": [
+     [
+      "under",
+      "page_content:0",
+      "page_content:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "page_content:0",
+      "page_content:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "url:0",
+      "page_content:1",
+      "common_cause"
+     ],
+     [
+      "under",
+      "page_content:1",
+      "page_content:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:2",
+      "same_artifact"
+     ]
+    ],
+    "units": 7,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-test-067",
+    "errors": [
+     [
+      "under",
+      "page_content:0",
+      "page_content:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:2",
+      "same_artifact"
+     ]
+    ],
+    "units": 5,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-test-068",
+    "errors": [
+     [
+      "under",
+      "html:0",
+      "html:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:3",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:3",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:2",
+      "html:3",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "url:0",
+      "page_content:0",
+      "common_cause"
+     ]
+    ],
+    "units": 8,
+    "gt_units": 4
+   },
+   {
+    "case_id": "exp3v2-test-069",
+    "errors": [
+     [
+      "under",
+      "page_content:0",
+      "page_content:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:2",
+      "same_artifact"
+     ]
+    ],
+    "units": 7,
+    "gt_units": 5
+   },
+   {
+    "case_id": "exp3v2-test-070",
+    "errors": [
+     [
+      "under",
+      "page_content:0",
+      "page_content:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "url:0",
+      "page_content:1",
+      "common_cause"
+     ]
+    ],
+    "units": 6,
+    "gt_units": 4
+   },
+   {
+    "case_id": "exp3v2-test-071",
+    "errors": [
+     [
+      "under",
+      "html:0",
+      "html:1",
+      "same_artifact"
+     ]
+    ],
+    "units": 4,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-test-072",
+    "errors": [
+     [
+      "under",
+      "html:0",
+      "html:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:3",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:3",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:2",
+      "html:3",
+      "same_artifact"
+     ]
+    ],
+    "units": 8,
+    "gt_units": 5
+   },
+   {
+    "case_id": "exp3v2-test-073",
+    "errors": [
+     [
+      "under",
+      "url:0",
+      "page_content:0",
+      "common_cause"
+     ],
+     [
+      "under",
+      "page_content:0",
+      "page_content:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "page_content:0",
+      "page_content:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "page_content:1",
+      "page_content:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:3",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:4",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:3",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:4",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:2",
+      "html:3",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:2",
+      "html:4",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:3",
+      "html:4",
+      "same_artifact"
+     ]
+    ],
+    "units": 9,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-test-074",
+    "errors": [
+     [
+      "under",
+      "html:0",
+      "html:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:3",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:3",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:2",
+      "html:3",
+      "same_artifact"
+     ]
+    ],
+    "units": 6,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-test-075",
+    "errors": [
+     [
+      "under",
+      "page_content:0",
+      "page_content:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:3",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:4",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:3",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:4",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:2",
+      "html:3",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:2",
+      "html:4",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:3",
+      "html:4",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "url:0",
+      "page_content:1",
+      "common_cause"
+     ]
+    ],
+    "units": 7,
+    "gt_units": 2
+   },
+   {
+    "case_id": "exp3v2-test-076",
+    "errors": [
+     [
+      "under",
+      "html:0",
+      "html:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:3",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:4",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:3",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:4",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "page_content:0",
+      "page_content:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:2",
+      "html:3",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:2",
+      "html:4",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:3",
+      "html:4",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "url:0",
+      "page_content:1",
+      "common_cause"
+     ],
+     [
+      "under",
+      "url:0",
+      "message_body:0",
+      "common_cause"
+     ],
+     [
+      "under",
+      "page_content:1",
+      "message_body:0",
+      "common_cause"
+     ]
+    ],
+    "units": 10,
+    "gt_units": 4
+   },
+   {
+    "case_id": "exp3v2-test-077",
+    "errors": [
+     [
+      "under",
+      "page_content:0",
+      "page_content:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "url:0",
+      "page_content:1",
+      "common_cause"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:1",
+      "same_artifact"
+     ]
+    ],
+    "units": 8,
+    "gt_units": 5
+   },
+   {
+    "case_id": "exp3v2-test-078",
+    "errors": [
+     [
+      "under",
+      "url:0",
+      "page_content:0",
+      "common_cause"
+     ],
+     [
+      "under",
+      "page_content:0",
+      "page_content:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:3",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:3",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:2",
+      "html:3",
+      "same_artifact"
+     ]
+    ],
+    "units": 10,
+    "gt_units": 5
+   },
+   {
+    "case_id": "exp3v2-test-079",
+    "errors": [
+     [
+      "under",
+      "html:0",
+      "html:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "page_content:0",
+      "page_content:1",
+      "same_artifact"
+     ]
+    ],
+    "units": 7,
+    "gt_units": 5
+   }
+  ]
+ }
+]

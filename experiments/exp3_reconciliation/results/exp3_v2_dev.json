@@ -1,0 +1,3823 @@
+[
+ {
+  "policy": "provenance",
+  "threshold": null,
+  "pairs": 1278,
+  "tp": 183,
+  "fp": 0,
+  "fn": 30,
+  "tn": 1065,
+  "precision": 1.0,
+  "recall": 0.8591549295774648,
+  "f1": 0.9242424242424242,
+  "under_merge_rate": 0.14084507042253522,
+  "over_merge_rate": 0.0,
+  "merge_rate_by_kind": {
+   "common_cause": 0.0,
+   "independent": 0.0,
+   "same_artifact": 1.0,
+   "shared_acquisition_only": 0.0
+  },
+  "support_units_policy": 178,
+  "support_units_truth": 154,
+  "duplicate_support_rate": 0.1348314606741573,
+  "lost_independent_support_rate": 0.0,
+  "shared_acquisition_groups_recorded": 46,
+  "escalation_and_verdict_effects": "not measured (needs real specialists + real Judge)",
+  "per_case": [
+   {
+    "case_id": "exp3v2-dev-000",
+    "errors": [],
+    "units": 4,
+    "gt_units": 4
+   },
+   {
+    "case_id": "exp3v2-dev-001",
+    "errors": [],
+    "units": 5,
+    "gt_units": 5
+   },
+   {
+    "case_id": "exp3v2-dev-002",
+    "errors": [],
+    "units": 4,
+    "gt_units": 4
+   },
+   {
+    "case_id": "exp3v2-dev-003",
+    "errors": [
+     [
+      "under",
+      "url:0",
+      "page_content:0",
+      "common_cause"
+     ]
+    ],
+    "units": 5,
+    "gt_units": 4
+   },
+   {
+    "case_id": "exp3v2-dev-004",
+    "errors": [
+     [
+      "under",
+      "url:0",
+      "page_content:1",
+      "common_cause"
+     ]
+    ],
+    "units": 5,
+    "gt_units": 4
+   },
+   {
+    "case_id": "exp3v2-dev-005",
+    "errors": [],
+    "units": 5,
+    "gt_units": 5
+   },
+   {
+    "case_id": "exp3v2-dev-006",
+    "errors": [],
+    "units": 3,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-dev-007",
+    "errors": [],
+    "units": 3,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-dev-008",
+    "errors": [],
+    "units": 5,
+    "gt_units": 5
+   },
+   {
+    "case_id": "exp3v2-dev-009",
+    "errors": [],
+    "units": 3,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-dev-010",
+    "errors": [
+     [
+      "under",
+      "url:0",
+      "page_content:1",
+      "common_cause"
+     ]
+    ],
+    "units": 6,
+    "gt_units": 5
+   },
+   {
+    "case_id": "exp3v2-dev-011",
+    "errors": [
+     [
+      "under",
+      "url:0",
+      "page_content:0",
+      "common_cause"
+     ],
+     [
+      "under",
+      "url:0",
+      "message_body:0",
+      "common_cause"
+     ],
+     [
+      "under",
+      "page_content:0",
+      "message_body:0",
+      "common_cause"
+     ]
+    ],
+    "units": 5,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-dev-012",
+    "errors": [],
+    "units": 3,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-dev-013",
+    "errors": [],
+    "units": 4,
+    "gt_units": 4
+   },
+   {
+    "case_id": "exp3v2-dev-014",
+    "errors": [],
+    "units": 3,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-dev-015",
+    "errors": [],
+    "units": 5,
+    "gt_units": 5
+   },
+   {
+    "case_id": "exp3v2-dev-016",
+    "errors": [
+     [
+      "under",
+      "url:0",
+      "page_content:0",
+      "common_cause"
+     ]
+    ],
+    "units": 5,
+    "gt_units": 4
+   },
+   {
+    "case_id": "exp3v2-dev-017",
+    "errors": [],
+    "units": 3,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-dev-018",
+    "errors": [],
+    "units": 5,
+    "gt_units": 5
+   },
+   {
+    "case_id": "exp3v2-dev-019",
+    "errors": [
+     [
+      "under",
+      "url:0",
+      "page_content:0",
+      "common_cause"
+     ]
+    ],
+    "units": 5,
+    "gt_units": 4
+   },
+   {
+    "case_id": "exp3v2-dev-020",
+    "errors": [],
+    "units": 5,
+    "gt_units": 5
+   },
+   {
+    "case_id": "exp3v2-dev-021",
+    "errors": [
+     [
+      "under",
+      "url:0",
+      "page_content:0",
+      "common_cause"
+     ]
+    ],
+    "units": 5,
+    "gt_units": 4
+   },
+   {
+    "case_id": "exp3v2-dev-022",
+    "errors": [
+     [
+      "under",
+      "url:0",
+      "page_content:1",
+      "common_cause"
+     ]
+    ],
+    "units": 3,
+    "gt_units": 2
+   },
+   {
+    "case_id": "exp3v2-dev-023",
+    "errors": [],
+    "units": 5,
+    "gt_units": 5
+   },
+   {
+    "case_id": "exp3v2-dev-024",
+    "errors": [
+     [
+      "under",
+      "url:0",
+      "page_content:0",
+      "common_cause"
+     ]
+    ],
+    "units": 3,
+    "gt_units": 2
+   },
+   {
+    "case_id": "exp3v2-dev-025",
+    "errors": [
+     [
+      "under",
+      "url:0",
+      "page_content:0",
+      "common_cause"
+     ],
+     [
+      "under",
+      "url:0",
+      "message_body:0",
+      "common_cause"
+     ],
+     [
+      "under",
+      "page_content:0",
+      "message_body:0",
+      "common_cause"
+     ]
+    ],
+    "units": 6,
+    "gt_units": 4
+   },
+   {
+    "case_id": "exp3v2-dev-026",
+    "errors": [],
+    "units": 5,
+    "gt_units": 5
+   },
+   {
+    "case_id": "exp3v2-dev-027",
+    "errors": [],
+    "units": 4,
+    "gt_units": 4
+   },
+   {
+    "case_id": "exp3v2-dev-028",
+    "errors": [
+     [
+      "under",
+      "url:0",
+      "page_content:0",
+      "common_cause"
+     ],
+     [
+      "under",
+      "url:0",
+      "message_body:0",
+      "common_cause"
+     ],
+     [
+      "under",
+      "page_content:0",
+      "message_body:0",
+      "common_cause"
+     ]
+    ],
+    "units": 5,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-dev-029",
+    "errors": [
+     [
+      "under",
+      "url:0",
+      "page_content:0",
+      "common_cause"
+     ]
+    ],
+    "units": 6,
+    "gt_units": 5
+   },
+   {
+    "case_id": "exp3v2-dev-030",
+    "errors": [
+     [
+      "under",
+      "url:0",
+      "page_content:0",
+      "common_cause"
+     ]
+    ],
+    "units": 3,
+    "gt_units": 2
+   },
+   {
+    "case_id": "exp3v2-dev-031",
+    "errors": [],
+    "units": 4,
+    "gt_units": 4
+   },
+   {
+    "case_id": "exp3v2-dev-032",
+    "errors": [
+     [
+      "under",
+      "url:0",
+      "page_content:0",
+      "common_cause"
+     ],
+     [
+      "under",
+      "url:0",
+      "message_body:0",
+      "common_cause"
+     ],
+     [
+      "under",
+      "page_content:0",
+      "message_body:0",
+      "common_cause"
+     ]
+    ],
+    "units": 6,
+    "gt_units": 4
+   },
+   {
+    "case_id": "exp3v2-dev-033",
+    "errors": [],
+    "units": 5,
+    "gt_units": 5
+   },
+   {
+    "case_id": "exp3v2-dev-034",
+    "errors": [
+     [
+      "under",
+      "url:0",
+      "page_content:0",
+      "common_cause"
+     ],
+     [
+      "under",
+      "url:0",
+      "message_body:0",
+      "common_cause"
+     ],
+     [
+      "under",
+      "page_content:0",
+      "message_body:0",
+      "common_cause"
+     ]
+    ],
+    "units": 6,
+    "gt_units": 4
+   },
+   {
+    "case_id": "exp3v2-dev-035",
+    "errors": [],
+    "units": 5,
+    "gt_units": 5
+   },
+   {
+    "case_id": "exp3v2-dev-036",
+    "errors": [
+     [
+      "under",
+      "url:0",
+      "page_content:1",
+      "common_cause"
+     ]
+    ],
+    "units": 4,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-dev-037",
+    "errors": [
+     [
+      "under",
+      "url:0",
+      "page_content:0",
+      "common_cause"
+     ],
+     [
+      "under",
+      "url:0",
+      "message_body:0",
+      "common_cause"
+     ],
+     [
+      "under",
+      "page_content:0",
+      "message_body:0",
+      "common_cause"
+     ]
+    ],
+    "units": 5,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-dev-038",
+    "errors": [
+     [
+      "under",
+      "url:0",
+      "page_content:0",
+      "common_cause"
+     ]
+    ],
+    "units": 4,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-dev-039",
+    "errors": [],
+    "units": 3,
+    "gt_units": 3
+   }
+  ]
+ },
+ {
+  "policy": "provenance_cc",
+  "threshold": null,
+  "pairs": 1278,
+  "tp": 213,
+  "fp": 19,
+  "fn": 0,
+  "tn": 1046,
+  "precision": 0.9181034482758621,
+  "recall": 1.0,
+  "f1": 0.9573033707865168,
+  "under_merge_rate": 0.0,
+  "over_merge_rate": 0.01784037558685446,
+  "merge_rate_by_kind": {
+   "common_cause": 1.0,
+   "independent": 0.0,
+   "same_artifact": 1.0,
+   "shared_acquisition_only": 0.045
+  },
+  "support_units_policy": 154,
+  "support_units_truth": 154,
+  "duplicate_support_rate": 0.0,
+  "lost_independent_support_rate": 0.0,
+  "shared_acquisition_groups_recorded": 46,
+  "escalation_and_verdict_effects": "not measured (needs real specialists + real Judge)",
+  "per_case": [
+   {
+    "case_id": "exp3v2-dev-000",
+    "errors": [
+     [
+      "over",
+      "page_content:0",
+      "html:0",
+      "shared_acquisition_only"
+     ]
+    ],
+    "units": 4,
+    "gt_units": 4
+   },
+   {
+    "case_id": "exp3v2-dev-001",
+    "errors": [],
+    "units": 5,
+    "gt_units": 5
+   },
+   {
+    "case_id": "exp3v2-dev-002",
+    "errors": [
+     [
+      "over",
+      "page_content:0",
+      "html:2",
+      "shared_acquisition_only"
+     ]
+    ],
+    "units": 4,
+    "gt_units": 4
+   },
+   {
+    "case_id": "exp3v2-dev-003",
+    "errors": [],
+    "units": 4,
+    "gt_units": 4
+   },
+   {
+    "case_id": "exp3v2-dev-004",
+    "errors": [
+     [
+      "over",
+      "page_content:0",
+      "html:0",
+      "shared_acquisition_only"
+     ]
+    ],
+    "units": 4,
+    "gt_units": 4
+   },
+   {
+    "case_id": "exp3v2-dev-005",
+    "errors": [
+     [
+      "over",
+      "page_content:1",
+      "html:0",
+      "shared_acquisition_only"
+     ]
+    ],
+    "units": 5,
+    "gt_units": 5
+   },
+   {
+    "case_id": "exp3v2-dev-006",
+    "errors": [],
+    "units": 3,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-dev-007",
+    "errors": [],
+    "units": 3,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-dev-008",
+    "errors": [
+     [
+      "over",
+      "page_content:0",
+      "html:0",
+      "shared_acquisition_only"
+     ]
+    ],
+    "units": 5,
+    "gt_units": 5
+   },
+   {
+    "case_id": "exp3v2-dev-009",
+    "errors": [
+     [
+      "over",
+      "page_content:0",
+      "html:0",
+      "shared_acquisition_only"
+     ]
+    ],
+    "units": 3,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-dev-010",
+    "errors": [],
+    "units": 5,
+    "gt_units": 5
+   },
+   {
+    "case_id": "exp3v2-dev-011",
+    "errors": [],
+    "units": 3,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-dev-012",
+    "errors": [],
+    "units": 3,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-dev-013",
+    "errors": [],
+    "units": 4,
+    "gt_units": 4
+   },
+   {
+    "case_id": "exp3v2-dev-014",
+    "errors": [],
+    "units": 3,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-dev-015",
+    "errors": [
+     [
+      "over",
+      "page_content:0",
+      "html:2",
+      "shared_acquisition_only"
+     ]
+    ],
+    "units": 5,
+    "gt_units": 5
+   },
+   {
+    "case_id": "exp3v2-dev-016",
+    "errors": [
+     [
+      "over",
+      "page_content:1",
+      "html:0",
+      "shared_acquisition_only"
+     ]
+    ],
+    "units": 4,
+    "gt_units": 4
+   },
+   {
+    "case_id": "exp3v2-dev-017",
+    "errors": [
+     [
+      "over",
+      "page_content:1",
+      "html:2",
+      "shared_acquisition_only"
+     ]
+    ],
+    "units": 3,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-dev-018",
+    "errors": [
+     [
+      "over",
+      "page_content:1",
+      "html:0",
+      "shared_acquisition_only"
+     ]
+    ],
+    "units": 5,
+    "gt_units": 5
+   },
+   {
+    "case_id": "exp3v2-dev-019",
+    "errors": [],
+    "units": 4,
+    "gt_units": 4
+   },
+   {
+    "case_id": "exp3v2-dev-020",
+    "errors": [
+     [
+      "over",
+      "page_content:0",
+      "html:0",
+      "shared_acquisition_only"
+     ]
+    ],
+    "units": 5,
+    "gt_units": 5
+   },
+   {
+    "case_id": "exp3v2-dev-021",
+    "errors": [],
+    "units": 4,
+    "gt_units": 4
+   },
+   {
+    "case_id": "exp3v2-dev-022",
+    "errors": [
+     [
+      "over",
+      "page_content:0",
+      "html:2",
+      "shared_acquisition_only"
+     ]
+    ],
+    "units": 2,
+    "gt_units": 2
+   },
+   {
+    "case_id": "exp3v2-dev-023",
+    "errors": [
+     [
+      "over",
+      "page_content:1",
+      "html:2",
+      "shared_acquisition_only"
+     ]
+    ],
+    "units": 5,
+    "gt_units": 5
+   },
+   {
+    "case_id": "exp3v2-dev-024",
+    "errors": [],
+    "units": 2,
+    "gt_units": 2
+   },
+   {
+    "case_id": "exp3v2-dev-025",
+    "errors": [],
+    "units": 4,
+    "gt_units": 4
+   },
+   {
+    "case_id": "exp3v2-dev-026",
+    "errors": [
+     [
+      "over",
+      "page_content:0",
+      "html:2",
+      "shared_acquisition_only"
+     ]
+    ],
+    "units": 5,
+    "gt_units": 5
+   },
+   {
+    "case_id": "exp3v2-dev-027",
+    "errors": [
+     [
+      "over",
+      "page_content:0",
+      "html:0",
+      "shared_acquisition_only"
+     ]
+    ],
+    "units": 4,
+    "gt_units": 4
+   },
+   {
+    "case_id": "exp3v2-dev-028",
+    "errors": [],
+    "units": 3,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-dev-029",
+    "errors": [],
+    "units": 5,
+    "gt_units": 5
+   },
+   {
+    "case_id": "exp3v2-dev-030",
+    "errors": [
+     [
+      "over",
+      "page_content:1",
+      "html:2",
+      "shared_acquisition_only"
+     ]
+    ],
+    "units": 2,
+    "gt_units": 2
+   },
+   {
+    "case_id": "exp3v2-dev-031",
+    "errors": [
+     [
+      "over",
+      "page_content:0",
+      "html:2",
+      "shared_acquisition_only"
+     ]
+    ],
+    "units": 4,
+    "gt_units": 4
+   },
+   {
+    "case_id": "exp3v2-dev-032",
+    "errors": [],
+    "units": 4,
+    "gt_units": 4
+   },
+   {
+    "case_id": "exp3v2-dev-033",
+    "errors": [],
+    "units": 5,
+    "gt_units": 5
+   },
+   {
+    "case_id": "exp3v2-dev-034",
+    "errors": [],
+    "units": 4,
+    "gt_units": 4
+   },
+   {
+    "case_id": "exp3v2-dev-035",
+    "errors": [],
+    "units": 5,
+    "gt_units": 5
+   },
+   {
+    "case_id": "exp3v2-dev-036",
+    "errors": [],
+    "units": 3,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-dev-037",
+    "errors": [],
+    "units": 3,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-dev-038",
+    "errors": [
+     [
+      "over",
+      "page_content:1",
+      "html:2",
+      "shared_acquisition_only"
+     ]
+    ],
+    "units": 3,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-dev-039",
+    "errors": [
+     [
+      "over",
+      "page_content:0",
+      "html:0",
+      "shared_acquisition_only"
+     ]
+    ],
+    "units": 3,
+    "gt_units": 3
+   }
+  ]
+ },
+ {
+  "policy": "semantic",
+  "threshold": null,
+  "pairs": 1278,
+  "tp": 126,
+  "fp": 90,
+  "fn": 87,
+  "tn": 975,
+  "precision": 0.5833333333333334,
+  "recall": 0.5915492957746479,
+  "f1": 0.5874125874125875,
+  "under_merge_rate": 0.4084507042253521,
+  "over_merge_rate": 0.08450704225352113,
+  "merge_rate_by_kind": {
+   "common_cause": 0.6,
+   "independent": 0.11,
+   "same_artifact": 0.59,
+   "shared_acquisition_only": 0.047
+  },
+  "support_units_policy": 152,
+  "support_units_truth": 154,
+  "duplicate_support_rate": 0.07894736842105263,
+  "lost_independent_support_rate": 0.09090909090909091,
+  "shared_acquisition_groups_recorded": 0,
+  "escalation_and_verdict_effects": "not measured (needs real specialists + real Judge)",
+  "per_case": [
+   {
+    "case_id": "exp3v2-dev-000",
+    "errors": [
+     [
+      "over",
+      "registration:0",
+      "ct:0",
+      "independent"
+     ],
+     [
+      "under",
+      "page_content:0",
+      "page_content:1",
+      "same_artifact"
+     ]
+    ],
+    "units": 4,
+    "gt_units": 4
+   },
+   {
+    "case_id": "exp3v2-dev-001",
+    "errors": [
+     [
+      "over",
+      "dns:0",
+      "redirect_chain:0",
+      "independent"
+     ],
+     [
+      "over",
+      "registration:0",
+      "ct:0",
+      "independent"
+     ]
+    ],
+    "units": 4,
+    "gt_units": 5
+   },
+   {
+    "case_id": "exp3v2-dev-002",
+    "errors": [
+     [
+      "under",
+      "html:0",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "over",
+      "registration:0",
+      "ct:0",
+      "independent"
+     ]
+    ],
+    "units": 3,
+    "gt_units": 4
+   },
+   {
+    "case_id": "exp3v2-dev-003",
+    "errors": [
+     [
+      "under",
+      "url:0",
+      "page_content:0",
+      "common_cause"
+     ],
+     [
+      "over",
+      "registration:0",
+      "ct:0",
+      "independent"
+     ]
+    ],
+    "units": 4,
+    "gt_units": 4
+   },
+   {
+    "case_id": "exp3v2-dev-004",
+    "errors": [
+     [
+      "under",
+      "html:0",
+      "html:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "over",
+      "registration:0",
+      "ct:0",
+      "independent"
+     ],
+     [
+      "under",
+      "url:0",
+      "page_content:1",
+      "common_cause"
+     ]
+    ],
+    "units": 4,
+    "gt_units": 4
+   },
+   {
+    "case_id": "exp3v2-dev-005",
+    "errors": [
+     [
+      "under",
+      "page_content:0",
+      "page_content:1",
+      "same_artifact"
+     ],
+     [
+      "over",
+      "dns:0",
+      "redirect_chain:0",
+      "independent"
+     ],
+     [
+      "over",
+      "registration:0",
+      "ct:0",
+      "independent"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:2",
+      "same_artifact"
+     ]
+    ],
+    "units": 5,
+    "gt_units": 5
+   },
+   {
+    "case_id": "exp3v2-dev-006",
+    "errors": [
+     [
+      "over",
+      "dns:0",
+      "redirect_chain:0",
+      "independent"
+     ]
+    ],
+    "units": 3,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-dev-007",
+    "errors": [
+     [
+      "under",
+      "html:0",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:3",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:3",
+      "same_artifact"
+     ],
+     [
+      "over",
+      "registration:0",
+      "ct:0",
+      "independent"
+     ]
+    ],
+    "units": 3,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-dev-008",
+    "errors": [
+     [
+      "under",
+      "page_content:0",
+      "page_content:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "over",
+      "registration:0",
+      "ct:0",
+      "independent"
+     ]
+    ],
+    "units": 5,
+    "gt_units": 5
+   },
+   {
+    "case_id": "exp3v2-dev-009",
+    "errors": [
+     [
+      "under",
+      "page_content:0",
+      "page_content:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "over",
+      "dns:0",
+      "redirect_chain:0",
+      "independent"
+     ]
+    ],
+    "units": 4,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-dev-010",
+    "errors": [
+     [
+      "over",
+      "registration:0",
+      "ct:0",
+      "independent"
+     ],
+     [
+      "under",
+      "page_content:0",
+      "page_content:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "url:0",
+      "page_content:1",
+      "common_cause"
+     ],
+     [
+      "over",
+      "dns:0",
+      "redirect_chain:0",
+      "independent"
+     ]
+    ],
+    "units": 6,
+    "gt_units": 5
+   },
+   {
+    "case_id": "exp3v2-dev-011",
+    "errors": [
+     [
+      "under",
+      "page_content:0",
+      "page_content:1",
+      "same_artifact"
+     ]
+    ],
+    "units": 4,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-dev-012",
+    "errors": [],
+    "units": 3,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-dev-013",
+    "errors": [
+     [
+      "over",
+      "registration:0",
+      "ct:0",
+      "independent"
+     ],
+     [
+      "over",
+      "dns:0",
+      "redirect_chain:0",
+      "independent"
+     ]
+    ],
+    "units": 3,
+    "gt_units": 4
+   },
+   {
+    "case_id": "exp3v2-dev-014",
+    "errors": [
+     [
+      "over",
+      "registration:0",
+      "ct:0",
+      "independent"
+     ],
+     [
+      "over",
+      "dns:0",
+      "redirect_chain:0",
+      "independent"
+     ]
+    ],
+    "units": 2,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-dev-015",
+    "errors": [
+     [
+      "over",
+      "dns:0",
+      "redirect_chain:0",
+      "independent"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "page_content:0",
+      "page_content:1",
+      "same_artifact"
+     ],
+     [
+      "over",
+      "registration:0",
+      "ct:0",
+      "independent"
+     ]
+    ],
+    "units": 5,
+    "gt_units": 5
+   },
+   {
+    "case_id": "exp3v2-dev-016",
+    "errors": [
+     [
+      "over",
+      "url:0",
+      "page_content:1",
+      "independent"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "over",
+      "dns:0",
+      "redirect_chain:0",
+      "independent"
+     ],
+     [
+      "over",
+      "registration:0",
+      "ct:0",
+      "independent"
+     ]
+    ],
+    "units": 3,
+    "gt_units": 4
+   },
+   {
+    "case_id": "exp3v2-dev-017",
+    "errors": [
+     [
+      "under",
+      "page_content:0",
+      "page_content:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "over",
+      "dns:0",
+      "redirect_chain:0",
+      "independent"
+     ],
+     [
+      "under",
+      "html:2",
+      "html:3",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:2",
+      "html:4",
+      "same_artifact"
+     ]
+    ],
+    "units": 4,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-dev-018",
+    "errors": [
+     [
+      "over",
+      "dns:0",
+      "redirect_chain:0",
+      "independent"
+     ],
+     [
+      "under",
+      "page_content:0",
+      "page_content:1",
+      "same_artifact"
+     ],
+     [
+      "over",
+      "registration:0",
+      "ct:0",
+      "independent"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:2",
+      "same_artifact"
+     ]
+    ],
+    "units": 5,
+    "gt_units": 5
+   },
+   {
+    "case_id": "exp3v2-dev-019",
+    "errors": [
+     [
+      "under",
+      "url:0",
+      "page_content:0",
+      "common_cause"
+     ],
+     [
+      "over",
+      "registration:0",
+      "ct:0",
+      "independent"
+     ]
+    ],
+    "units": 4,
+    "gt_units": 4
+   },
+   {
+    "case_id": "exp3v2-dev-020",
+    "errors": [
+     [
+      "under",
+      "page_content:0",
+      "page_content:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "over",
+      "dns:0",
+      "redirect_chain:0",
+      "independent"
+     ],
+     [
+      "over",
+      "registration:0",
+      "ct:0",
+      "independent"
+     ]
+    ],
+    "units": 5,
+    "gt_units": 5
+   },
+   {
+    "case_id": "exp3v2-dev-021",
+    "errors": [
+     [
+      "under",
+      "url:0",
+      "page_content:0",
+      "common_cause"
+     ],
+     [
+      "over",
+      "page_content:0",
+      "html:0",
+      "shared_acquisition_only"
+     ],
+     [
+      "over",
+      "page_content:0",
+      "html:1",
+      "shared_acquisition_only"
+     ],
+     [
+      "over",
+      "page_content:0",
+      "html:2",
+      "shared_acquisition_only"
+     ],
+     [
+      "over",
+      "page_content:0",
+      "html:3",
+      "shared_acquisition_only"
+     ],
+     [
+      "over",
+      "registration:0",
+      "ct:0",
+      "independent"
+     ],
+     [
+      "over",
+      "dns:0",
+      "redirect_chain:0",
+      "independent"
+     ]
+    ],
+    "units": 3,
+    "gt_units": 4
+   },
+   {
+    "case_id": "exp3v2-dev-022",
+    "errors": [
+     [
+      "under",
+      "html:0",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "page_content:0",
+      "page_content:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:2",
+      "html:3",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:2",
+      "html:4",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "url:0",
+      "page_content:1",
+      "common_cause"
+     ]
+    ],
+    "units": 4,
+    "gt_units": 2
+   },
+   {
+    "case_id": "exp3v2-dev-023",
+    "errors": [
+     [
+      "over",
+      "dns:0",
+      "redirect_chain:0",
+      "independent"
+     ],
+     [
+      "over",
+      "registration:0",
+      "ct:0",
+      "independent"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "page_content:0",
+      "page_content:1",
+      "same_artifact"
+     ]
+    ],
+    "units": 5,
+    "gt_units": 5
+   },
+   {
+    "case_id": "exp3v2-dev-024",
+    "errors": [
+     [
+      "over",
+      "dns:0",
+      "redirect_chain:0",
+      "independent"
+     ]
+    ],
+    "units": 2,
+    "gt_units": 2
+   },
+   {
+    "case_id": "exp3v2-dev-025",
+    "errors": [
+     [
+      "under",
+      "url:0",
+      "page_content:0",
+      "common_cause"
+     ],
+     [
+      "under",
+      "url:0",
+      "message_body:0",
+      "common_cause"
+     ],
+     [
+      "over",
+      "message_body:0",
+      "page_content:1",
+      "independent"
+     ],
+     [
+      "over",
+      "registration:0",
+      "ct:0",
+      "independent"
+     ]
+    ],
+    "units": 4,
+    "gt_units": 4
+   },
+   {
+    "case_id": "exp3v2-dev-026",
+    "errors": [
+     [
+      "over",
+      "registration:0",
+      "ct:0",
+      "independent"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "over",
+      "dns:0",
+      "redirect_chain:0",
+      "independent"
+     ],
+     [
+      "under",
+      "page_content:0",
+      "page_content:1",
+      "same_artifact"
+     ]
+    ],
+    "units": 5,
+    "gt_units": 5
+   },
+   {
+    "case_id": "exp3v2-dev-027",
+    "errors": [
+     [
+      "over",
+      "dns:0",
+      "redirect_chain:0",
+      "independent"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:3",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:4",
+      "same_artifact"
+     ],
+     [
+      "over",
+      "registration:0",
+      "ct:0",
+      "independent"
+     ]
+    ],
+    "units": 3,
+    "gt_units": 4
+   },
+   {
+    "case_id": "exp3v2-dev-028",
+    "errors": [
+     [
+      "over",
+      "url:0",
+      "page_content:1",
+      "independent"
+     ],
+     [
+      "over",
+      "message_body:0",
+      "page_content:1",
+      "independent"
+     ]
+    ],
+    "units": 3,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-dev-029",
+    "errors": [
+     [
+      "over",
+      "url:0",
+      "page_content:1",
+      "independent"
+     ],
+     [
+      "over",
+      "registration:0",
+      "ct:0",
+      "independent"
+     ]
+    ],
+    "units": 4,
+    "gt_units": 5
+   },
+   {
+    "case_id": "exp3v2-dev-030",
+    "errors": [
+     [
+      "over",
+      "url:0",
+      "html:0",
+      "independent"
+     ],
+     [
+      "over",
+      "url:0",
+      "html:1",
+      "independent"
+     ],
+     [
+      "over",
+      "url:0",
+      "page_content:1",
+      "independent"
+     ],
+     [
+      "over",
+      "url:0",
+      "html:3",
+      "independent"
+     ],
+     [
+      "over",
+      "url:0",
+      "html:4",
+      "independent"
+     ],
+     [
+      "over",
+      "page_content:0",
+      "html:0",
+      "shared_acquisition_only"
+     ],
+     [
+      "over",
+      "page_content:0",
+      "html:1",
+      "shared_acquisition_only"
+     ],
+     [
+      "over",
+      "page_content:0",
+      "html:3",
+      "shared_acquisition_only"
+     ],
+     [
+      "over",
+      "page_content:0",
+      "html:4",
+      "shared_acquisition_only"
+     ],
+     [
+      "over",
+      "html:0",
+      "page_content:1",
+      "shared_acquisition_only"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "over",
+      "html:1",
+      "page_content:1",
+      "shared_acquisition_only"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "over",
+      "page_content:1",
+      "html:3",
+      "shared_acquisition_only"
+     ],
+     [
+      "over",
+      "page_content:1",
+      "html:4",
+      "shared_acquisition_only"
+     ],
+     [
+      "under",
+      "html:2",
+      "html:3",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:2",
+      "html:4",
+      "same_artifact"
+     ],
+     [
+      "over",
+      "dns:0",
+      "redirect_chain:0",
+      "independent"
+     ]
+    ],
+    "units": 1,
+    "gt_units": 2
+   },
+   {
+    "case_id": "exp3v2-dev-031",
+    "errors": [
+     [
+      "under",
+      "html:0",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "over",
+      "dns:0",
+      "redirect_chain:0",
+      "independent"
+     ],
+     [
+      "over",
+      "registration:0",
+      "ct:0",
+      "independent"
+     ]
+    ],
+    "units": 3,
+    "gt_units": 4
+   },
+   {
+    "case_id": "exp3v2-dev-032",
+    "errors": [
+     [
+      "under",
+      "url:0",
+      "page_content:0",
+      "common_cause"
+     ],
+     [
+      "under",
+      "url:0",
+      "message_body:0",
+      "common_cause"
+     ],
+     [
+      "over",
+      "page_content:0",
+      "html:0",
+      "shared_acquisition_only"
+     ],
+     [
+      "over",
+      "page_content:0",
+      "html:1",
+      "shared_acquisition_only"
+     ],
+     [
+      "over",
+      "page_content:0",
+      "html:2",
+      "shared_acquisition_only"
+     ],
+     [
+      "over",
+      "page_content:0",
+      "html:3",
+      "shared_acquisition_only"
+     ],
+     [
+      "over",
+      "message_body:0",
+      "html:0",
+      "independent"
+     ],
+     [
+      "over",
+      "message_body:0",
+      "html:1",
+      "independent"
+     ],
+     [
+      "over",
+      "message_body:0",
+      "html:2",
+      "independent"
+     ],
+     [
+      "over",
+      "message_body:0",
+      "html:3",
+      "independent"
+     ],
+     [
+      "over",
+      "dns:0",
+      "redirect_chain:0",
+      "independent"
+     ],
+     [
+      "over",
+      "registration:0",
+      "ct:0",
+      "independent"
+     ]
+    ],
+    "units": 3,
+    "gt_units": 4
+   },
+   {
+    "case_id": "exp3v2-dev-033",
+    "errors": [
+     [
+      "over",
+      "dns:0",
+      "redirect_chain:0",
+      "independent"
+     ],
+     [
+      "over",
+      "registration:0",
+      "ct:0",
+      "independent"
+     ]
+    ],
+    "units": 4,
+    "gt_units": 5
+   },
+   {
+    "case_id": "exp3v2-dev-034",
+    "errors": [
+     [
+      "over",
+      "dns:0",
+      "redirect_chain:0",
+      "independent"
+     ],
+     [
+      "over",
+      "registration:0",
+      "ct:0",
+      "independent"
+     ]
+    ],
+    "units": 3,
+    "gt_units": 4
+   },
+   {
+    "case_id": "exp3v2-dev-035",
+    "errors": [
+     [
+      "under",
+      "html:0",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:3",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:3",
+      "same_artifact"
+     ],
+     [
+      "over",
+      "dns:0",
+      "redirect_chain:0",
+      "independent"
+     ],
+     [
+      "over",
+      "registration:0",
+      "ct:0",
+      "independent"
+     ]
+    ],
+    "units": 5,
+    "gt_units": 5
+   },
+   {
+    "case_id": "exp3v2-dev-036",
+    "errors": [
+     [
+      "under",
+      "url:0",
+      "page_content:1",
+      "common_cause"
+     ]
+    ],
+    "units": 4,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-dev-037",
+    "errors": [
+     [
+      "over",
+      "url:0",
+      "html:0",
+      "independent"
+     ],
+     [
+      "over",
+      "url:0",
+      "html:1",
+      "independent"
+     ],
+     [
+      "over",
+      "url:0",
+      "page_content:1",
+      "independent"
+     ],
+     [
+      "over",
+      "page_content:0",
+      "html:0",
+      "shared_acquisition_only"
+     ],
+     [
+      "over",
+      "page_content:0",
+      "html:1",
+      "shared_acquisition_only"
+     ],
+     [
+      "over",
+      "message_body:0",
+      "html:0",
+      "independent"
+     ],
+     [
+      "over",
+      "message_body:0",
+      "html:1",
+      "independent"
+     ],
+     [
+      "over",
+      "message_body:0",
+      "page_content:1",
+      "independent"
+     ],
+     [
+      "over",
+      "html:0",
+      "page_content:1",
+      "shared_acquisition_only"
+     ],
+     [
+      "over",
+      "html:1",
+      "page_content:1",
+      "shared_acquisition_only"
+     ]
+    ],
+    "units": 2,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-dev-038",
+    "errors": [
+     [
+      "under",
+      "html:0",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "url:0",
+      "page_content:0",
+      "common_cause"
+     ],
+     [
+      "under",
+      "page_content:0",
+      "page_content:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "page_content:0",
+      "page_content:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "page_content:1",
+      "page_content:2",
+      "same_artifact"
+     ]
+    ],
+    "units": 6,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-dev-039",
+    "errors": [
+     [
+      "under",
+      "page_content:0",
+      "page_content:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:3",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:4",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:3",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:4",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:2",
+      "html:3",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:2",
+      "html:4",
+      "same_artifact"
+     ]
+    ],
+    "units": 5,
+    "gt_units": 3
+   }
+  ]
+ },
+ {
+  "policy": "independent",
+  "threshold": null,
+  "pairs": 1278,
+  "tp": 0,
+  "fp": 0,
+  "fn": 213,
+  "tn": 1065,
+  "precision": null,
+  "recall": 0.0,
+  "f1": 0.0,
+  "under_merge_rate": 1.0,
+  "over_merge_rate": 0.0,
+  "merge_rate_by_kind": {
+   "common_cause": 0.0,
+   "independent": 0.0,
+   "same_artifact": 0.0,
+   "shared_acquisition_only": 0.0
+  },
+  "support_units_policy": 269,
+  "support_units_truth": 154,
+  "duplicate_support_rate": 0.4275092936802974,
+  "lost_independent_support_rate": 0.0,
+  "shared_acquisition_groups_recorded": 0,
+  "escalation_and_verdict_effects": "not measured (needs real specialists + real Judge)",
+  "per_case": [
+   {
+    "case_id": "exp3v2-dev-000",
+    "errors": [
+     [
+      "under",
+      "page_content:0",
+      "page_content:1",
+      "same_artifact"
+     ]
+    ],
+    "units": 5,
+    "gt_units": 4
+   },
+   {
+    "case_id": "exp3v2-dev-001",
+    "errors": [
+     [
+      "under",
+      "html:0",
+      "html:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:3",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:3",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:2",
+      "html:3",
+      "same_artifact"
+     ]
+    ],
+    "units": 8,
+    "gt_units": 5
+   },
+   {
+    "case_id": "exp3v2-dev-002",
+    "errors": [
+     [
+      "under",
+      "html:0",
+      "html:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:2",
+      "same_artifact"
+     ]
+    ],
+    "units": 5,
+    "gt_units": 4
+   },
+   {
+    "case_id": "exp3v2-dev-003",
+    "errors": [
+     [
+      "under",
+      "html:0",
+      "html:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "url:0",
+      "page_content:0",
+      "common_cause"
+     ]
+    ],
+    "units": 6,
+    "gt_units": 4
+   },
+   {
+    "case_id": "exp3v2-dev-004",
+    "errors": [
+     [
+      "under",
+      "page_content:0",
+      "page_content:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "url:0",
+      "page_content:1",
+      "common_cause"
+     ]
+    ],
+    "units": 7,
+    "gt_units": 4
+   },
+   {
+    "case_id": "exp3v2-dev-005",
+    "errors": [
+     [
+      "under",
+      "page_content:0",
+      "page_content:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:2",
+      "same_artifact"
+     ]
+    ],
+    "units": 7,
+    "gt_units": 5
+   },
+   {
+    "case_id": "exp3v2-dev-006",
+    "errors": [
+     [
+      "under",
+      "html:0",
+      "html:1",
+      "same_artifact"
+     ]
+    ],
+    "units": 4,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-dev-007",
+    "errors": [
+     [
+      "under",
+      "html:0",
+      "html:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:3",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:3",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:2",
+      "html:3",
+      "same_artifact"
+     ]
+    ],
+    "units": 6,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-dev-008",
+    "errors": [
+     [
+      "under",
+      "page_content:0",
+      "page_content:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:2",
+      "same_artifact"
+     ]
+    ],
+    "units": 7,
+    "gt_units": 5
+   },
+   {
+    "case_id": "exp3v2-dev-009",
+    "errors": [
+     [
+      "under",
+      "page_content:0",
+      "page_content:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:2",
+      "same_artifact"
+     ]
+    ],
+    "units": 5,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-dev-010",
+    "errors": [
+     [
+      "under",
+      "page_content:0",
+      "page_content:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "url:0",
+      "page_content:1",
+      "common_cause"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:1",
+      "same_artifact"
+     ]
+    ],
+    "units": 8,
+    "gt_units": 5
+   },
+   {
+    "case_id": "exp3v2-dev-011",
+    "errors": [
+     [
+      "under",
+      "html:0",
+      "html:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:3",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:3",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "url:0",
+      "page_content:0",
+      "common_cause"
+     ],
+     [
+      "under",
+      "url:0",
+      "message_body:0",
+      "common_cause"
+     ],
+     [
+      "under",
+      "page_content:0",
+      "message_body:0",
+      "common_cause"
+     ],
+     [
+      "under",
+      "page_content:0",
+      "page_content:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:2",
+      "html:3",
+      "same_artifact"
+     ]
+    ],
+    "units": 9,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-dev-012",
+    "errors": [
+     [
+      "under",
+      "html:0",
+      "html:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:3",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:3",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:2",
+      "html:3",
+      "same_artifact"
+     ]
+    ],
+    "units": 6,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-dev-013",
+    "errors": [],
+    "units": 4,
+    "gt_units": 4
+   },
+   {
+    "case_id": "exp3v2-dev-014",
+    "errors": [
+     [
+      "under",
+      "html:0",
+      "html:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:3",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:3",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:2",
+      "html:3",
+      "same_artifact"
+     ]
+    ],
+    "units": 6,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-dev-015",
+    "errors": [
+     [
+      "under",
+      "html:0",
+      "html:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "page_content:0",
+      "page_content:1",
+      "same_artifact"
+     ]
+    ],
+    "units": 7,
+    "gt_units": 5
+   },
+   {
+    "case_id": "exp3v2-dev-016",
+    "errors": [
+     [
+      "under",
+      "url:0",
+      "page_content:0",
+      "common_cause"
+     ],
+     [
+      "under",
+      "page_content:0",
+      "page_content:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:2",
+      "same_artifact"
+     ]
+    ],
+    "units": 7,
+    "gt_units": 4
+   },
+   {
+    "case_id": "exp3v2-dev-017",
+    "errors": [
+     [
+      "under",
+      "page_content:0",
+      "page_content:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:3",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:4",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:3",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:4",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:2",
+      "html:3",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:2",
+      "html:4",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:3",
+      "html:4",
+      "same_artifact"
+     ]
+    ],
+    "units": 7,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-dev-018",
+    "errors": [
+     [
+      "under",
+      "page_content:0",
+      "page_content:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:2",
+      "same_artifact"
+     ]
+    ],
+    "units": 7,
+    "gt_units": 5
+   },
+   {
+    "case_id": "exp3v2-dev-019",
+    "errors": [
+     [
+      "under",
+      "url:0",
+      "page_content:0",
+      "common_cause"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:1",
+      "same_artifact"
+     ]
+    ],
+    "units": 6,
+    "gt_units": 4
+   },
+   {
+    "case_id": "exp3v2-dev-020",
+    "errors": [
+     [
+      "under",
+      "page_content:0",
+      "page_content:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:2",
+      "same_artifact"
+     ]
+    ],
+    "units": 7,
+    "gt_units": 5
+   },
+   {
+    "case_id": "exp3v2-dev-021",
+    "errors": [
+     [
+      "under",
+      "url:0",
+      "page_content:0",
+      "common_cause"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:3",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:3",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:2",
+      "html:3",
+      "same_artifact"
+     ]
+    ],
+    "units": 8,
+    "gt_units": 4
+   },
+   {
+    "case_id": "exp3v2-dev-022",
+    "errors": [
+     [
+      "under",
+      "html:0",
+      "html:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:3",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:4",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:3",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:4",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "page_content:0",
+      "page_content:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:2",
+      "html:3",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:2",
+      "html:4",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:3",
+      "html:4",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "url:0",
+      "page_content:1",
+      "common_cause"
+     ]
+    ],
+    "units": 7,
+    "gt_units": 2
+   },
+   {
+    "case_id": "exp3v2-dev-023",
+    "errors": [
+     [
+      "under",
+      "html:0",
+      "html:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "page_content:0",
+      "page_content:1",
+      "same_artifact"
+     ]
+    ],
+    "units": 7,
+    "gt_units": 5
+   },
+   {
+    "case_id": "exp3v2-dev-024",
+    "errors": [
+     [
+      "under",
+      "url:0",
+      "page_content:0",
+      "common_cause"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:1",
+      "same_artifact"
+     ]
+    ],
+    "units": 4,
+    "gt_units": 2
+   },
+   {
+    "case_id": "exp3v2-dev-025",
+    "errors": [
+     [
+      "under",
+      "url:0",
+      "page_content:0",
+      "common_cause"
+     ],
+     [
+      "under",
+      "url:0",
+      "message_body:0",
+      "common_cause"
+     ],
+     [
+      "under",
+      "page_content:0",
+      "message_body:0",
+      "common_cause"
+     ],
+     [
+      "under",
+      "page_content:0",
+      "page_content:1",
+      "same_artifact"
+     ]
+    ],
+    "units": 7,
+    "gt_units": 4
+   },
+   {
+    "case_id": "exp3v2-dev-026",
+    "errors": [
+     [
+      "under",
+      "html:0",
+      "html:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "page_content:0",
+      "page_content:1",
+      "same_artifact"
+     ]
+    ],
+    "units": 7,
+    "gt_units": 5
+   },
+   {
+    "case_id": "exp3v2-dev-027",
+    "errors": [
+     [
+      "under",
+      "html:0",
+      "html:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:3",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:4",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:3",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:4",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:2",
+      "html:3",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:2",
+      "html:4",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:3",
+      "html:4",
+      "same_artifact"
+     ]
+    ],
+    "units": 7,
+    "gt_units": 4
+   },
+   {
+    "case_id": "exp3v2-dev-028",
+    "errors": [
+     [
+      "under",
+      "url:0",
+      "page_content:0",
+      "common_cause"
+     ],
+     [
+      "under",
+      "url:0",
+      "message_body:0",
+      "common_cause"
+     ],
+     [
+      "under",
+      "page_content:0",
+      "message_body:0",
+      "common_cause"
+     ],
+     [
+      "under",
+      "page_content:0",
+      "page_content:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:3",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:3",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:2",
+      "html:3",
+      "same_artifact"
+     ]
+    ],
+    "units": 9,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-dev-029",
+    "errors": [
+     [
+      "under",
+      "html:0",
+      "html:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "url:0",
+      "page_content:0",
+      "common_cause"
+     ],
+     [
+      "under",
+      "page_content:0",
+      "page_content:1",
+      "same_artifact"
+     ]
+    ],
+    "units": 8,
+    "gt_units": 5
+   },
+   {
+    "case_id": "exp3v2-dev-030",
+    "errors": [
+     [
+      "under",
+      "url:0",
+      "page_content:0",
+      "common_cause"
+     ],
+     [
+      "under",
+      "page_content:0",
+      "page_content:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:3",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:4",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:3",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:4",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:2",
+      "html:3",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:2",
+      "html:4",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:3",
+      "html:4",
+      "same_artifact"
+     ]
+    ],
+    "units": 7,
+    "gt_units": 2
+   },
+   {
+    "case_id": "exp3v2-dev-031",
+    "errors": [
+     [
+      "under",
+      "html:0",
+      "html:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:2",
+      "same_artifact"
+     ]
+    ],
+    "units": 5,
+    "gt_units": 4
+   },
+   {
+    "case_id": "exp3v2-dev-032",
+    "errors": [
+     [
+      "under",
+      "url:0",
+      "page_content:0",
+      "common_cause"
+     ],
+     [
+      "under",
+      "url:0",
+      "message_body:0",
+      "common_cause"
+     ],
+     [
+      "under",
+      "page_content:0",
+      "message_body:0",
+      "common_cause"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:3",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:3",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:2",
+      "html:3",
+      "same_artifact"
+     ]
+    ],
+    "units": 9,
+    "gt_units": 4
+   },
+   {
+    "case_id": "exp3v2-dev-033",
+    "errors": [
+     [
+      "under",
+      "html:0",
+      "html:1",
+      "same_artifact"
+     ]
+    ],
+    "units": 6,
+    "gt_units": 5
+   },
+   {
+    "case_id": "exp3v2-dev-034",
+    "errors": [
+     [
+      "under",
+      "html:0",
+      "html:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "url:0",
+      "page_content:0",
+      "common_cause"
+     ],
+     [
+      "under",
+      "url:0",
+      "message_body:0",
+      "common_cause"
+     ],
+     [
+      "under",
+      "page_content:0",
+      "message_body:0",
+      "common_cause"
+     ]
+    ],
+    "units": 7,
+    "gt_units": 4
+   },
+   {
+    "case_id": "exp3v2-dev-035",
+    "errors": [
+     [
+      "under",
+      "html:0",
+      "html:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:3",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:3",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:2",
+      "html:3",
+      "same_artifact"
+     ]
+    ],
+    "units": 8,
+    "gt_units": 5
+   },
+   {
+    "case_id": "exp3v2-dev-036",
+    "errors": [
+     [
+      "under",
+      "html:0",
+      "html:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:3",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:3",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:2",
+      "html:3",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "page_content:0",
+      "page_content:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "url:0",
+      "page_content:1",
+      "common_cause"
+     ]
+    ],
+    "units": 8,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-dev-037",
+    "errors": [
+     [
+      "under",
+      "url:0",
+      "page_content:0",
+      "common_cause"
+     ],
+     [
+      "under",
+      "url:0",
+      "message_body:0",
+      "common_cause"
+     ],
+     [
+      "under",
+      "page_content:0",
+      "message_body:0",
+      "common_cause"
+     ],
+     [
+      "under",
+      "page_content:0",
+      "page_content:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:1",
+      "same_artifact"
+     ]
+    ],
+    "units": 7,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-dev-038",
+    "errors": [
+     [
+      "under",
+      "html:0",
+      "html:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "url:0",
+      "page_content:0",
+      "common_cause"
+     ],
+     [
+      "under",
+      "page_content:0",
+      "page_content:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "page_content:0",
+      "page_content:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "page_content:1",
+      "page_content:2",
+      "same_artifact"
+     ]
+    ],
+    "units": 7,
+    "gt_units": 3
+   },
+   {
+    "case_id": "exp3v2-dev-039",
+    "errors": [
+     [
+      "under",
+      "page_content:0",
+      "page_content:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:1",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:3",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:0",
+      "html:4",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:2",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:3",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:1",
+      "html:4",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:2",
+      "html:3",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:2",
+      "html:4",
+      "same_artifact"
+     ],
+     [
+      "under",
+      "html:3",
+      "html:4",
+      "same_artifact"
+     ]
+    ],
+    "units": 7,
+    "gt_units": 3
+   }
+  ]
+ }
+]
