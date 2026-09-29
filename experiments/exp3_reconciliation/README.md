@@ -1,0 +1,60 @@
+# Experiment 3 (EXP-014): provenance-aware evidence reconciliation
+
+Three reconciliation policies on **identical, fixed specialist records**; only the
+policy varies. No model is called and no detection result is claimed.
+
+## Reproduce
+```
+python experiments/exp3_reconciliation/cases.py --out experiments/exp3_reconciliation/cases   # seed 314
+python experiments/exp3_reconciliation/score.py fit   --cases experiments/exp3_reconciliation/cases
+python experiments/exp3_reconciliation/score.py score --cases experiments/exp3_reconciliation/cases --split test
+```
+`score --split test` refuses to run unless `prototype/phases/semantic.py:THRESHOLD` equals
+the value fitted on dev (`fit/semantic_fit_dev.json`).
+
+## Design
+- **Cases:** constructed, as the paper's Experiment 3 specifies. 40 dev + 80 held-out test
+  cases, each mixing 3–5 of six templates (see `cases.py`): same-artifact paraphrase,
+  shared acquisition with distinct claims, independent similar wording, independent
+  identical wording, cross-modal common cause (brand in URL + page [+ message]),
+  contradictory readings of one artifact.
+- **Ground truth** (`cases/*/annotations.jsonl`, never read by the runtime): a pair is
+  dependent iff same artifact + capture, or same annotated common cause.
+- **Unit:** unordered observation pair within a case. Merged = both in one *discounting*
+  group (provenance: `DISCOUNTABLE_EDGES`; shared-acquisition groups are recorded, not
+  discounted).
+- **Semantic arm:** explicit frozen method `cosine(word1+word2+char4)`, threshold 0.15
+  fitted on dev only (dev F1 0.729; grid 0.05–0.95).
+
+## Results (held-out test: 80 cases, 2,456 pairs, 358 dependent) — commit cc36447
+| policy | precision | recall | F1 | under-merge | over-merge | duplicate support | lost independent support |
+|---|---|---|---|---|---|---|---|
+| provenance | 1.000 | 0.751 | 0.858 | 24.9% | 0.0% | 19.2% | 0.0% |
+| semantic | 0.656 | 0.779 | 0.713 | 22.1% | 7.0% | 7.8% | 11.1% |
+| independent | — | 0.000 | 0.000 | 100% | 0.0% | 44.2% | 0.0% |
+
+Merge rate by kind — provenance: same artifact 100%, common cause 0%, independent 0%,
+shared acquisition 0%. Semantic: 81%, 69%, 9.3%, 2.3%.
+
+## How to read this (limitations first)
+1. **Same-artifact recall of provenance is 100% by construction**: ground-truth rule (1)
+   is the shared-artifact rule the policy implements. The informative comparisons are the
+   other kinds.
+2. **Provenance never over-merges and never loses independent corroboration**, but it
+   **misses every common-cause pair** (0%) because demonstrated common-cause edges are
+   not implemented (the code deliberately does not invent causal links). That is the whole
+   of its 24.9% under-merging and its 19.2% duplicate support.
+3. **Semantic similarity trades that away**: it catches 69% of common-cause pairs but merges
+   9.3% of genuinely independent pairs, discarding 11.1% of real independent support —
+   the over-correction the paper warns about.
+4. **No reconciliation** counts 44% of support units twice.
+5. **Not measured:** escalation frequency and downstream verdict changes. They need real
+   specialists and the real Judge, and `moderate()`/`stopping_error()` do not consume the
+   reconciliation mode yet (see the Exp 3 handoff).
+6. Constructed cases use template wording; real specialist text may differ. Re-run the
+   scorer on real records once stage 6 lands.
+
+## Next
+Implement a *demonstrated* common-cause edge from real records (e.g. the same
+attacker-controlled entity token extracted from the same capture, as Phase 1's shared-
+entity trigger already detects), fit nothing on test, and re-score.
