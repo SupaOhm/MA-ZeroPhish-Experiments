@@ -93,8 +93,10 @@ specialists (not a provider bill). Δ = paired mean difference vs `fixed_all`, b
   (pages of historical messages are not captured), so only the URL / SMS-Email agents are
   ready and **all three arms select identically** (Δ = 0). Under `tight_acquisition` the
   shared budget is used up by earlier links and later links get no evidence (0.53
-  specialists / object); under `matched_agent_2` all 9 cases hit `insufficient_resources`
-  (a long email's prompt alone exceeds 2 units). Too few cases to generalize.
+  specialists / object); under `matched_agent_2` every message is analysed (0.8–1.6 units)
+  but the case-wide agent budget is then exhausted, so 18 of 25 link objects cannot fund
+  their minimum dispatch (`insufficient_resources` in all 9 cases). Too few cases to
+  generalize.
 
 ### Structural asymmetry by class (evaluation-side breakdown; labels never reach Phase 1)
 Benign test pages carry **3× more triggers** than phishing pages (2.88 vs 0.96 per object,
