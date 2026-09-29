@@ -80,6 +80,5 @@ Held-out v2 test (80 cases, 2,599 pairs, 485 dependent):
   not evidence about the rule's error rate on real pages.
 
 ## Next
-Implement a *demonstrated* common-cause edge from real records (e.g. the same
-attacker-controlled entity token extracted from the same capture, as Phase 1's shared-
-entity trigger already detects), fit nothing on test, and re-score.
+Re-score all policies on REAL specialist records once stage 6 lands (the rule has no
+fitted parameters to re-tune), and measure escalation/verdict effects with the real Judge.
