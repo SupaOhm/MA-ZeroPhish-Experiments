@@ -59,8 +59,17 @@ def check_shape(parsed: dict) -> None:
 
 
 def serialize_context(context) -> dict:
+    """The Judge's JSON. Capture ids are replaced by opaque aliases.
+
+    Replay sets an artifact's capture id to the case id, and a case id can name
+    the dataset and, on test_conflict, the swapped fields. What the Judge needs
+    is which observations share a capture, so each distinct capture id becomes
+    `capture-1`, `capture-2`, ... in order of first appearance.
+    """
+    aliases: dict[str, str] = {}
     observations = []
     for o in context.observations:
+        capture = aliases.setdefault(o.provenance.capture_id, f"capture-{len(aliases) + 1}")
         entry = {
             "locator": o.locator,
             "field": o.declared_field,
@@ -68,7 +77,7 @@ def serialize_context(context) -> dict:
             "provenance": {
                 "artifact": o.provenance.artifact,
                 "instrument": o.provenance.instrument,
-                "capture": o.provenance.capture_id,
+                "capture": capture,
             },
             "revision_accepted": o.revision_accepted,
         }

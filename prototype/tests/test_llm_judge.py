@@ -158,6 +158,21 @@ class Blinding(unittest.TestCase):
         make_judge(client, unblinded=True)(context([unblinded, obs("html@0:5#0", "html")]), "o1", "c")
         self.assertIn("specialist_direction", client.requests[0]["system"])
 
+    def test_capture_ids_are_opaque_aliases_in_order_of_first_appearance(self):
+        def at(locator, field, capture):
+            return EligibleObservation(
+                observation="o", declared_field=field, locator=locator,
+                provenance=Provenance(field, "i", capture),
+            )
+
+        observations = [at("url@0:5#0", "url", "pp-9__conflict-url"),
+                        at("html@0:5#0", "html", "pp-9"),
+                        at("dom@0:5#0", "dom", "pp-9__conflict-url")]
+        payload = serialize_context(context(observations))
+        self.assertEqual([o["provenance"]["capture"] for o in payload["observations"]],
+                         ["capture-1", "capture-2", "capture-1"])
+        self.assertNotIn("pp-9", json.dumps(payload))
+
     def test_payload_is_valid_json(self):
         client = RecordedClient(lambda *a: judge_reply(["url@0:5#0", "html@0:5#0"]))
         make_judge(client)(context(), "o1", "c")

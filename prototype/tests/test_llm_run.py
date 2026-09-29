@@ -81,8 +81,28 @@ class NoLabels(unittest.TestCase):
                         config.ABLATION5_NO_INDEPENDENT_ADJUDICATION):
                 client, _, _ = run_with(cfg, captures, grounded_responder(),
                                         os.path.join(tmp, f"{cfg.name}.jsonl"))
+                self.assertTrue(client.requests, cfg.name)
                 for request in client.requests:
                     self.assertNotIn(sentinel, request["system"] + request["user"])
+
+    def test_the_case_id_never_reaches_a_prompt(self):
+        # A case id can name the dataset and, on test_conflict, the swapped
+        # fields (`pp-abc__conflict-content`). Replay sets it as each artifact's
+        # capture id, so it must not reach the Judge or a specialist verbatim.
+        sentinel = "CASEID-SENTINEL"
+        captures = [dataclasses.replace(c, case_id=f"{sentinel}-{n}__conflict-content")
+                    for n, c in enumerate(load_captures(CAPTURE_DIR)
+                                          + (load_fixture("syn-web-001"),
+                                             load_fixture("syn-msg-002")))]
+        with tempfile.TemporaryDirectory() as tmp:
+            for cfg in (config.MAZEROPHISH, config.BASELINE_FULL_DEBATE):
+                client, _, _ = run_with(cfg, captures, grounded_responder(),
+                                        os.path.join(tmp, f"{cfg.name}.jsonl"))
+                self.assertTrue(client.requests, cfg.name)
+                self.assertTrue([r for r in client.requests if r["tag"]["role"] == "judge"])
+                for request in client.requests:
+                    self.assertNotIn(sentinel, request["system"] + request["user"],
+                                     (cfg.name, request["tag"]))
 
 
 class Failures(unittest.TestCase):
