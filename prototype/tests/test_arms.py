@@ -54,6 +54,24 @@ class ParseTests(unittest.TestCase):
         self.assertIsNone(_json("no json"))
 
 
+class RateLimitTests(unittest.TestCase):
+    def test_gemini_per_minute_quota_is_not_daily(self):
+        from models.adapter import classify_429
+        body = ('[{"error": {"code": 429, "message": "You exceeded your current quota, please '
+                'check your plan and billing details.", "details": [{"violations": [{"quotaId": '
+                '"GenerateContentInputTokensPerModelPerMinute-FreeTier"}]}, '
+                '{"retryDelay": "37s"}]}}]')
+        self.assertEqual(classify_429(body, {}), (False, 37.0))
+
+    def test_daily_quota_is_daily(self):
+        from models.adapter import classify_429
+        body = ('{"error": {"details": [{"violations": [{"quotaId": '
+                '"GenerateRequestsPerDayPerProjectPerModel-FreeTier"}]}]}}')
+        self.assertTrue(classify_429(body, {})[0])
+        self.assertTrue(classify_429("Rate limit reached ... tokens per day (TPD)", {})[0])
+        self.assertFalse(classify_429("Rate limit reached ... tokens per minute (TPM)", {})[0])
+
+
 class PreprocessTests(unittest.TestCase):
     def test_algorithm2(self):
         raw = ("<html><head><style>.x{}</style><link rel='stylesheet' href='a.css'>"

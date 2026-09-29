@@ -61,6 +61,34 @@ def load_env(path: str | os.PathLike | None) -> None:
                 os.environ[k] = v
 
 
+def classify_429(text: str, headers: dict) -> tuple[bool, float]:
+    """(is_daily_quota, seconds_to_wait) for a 429 body.
+
+    Providers say "quota" for per-minute limits too (Gemini: "You exceeded your
+    current quota" with quotaId ...PerMinute...), so only an explicit per-day marker
+    counts as the daily cap; everything else is waited out.
+    """
+    low = text.lower()
+    daily = any(w in low for w in ("perday", "per day", "per_day", "daily", "requests per day",
+                                   "tokens per day", "(rpd)", "(tpd)", " rpd", " tpd"))
+    wait = float(headers.get("retry-after") or headers.get("Retry-After") or 0)
+    try:
+        body = json.loads(text)
+        body = body[0] if isinstance(body, list) else body
+        for det in (body.get("error") or {}).get("details", []):
+            for v in det.get("violations", []) or []:
+                qid = str(v.get("quotaId", "")).lower()
+                if "perday" in qid:
+                    daily = True
+                elif "perminute" in qid:
+                    daily = daily and False
+            if "retryDelay" in det:
+                wait = max(wait, float(str(det["retryDelay"]).rstrip("s") or 0))
+    except (ValueError, AttributeError, TypeError):
+        pass
+    return daily, wait
+
+
 def _http(method: str, url: str, headers: dict, body: dict | None, timeout: int):
     data = json.dumps(body).encode() if body is not None else None
     req = urllib.request.Request(url, data=data, method=method,
@@ -136,11 +164,10 @@ class ChatModel:
             latency = time.time() - t0
             if status == 429:
                 self.n_429 += 1
-                low = text.lower()
-                if any(w in low for w in ("per day", "tpd", "rpd", "daily", "quota")):
+                daily, wait = classify_429(text, headers)
+                if daily:
                     raise QuotaExhausted(text[:300])
-                retry = float(headers.get("retry-after") or headers.get("Retry-After") or 0)
-                time.sleep(max(retry, 2 ** attempt))
+                time.sleep(min(120, max(wait, 5 * 2 ** attempt)))
                 continue
             if status >= 500:
                 time.sleep(min(60, 2 ** attempt * 2))
