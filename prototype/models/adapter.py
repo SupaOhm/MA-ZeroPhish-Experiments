@@ -38,6 +38,8 @@ PROVIDERS = {
     "gemini": ("https://generativelanguage.googleapis.com/v1beta/openai", "GEMINI_API_KEY"),
     "nvidia": ("https://integrate.api.nvidia.com/v1", "NVIDIA_API_KEY"),
     "openrouter": ("https://openrouter.ai/api/v1", "OPENROUTER_API_KEY"),
+    # Paid. Pin a dated snapshot (e.g. gpt-4o-mini-2024-07-18) so the version is fixed.
+    "openai": ("https://api.openai.com/v1", "OPENAI_API_KEY"),
 }
 _UA = "MA-ZeroPhish-research/1.0"
 
