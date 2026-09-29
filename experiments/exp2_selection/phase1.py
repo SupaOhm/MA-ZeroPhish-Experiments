@@ -37,7 +37,7 @@ from contract.vocabulary import SourceAvailability  # noqa: E402
 from phases import classify  # noqa: E402
 from phases.acquire import BudgetLedger, acquire  # noqa: E402
 from phases.normalize import normalize  # noqa: E402
-from phases.select import selection_detail  # noqa: E402
+from phases.select import covered_triggers, selection_detail  # noqa: E402
 
 HERE = Path(__file__).resolve().parent
 DATA = ROOT / "experiments" / "data_eval" / "data"
@@ -62,12 +62,21 @@ BUDGETS = {
 MU_GRID = (0.1, 0.25, 0.5, 1.0, 2.0)
 
 
+ADAPTIVE = ("adaptive", "adaptive_all_fields")
+
+
 def arms(frozen: dict) -> dict:
+    """`adaptive`: eq:specialist-selection as written (trigger_cover=any_field).
+    `adaptive_all_fields`: the Experiment 2 variant (a trigger is covered only when
+    every one of its fields is readable by a selected specialist). Both reported."""
     ada = replace(MAZEROPHISH, cost_model="prompt_tokens", cost_scale=frozen["cost_scale"],
                   mu=frozen["mu"], trigger_weights=tuple(sorted(frozen["trigger_weights"].items())))
     fixed = replace(BASELINE_FIXED_ALL, cost_model=ada.cost_model, cost_scale=ada.cost_scale,
                     mu=ada.mu, trigger_weights=ada.trigger_weights)
-    return {"adaptive": ada, "fixed_all": fixed}
+    return {"adaptive": ada,
+            "adaptive_all_fields": replace(ada, name="mazerophish_all_fields_cover",
+                                           trigger_cover="all_fields"),
+            "fixed_all": fixed}
 
 
 def phase1_case(cfg, capture, withhold, budget: CaseBudget) -> list[dict]:
@@ -95,7 +104,8 @@ def phase1_case(cfg, capture, withhold, budget: CaseBudget) -> list[dict]:
                     ledger.charge(r, d.costs[agent])
                     executed.append(agent)
                     cost += d.costs[agent]
-        covered = {n for a in executed for n in d.covers[a]}
+        cov_any = covered_triggers(d.triggers, executed, "any_field")
+        cov_all = covered_triggers(d.triggers, executed, "all_fields")
         obtained = sum(1 for f in fetched if f.availability is SourceAvailability.OBTAINED)
         rows.append({
             "case_id": capture.case_id, "object_id": ref.object_id,
@@ -105,7 +115,8 @@ def phase1_case(cfg, capture, withhold, budget: CaseBudget) -> list[dict]:
             "refused_by_budget": sorted(set(d.chosen) - set(executed)),
             "eligible_for_recovery": sorted(d.ready - set(executed)),
             "triggers": [t.as_dict() for t in d.triggers],
-            "trigger_coverage": (len(covered) / len(d.triggers)) if d.triggers else None,
+            "trigger_coverage": (len(cov_any) / len(d.triggers)) if d.triggers else None,
+            "trigger_coverage_all_fields": (len(cov_all) / len(d.triggers)) if d.triggers else None,
             "initial_cost_units": round(cost, 4),
             "initial_est_tokens": round(sum(estimated_tokens(a, env) for a in executed), 1),
             "modality_coverage_at_dispatch": len(executed) / len(d.applicable) if d.applicable else None,
@@ -171,6 +182,7 @@ def summarize(rows_by_arm: dict, labels: dict) -> dict:
             "objects": len(rows), "cases": len(cl),
             "mean_specialists_dispatched_per_object": round(mean(len(r["executed"]) for r in rows), 3),
             "mean_trigger_coverage": _r(mean(r["trigger_coverage"] for r in rows)),
+            "mean_trigger_coverage_all_fields": _r(mean(r["trigger_coverage_all_fields"] for r in rows)),
             "objects_with_triggers": sum(1 for r in rows if r["triggers"]),
             "mean_modality_coverage_at_dispatch": _r(mean(r["modality_coverage_at_dispatch"] for r in rows)),
             "mean_initial_cost_units_per_case": _r(mean(c["cost"] for c in cl.values())),
@@ -190,15 +202,17 @@ def summarize(rows_by_arm: dict, labels: dict) -> dict:
                           len(r["executed"]) for r in rows if r["case_id"] in ids))}
                 for lab, ids in _by_label(cl, labels).items()},
         }
-    if {"adaptive", "fixed_all"} <= set(cases):
-        a, f = cases["adaptive"], cases["fixed_all"]
+    for arm in ADAPTIVE:
+        if arm not in cases or "fixed_all" not in cases:
+            continue
+        a, f = cases[arm], cases["fixed_all"]
         common = sorted(set(a) & set(f))
         for key in ("cost", "tokens", "dispatched"):
             diffs = [a[c][key] - f[c][key] for c in common]
-            out[f"paired_diff_adaptive_minus_fixed_{key}"] = {
+            out[f"paired_diff_{arm}_minus_fixed_{key}"] = {
                 "mean": _r(mean(diffs)), "ci95": boot_ci(diffs), "n": len(diffs)}
         fixed_tokens = sum(f[c]["tokens"] for c in common)
-        out["initial_token_saving_fraction"] = (
+        out[f"initial_token_saving_fraction_{arm}"] = (
             _r(1 - sum(a[c]["tokens"] for c in common) / fixed_tokens) if fixed_tokens else None)
     return out
 
@@ -274,10 +288,10 @@ def fit(out_dir: Path) -> None:
         f2 = dict(frozen, mu=mu)
         rep = run_grid("dev", f2, out_dir, budgets={"unrestricted": BUDGETS["unrestricted"]},
                        conditions={"complete": CONDITIONS["complete"]})
-        r = rep["results"]["complete/unrestricted"]["adaptive"]
-        sweep[str(mu)] = {k: r[k] for k in ("mean_specialists_dispatched_per_object",
-                                            "mean_trigger_coverage",
-                                            "mean_initial_est_tokens_per_case")}
+        sweep[str(mu)] = {arm: {k: rep["results"]["complete/unrestricted"][arm][k] for k in (
+            "mean_specialists_dispatched_per_object", "mean_trigger_coverage",
+            "mean_trigger_coverage_all_fields", "mean_initial_est_tokens_per_case")}
+            for arm in ADAPTIVE}
     frozen["dev_mu_sensitivity"] = sweep
     FROZEN.write_text(json.dumps(frozen, indent=1), encoding="utf-8")
     dev = run_grid("dev", frozen, out_dir)
@@ -307,12 +321,13 @@ def main() -> None:
         if isinstance(res, str):
             print(f"{key}: {res}")
             continue
-        a, f = res["adaptive"], res["fixed_all"]
-        print(f"{key:38s} dispatched/obj {a['mean_specialists_dispatched_per_object']:.2f} vs "
-              f"{f['mean_specialists_dispatched_per_object']:.2f} | trig.cov "
-              f"{a['mean_trigger_coverage']} vs {f['mean_trigger_coverage']} | est.tokens/case "
-              f"{a['mean_initial_est_tokens_per_case']} vs {f['mean_initial_est_tokens_per_case']} | "
-              f"saving {res.get('initial_token_saving_fraction')}")
+        print(key)
+        for arm in (*ADAPTIVE, "fixed_all"):
+            a = res[arm]
+            print(f"  {arm:20s} disp/obj {a['mean_specialists_dispatched_per_object']:.2f} | "
+                  f"trig.cov any {a['mean_trigger_coverage']} all {a['mean_trigger_coverage_all_fields']}"
+                  f" | est.tok/case {a['mean_initial_est_tokens_per_case']} | saving "
+                  f"{res.get(f'initial_token_saving_fraction_{arm}', '-')}")
     print(f"-> {path}")
 
 

@@ -21,7 +21,7 @@ from contract.evidence import EvidenceEnvelope  # noqa: E402
 from contract.submission import AcquisitionPlan  # noqa: E402
 from contract.vocabulary import SourceAvailability as SA  # noqa: E402
 from ledger import read  # noqa: E402
-from phases.select import selection_detail  # noqa: E402
+from phases.select import covered_triggers, selection_detail  # noqa: E402
 from phases.triggers import registrable, structural_triggers  # noqa: E402
 from tests.test_phase3 import CAPTURE_DIR, phase1and2  # noqa: E402
 
@@ -81,7 +81,7 @@ def brute(detail, cfg):
         for s in itertools.combinations(sorted(detail.ready), r):
             if len(s) < detail.floor or sum(detail.costs[a] for a in s) > detail.agent_budget:
                 continue
-            cov = {n for a in s for n in detail.covers[a]}
+            cov = covered_triggers(detail.triggers, s, cfg.trigger_cover)
             v = sum(w.get(detail.triggers[n].type, 1.0) for n in cov) - cfg.mu * sum(
                 detail.costs[a] for a in s)
             best = v if best is None else max(best, v)
@@ -93,7 +93,10 @@ class SolverTests(unittest.TestCase):
             replace(config.MAZEROPHISH, mu=0.2),
             replace(config.MAZEROPHISH, mu=2.0, trigger_weights=(("cross_origin", 3.0),)),
             replace(config.MAZEROPHISH, mu=0.3,
-                    agent_costs=(("web_structure", 2.5), ("content", 1.5), ("url", 0.4)))]
+                    agent_costs=(("web_structure", 2.5), ("content", 1.5), ("url", 0.4))),
+            replace(config.MAZEROPHISH, trigger_cover="all_fields"),
+            replace(config.MAZEROPHISH, trigger_cover="all_fields", mu=0.2,
+                    cost_model="prompt_tokens", cost_scale=50.0)]
 
     def test_solver_attains_the_brute_force_optimum_on_every_fixture(self):
         for case in ("c1", "c2", "c3", "c4", "c5", "c6", "c7", "c8"):
@@ -102,6 +105,16 @@ class SolverTests(unittest.TestCase):
                 d = selection_detail(envelope, plan, cfg)
                 self.assertAlmostEqual(d.objective, brute(d, cfg), 6, (case, cfg.mu))
                 self.assertLessEqual(d.chosen, d.ready)
+
+    def test_all_fields_cover_needs_an_agent_that_reads_the_page(self):
+        html = '<form action="https://collect.test/p"></form>'
+        e = env(url="https://bank.example/", html=html)
+        (t,) = structural_triggers(e)
+        self.assertEqual(covered_triggers((t,), ("url",), "any_field"), {0})
+        self.assertEqual(covered_triggers((t,), ("url",), "all_fields"), set())
+        self.assertEqual(covered_triggers((t,), ("url", "web_structure"), "all_fields"), {0})
+        # web_structure alone cannot read the url field either
+        self.assertEqual(covered_triggers((t,), ("web_structure",), "all_fields"), set())
 
     def test_floor_holds_and_budget_can_make_it_unfundable(self):
         plan, envelope, _ = phase1and2("c4")

@@ -1,0 +1,1948 @@
+{
+ "split": "test",
+ "frozen": {
+  "cost_scale": 998.6,
+  "mu": 0.5,
+  "trigger_weights": {
+   "shared_entity": 1.0,
+   "host_mismatch": 1.0,
+   "cross_origin": 1.0,
+   "populated_vs_empty": 1.0
+  },
+  "fitted_on": "phreshphish/dev complete (1162 ready specialist-object pairs)",
+  "per_agent_mean_est_tokens_dev": {
+   "content": 976.7,
+   "metadata": 774.9,
+   "url": 679.2,
+   "web_structure": 1555.9
+  },
+  "dev_mu_sensitivity": {
+   "0.1": {
+    "adaptive": {
+     "mean_specialists_dispatched_per_object": 1.003,
+     "mean_trigger_coverage": 1.0,
+     "mean_trigger_coverage_all_fields": 0.0391,
+     "mean_initial_est_tokens_per_case": 674.766
+    },
+    "adaptive_all_fields": {
+     "mean_specialists_dispatched_per_object": 2.04,
+     "mean_trigger_coverage": 1.0,
+     "mean_trigger_coverage_all_fields": 1.0,
+     "mean_initial_est_tokens_per_case": 2173.6657
+    }
+   },
+   "0.25": {
+    "adaptive": {
+     "mean_specialists_dispatched_per_object": 1.003,
+     "mean_trigger_coverage": 1.0,
+     "mean_trigger_coverage_all_fields": 0.0391,
+     "mean_initial_est_tokens_per_case": 674.766
+    },
+    "adaptive_all_fields": {
+     "mean_specialists_dispatched_per_object": 2.04,
+     "mean_trigger_coverage": 1.0,
+     "mean_trigger_coverage_all_fields": 1.0,
+     "mean_initial_est_tokens_per_case": 2173.6657
+    }
+   },
+   "0.5": {
+    "adaptive": {
+     "mean_specialists_dispatched_per_object": 1.003,
+     "mean_trigger_coverage": 1.0,
+     "mean_trigger_coverage_all_fields": 0.0391,
+     "mean_initial_est_tokens_per_case": 674.766
+    },
+    "adaptive_all_fields": {
+     "mean_specialists_dispatched_per_object": 2.04,
+     "mean_trigger_coverage": 1.0,
+     "mean_trigger_coverage_all_fields": 1.0,
+     "mean_initial_est_tokens_per_case": 2173.6657
+    }
+   },
+   "1.0": {
+    "adaptive": {
+     "mean_specialists_dispatched_per_object": 1.003,
+     "mean_trigger_coverage": 1.0,
+     "mean_trigger_coverage_all_fields": 0.0391,
+     "mean_initial_est_tokens_per_case": 674.766
+    },
+    "adaptive_all_fields": {
+     "mean_specialists_dispatched_per_object": 1.627,
+     "mean_trigger_coverage": 1.0,
+     "mean_trigger_coverage_all_fields": 0.7135,
+     "mean_initial_est_tokens_per_case": 1559.4607
+    }
+   },
+   "2.0": {
+    "adaptive": {
+     "mean_specialists_dispatched_per_object": 1.0,
+     "mean_trigger_coverage": 0.9987,
+     "mean_trigger_coverage_all_fields": 0.0365,
+     "mean_initial_est_tokens_per_case": 672.501
+    },
+    "adaptive_all_fields": {
+     "mean_specialists_dispatched_per_object": 1.13,
+     "mean_trigger_coverage": 0.9974,
+     "mean_trigger_coverage_all_fields": 0.1826,
+     "mean_initial_est_tokens_per_case": 805.048
+    }
+   }
+  }
+ },
+ "results": {
+  "complete/unrestricted": {
+   "adaptive": {
+    "objects": 200,
+    "cases": 200,
+    "mean_specialists_dispatched_per_object": 1.0,
+    "mean_trigger_coverage": 1.0,
+    "mean_trigger_coverage_all_fields": 0.0698,
+    "objects_with_triggers": 129,
+    "mean_modality_coverage_at_dispatch": 0.25,
+    "mean_initial_cost_units_per_case": 0.6708,
+    "mean_initial_est_tokens_per_case": 669.843,
+    "mean_acquisition_requests_per_case": 13.0,
+    "acquisition_success": 0.4396,
+    "budget_refused_dispatches": 0,
+    "insufficient_resource_cases": 0,
+    "eligible_for_recovery_total": 577,
+    "cases_with_eligible_for_recovery": 200,
+    "selection_vectors": {
+     "url": 189,
+     "content": 10,
+     "web_structure": 1
+    },
+    "by_label": {
+     "benign": {
+      "cases": 100,
+      "mean_triggers_per_object": 2.88,
+      "mean_specialists_dispatched_per_object": 1.0
+     },
+     "phishing": {
+      "cases": 100,
+      "mean_triggers_per_object": 0.96,
+      "mean_specialists_dispatched_per_object": 1.0
+     }
+    }
+   },
+   "adaptive_all_fields": {
+    "objects": 200,
+    "cases": 200,
+    "mean_specialists_dispatched_per_object": 1.98,
+    "mean_trigger_coverage": 1.0,
+    "mean_trigger_coverage_all_fields": 1.0,
+    "objects_with_triggers": 129,
+    "mean_modality_coverage_at_dispatch": 0.495,
+    "mean_initial_cost_units_per_case": 2.2028,
+    "mean_initial_est_tokens_per_case": 2199.7365,
+    "mean_acquisition_requests_per_case": 13.0,
+    "acquisition_success": 0.4396,
+    "budget_refused_dispatches": 0,
+    "insufficient_resource_cases": 0,
+    "eligible_for_recovery_total": 381,
+    "cases_with_eligible_for_recovery": 197,
+    "selection_vectors": {
+     "url+web_structure+content": 76,
+     "url": 69,
+     "url+web_structure": 39,
+     "content": 10,
+     "url+content": 5,
+     "web_structure": 1
+    },
+    "by_label": {
+     "benign": {
+      "cases": 100,
+      "mean_triggers_per_object": 2.88,
+      "mean_specialists_dispatched_per_object": 2.48
+     },
+     "phishing": {
+      "cases": 100,
+      "mean_triggers_per_object": 0.96,
+      "mean_specialists_dispatched_per_object": 1.48
+     }
+    }
+   },
+   "fixed_all": {
+    "objects": 200,
+    "cases": 200,
+    "mean_specialists_dispatched_per_object": 3.885,
+    "mean_trigger_coverage": 1.0,
+    "mean_trigger_coverage_all_fields": 1.0,
+    "objects_with_triggers": 129,
+    "mean_modality_coverage_at_dispatch": 0.9712,
+    "mean_initial_cost_units_per_case": 3.9867,
+    "mean_initial_est_tokens_per_case": 3981.127,
+    "mean_acquisition_requests_per_case": 13.0,
+    "acquisition_success": 0.4396,
+    "budget_refused_dispatches": 0,
+    "insufficient_resource_cases": 0,
+    "eligible_for_recovery_total": 0,
+    "cases_with_eligible_for_recovery": 0,
+    "selection_vectors": {
+     "url+web_structure+content+metadata": 177,
+     "url+web_structure+metadata": 17,
+     "url+web_structure+content": 6
+    },
+    "by_label": {
+     "benign": {
+      "cases": 100,
+      "mean_triggers_per_object": 2.88,
+      "mean_specialists_dispatched_per_object": 3.81
+     },
+     "phishing": {
+      "cases": 100,
+      "mean_triggers_per_object": 0.96,
+      "mean_specialists_dispatched_per_object": 3.96
+     }
+    }
+   },
+   "paired_diff_adaptive_minus_fixed_cost": {
+    "mean": -3.3159,
+    "ci95": [
+     -3.4374,
+     -3.1912
+    ],
+    "n": 200
+   },
+   "paired_diff_adaptive_minus_fixed_tokens": {
+    "mean": -3311.284,
+    "ci95": [
+     -3432.5605,
+     -3186.749
+    ],
+    "n": 200
+   },
+   "paired_diff_adaptive_minus_fixed_dispatched": {
+    "mean": -2.885,
+    "ci95": [
+     -2.925,
+     -2.84
+    ],
+    "n": 200
+   },
+   "initial_token_saving_fraction_adaptive": 0.8317,
+   "paired_diff_adaptive_all_fields_minus_fixed_cost": {
+    "mean": -1.7839,
+    "ci95": [
+     -1.9354,
+     -1.6307
+    ],
+    "n": 200
+   },
+   "paired_diff_adaptive_all_fields_minus_fixed_tokens": {
+    "mean": -1781.3905,
+    "ci95": [
+     -1932.67,
+     -1628.3995
+    ],
+    "n": 200
+   },
+   "paired_diff_adaptive_all_fields_minus_fixed_dispatched": {
+    "mean": -1.905,
+    "ci95": [
+     -2.035,
+     -1.775
+    ],
+    "n": 200
+   },
+   "initial_token_saving_fraction_adaptive_all_fields": 0.4475
+  },
+  "complete/tight_acquisition": {
+   "adaptive": {
+    "objects": 200,
+    "cases": 200,
+    "mean_specialists_dispatched_per_object": 1.0,
+    "mean_trigger_coverage": 1.0,
+    "mean_trigger_coverage_all_fields": 0.0083,
+    "objects_with_triggers": 121,
+    "mean_modality_coverage_at_dispatch": 0.25,
+    "mean_initial_cost_units_per_case": 0.6706,
+    "mean_initial_est_tokens_per_case": 669.6405,
+    "mean_acquisition_requests_per_case": 6.0,
+    "acquisition_success": 0.6383,
+    "budget_refused_dispatches": 0,
+    "insufficient_resource_cases": 0,
+    "eligible_for_recovery_total": 383,
+    "cases_with_eligible_for_recovery": 200,
+    "selection_vectors": {
+     "url": 194,
+     "content": 5,
+     "web_structure": 1
+    },
+    "by_label": {
+     "benign": {
+      "cases": 100,
+      "mean_triggers_per_object": 2.88,
+      "mean_specialists_dispatched_per_object": 1.0
+     },
+     "phishing": {
+      "cases": 100,
+      "mean_triggers_per_object": 0.88,
+      "mean_specialists_dispatched_per_object": 1.0
+     }
+    }
+   },
+   "adaptive_all_fields": {
+    "objects": 200,
+    "cases": 200,
+    "mean_specialists_dispatched_per_object": 1.98,
+    "mean_trigger_coverage": 1.0,
+    "mean_trigger_coverage_all_fields": 1.0,
+    "objects_with_triggers": 121,
+    "mean_modality_coverage_at_dispatch": 0.495,
+    "mean_initial_cost_units_per_case": 2.2026,
+    "mean_initial_est_tokens_per_case": 2199.534,
+    "mean_acquisition_requests_per_case": 6.0,
+    "acquisition_success": 0.6383,
+    "budget_refused_dispatches": 0,
+    "insufficient_resource_cases": 0,
+    "eligible_for_recovery_total": 187,
+    "cases_with_eligible_for_recovery": 109,
+    "selection_vectors": {
+     "url+web_structure+content": 76,
+     "url": 74,
+     "url+web_structure": 39,
+     "url+content": 5,
+     "content": 5,
+     "web_structure": 1
+    },
+    "by_label": {
+     "benign": {
+      "cases": 100,
+      "mean_triggers_per_object": 2.88,
+      "mean_specialists_dispatched_per_object": 2.48
+     },
+     "phishing": {
+      "cases": 100,
+      "mean_triggers_per_object": 0.88,
+      "mean_specialists_dispatched_per_object": 1.48
+     }
+    }
+   },
+   "fixed_all": {
+    "objects": 200,
+    "cases": 200,
+    "mean_specialists_dispatched_per_object": 2.915,
+    "mean_trigger_coverage": 1.0,
+    "mean_trigger_coverage_all_fields": 1.0,
+    "objects_with_triggers": 121,
+    "mean_modality_coverage_at_dispatch": 0.7288,
+    "mean_initial_cost_units_per_case": 3.2325,
+    "mean_initial_est_tokens_per_case": 3227.99,
+    "mean_acquisition_requests_per_case": 6.0,
+    "acquisition_success": 0.6383,
+    "budget_refused_dispatches": 0,
+    "insufficient_resource_cases": 0,
+    "eligible_for_recovery_total": 0,
+    "cases_with_eligible_for_recovery": 0,
+    "selection_vectors": {
+     "url+web_structure+content": 183,
+     "url+web_structure": 17
+    },
+    "by_label": {
+     "benign": {
+      "cases": 100,
+      "mean_triggers_per_object": 2.88,
+      "mean_specialists_dispatched_per_object": 2.84
+     },
+     "phishing": {
+      "cases": 100,
+      "mean_triggers_per_object": 0.88,
+      "mean_specialists_dispatched_per_object": 2.99
+     }
+    }
+   },
+   "paired_diff_adaptive_minus_fixed_cost": {
+    "mean": -2.5619,
+    "ci95": [
+     -2.6839,
+     -2.4387
+    ],
+    "n": 200
+   },
+   "paired_diff_adaptive_minus_fixed_tokens": {
+    "mean": -2558.3495,
+    "ci95": [
+     -2680.138,
+     -2435.291
+    ],
+    "n": 200
+   },
+   "paired_diff_adaptive_minus_fixed_dispatched": {
+    "mean": -1.915,
+    "ci95": [
+     -1.95,
+     -1.875
+    ],
+    "n": 200
+   },
+   "initial_token_saving_fraction_adaptive": 0.7926,
+   "paired_diff_adaptive_all_fields_minus_fixed_cost": {
+    "mean": -1.0299,
+    "ci95": [
+     -1.1815,
+     -0.8755
+    ],
+    "n": 200
+   },
+   "paired_diff_adaptive_all_fields_minus_fixed_tokens": {
+    "mean": -1028.456,
+    "ci95": [
+     -1179.8585,
+     -874.261
+    ],
+    "n": 200
+   },
+   "paired_diff_adaptive_all_fields_minus_fixed_dispatched": {
+    "mean": -0.935,
+    "ci95": [
+     -1.06,
+     -0.805
+    ],
+    "n": 200
+   },
+   "initial_token_saving_fraction_adaptive_all_fields": 0.3186
+  },
+  "complete/matched_agent_2": {
+   "adaptive": {
+    "objects": 200,
+    "cases": 200,
+    "mean_specialists_dispatched_per_object": 1.0,
+    "mean_trigger_coverage": 1.0,
+    "mean_trigger_coverage_all_fields": 0.0698,
+    "objects_with_triggers": 129,
+    "mean_modality_coverage_at_dispatch": 0.25,
+    "mean_initial_cost_units_per_case": 0.6708,
+    "mean_initial_est_tokens_per_case": 669.843,
+    "mean_acquisition_requests_per_case": 13.0,
+    "acquisition_success": 0.4396,
+    "budget_refused_dispatches": 0,
+    "insufficient_resource_cases": 0,
+    "eligible_for_recovery_total": 577,
+    "cases_with_eligible_for_recovery": 200,
+    "selection_vectors": {
+     "url": 189,
+     "content": 10,
+     "web_structure": 1
+    },
+    "by_label": {
+     "benign": {
+      "cases": 100,
+      "mean_triggers_per_object": 2.88,
+      "mean_specialists_dispatched_per_object": 1.0
+     },
+     "phishing": {
+      "cases": 100,
+      "mean_triggers_per_object": 0.96,
+      "mean_specialists_dispatched_per_object": 1.0
+     }
+    }
+   },
+   "adaptive_all_fields": {
+    "objects": 200,
+    "cases": 200,
+    "mean_specialists_dispatched_per_object": 1.39,
+    "mean_trigger_coverage": 1.0,
+    "mean_trigger_coverage_all_fields": 0.3478,
+    "objects_with_triggers": 129,
+    "mean_modality_coverage_at_dispatch": 0.3475,
+    "mean_initial_cost_units_per_case": 1.0793,
+    "mean_initial_est_tokens_per_case": 1077.7565,
+    "mean_acquisition_requests_per_case": 13.0,
+    "acquisition_success": 0.4396,
+    "budget_refused_dispatches": 0,
+    "insufficient_resource_cases": 0,
+    "eligible_for_recovery_total": 499,
+    "cases_with_eligible_for_recovery": 200,
+    "selection_vectors": {
+     "url": 111,
+     "url+content": 52,
+     "url+web_structure": 26,
+     "content": 10,
+     "web_structure": 1
+    },
+    "by_label": {
+     "benign": {
+      "cases": 100,
+      "mean_triggers_per_object": 2.88,
+      "mean_specialists_dispatched_per_object": 1.58
+     },
+     "phishing": {
+      "cases": 100,
+      "mean_triggers_per_object": 0.96,
+      "mean_specialists_dispatched_per_object": 1.2
+     }
+    }
+   },
+   "fixed_all": {
+    "objects": 200,
+    "cases": 200,
+    "mean_specialists_dispatched_per_object": 2.015,
+    "mean_trigger_coverage": 0.9612,
+    "mean_trigger_coverage_all_fields": 0.2858,
+    "objects_with_triggers": 129,
+    "mean_modality_coverage_at_dispatch": 0.5038,
+    "mean_initial_cost_units_per_case": 1.6394,
+    "mean_initial_est_tokens_per_case": 1637.137,
+    "mean_acquisition_requests_per_case": 13.0,
+    "acquisition_success": 0.4396,
+    "budget_refused_dispatches": 374,
+    "insufficient_resource_cases": 0,
+    "eligible_for_recovery_total": 374,
+    "cases_with_eligible_for_recovery": 200,
+    "selection_vectors": {
+     "url+web_structure": 87,
+     "url+content": 81,
+     "url+metadata": 29,
+     "url+web_structure+content": 3
+    },
+    "by_label": {
+     "benign": {
+      "cases": 100,
+      "mean_triggers_per_object": 2.88,
+      "mean_specialists_dispatched_per_object": 2.0
+     },
+     "phishing": {
+      "cases": 100,
+      "mean_triggers_per_object": 0.96,
+      "mean_specialists_dispatched_per_object": 2.03
+     }
+    }
+   },
+   "paired_diff_adaptive_minus_fixed_cost": {
+    "mean": -0.9687,
+    "ci95": [
+     -0.9942,
+     -0.9449
+    ],
+    "n": 200
+   },
+   "paired_diff_adaptive_minus_fixed_tokens": {
+    "mean": -967.294,
+    "ci95": [
+     -992.818,
+     -943.5445
+    ],
+    "n": 200
+   },
+   "paired_diff_adaptive_minus_fixed_dispatched": {
+    "mean": -1.015,
+    "ci95": [
+     -1.035,
+     -1.0
+    ],
+    "n": 200
+   },
+   "initial_token_saving_fraction_adaptive": 0.5908,
+   "paired_diff_adaptive_all_fields_minus_fixed_cost": {
+    "mean": -0.5602,
+    "ci95": [
+     -0.6257,
+     -0.4905
+    ],
+    "n": 200
+   },
+   "paired_diff_adaptive_all_fields_minus_fixed_tokens": {
+    "mean": -559.3805,
+    "ci95": [
+     -624.7885,
+     -489.847
+    ],
+    "n": 200
+   },
+   "paired_diff_adaptive_all_fields_minus_fixed_dispatched": {
+    "mean": -0.625,
+    "ci95": [
+     -0.695,
+     -0.55
+    ],
+    "n": 200
+   },
+   "initial_token_saving_fraction_adaptive_all_fields": 0.3417
+  },
+  "partial_browser/unrestricted": {
+   "adaptive": {
+    "objects": 200,
+    "cases": 200,
+    "mean_specialists_dispatched_per_object": 1.0,
+    "mean_trigger_coverage": 1.0,
+    "mean_trigger_coverage_all_fields": 0.0,
+    "objects_with_triggers": 115,
+    "mean_modality_coverage_at_dispatch": 0.25,
+    "mean_initial_cost_units_per_case": 0.6803,
+    "mean_initial_est_tokens_per_case": 679.371,
+    "mean_acquisition_requests_per_case": 13.0,
+    "acquisition_success": 0.2285,
+    "budget_refused_dispatches": 0,
+    "insufficient_resource_cases": 0,
+    "eligible_for_recovery_total": 394,
+    "cases_with_eligible_for_recovery": 200,
+    "selection_vectors": {
+     "url": 198,
+     "web_structure": 2
+    },
+    "by_label": {
+     "benign": {
+      "cases": 100,
+      "mean_triggers_per_object": 1.26,
+      "mean_specialists_dispatched_per_object": 1.0
+     },
+     "phishing": {
+      "cases": 100,
+      "mean_triggers_per_object": 0.34,
+      "mean_specialists_dispatched_per_object": 1.0
+     }
+    }
+   },
+   "adaptive_all_fields": {
+    "objects": 200,
+    "cases": 200,
+    "mean_specialists_dispatched_per_object": 1.57,
+    "mean_trigger_coverage": 1.0,
+    "mean_trigger_coverage_all_fields": 0.9913,
+    "objects_with_triggers": 115,
+    "mean_modality_coverage_at_dispatch": 0.3925,
+    "mean_initial_cost_units_per_case": 1.4342,
+    "mean_initial_est_tokens_per_case": 1432.225,
+    "mean_acquisition_requests_per_case": 13.0,
+    "acquisition_success": 0.2285,
+    "budget_refused_dispatches": 0,
+    "insufficient_resource_cases": 0,
+    "eligible_for_recovery_total": 280,
+    "cases_with_eligible_for_recovery": 196,
+    "selection_vectors": {
+     "url+web_structure": 114,
+     "url": 84,
+     "web_structure": 2
+    },
+    "by_label": {
+     "benign": {
+      "cases": 100,
+      "mean_triggers_per_object": 1.26,
+      "mean_specialists_dispatched_per_object": 1.86
+     },
+     "phishing": {
+      "cases": 100,
+      "mean_triggers_per_object": 0.34,
+      "mean_specialists_dispatched_per_object": 1.28
+     }
+    }
+   },
+   "fixed_all": {
+    "objects": 200,
+    "cases": 200,
+    "mean_specialists_dispatched_per_object": 2.97,
+    "mean_trigger_coverage": 1.0,
+    "mean_trigger_coverage_all_fields": 1.0,
+    "objects_with_triggers": 115,
+    "mean_modality_coverage_at_dispatch": 0.7425,
+    "mean_initial_cost_units_per_case": 2.6044,
+    "mean_initial_est_tokens_per_case": 2600.7235,
+    "mean_acquisition_requests_per_case": 13.0,
+    "acquisition_success": 0.2285,
+    "budget_refused_dispatches": 0,
+    "insufficient_resource_cases": 0,
+    "eligible_for_recovery_total": 0,
+    "cases_with_eligible_for_recovery": 0,
+    "selection_vectors": {
+     "url+web_structure+metadata": 194,
+     "url+web_structure": 6
+    },
+    "by_label": {
+     "benign": {
+      "cases": 100,
+      "mean_triggers_per_object": 1.26,
+      "mean_specialists_dispatched_per_object": 2.97
+     },
+     "phishing": {
+      "cases": 100,
+      "mean_triggers_per_object": 0.34,
+      "mean_specialists_dispatched_per_object": 2.97
+     }
+    }
+   },
+   "paired_diff_adaptive_minus_fixed_cost": {
+    "mean": -1.9241,
+    "ci95": [
+     -1.9811,
+     -1.8677
+    ],
+    "n": 200
+   },
+   "paired_diff_adaptive_minus_fixed_tokens": {
+    "mean": -1921.3525,
+    "ci95": [
+     -1978.289,
+     -1865.1155
+    ],
+    "n": 200
+   },
+   "paired_diff_adaptive_minus_fixed_dispatched": {
+    "mean": -1.97,
+    "ci95": [
+     -1.99,
+     -1.945
+    ],
+    "n": 200
+   },
+   "initial_token_saving_fraction_adaptive": 0.7388,
+   "paired_diff_adaptive_all_fields_minus_fixed_cost": {
+    "mean": -1.1701,
+    "ci95": [
+     -1.2484,
+     -1.0979
+    ],
+    "n": 200
+   },
+   "paired_diff_adaptive_all_fields_minus_fixed_tokens": {
+    "mean": -1168.4985,
+    "ci95": [
+     -1246.6215,
+     -1096.4025
+    ],
+    "n": 200
+   },
+   "paired_diff_adaptive_all_fields_minus_fixed_dispatched": {
+    "mean": -1.4,
+    "ci95": [
+     -1.475,
+     -1.33
+    ],
+    "n": 200
+   },
+   "initial_token_saving_fraction_adaptive_all_fields": 0.4493
+  },
+  "partial_browser/tight_acquisition": {
+   "adaptive": {
+    "objects": 200,
+    "cases": 200,
+    "mean_specialists_dispatched_per_object": 1.0,
+    "mean_trigger_coverage": 1.0,
+    "mean_trigger_coverage_all_fields": 0.0,
+    "objects_with_triggers": 115,
+    "mean_modality_coverage_at_dispatch": 0.25,
+    "mean_initial_cost_units_per_case": 0.6803,
+    "mean_initial_est_tokens_per_case": 679.371,
+    "mean_acquisition_requests_per_case": 6.0,
+    "acquisition_success": 0.3333,
+    "budget_refused_dispatches": 0,
+    "insufficient_resource_cases": 0,
+    "eligible_for_recovery_total": 200,
+    "cases_with_eligible_for_recovery": 200,
+    "selection_vectors": {
+     "url": 198,
+     "web_structure": 2
+    },
+    "by_label": {
+     "benign": {
+      "cases": 100,
+      "mean_triggers_per_object": 1.26,
+      "mean_specialists_dispatched_per_object": 1.0
+     },
+     "phishing": {
+      "cases": 100,
+      "mean_triggers_per_object": 0.34,
+      "mean_specialists_dispatched_per_object": 1.0
+     }
+    }
+   },
+   "adaptive_all_fields": {
+    "objects": 200,
+    "cases": 200,
+    "mean_specialists_dispatched_per_object": 1.57,
+    "mean_trigger_coverage": 1.0,
+    "mean_trigger_coverage_all_fields": 0.9913,
+    "objects_with_triggers": 115,
+    "mean_modality_coverage_at_dispatch": 0.3925,
+    "mean_initial_cost_units_per_case": 1.4342,
+    "mean_initial_est_tokens_per_case": 1432.225,
+    "mean_acquisition_requests_per_case": 6.0,
+    "acquisition_success": 0.3333,
+    "budget_refused_dispatches": 0,
+    "insufficient_resource_cases": 0,
+    "eligible_for_recovery_total": 86,
+    "cases_with_eligible_for_recovery": 86,
+    "selection_vectors": {
+     "url+web_structure": 114,
+     "url": 84,
+     "web_structure": 2
+    },
+    "by_label": {
+     "benign": {
+      "cases": 100,
+      "mean_triggers_per_object": 1.26,
+      "mean_specialists_dispatched_per_object": 1.86
+     },
+     "phishing": {
+      "cases": 100,
+      "mean_triggers_per_object": 0.34,
+      "mean_specialists_dispatched_per_object": 1.28
+     }
+    }
+   },
+   "fixed_all": {
+    "objects": 200,
+    "cases": 200,
+    "mean_specialists_dispatched_per_object": 2.0,
+    "mean_trigger_coverage": 1.0,
+    "mean_trigger_coverage_all_fields": 1.0,
+    "objects_with_triggers": 115,
+    "mean_modality_coverage_at_dispatch": 0.5,
+    "mean_initial_cost_units_per_case": 1.8502,
+    "mean_initial_est_tokens_per_case": 1847.5875,
+    "mean_acquisition_requests_per_case": 6.0,
+    "acquisition_success": 0.3333,
+    "budget_refused_dispatches": 0,
+    "insufficient_resource_cases": 0,
+    "eligible_for_recovery_total": 0,
+    "cases_with_eligible_for_recovery": 0,
+    "selection_vectors": {
+     "url+web_structure": 200
+    },
+    "by_label": {
+     "benign": {
+      "cases": 100,
+      "mean_triggers_per_object": 1.26,
+      "mean_specialists_dispatched_per_object": 2.0
+     },
+     "phishing": {
+      "cases": 100,
+      "mean_triggers_per_object": 0.34,
+      "mean_specialists_dispatched_per_object": 2.0
+     }
+    }
+   },
+   "paired_diff_adaptive_minus_fixed_cost": {
+    "mean": -1.1699,
+    "ci95": [
+     -1.2235,
+     -1.1162
+    ],
+    "n": 200
+   },
+   "paired_diff_adaptive_minus_fixed_tokens": {
+    "mean": -1168.2165,
+    "ci95": [
+     -1221.82,
+     -1114.6405
+    ],
+    "n": 200
+   },
+   "paired_diff_adaptive_minus_fixed_dispatched": {
+    "mean": -1.0,
+    "ci95": [
+     -1.0,
+     -1.0
+    ],
+    "n": 200
+   },
+   "initial_token_saving_fraction_adaptive": 0.6323,
+   "paired_diff_adaptive_all_fields_minus_fixed_cost": {
+    "mean": -0.4159,
+    "ci95": [
+     -0.4911,
+     -0.3441
+    ],
+    "n": 200
+   },
+   "paired_diff_adaptive_all_fields_minus_fixed_tokens": {
+    "mean": -415.3625,
+    "ci95": [
+     -490.449,
+     -343.6175
+    ],
+    "n": 200
+   },
+   "paired_diff_adaptive_all_fields_minus_fixed_dispatched": {
+    "mean": -0.43,
+    "ci95": [
+     -0.5,
+     -0.36
+    ],
+    "n": 200
+   },
+   "initial_token_saving_fraction_adaptive_all_fields": 0.2248
+  },
+  "partial_browser/matched_agent_2": {
+   "adaptive": {
+    "objects": 200,
+    "cases": 200,
+    "mean_specialists_dispatched_per_object": 1.0,
+    "mean_trigger_coverage": 1.0,
+    "mean_trigger_coverage_all_fields": 0.0,
+    "objects_with_triggers": 115,
+    "mean_modality_coverage_at_dispatch": 0.25,
+    "mean_initial_cost_units_per_case": 0.6803,
+    "mean_initial_est_tokens_per_case": 679.371,
+    "mean_acquisition_requests_per_case": 13.0,
+    "acquisition_success": 0.2285,
+    "budget_refused_dispatches": 0,
+    "insufficient_resource_cases": 0,
+    "eligible_for_recovery_total": 394,
+    "cases_with_eligible_for_recovery": 200,
+    "selection_vectors": {
+     "url": 198,
+     "web_structure": 2
+    },
+    "by_label": {
+     "benign": {
+      "cases": 100,
+      "mean_triggers_per_object": 1.26,
+      "mean_specialists_dispatched_per_object": 1.0
+     },
+     "phishing": {
+      "cases": 100,
+      "mean_triggers_per_object": 0.34,
+      "mean_specialists_dispatched_per_object": 1.0
+     }
+    }
+   },
+   "adaptive_all_fields": {
+    "objects": 200,
+    "cases": 200,
+    "mean_specialists_dispatched_per_object": 1.255,
+    "mean_trigger_coverage": 1.0,
+    "mean_trigger_coverage_all_fields": 0.4435,
+    "objects_with_triggers": 115,
+    "mean_modality_coverage_at_dispatch": 0.3137,
+    "mean_initial_cost_units_per_case": 0.9364,
+    "mean_initial_est_tokens_per_case": 935.0645,
+    "mean_acquisition_requests_per_case": 13.0,
+    "acquisition_success": 0.2285,
+    "budget_refused_dispatches": 0,
+    "insufficient_resource_cases": 0,
+    "eligible_for_recovery_total": 343,
+    "cases_with_eligible_for_recovery": 198,
+    "selection_vectors": {
+     "url": 147,
+     "url+web_structure": 51,
+     "web_structure": 2
+    },
+    "by_label": {
+     "benign": {
+      "cases": 100,
+      "mean_triggers_per_object": 1.26,
+      "mean_specialists_dispatched_per_object": 1.28
+     },
+     "phishing": {
+      "cases": 100,
+      "mean_triggers_per_object": 0.34,
+      "mean_specialists_dispatched_per_object": 1.23
+     }
+    }
+   },
+   "fixed_all": {
+    "objects": 200,
+    "cases": 200,
+    "mean_specialists_dispatched_per_object": 1.99,
+    "mean_trigger_coverage": 1.0,
+    "mean_trigger_coverage_all_fields": 0.4435,
+    "objects_with_triggers": 115,
+    "mean_modality_coverage_at_dispatch": 0.4975,
+    "mean_initial_cost_units_per_case": 1.5265,
+    "mean_initial_est_tokens_per_case": 1524.38,
+    "mean_acquisition_requests_per_case": 13.0,
+    "acquisition_success": 0.2285,
+    "budget_refused_dispatches": 196,
+    "insufficient_resource_cases": 0,
+    "eligible_for_recovery_total": 196,
+    "cases_with_eligible_for_recovery": 196,
+    "selection_vectors": {
+     "url+web_structure": 123,
+     "url+metadata": 75,
+     "url": 2
+    },
+    "by_label": {
+     "benign": {
+      "cases": 100,
+      "mean_triggers_per_object": 1.26,
+      "mean_specialists_dispatched_per_object": 1.98
+     },
+     "phishing": {
+      "cases": 100,
+      "mean_triggers_per_object": 0.34,
+      "mean_specialists_dispatched_per_object": 2.0
+     }
+    }
+   },
+   "paired_diff_adaptive_minus_fixed_cost": {
+    "mean": -0.8462,
+    "ci95": [
+     -0.8714,
+     -0.8195
+    ],
+    "n": 200
+   },
+   "paired_diff_adaptive_minus_fixed_tokens": {
+    "mean": -845.009,
+    "ci95": [
+     -870.224,
+     -818.315
+    ],
+    "n": 200
+   },
+   "paired_diff_adaptive_minus_fixed_dispatched": {
+    "mean": -0.99,
+    "ci95": [
+     -1.0,
+     -0.975
+    ],
+    "n": 200
+   },
+   "initial_token_saving_fraction_adaptive": 0.5543,
+   "paired_diff_adaptive_all_fields_minus_fixed_cost": {
+    "mean": -0.5901,
+    "ci95": [
+     -0.6398,
+     -0.5375
+    ],
+    "n": 200
+   },
+   "paired_diff_adaptive_all_fields_minus_fixed_tokens": {
+    "mean": -589.3155,
+    "ci95": [
+     -638.9045,
+     -536.6965
+    ],
+    "n": 200
+   },
+   "paired_diff_adaptive_all_fields_minus_fixed_dispatched": {
+    "mean": -0.735,
+    "ci95": [
+     -0.795,
+     -0.67
+    ],
+    "n": 200
+   },
+   "initial_token_saving_fraction_adaptive_all_fields": 0.3866
+  },
+  "no_network_metadata/unrestricted": {
+   "adaptive": {
+    "objects": 200,
+    "cases": 200,
+    "mean_specialists_dispatched_per_object": 1.0,
+    "mean_trigger_coverage": 1.0,
+    "mean_trigger_coverage_all_fields": 0.0698,
+    "objects_with_triggers": 129,
+    "mean_modality_coverage_at_dispatch": 0.25,
+    "mean_initial_cost_units_per_case": 0.6708,
+    "mean_initial_est_tokens_per_case": 669.843,
+    "mean_acquisition_requests_per_case": 13.0,
+    "acquisition_success": 0.365,
+    "budget_refused_dispatches": 0,
+    "insufficient_resource_cases": 0,
+    "eligible_for_recovery_total": 383,
+    "cases_with_eligible_for_recovery": 200,
+    "selection_vectors": {
+     "url": 189,
+     "content": 10,
+     "web_structure": 1
+    },
+    "by_label": {
+     "benign": {
+      "cases": 100,
+      "mean_triggers_per_object": 2.88,
+      "mean_specialists_dispatched_per_object": 1.0
+     },
+     "phishing": {
+      "cases": 100,
+      "mean_triggers_per_object": 0.96,
+      "mean_specialists_dispatched_per_object": 1.0
+     }
+    }
+   },
+   "adaptive_all_fields": {
+    "objects": 200,
+    "cases": 200,
+    "mean_specialists_dispatched_per_object": 1.98,
+    "mean_trigger_coverage": 1.0,
+    "mean_trigger_coverage_all_fields": 1.0,
+    "objects_with_triggers": 129,
+    "mean_modality_coverage_at_dispatch": 0.495,
+    "mean_initial_cost_units_per_case": 2.2028,
+    "mean_initial_est_tokens_per_case": 2199.7365,
+    "mean_acquisition_requests_per_case": 13.0,
+    "acquisition_success": 0.365,
+    "budget_refused_dispatches": 0,
+    "insufficient_resource_cases": 0,
+    "eligible_for_recovery_total": 187,
+    "cases_with_eligible_for_recovery": 109,
+    "selection_vectors": {
+     "url+web_structure+content": 76,
+     "url": 69,
+     "url+web_structure": 39,
+     "content": 10,
+     "url+content": 5,
+     "web_structure": 1
+    },
+    "by_label": {
+     "benign": {
+      "cases": 100,
+      "mean_triggers_per_object": 2.88,
+      "mean_specialists_dispatched_per_object": 2.48
+     },
+     "phishing": {
+      "cases": 100,
+      "mean_triggers_per_object": 0.96,
+      "mean_specialists_dispatched_per_object": 1.48
+     }
+    }
+   },
+   "fixed_all": {
+    "objects": 200,
+    "cases": 200,
+    "mean_specialists_dispatched_per_object": 2.915,
+    "mean_trigger_coverage": 1.0,
+    "mean_trigger_coverage_all_fields": 1.0,
+    "objects_with_triggers": 129,
+    "mean_modality_coverage_at_dispatch": 0.7288,
+    "mean_initial_cost_units_per_case": 3.2325,
+    "mean_initial_est_tokens_per_case": 3227.99,
+    "mean_acquisition_requests_per_case": 13.0,
+    "acquisition_success": 0.365,
+    "budget_refused_dispatches": 0,
+    "insufficient_resource_cases": 0,
+    "eligible_for_recovery_total": 0,
+    "cases_with_eligible_for_recovery": 0,
+    "selection_vectors": {
+     "url+web_structure+content": 183,
+     "url+web_structure": 17
+    },
+    "by_label": {
+     "benign": {
+      "cases": 100,
+      "mean_triggers_per_object": 2.88,
+      "mean_specialists_dispatched_per_object": 2.84
+     },
+     "phishing": {
+      "cases": 100,
+      "mean_triggers_per_object": 0.96,
+      "mean_specialists_dispatched_per_object": 2.99
+     }
+    }
+   },
+   "paired_diff_adaptive_minus_fixed_cost": {
+    "mean": -2.5617,
+    "ci95": [
+     -2.6836,
+     -2.4385
+    ],
+    "n": 200
+   },
+   "paired_diff_adaptive_minus_fixed_tokens": {
+    "mean": -2558.147,
+    "ci95": [
+     -2679.875,
+     -2435.06
+    ],
+    "n": 200
+   },
+   "paired_diff_adaptive_minus_fixed_dispatched": {
+    "mean": -1.915,
+    "ci95": [
+     -1.95,
+     -1.875
+    ],
+    "n": 200
+   },
+   "initial_token_saving_fraction_adaptive": 0.7925,
+   "paired_diff_adaptive_all_fields_minus_fixed_cost": {
+    "mean": -1.0297,
+    "ci95": [
+     -1.1813,
+     -0.8753
+    ],
+    "n": 200
+   },
+   "paired_diff_adaptive_all_fields_minus_fixed_tokens": {
+    "mean": -1028.2535,
+    "ci95": [
+     -1179.6575,
+     -874.039
+    ],
+    "n": 200
+   },
+   "paired_diff_adaptive_all_fields_minus_fixed_dispatched": {
+    "mean": -0.935,
+    "ci95": [
+     -1.06,
+     -0.805
+    ],
+    "n": 200
+   },
+   "initial_token_saving_fraction_adaptive_all_fields": 0.3185
+  },
+  "no_network_metadata/tight_acquisition": {
+   "adaptive": {
+    "objects": 200,
+    "cases": 200,
+    "mean_specialists_dispatched_per_object": 1.0,
+    "mean_trigger_coverage": 1.0,
+    "mean_trigger_coverage_all_fields": 0.0083,
+    "objects_with_triggers": 121,
+    "mean_modality_coverage_at_dispatch": 0.25,
+    "mean_initial_cost_units_per_case": 0.6706,
+    "mean_initial_est_tokens_per_case": 669.6405,
+    "mean_acquisition_requests_per_case": 6.0,
+    "acquisition_success": 0.6383,
+    "budget_refused_dispatches": 0,
+    "insufficient_resource_cases": 0,
+    "eligible_for_recovery_total": 383,
+    "cases_with_eligible_for_recovery": 200,
+    "selection_vectors": {
+     "url": 194,
+     "content": 5,
+     "web_structure": 1
+    },
+    "by_label": {
+     "benign": {
+      "cases": 100,
+      "mean_triggers_per_object": 2.88,
+      "mean_specialists_dispatched_per_object": 1.0
+     },
+     "phishing": {
+      "cases": 100,
+      "mean_triggers_per_object": 0.88,
+      "mean_specialists_dispatched_per_object": 1.0
+     }
+    }
+   },
+   "adaptive_all_fields": {
+    "objects": 200,
+    "cases": 200,
+    "mean_specialists_dispatched_per_object": 1.98,
+    "mean_trigger_coverage": 1.0,
+    "mean_trigger_coverage_all_fields": 1.0,
+    "objects_with_triggers": 121,
+    "mean_modality_coverage_at_dispatch": 0.495,
+    "mean_initial_cost_units_per_case": 2.2026,
+    "mean_initial_est_tokens_per_case": 2199.534,
+    "mean_acquisition_requests_per_case": 6.0,
+    "acquisition_success": 0.6383,
+    "budget_refused_dispatches": 0,
+    "insufficient_resource_cases": 0,
+    "eligible_for_recovery_total": 187,
+    "cases_with_eligible_for_recovery": 109,
+    "selection_vectors": {
+     "url+web_structure+content": 76,
+     "url": 74,
+     "url+web_structure": 39,
+     "url+content": 5,
+     "content": 5,
+     "web_structure": 1
+    },
+    "by_label": {
+     "benign": {
+      "cases": 100,
+      "mean_triggers_per_object": 2.88,
+      "mean_specialists_dispatched_per_object": 2.48
+     },
+     "phishing": {
+      "cases": 100,
+      "mean_triggers_per_object": 0.88,
+      "mean_specialists_dispatched_per_object": 1.48
+     }
+    }
+   },
+   "fixed_all": {
+    "objects": 200,
+    "cases": 200,
+    "mean_specialists_dispatched_per_object": 2.915,
+    "mean_trigger_coverage": 1.0,
+    "mean_trigger_coverage_all_fields": 1.0,
+    "objects_with_triggers": 121,
+    "mean_modality_coverage_at_dispatch": 0.7288,
+    "mean_initial_cost_units_per_case": 3.2325,
+    "mean_initial_est_tokens_per_case": 3227.99,
+    "mean_acquisition_requests_per_case": 6.0,
+    "acquisition_success": 0.6383,
+    "budget_refused_dispatches": 0,
+    "insufficient_resource_cases": 0,
+    "eligible_for_recovery_total": 0,
+    "cases_with_eligible_for_recovery": 0,
+    "selection_vectors": {
+     "url+web_structure+content": 183,
+     "url+web_structure": 17
+    },
+    "by_label": {
+     "benign": {
+      "cases": 100,
+      "mean_triggers_per_object": 2.88,
+      "mean_specialists_dispatched_per_object": 2.84
+     },
+     "phishing": {
+      "cases": 100,
+      "mean_triggers_per_object": 0.88,
+      "mean_specialists_dispatched_per_object": 2.99
+     }
+    }
+   },
+   "paired_diff_adaptive_minus_fixed_cost": {
+    "mean": -2.5619,
+    "ci95": [
+     -2.6839,
+     -2.4387
+    ],
+    "n": 200
+   },
+   "paired_diff_adaptive_minus_fixed_tokens": {
+    "mean": -2558.3495,
+    "ci95": [
+     -2680.138,
+     -2435.291
+    ],
+    "n": 200
+   },
+   "paired_diff_adaptive_minus_fixed_dispatched": {
+    "mean": -1.915,
+    "ci95": [
+     -1.95,
+     -1.875
+    ],
+    "n": 200
+   },
+   "initial_token_saving_fraction_adaptive": 0.7926,
+   "paired_diff_adaptive_all_fields_minus_fixed_cost": {
+    "mean": -1.0299,
+    "ci95": [
+     -1.1815,
+     -0.8755
+    ],
+    "n": 200
+   },
+   "paired_diff_adaptive_all_fields_minus_fixed_tokens": {
+    "mean": -1028.456,
+    "ci95": [
+     -1179.8585,
+     -874.261
+    ],
+    "n": 200
+   },
+   "paired_diff_adaptive_all_fields_minus_fixed_dispatched": {
+    "mean": -0.935,
+    "ci95": [
+     -1.06,
+     -0.805
+    ],
+    "n": 200
+   },
+   "initial_token_saving_fraction_adaptive_all_fields": 0.3186
+  },
+  "no_network_metadata/matched_agent_2": {
+   "adaptive": {
+    "objects": 200,
+    "cases": 200,
+    "mean_specialists_dispatched_per_object": 1.0,
+    "mean_trigger_coverage": 1.0,
+    "mean_trigger_coverage_all_fields": 0.0698,
+    "objects_with_triggers": 129,
+    "mean_modality_coverage_at_dispatch": 0.25,
+    "mean_initial_cost_units_per_case": 0.6708,
+    "mean_initial_est_tokens_per_case": 669.843,
+    "mean_acquisition_requests_per_case": 13.0,
+    "acquisition_success": 0.365,
+    "budget_refused_dispatches": 0,
+    "insufficient_resource_cases": 0,
+    "eligible_for_recovery_total": 383,
+    "cases_with_eligible_for_recovery": 200,
+    "selection_vectors": {
+     "url": 189,
+     "content": 10,
+     "web_structure": 1
+    },
+    "by_label": {
+     "benign": {
+      "cases": 100,
+      "mean_triggers_per_object": 2.88,
+      "mean_specialists_dispatched_per_object": 1.0
+     },
+     "phishing": {
+      "cases": 100,
+      "mean_triggers_per_object": 0.96,
+      "mean_specialists_dispatched_per_object": 1.0
+     }
+    }
+   },
+   "adaptive_all_fields": {
+    "objects": 200,
+    "cases": 200,
+    "mean_specialists_dispatched_per_object": 1.39,
+    "mean_trigger_coverage": 1.0,
+    "mean_trigger_coverage_all_fields": 0.3478,
+    "objects_with_triggers": 129,
+    "mean_modality_coverage_at_dispatch": 0.3475,
+    "mean_initial_cost_units_per_case": 1.0793,
+    "mean_initial_est_tokens_per_case": 1077.7565,
+    "mean_acquisition_requests_per_case": 13.0,
+    "acquisition_success": 0.365,
+    "budget_refused_dispatches": 0,
+    "insufficient_resource_cases": 0,
+    "eligible_for_recovery_total": 305,
+    "cases_with_eligible_for_recovery": 200,
+    "selection_vectors": {
+     "url": 111,
+     "url+content": 52,
+     "url+web_structure": 26,
+     "content": 10,
+     "web_structure": 1
+    },
+    "by_label": {
+     "benign": {
+      "cases": 100,
+      "mean_triggers_per_object": 2.88,
+      "mean_specialists_dispatched_per_object": 1.58
+     },
+     "phishing": {
+      "cases": 100,
+      "mean_triggers_per_object": 0.96,
+      "mean_specialists_dispatched_per_object": 1.2
+     }
+    }
+   },
+   "fixed_all": {
+    "objects": 200,
+    "cases": 200,
+    "mean_specialists_dispatched_per_object": 1.87,
+    "mean_trigger_coverage": 0.9612,
+    "mean_trigger_coverage_all_fields": 0.2858,
+    "objects_with_triggers": 129,
+    "mean_modality_coverage_at_dispatch": 0.4675,
+    "mean_initial_cost_units_per_case": 1.5269,
+    "mean_initial_est_tokens_per_case": 1524.8125,
+    "mean_acquisition_requests_per_case": 13.0,
+    "acquisition_success": 0.365,
+    "budget_refused_dispatches": 209,
+    "insufficient_resource_cases": 0,
+    "eligible_for_recovery_total": 209,
+    "cases_with_eligible_for_recovery": 196,
+    "selection_vectors": {
+     "url+web_structure": 87,
+     "url+content": 81,
+     "url": 29,
+     "url+web_structure+content": 3
+    },
+    "by_label": {
+     "benign": {
+      "cases": 100,
+      "mean_triggers_per_object": 2.88,
+      "mean_specialists_dispatched_per_object": 1.78
+     },
+     "phishing": {
+      "cases": 100,
+      "mean_triggers_per_object": 0.96,
+      "mean_specialists_dispatched_per_object": 1.96
+     }
+    }
+   },
+   "paired_diff_adaptive_minus_fixed_cost": {
+    "mean": -0.8562,
+    "ci95": [
+     -0.9082,
+     -0.8008
+    ],
+    "n": 200
+   },
+   "paired_diff_adaptive_minus_fixed_tokens": {
+    "mean": -854.9695,
+    "ci95": [
+     -906.925,
+     -799.6915
+    ],
+    "n": 200
+   },
+   "paired_diff_adaptive_minus_fixed_dispatched": {
+    "mean": -0.87,
+    "ci95": [
+     -0.92,
+     -0.815
+    ],
+    "n": 200
+   },
+   "initial_token_saving_fraction_adaptive": 0.5607,
+   "paired_diff_adaptive_all_fields_minus_fixed_cost": {
+    "mean": -0.4477,
+    "ci95": [
+     -0.5195,
+     -0.3762
+    ],
+    "n": 200
+   },
+   "paired_diff_adaptive_all_fields_minus_fixed_tokens": {
+    "mean": -447.056,
+    "ci95": [
+     -518.757,
+     -375.7275
+    ],
+    "n": 200
+   },
+   "paired_diff_adaptive_all_fields_minus_fixed_dispatched": {
+    "mean": -0.48,
+    "ci95": [
+     -0.555,
+     -0.405
+    ],
+    "n": 200
+   },
+   "initial_token_saving_fraction_adaptive_all_fields": 0.2932
+  },
+  "multi_url_message/unrestricted": {
+   "adaptive": {
+    "objects": 34,
+    "cases": 9,
+    "mean_specialists_dispatched_per_object": 1.0,
+    "mean_trigger_coverage": 1.0,
+    "mean_trigger_coverage_all_fields": 1.0,
+    "objects_with_triggers": 2,
+    "mean_modality_coverage_at_dispatch": 0.4485,
+    "mean_initial_cost_units_per_case": 2.9917,
+    "mean_initial_est_tokens_per_case": 2987.5778,
+    "mean_acquisition_requests_per_case": 37.1111,
+    "acquisition_success": 0.3213,
+    "budget_refused_dispatches": 0,
+    "insufficient_resource_cases": 0,
+    "eligible_for_recovery_total": 0,
+    "cases_with_eligible_for_recovery": 0,
+    "selection_vectors": {
+     "url": 25,
+     "message": 9
+    },
+    "by_label": {
+     "phishing": {
+      "cases": 7,
+      "mean_triggers_per_object": 0.0769,
+      "mean_specialists_dispatched_per_object": 1.0
+     },
+     "benign": {
+      "cases": 2,
+      "mean_triggers_per_object": 0.0,
+      "mean_specialists_dispatched_per_object": 1.0
+     }
+    }
+   },
+   "adaptive_all_fields": {
+    "objects": 34,
+    "cases": 9,
+    "mean_specialists_dispatched_per_object": 1.0,
+    "mean_trigger_coverage": 1.0,
+    "mean_trigger_coverage_all_fields": 1.0,
+    "objects_with_triggers": 2,
+    "mean_modality_coverage_at_dispatch": 0.4485,
+    "mean_initial_cost_units_per_case": 2.9917,
+    "mean_initial_est_tokens_per_case": 2987.5778,
+    "mean_acquisition_requests_per_case": 37.1111,
+    "acquisition_success": 0.3213,
+    "budget_refused_dispatches": 0,
+    "insufficient_resource_cases": 0,
+    "eligible_for_recovery_total": 0,
+    "cases_with_eligible_for_recovery": 0,
+    "selection_vectors": {
+     "url": 25,
+     "message": 9
+    },
+    "by_label": {
+     "phishing": {
+      "cases": 7,
+      "mean_triggers_per_object": 0.0769,
+      "mean_specialists_dispatched_per_object": 1.0
+     },
+     "benign": {
+      "cases": 2,
+      "mean_triggers_per_object": 0.0,
+      "mean_specialists_dispatched_per_object": 1.0
+     }
+    }
+   },
+   "fixed_all": {
+    "objects": 34,
+    "cases": 9,
+    "mean_specialists_dispatched_per_object": 1.0,
+    "mean_trigger_coverage": 1.0,
+    "mean_trigger_coverage_all_fields": 1.0,
+    "objects_with_triggers": 2,
+    "mean_modality_coverage_at_dispatch": 0.4485,
+    "mean_initial_cost_units_per_case": 2.9917,
+    "mean_initial_est_tokens_per_case": 2987.5778,
+    "mean_acquisition_requests_per_case": 37.1111,
+    "acquisition_success": 0.3213,
+    "budget_refused_dispatches": 0,
+    "insufficient_resource_cases": 0,
+    "eligible_for_recovery_total": 0,
+    "cases_with_eligible_for_recovery": 0,
+    "selection_vectors": {
+     "url": 25,
+     "message": 9
+    },
+    "by_label": {
+     "phishing": {
+      "cases": 7,
+      "mean_triggers_per_object": 0.0769,
+      "mean_specialists_dispatched_per_object": 1.0
+     },
+     "benign": {
+      "cases": 2,
+      "mean_triggers_per_object": 0.0,
+      "mean_specialists_dispatched_per_object": 1.0
+     }
+    }
+   },
+   "paired_diff_adaptive_minus_fixed_cost": {
+    "mean": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ],
+    "n": 9
+   },
+   "paired_diff_adaptive_minus_fixed_tokens": {
+    "mean": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ],
+    "n": 9
+   },
+   "paired_diff_adaptive_minus_fixed_dispatched": {
+    "mean": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ],
+    "n": 9
+   },
+   "initial_token_saving_fraction_adaptive": 0.0,
+   "paired_diff_adaptive_all_fields_minus_fixed_cost": {
+    "mean": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ],
+    "n": 9
+   },
+   "paired_diff_adaptive_all_fields_minus_fixed_tokens": {
+    "mean": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ],
+    "n": 9
+   },
+   "paired_diff_adaptive_all_fields_minus_fixed_dispatched": {
+    "mean": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ],
+    "n": 9
+   },
+   "initial_token_saving_fraction_adaptive_all_fields": 0.0
+  },
+  "multi_url_message/tight_acquisition": {
+   "adaptive": {
+    "objects": 34,
+    "cases": 9,
+    "mean_specialists_dispatched_per_object": 0.529,
+    "mean_trigger_coverage": 1.0,
+    "mean_trigger_coverage_all_fields": 1.0,
+    "objects_with_triggers": 2,
+    "mean_modality_coverage_at_dispatch": 0.3309,
+    "mean_initial_cost_units_per_case": 1.7726,
+    "mean_initial_est_tokens_per_case": 1770.0889,
+    "mean_acquisition_requests_per_case": 6.0,
+    "acquisition_success": 0.6,
+    "budget_refused_dispatches": 0,
+    "insufficient_resource_cases": 0,
+    "eligible_for_recovery_total": 0,
+    "cases_with_eligible_for_recovery": 0,
+    "selection_vectors": {
+     "(none)": 16,
+     "message": 9,
+     "url": 9
+    },
+    "by_label": {
+     "phishing": {
+      "cases": 7,
+      "mean_triggers_per_object": 0.0769,
+      "mean_specialists_dispatched_per_object": 0.5385
+     },
+     "benign": {
+      "cases": 2,
+      "mean_triggers_per_object": 0.0,
+      "mean_specialists_dispatched_per_object": 0.5
+     }
+    }
+   },
+   "adaptive_all_fields": {
+    "objects": 34,
+    "cases": 9,
+    "mean_specialists_dispatched_per_object": 0.529,
+    "mean_trigger_coverage": 1.0,
+    "mean_trigger_coverage_all_fields": 1.0,
+    "objects_with_triggers": 2,
+    "mean_modality_coverage_at_dispatch": 0.3309,
+    "mean_initial_cost_units_per_case": 1.7726,
+    "mean_initial_est_tokens_per_case": 1770.0889,
+    "mean_acquisition_requests_per_case": 6.0,
+    "acquisition_success": 0.6,
+    "budget_refused_dispatches": 0,
+    "insufficient_resource_cases": 0,
+    "eligible_for_recovery_total": 0,
+    "cases_with_eligible_for_recovery": 0,
+    "selection_vectors": {
+     "(none)": 16,
+     "message": 9,
+     "url": 9
+    },
+    "by_label": {
+     "phishing": {
+      "cases": 7,
+      "mean_triggers_per_object": 0.0769,
+      "mean_specialists_dispatched_per_object": 0.5385
+     },
+     "benign": {
+      "cases": 2,
+      "mean_triggers_per_object": 0.0,
+      "mean_specialists_dispatched_per_object": 0.5
+     }
+    }
+   },
+   "fixed_all": {
+    "objects": 34,
+    "cases": 9,
+    "mean_specialists_dispatched_per_object": 0.529,
+    "mean_trigger_coverage": 1.0,
+    "mean_trigger_coverage_all_fields": 1.0,
+    "objects_with_triggers": 2,
+    "mean_modality_coverage_at_dispatch": 0.3309,
+    "mean_initial_cost_units_per_case": 1.7726,
+    "mean_initial_est_tokens_per_case": 1770.0889,
+    "mean_acquisition_requests_per_case": 6.0,
+    "acquisition_success": 0.6,
+    "budget_refused_dispatches": 0,
+    "insufficient_resource_cases": 0,
+    "eligible_for_recovery_total": 0,
+    "cases_with_eligible_for_recovery": 0,
+    "selection_vectors": {
+     "(none)": 16,
+     "message": 9,
+     "url": 9
+    },
+    "by_label": {
+     "phishing": {
+      "cases": 7,
+      "mean_triggers_per_object": 0.0769,
+      "mean_specialists_dispatched_per_object": 0.5385
+     },
+     "benign": {
+      "cases": 2,
+      "mean_triggers_per_object": 0.0,
+      "mean_specialists_dispatched_per_object": 0.5
+     }
+    }
+   },
+   "paired_diff_adaptive_minus_fixed_cost": {
+    "mean": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ],
+    "n": 9
+   },
+   "paired_diff_adaptive_minus_fixed_tokens": {
+    "mean": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ],
+    "n": 9
+   },
+   "paired_diff_adaptive_minus_fixed_dispatched": {
+    "mean": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ],
+    "n": 9
+   },
+   "initial_token_saving_fraction_adaptive": 0.0,
+   "paired_diff_adaptive_all_fields_minus_fixed_cost": {
+    "mean": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ],
+    "n": 9
+   },
+   "paired_diff_adaptive_all_fields_minus_fixed_tokens": {
+    "mean": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ],
+    "n": 9
+   },
+   "paired_diff_adaptive_all_fields_minus_fixed_dispatched": {
+    "mean": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ],
+    "n": 9
+   },
+   "initial_token_saving_fraction_adaptive_all_fields": 0.0
+  },
+  "multi_url_message/matched_agent_2": {
+   "adaptive": {
+    "objects": 34,
+    "cases": 9,
+    "mean_specialists_dispatched_per_object": 0.471,
+    "mean_trigger_coverage": 1.0,
+    "mean_trigger_coverage_all_fields": 1.0,
+    "objects_with_triggers": 2,
+    "mean_modality_coverage_at_dispatch": 0.3162,
+    "mean_initial_cost_units_per_case": 1.6214,
+    "mean_initial_est_tokens_per_case": 1619.1111,
+    "mean_acquisition_requests_per_case": 37.1111,
+    "acquisition_success": 0.3213,
+    "budget_refused_dispatches": 0,
+    "insufficient_resource_cases": 9,
+    "eligible_for_recovery_total": 18,
+    "cases_with_eligible_for_recovery": 9,
+    "selection_vectors": {
+     "(none)": 18,
+     "message": 9,
+     "url": 7
+    },
+    "by_label": {
+     "phishing": {
+      "cases": 7,
+      "mean_triggers_per_object": 0.0769,
+      "mean_specialists_dispatched_per_object": 0.5
+     },
+     "benign": {
+      "cases": 2,
+      "mean_triggers_per_object": 0.0,
+      "mean_specialists_dispatched_per_object": 0.375
+     }
+    }
+   },
+   "adaptive_all_fields": {
+    "objects": 34,
+    "cases": 9,
+    "mean_specialists_dispatched_per_object": 0.471,
+    "mean_trigger_coverage": 1.0,
+    "mean_trigger_coverage_all_fields": 1.0,
+    "objects_with_triggers": 2,
+    "mean_modality_coverage_at_dispatch": 0.3162,
+    "mean_initial_cost_units_per_case": 1.6214,
+    "mean_initial_est_tokens_per_case": 1619.1111,
+    "mean_acquisition_requests_per_case": 37.1111,
+    "acquisition_success": 0.3213,
+    "budget_refused_dispatches": 0,
+    "insufficient_resource_cases": 9,
+    "eligible_for_recovery_total": 18,
+    "cases_with_eligible_for_recovery": 9,
+    "selection_vectors": {
+     "(none)": 18,
+     "message": 9,
+     "url": 7
+    },
+    "by_label": {
+     "phishing": {
+      "cases": 7,
+      "mean_triggers_per_object": 0.0769,
+      "mean_specialists_dispatched_per_object": 0.5
+     },
+     "benign": {
+      "cases": 2,
+      "mean_triggers_per_object": 0.0,
+      "mean_specialists_dispatched_per_object": 0.375
+     }
+    }
+   },
+   "fixed_all": {
+    "objects": 34,
+    "cases": 9,
+    "mean_specialists_dispatched_per_object": 0.471,
+    "mean_trigger_coverage": 1.0,
+    "mean_trigger_coverage_all_fields": 1.0,
+    "objects_with_triggers": 2,
+    "mean_modality_coverage_at_dispatch": 0.3162,
+    "mean_initial_cost_units_per_case": 1.6214,
+    "mean_initial_est_tokens_per_case": 1619.1111,
+    "mean_acquisition_requests_per_case": 37.1111,
+    "acquisition_success": 0.3213,
+    "budget_refused_dispatches": 18,
+    "insufficient_resource_cases": 9,
+    "eligible_for_recovery_total": 18,
+    "cases_with_eligible_for_recovery": 9,
+    "selection_vectors": {
+     "(none)": 18,
+     "message": 9,
+     "url": 7
+    },
+    "by_label": {
+     "phishing": {
+      "cases": 7,
+      "mean_triggers_per_object": 0.0769,
+      "mean_specialists_dispatched_per_object": 0.5
+     },
+     "benign": {
+      "cases": 2,
+      "mean_triggers_per_object": 0.0,
+      "mean_specialists_dispatched_per_object": 0.375
+     }
+    }
+   },
+   "paired_diff_adaptive_minus_fixed_cost": {
+    "mean": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ],
+    "n": 9
+   },
+   "paired_diff_adaptive_minus_fixed_tokens": {
+    "mean": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ],
+    "n": 9
+   },
+   "paired_diff_adaptive_minus_fixed_dispatched": {
+    "mean": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ],
+    "n": 9
+   },
+   "initial_token_saving_fraction_adaptive": 0.0,
+   "paired_diff_adaptive_all_fields_minus_fixed_cost": {
+    "mean": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ],
+    "n": 9
+   },
+   "paired_diff_adaptive_all_fields_minus_fixed_tokens": {
+    "mean": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ],
+    "n": 9
+   },
+   "paired_diff_adaptive_all_fields_minus_fixed_dispatched": {
+    "mean": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ],
+    "n": 9
+   },
+   "initial_token_saving_fraction_adaptive_all_fields": 0.0
+  }
+ }
+}

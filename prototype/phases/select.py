@@ -95,6 +95,7 @@ class SelectionDetail:
     """Everything eq:specialist-selection decided, recorded before Phase 2 runs."""
 
     mode: str
+    trigger_cover: str
     applicable: frozenset[str]
     ready: frozenset[str]
     triggers: tuple[Trigger, ...]
@@ -111,7 +112,7 @@ class SelectionDetail:
 
     def as_dict(self) -> dict:
         return {
-            "mode": self.mode, "applicable": sorted(self.applicable), "ready": sorted(self.ready),
+            "mode": self.mode, "trigger_cover": self.trigger_cover, "applicable": sorted(self.applicable), "ready": sorted(self.ready),
             "triggers": [t.as_dict() for t in self.triggers],
             "covers": {a: list(v) for a, v in sorted(self.covers.items())},
             "costs": dict(sorted(self.costs.items())), "weights": dict(sorted(self.weights.items())),
@@ -123,6 +124,17 @@ class SelectionDetail:
                              "not_ready" if a not in self.ready else "not_selected")
                          for a in fields.AGENTS if a not in self.chosen},
         }
+
+
+def covered_triggers(triggers, agents, mode: str = "any_field") -> set[int]:
+    """Indices of `triggers` covered by the agent set, under `mode`."""
+    if mode == "any_field":
+        return {n for n, t in enumerate(triggers)
+                if any(set(t.fields) & fields.AGENT_FIELDS[a] for a in agents)}
+    if mode == "all_fields":
+        readable = set().union(*(fields.AGENT_FIELDS[a] for a in agents)) if agents else set()
+        return {n for n, t in enumerate(triggers) if set(t.fields) <= readable}
+    raise ValueError(f"unknown trigger_cover: {mode!r}")
 
 
 def selection_detail(
@@ -160,8 +172,10 @@ def selection_detail(
                           if f in fields.AGENT_FIELDS[a]) for a in fields.AGENTS}
     floor = 1 if ready else 0          # eq:minimum-dispatch (ready is already applicable)
 
+    cover_mode = cfg.trigger_cover if cfg is not None else "any_field"
+
     def value(subset) -> float:
-        covered = {n for a in subset for n in covers[a]}
+        covered = covered_triggers(triggers, subset, cover_mode)
         return (sum(weights.get(triggers[n].type, 1.0) for n in covered)
                 - mu * sum(costs[a] for a in subset))
 
@@ -174,7 +188,7 @@ def selection_detail(
             subset = tuple(a for n, a in enumerate(cands) if mask >> n & 1)
             if len(subset) < floor or sum(costs[a] for a in subset) > budget + 1e-9:
                 continue
-            covered = len({n for a in subset for n in covers[a]})
+            covered = len(covered_triggers(triggers, subset, cover_mode))
             key = (round(value(subset), 9), -sum(costs[a] for a in subset), covered,
                    tuple(-fields.AGENTS.index(a) for a in subset))
             if best_key is None or key > best_key:
@@ -182,7 +196,7 @@ def selection_detail(
         chosen = frozenset(best or ())
         objective = round(value(best), 6) if best is not None else None
     return SelectionDetail(
-        mode, applicable, ready, triggers, covers, costs, weights, mu, budget, floor,
+        mode, cover_mode, applicable, ready, triggers, covers, costs, weights, mu, budget, floor,
         chosen, objective, bool(floor and not chosen),
         {a: focus[a] for a in chosen},
     )
