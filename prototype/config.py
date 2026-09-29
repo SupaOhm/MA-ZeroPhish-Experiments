@@ -40,6 +40,11 @@ class Config:
     # Frozen from development data before any test run (experiments/exp2_selection).
     trigger_weights: tuple[tuple[str, float], ...] = ()
     agent_costs: tuple[tuple[str, float], ...] = ()
+    # "unit": c_{i,g} from agent_costs (default 1.0). "prompt_tokens": c_{i,g} =
+    # the specialist's estimated tokens on THIS object (agents.llm.estimated_tokens)
+    # / cost_scale, the per-object execution-cost estimate his c_{i,g} names.
+    cost_model: str = "unit"
+    cost_scale: float = 1000.0
     budget: CaseBudget = field(default_factory=lambda: CaseBudget(100.0, 100.0, 20.0))
     evidence_removal: frozenset[str] = frozenset()
     model_id: str = "fake-deterministic"

@@ -84,9 +84,9 @@ def run_case(cfg: Config, capture, ledger: Ledger, adjudicator=None, estimator=N
             capture.inapplicable,
         )
 
-        costs = dict(cfg.agent_costs)
         detail = selection_detail(envelope, plan, cfg,
                                   agent_budget=budget.remaining(BudgetPool.AGENT))
+        costs = detail.costs          # c_{i,g}: what selection budgeted, charged as such
         dispatched = detail.chosen
         # Phase 1 Step 4, recorded BEFORE Phase 2 so the initial vector is never
         # inferred from final records (Experiment 2 needs both, separately).

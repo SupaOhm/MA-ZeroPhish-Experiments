@@ -75,6 +75,32 @@ def _json(text: str) -> dict | None:
     return None
 
 
+OUTPUT_TOKENS_EST = 400     # declared allowance for a findings reply (not fitted)
+
+
+def prompt_chars(agent: str, envelope) -> int:
+    """Characters of the Phase 2 prompt this specialist would receive on `envelope`
+    (system + evidence lines), computed exactly as `_reasoner` builds it, with no
+    model call. 0 when the agent has no obtained authorized field. Used by Phase 1
+    selection as the estimated execution cost c_{i,g}."""
+    obtained = {f for f, a in envelope.availability.items() if a is SourceAvailability.OBTAINED}
+    allowed = (fields.AGENT_FIELDS[agent] & obtained) - TEXT_ONLY_EXCLUDED
+    base = envelope.normalized.get("url", "")
+    base = base if isinstance(base, str) else ""
+    lines = [f"[{f}:L{i}] {t}" for f in sorted(allowed)
+             if isinstance(envelope.normalized.get(f), str)
+             for i, t in enumerate(lines_for(f, envelope.normalized[f], base))]
+    if not lines:
+        return 0
+    name, role = ROLES[agent]
+    return len(SYSTEM.format(name=name, role=role, max_findings=6)) + len("\n".join(lines))
+
+
+def estimated_tokens(agent: str, envelope) -> float:
+    n = prompt_chars(agent, envelope)
+    return n / 4.0 + OUTPUT_TOKENS_EST if n else 0.0
+
+
 class LLMSpecialists:
     """Factory with usage and grounding counters (read by run.run_case)."""
 

@@ -145,6 +145,12 @@ def selection_detail(
     weights = dict(cfg.trigger_weights) if cfg is not None else {}
     costs_cfg = dict(cfg.agent_costs) if cfg is not None else {}
     costs = {a: float(costs_cfg.get(a, 1.0)) for a in fields.AGENTS}
+    if cfg is not None and cfg.cost_model == "prompt_tokens":
+        from agents.llm import estimated_tokens
+        for a in ready:
+            costs[a] = round(estimated_tokens(a, envelope) / cfg.cost_scale, 4)
+    elif cfg is not None and cfg.cost_model != "unit":
+        raise ValueError(f"unknown cost model: {cfg.cost_model!r}")
     mu = cfg.mu if cfg is not None else 0.0
     budget = (agent_budget if agent_budget is not None
               else (cfg.budget.agent if cfg is not None else float("inf")))
