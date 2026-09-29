@@ -35,7 +35,7 @@ from pathlib import Path
 
 import pyarrow.parquet as pq
 
-from .fingerprint import UnionFind, fingerprints, host_of
+from .fingerprint import UnionFind, fingerprints, host_of, platform_suffix
 from .manifest import ManifestRow, post_cutoff_flags, summary, validate, write
 
 SOURCE = "phreshphish-v1.0.1"
@@ -91,7 +91,19 @@ def main() -> None:
     ap.add_argument("--cutoff", default=None,
                     help="dev/calib date cutoff D (YYYY-MM-DD); chosen automatically if omitted")
     ap.add_argument("--out", required=True)
+    ap.add_argument("--exclude-platform", action="store_true",
+                    help="drop platform-hosted rows (host under a Public Suffix List PRIVATE "
+                         "suffix, fingerprint.platform_suffix) from every split: in PhreshPhish "
+                         "platform hosting is ~only phishing, a label shortcut")
+    ap.add_argument("--keep-manifest", default=None,
+                    help="with --exclude-platform: keep every own-domain case this manifest "
+                         "already selected and draw replacements only for the dropped ones "
+                         "(uniform over the remaining own-domain candidates, own seed)")
     args = ap.parse_args()
+    kept_sha = set()
+    if args.keep_manifest:
+        kept_sha = {json.loads(l)["source_id"] for l in open(args.keep_manifest, encoding="utf-8")
+                    if l.strip()}
 
     log: Counter = Counter()
     out = Path(args.out)
@@ -191,7 +203,22 @@ def main() -> None:
                     pref = [r for r in rs if r["sha256"] in screened] or rs
                     cands.append(min(pref, key=lambda r: (r["date"], r["sha256"])))
             cands.sort(key=lambda r: r["sha256"])
-            if split == "dev":           # screened samples first, then random
+            if args.exclude_platform:
+                before = len(cands)
+                cands = [r for r in cands if not platform_suffix(host_of(r["url"]))]
+                log[f"{split}:{label}:platform_hosted_excluded"] = before - len(cands)
+            if args.exclude_platform and kept_sha:
+                # Keep the earlier sample's own-domain cases; draw only the shortfall,
+                # uniformly from the remaining candidates. Together this is a uniform
+                # sample from the own-domain pool (a uniform sample restricted to a
+                # subset is uniform on it), so earlier results on kept cases stay valid.
+                keep = [r for r in cands if r["sha256"] in kept_sha]
+                rest = [r for r in cands if r["sha256"] not in kept_sha]
+                refill = random.Random(f"{args.seed}:refill:{split}:{label}")
+                pick = keep + refill.sample(rest, max(0, min(len(rest), n_per[split] - len(keep))))
+                log[f"{split}:{label}:kept"] = len(keep)
+                log[f"{split}:{label}:refilled"] = len(pick) - len(keep)
+            elif split == "dev":           # screened samples first, then random
                 keep = [r for r in cands if r["sha256"] in screened]
                 rest = [r for r in cands if r["sha256"] not in screened]
                 pick = keep[:n_per[split]] + rng.sample(
