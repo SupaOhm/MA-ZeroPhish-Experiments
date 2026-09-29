@@ -37,8 +37,17 @@ def phase1and2(case_prefix, cfg=None):
         frozenset({"headless_browser"}), 100.0, 2,
     )
     ledger = BudgetLedger(CaseBudget(100, 100, 100))
+    # `withhold` from the config, as `run.py` does. Without it the helper
+    # silently ignored `Config.evidence_removal`, so no phase-level test could
+    # reach an arm's withholding behaviour at all. Every existing caller passes
+    # `None` or a config with an empty removal set, so this changes nothing they
+    # observe; it is what lets a test reconstruct a starved specialist from a
+    # shipped capture instead of needing a new fixture.
+    withhold = cfg.evidence_removal if cfg is not None else frozenset()
     envelope = normalize(
-        "o1", cap.case_id, acquire(plan, Replay(cap), ledger), None, cap.inapplicable
+        "o1", cap.case_id,
+        acquire(plan, Replay(cap, withhold=withhold), ledger),
+        None, cap.inapplicable,
     )
     dispatched = select(envelope, plan, cfg)
     records = run_phase2(envelope, plan, dispatched, make_reasoners(cap), ledger)

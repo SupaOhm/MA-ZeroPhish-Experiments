@@ -620,6 +620,52 @@ class TheFlagshipArmAtTheGate(unittest.TestCase):
         context = project_for_judge(after, moderate(after, envelope), envelope)
         self.assertNotIn(rogue.locator, {o.locator for o in context.observations})
 
+    def test_a_withheld_modality_also_starves_a_first_dispatch(self):
+        """The same `no_data` rule, on a second fixture built by withholding.
+
+        The test below reaches it through c8, whose Web Structure Agent is
+        dropped for cost and starved by the capture itself. This one reaches it
+        through `Config.evidence_removal` -- his Experiment 5 withholding, the
+        switch `run.py` already hands to `Replay` -- so the rule is pinned on a
+        capture that was not authored for it: withholding `page_content` and
+        `screenshot` on c5 leaves the Content Agent ready through
+        `brand_reference` and starved of both fields its modality requires.
+
+        It is worth a second fixture because c8's version of this condition is a
+        property of one authored capture, and a selection change can retire it:
+        the moment the trigger set reaches Web Structure in Phase 1, c8 stops
+        supplying a *first* dispatch at all. A condition reconstructed from the
+        withholding switch survives that, and exercises `evidence_removal`
+        through the phase-level helper besides.
+        """
+        from dataclasses import replace
+        from phases.moderator import collaborate
+
+        cfg = replace(
+            config.MAZEROPHISH,
+            evidence_removal=frozenset({"page_content", "screenshot"}),
+        )
+        _, envelope, records = phase1and2("c5", cfg)
+        before = next(r for r in records if r.agent == "content")
+        self.assertIs(before.status, Status.NOT_DISPATCHED)
+
+        reasoners, calls = self._counted("c5")
+        after, revised = collaborate(
+            records, envelope, reasoners, full_ledger(), tau=cfg.tau,
+            r_max_coll=cfg.r_max_coll, k=cfg.k, gate=cfg.gate,
+            collaboration=cfg.collaboration, return_revisions=True,
+        )
+        record = next(r for r in after if r.agent == "content")
+        self.assertEqual(calls, ["url", "web_structure", "content", "metadata"])
+        self.assertIs(record.status, Status.NO_DATA)
+        self.assertIsNone(record.preliminary_verdict)
+        # It examined the authorized field it did have and still reports
+        # `no_data`: readiness is any authorized field, `ran` needs a required
+        # one, and conflating the two manufactures coverage that was never there.
+        self.assertEqual(record.examined_fields, {"brand_reference"})
+        # A first dispatch is not a revision.
+        self.assertEqual(revised, frozenset())
+
     def test_ready_but_starved_first_dispatch_reports_no_data(self):
         from phases.moderator import collaborate
         from phases.judge import project_for_judge
