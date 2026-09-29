@@ -63,7 +63,7 @@ def acquire(
         reservation = ledger.reserve(BudgetPool.SHARED, ATTEMPT_COST, f"acquire:{field}")
         if reservation is None:
             break                      # budget exhausted; his third termination condition
-        result = replay.fetch(field)
+        result = replay.fetch(field, plan.object_id)
         ledger.charge(reservation, ATTEMPT_COST)   # charged whether or not it succeeded
         fetched.append(result)
     return tuple(fetched)

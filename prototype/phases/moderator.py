@@ -24,6 +24,10 @@ from contract.record import FindingRecord
 from contract.vocabulary import Direction, SourceAvailability, Status
 
 
+def _issue_kind(issue) -> str | None:
+    return issue.kind.value if issue is not None else None
+
+
 def _line(locator: str) -> str:
     """The cited line of a locator: `url:L0.1` (second finding on url:L0) -> `url:L0`."""
     return locator.split(".", 1)[0]
@@ -508,6 +512,7 @@ def collaborate(
     gate: str = "calibrated", collaboration: str = "targeted",
     return_revisions: bool = False, estimator=None, state_hook=None,
     reconciliation: str = "provenance", lineage_sink: dict | None = None,
+    dispatch_sink: list | None = None, costs: dict | None = None,
 ) -> tuple[FindingRecord, ...]:
     """Steps 4-5 -- targeted re-invocation under the gate, then termination.
 
@@ -567,13 +572,23 @@ def collaborate(
         for agent in (targets if collaboration == "full_debate" else targets[:k]):
             if agent in attempted:
                 continue
+            before = next((r.status for r in current if r.agent == agent), None)
+            # A FIRST dispatch of an initially unselected specialist costs what its
+            # initial dispatch would have (c_{i,g}); a revision costs one unit.
+            cost = ((costs or {}).get(agent, ATTEMPT_COST)
+                    if before is Status.NOT_DISPATCHED else ATTEMPT_COST)
             reservation = ledger.reserve(
-                BudgetPool.COLL, ATTEMPT_COST, f"round{round_index}:{agent}"
+                BudgetPool.COLL, cost, f"round{round_index}:{agent}"
             )
             if reservation is None:
+                if dispatch_sink is not None and before is Status.NOT_DISPATCHED:
+                    dispatch_sink.append({"agent": agent, "round": round_index,
+                                          "issue": _issue_kind(focus_of.get(agent)),
+                                          "before": before.value, "after": before.value,
+                                          "charged": 0.0, "outcome": "budget_refused"})
                 break
             items = reasoners[agent](envelope, focus_of.get(agent))
-            ledger.charge(reservation, ATTEMPT_COST)
+            ledger.charge(reservation, cost)
             attempted.add(agent)
             for n, record in enumerate(current):
                 if record.agent != agent:
@@ -583,6 +598,12 @@ def collaborate(
                     # initial validation, not ValidRev. No predecessor/citation
                     # requirement, and no locators marked as accepted revisions.
                     current[n], _ = initial_record(agent, items, envelope)
+                    if dispatch_sink is not None:
+                        dispatch_sink.append({"agent": agent, "round": round_index,
+                                              "issue": _issue_kind(focus_of.get(agent)),
+                                              "before": record.status.value,
+                                              "after": current[n].status.value,
+                                              "charged": cost, "outcome": "dispatched"})
                     break
                 # Rebuilt whole, from the record it supersedes. Copying the old
                 # verdict and basis left `v` not following from `H`, the

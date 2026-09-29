@@ -75,6 +75,7 @@ def run_phase2(
     reasoners: dict,
     ledger: BudgetLedger,
     return_rejections: bool = False,
+    costs: dict | None = None,
 ) -> tuple[FindingRecord, ...]:
     """His Phase 2 over the five specialists.
 
@@ -87,6 +88,10 @@ def run_phase2(
     to would re-validate as clean and an auditor re-running `validate` would be
     told nothing failed. The reason is therefore handed out from the point of
     rejection rather than reconstructed.
+
+    `costs` ({agent: c_{i,g}}, Config.agent_costs) is what each dispatch reserves
+    and is charged from the AGENT pool -- the same number selection budgeted with.
+    Default: ATTEMPT_COST per dispatch.
     """
     applicable = applicable_agents(plan)
     records = []
@@ -104,14 +109,15 @@ def run_phase2(
             )
             continue
 
-        reservation = ledger.reserve(BudgetPool.AGENT, ATTEMPT_COST, f"run:{agent}")
+        cost = (costs or {}).get(agent, ATTEMPT_COST)
+        reservation = ledger.reserve(BudgetPool.AGENT, cost, f"run:{agent}")
         if reservation is None:
             records.append(
                 FindingRecord(envelope.object_id, agent, Status.NOT_DISPATCHED, None)
             )
             continue
         items = reasoners[agent](envelope)
-        ledger.charge(reservation, ATTEMPT_COST)
+        ledger.charge(reservation, cost)
 
         record, validity = initial_record(agent, items, envelope)
         if not validity.is_valid:

@@ -186,14 +186,14 @@ class TheFlagshipArm(unittest.TestCase):
         return envelope, records
 
     def test_a_not_dispatched_agent_stays_in_the_coverage_denominator(self):
-        # c4 under MA-ZeroPhish: `web_structure` has trigger coverage 0.33 and
-        # `content` 0.0, so both are dropped for cost. Neither is inapplicable,
-        # so neither leaves the denominator -- an unexamined modality and an
-        # inapplicable one are different facts. With them excluded the fraction
-        # would read 1.0 and the Judge would call this case fully covered.
+        # c4 under MA-ZeroPhish: no structural trigger fires, so eq:specialist-
+        # selection keeps only the minimum-dispatch floor (URL) and the other
+        # three are dropped for cost. None is inapplicable, so none leaves the
+        # denominator -- an unexamined modality and an inapplicable one are
+        # different facts. With them excluded the fraction would read 1.0.
         envelope, records = self._records("c4", config.MAZEROPHISH)
         dropped = {r.agent for r in records if r.status is Status.NOT_DISPATCHED}
-        self.assertEqual(dropped, {"web_structure", "content"})
+        self.assertEqual(dropped, {"web_structure", "content", "metadata"})
         ctx = phases.project_for_judge(
             records, phases.moderate(records, envelope), envelope
         )
@@ -201,8 +201,8 @@ class TheFlagshipArm(unittest.TestCase):
             set(ctx.coverage.applicable),
             {"url", "web_structure", "content", "metadata"},
         )
-        self.assertEqual(set(ctx.coverage.analyzed), {"url", "metadata"})
-        self.assertEqual(coverage_fraction(ctx.coverage), 0.5)
+        self.assertEqual(set(ctx.coverage.analyzed), {"url"})
+        self.assertEqual(coverage_fraction(ctx.coverage), 0.25)
         # `message` is inapplicable on this URL submission and is the contrast:
         # it is `skipped` and it is **not** in the denominator.
         self.assertIs(
@@ -215,7 +215,9 @@ class TheFlagshipArm(unittest.TestCase):
         # `enough` holds; the cause therefore reports whether `covered` held.
         # `>= 0.5` gives `undirected`, and `> 0.5` would give
         # `insufficient_support` on the same evidence.
-        ctx = context_for("c4", cfg=config.MAZEROPHISH)
+        # c4 under the fixed all-applicable arm: URL and Metadata analyzed of
+        # four applicable modalities.
+        ctx = context_for("c4", cfg=None)
         self.assertEqual(coverage_fraction(ctx.coverage), 0.5)
         self.assertEqual(len({o.declared_field for o in ctx.observations}), 2)
         _, feedback = phases.adjudicate(ctx, "o1")
@@ -242,12 +244,13 @@ class TheFlagshipArm(unittest.TestCase):
         # No shipped capture reaches sufficient support *and* sub-threshold
         # coverage on its own -- c7 yields one observation -- so the two contexts
         # below pair c1's flagship observations with two coverage reports this
-        # arm really produced, c4's 0.5 and c7's 0.25. Nothing is hand-built: the
+        # arms really produced, c4's 0.5 (all-applicable) and c7's 0.25
+        # (MA-ZeroPhish). Nothing is hand-built: the
         # only difference between the two calls is the coverage report, which is
         # what isolates the conjunct.
-        supported = context_for("c1", cfg=config.MAZEROPHISH).observations
+        supported = context_for("c1", cfg=None).observations
         self.assertGreaterEqual(len({o.declared_field for o in supported}), 2)
-        at_half = context_for("c4", cfg=config.MAZEROPHISH).coverage
+        at_half = context_for("c4", cfg=None).coverage
         below = context_for("c7", cfg=config.MAZEROPHISH).coverage
         self.assertEqual(
             (coverage_fraction(at_half), coverage_fraction(below)), (0.5, 0.25)

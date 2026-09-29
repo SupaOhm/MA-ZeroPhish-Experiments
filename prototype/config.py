@@ -35,6 +35,11 @@ class Config:
     # every single-field agent, which deletes the SMS/Email Agent on every
     # message submission because its modality has exactly one field.
     mu: float = 0.5
+    # eq:specialist-selection: w_theta per trigger type and c_{i,g} per specialist
+    # (same units as the AGENT budget pool, which run_phase2 charges). Unlisted = 1.0.
+    # Frozen from development data before any test run (experiments/exp2_selection).
+    trigger_weights: tuple[tuple[str, float], ...] = ()
+    agent_costs: tuple[tuple[str, float], ...] = ()
     budget: CaseBudget = field(default_factory=lambda: CaseBudget(100.0, 100.0, 20.0))
     evidence_removal: frozenset[str] = frozenset()
     model_id: str = "fake-deterministic"

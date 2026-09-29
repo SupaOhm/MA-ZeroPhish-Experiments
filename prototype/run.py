@@ -12,6 +12,7 @@ import time
 from agents.fake import make_reasoners
 from capture.replay import Replay
 from config import Config
+from contract.budget import BudgetPool
 from contract.submission import AcquisitionPlan, Submission, SubmissionType
 from contract.vocabulary import Status
 from ledger import Ledger
@@ -20,7 +21,7 @@ from phases.acquire import BudgetLedger, acquire
 from phases.judge import adjudicate, coverage_fraction, project_for_judge
 from phases.moderator import collaborate, moderate
 from phases.normalize import normalize
-from phases.select import select
+from phases.select import selection_detail
 from phases.specialist import band_for, failed_conjuncts, run_phase2
 
 
@@ -83,10 +84,27 @@ def run_case(cfg: Config, capture, ledger: Ledger, adjudicator=None, estimator=N
             capture.inapplicable,
         )
 
-        dispatched = select(envelope, plan, cfg)
-        records, rejections = run_phase2(
-            envelope, plan, dispatched, reasoners, budget, return_rejections=True
+        costs = dict(cfg.agent_costs)
+        detail = selection_detail(envelope, plan, cfg,
+                                  agent_budget=budget.remaining(BudgetPool.AGENT))
+        dispatched = detail.chosen
+        # Phase 1 Step 4, recorded BEFORE Phase 2 so the initial vector is never
+        # inferred from final records (Experiment 2 needs both, separately).
+        ledger.event(
+            "selection", capture.case_id, object_id=ref.object_id,
+            parent_object_id=ref.parent_object_id,
+            availability={f: a.value for f, a in sorted(envelope.availability.items())},
+            acquisition_requests=len(fetched), **detail.as_dict(),
         )
+        records, rejections = run_phase2(
+            envelope, plan, dispatched, reasoners, budget, return_rejections=True,
+            costs=costs,
+        )
+        executed = sorted(r.agent for r in records
+                          if r.status not in (Status.SKIPPED, Status.NOT_DISPATCHED))
+        if executed != sorted(dispatched):
+            ledger.event("dispatch_shortfall", capture.case_id, object_id=ref.object_id,
+                         requested=sorted(dispatched), executed=executed)
         # **Written here, before `collaborate`, and that position is the point.**
         # His Step 4: "rejected records retain an auditable `error` status." The
         # `record` events below are written after collaboration, and a rejected
@@ -129,13 +147,17 @@ def run_case(cfg: Config, capture, ledger: Ledger, adjudicator=None, estimator=N
                     "p_hat": p_hat,
                     "judge_verdict": dec.verdict.value, "judge_cause": fb.notes,
                 })
+        later: list[dict] = []
         records, accepted = collaborate(
             records, envelope, reasoners, budget,
             tau=cfg.tau, r_max_coll=cfg.r_max_coll, k=cfg.k,
             gate=cfg.gate, collaboration=cfg.collaboration,
             return_revisions=True, estimator=estimator, state_hook=hook,
             reconciliation=cfg.reconciliation, lineage_sink=lineage,
+            dispatch_sink=later, costs=costs,
         )
+        for d in later:
+            ledger.event("later_dispatch", capture.case_id, object_id=ref.object_id, **d)
         issues = moderate(records, envelope)
         context = project_for_judge(
             records, issues, envelope, cfg.judge_input, cfg.reconciliation, accepted,

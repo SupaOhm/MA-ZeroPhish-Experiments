@@ -304,8 +304,19 @@ class TheFlagshipArmAtPhaseLevel(unittest.TestCase):
     no phase-level test ever ran MA-ZeroPhish's own selection setting."""
 
     def test_the_sms_email_agent_is_dispatched_on_a_message(self):
+        # On the message's own object (the classifier gives it message_body only)
+        # the SMS/Email Agent is the one ready specialist, so the minimum-dispatch
+        # floor selects it under MA-ZeroPhish; selection never deletes the modality.
         for case in ("c2", "c6"):
-            _, _, records = phase1and2(case, config.MAZEROPHISH)
+            cap = next(c for c in load_captures(CAPTURE_DIR) if c.case_id.startswith(case))
+            plan = AcquisitionPlan("o1", frozenset({"message_body"}),
+                                   frozenset({"headless_browser"}), 100.0, 2)
+            ledger = BudgetLedger(CaseBudget(100, 100, 100))
+            envelope = normalize("o1", cap.case_id, acquire(plan, Replay(cap), ledger),
+                                 None, cap.inapplicable)
+            dispatched = select(envelope, plan, config.MAZEROPHISH)
+            self.assertEqual(dispatched, frozenset({"message"}), case)
+            records = run_phase2(envelope, plan, dispatched, make_reasoners(cap), ledger)
             message = next(r for r in records if r.agent == "message")
             self.assertIs(message.status, Status.RAN, case)
 
