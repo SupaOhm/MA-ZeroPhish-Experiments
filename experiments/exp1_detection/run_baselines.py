@@ -94,10 +94,13 @@ def main() -> None:
                 done.add(e["case_id"])
 
     rows = [r for r in select(load_rows(data, args.split), args.limit, args.per_label)]
-    todo, skipped = [], 0
+    todo, skipped, no_capture = [], 0, 0
     for r in rows:
-        cap = json.loads((data / "captures" / args.split / f"{r['case_id']}.json")
-                         .read_text(encoding="utf-8"))
+        cp = data / "captures" / args.split / f"{r['case_id']}.json"
+        if not cp.exists():           # not built yet (e.g. before a rebuild): counted, not run
+            no_capture += 1
+            continue
+        cap = json.loads(cp.read_text(encoding="utf-8"))
         art = {a["field"]: a["content"] for a in cap["artifacts"]}
         if "html" not in art or "url" not in art:
             skipped += 1
@@ -105,7 +108,7 @@ def main() -> None:
         if r["case_id"] not in done:
             todo.append((r["case_id"], art["url"], art["html"]))
     print(f"{args.arm} on {data.name}/{args.split}: {len(rows)} selected, {len(done)} already done, "
-          f"{len(todo)} to run, {skipped} non-webpage skipped", flush=True)
+          f"{len(todo)} to run, {skipped} non-webpage skipped, {no_capture} without capture", flush=True)
 
     lock, stop = threading.Lock(), threading.Event()
     n_ok = n_fail = 0

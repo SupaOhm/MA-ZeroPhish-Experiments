@@ -128,6 +128,18 @@ class GroundingTests(unittest.TestCase):
         self.assertEqual(reason(env), ())
         self.assertEqual(spec.grounding()["dropped_bad_line"], 1)
 
+    def test_echoed_full_line_resolves_to_its_id_but_stays_grounded(self):
+        # GPT-4o-mini sometimes puts the whole "[id] text" line in the line field.
+        model = Scripted({"url:L0": [
+            finding("[url:L0] http://account-verify.secure-login.example.test/signin", "secure-login"),
+            finding("[url:L0] whatever", "paypal.com"),                  # quote not in the line
+            finding("[html:L0] form 0: method=get", "collect.example.test")]})   # a peer's line
+        spec, reason, env = self.reasoner("url", model)
+        self.assertEqual([i.locator for i in reason(env)], ["url:L0"])
+        g = spec.grounding()
+        self.assertEqual((g["dropped_bad_quote"], g["dropped_bad_line"]), (1, 1))
+        self.assertGreaterEqual(g["resolved_echoed_line"], 1)
+
     def test_repeated_line_gets_distinct_locators(self):
         model = Scripted({"url:L0": [finding("url:L0", "account-verify"),
                                      finding("url:L0", "signin", "neutral", "marginal")]})

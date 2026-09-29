@@ -39,6 +39,7 @@ ROLES = {
                  "infrastructure are NOT standalone indicators of phishing or benignity."),
 }
 TEXT_ONLY_EXCLUDED = frozenset({"screenshot"})
+_LEADING_ID = re.compile(r"^\[?\s*([A-Za-z_]+:L\d+(?:\.\d+)?|L\d+)\s*\]?")
 
 SYSTEM = """You are the {name} of a phishing-detection framework. Your analytical
 responsibility: {role}
@@ -110,7 +111,7 @@ class LLMSpecialists:
         self.model, self.max_findings, self.max_tokens = model, max_findings, max_tokens
         self.calls = self.input_tokens = self.output_tokens = 0
         self.findings_returned = self.dropped_bad_line = self.dropped_bad_quote = 0
-        self.parse_failures = self.resolved_bare_line = 0
+        self.parse_failures = self.resolved_bare_line = self.resolved_echoed_line = 0
 
     def _lines(self, envelope) -> dict[str, list[tuple[str, str]]]:
         base = envelope.normalized.get("url", "") if isinstance(envelope.normalized.get("url"), str) else ""
@@ -163,7 +164,14 @@ class LLMSpecialists:
                 if not isinstance(fnd, dict):
                     continue
                 self.findings_returned += 1
-                lid = str(fnd.get("line", "")).strip().strip("[]")
+                raw_line = str(fnd.get("line", "")).strip()
+                # Some models echo the whole evidence line ("[dom:L1] script src=...") in the
+                # line field: take the id from its leading token. The quote must still occur
+                # verbatim in THAT line, so grounding is exactly as strict as before.
+                m = _LEADING_ID.match(raw_line)
+                lid = m.group(1) if m else raw_line.strip("[]")
+                if m and raw_line.strip("[] ") != lid:
+                    self.resolved_echoed_line += 1
                 quote = _norm(str(fnd.get("quote", ""))).strip("…").strip()
                 if lid not in mine and re.fullmatch(r"L\d+", lid):
                     # Bare "L3": resolve only when exactly one of THIS agent's L3 lines
@@ -206,4 +214,5 @@ class LLMSpecialists:
         return {"findings_returned": n, "dropped_bad_line": self.dropped_bad_line,
                 "dropped_bad_quote": self.dropped_bad_quote, "parse_failures": self.parse_failures,
                 "resolved_bare_line": self.resolved_bare_line,
+                "resolved_echoed_line": self.resolved_echoed_line,
                 "ungrounded_rate": (self.dropped_bad_line + self.dropped_bad_quote) / n if n else None}
