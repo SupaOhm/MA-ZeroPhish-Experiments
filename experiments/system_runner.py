@@ -94,6 +94,8 @@ def common_args(ap: argparse.ArgumentParser) -> None:
     ap.add_argument("--model", required=True)
     ap.add_argument("--env", default=None)
     ap.add_argument("--key-env", default=None)
+    ap.add_argument("--extra", default="", help='JSON of extra request params, e.g. OpenRouter '
+                    '{"provider": {"order": ["openai"], "allow_fallbacks": false}}')
     ap.add_argument("--min-interval", type=float, default=4.0)
     ap.add_argument("--dataset", default="phreshphish")
     ap.add_argument("--split", default="test")
@@ -109,7 +111,8 @@ def run_grid(arms: dict, case_paths: list[Path], out_dir: Path, tag: str, args,
              estimator=None, meta: dict | None = None) -> None:
     """arms: {arm_name: Config}. Each arm writes <tag>__<arm>.jsonl in out_dir."""
     out_dir.mkdir(parents=True, exist_ok=True)
-    model = ChatModel(args.model, env_path=args.env, cache_dir=args.cache,
+    extra = json.loads(args.extra) if getattr(args, "extra", "") else {}
+    model = ChatModel(args.model, env_path=args.env, cache_dir=args.cache, extra=extra,
                       min_interval=args.min_interval, key_env=args.key_env)
     k, n = (int(x) for x in getattr(args, "shard", "0/1").split("/"))
     if n > 1:
@@ -122,7 +125,7 @@ def run_grid(arms: dict, case_paths: list[Path], out_dir: Path, tag: str, args,
     print(f"{tag}: {len(case_paths)} cases x {len(arms)} arms, {len(todo)} (case, arm) to run",
           flush=True)
     meta = {"data_version": args.data_version, "dataset": args.dataset, "split": args.split,
-            **(meta or {})}
+            "model_extra": extra, **(meta or {})}
     n_ok = n_fail = 0
     for path, arm in todo:
         cfg = replace(arms[arm], name=arm)

@@ -55,6 +55,8 @@ def main() -> None:
     ap.add_argument("--model", required=True)
     ap.add_argument("--env", default=None)
     ap.add_argument("--key-env", default=None)
+    ap.add_argument("--extra", default="", help="JSON of extra request params (e.g. OpenRouter provider pin)")
+    ap.add_argument("--data-version", default=None)
     ap.add_argument("--trigger-cover", default="all_fields", choices=("any_field", "all_fields"))
     ap.add_argument("--min-interval", type=float, default=4.0)
     ap.add_argument("--seed", type=int, default=41)
@@ -69,7 +71,8 @@ def main() -> None:
 
     out = Path(args.out)
     out.mkdir(parents=True, exist_ok=True)
-    model = ChatModel(args.model, env_path=args.env, cache_dir=args.cache,
+    extra = json.loads(args.extra) if args.extra else {}
+    model = ChatModel(args.model, env_path=args.env, cache_dir=args.cache, extra=extra,
                       min_interval=args.min_interval, key_env=args.key_env)
     cfg = replace(frozen_system(args.model, args.trigger_cover), gate="always")
     tag = f"calib_states__{args.trigger_cover}" + (f"__shard{k}of{n}" if n > 1 else "")
@@ -115,7 +118,8 @@ def main() -> None:
         with open(scratch, encoding="utf-8") as f:
             events = [json.loads(l) for l in f if l.strip()]
         os.unlink(scratch)
-        meta = {"model_id": args.model, "key_env": model.key_env, "split": args.split,
+        meta = {"model_id": args.model, "model_extra": extra, "data_version": args.data_version,
+                "key_env": model.key_env, "split": args.split,
                 "trigger_cover": args.trigger_cover, "collection_gate": "always"}
         with states_path.open("a", encoding="utf-8") as f:
             for s in sink:
