@@ -36,6 +36,20 @@ def check_status(status: int, headers: dict, body: bytes) -> dict:
         try:
             retry_after = float(lowered["retry-after"])
         except (KeyError, ValueError):
-            pass
+            if status == 429:
+                retry_after = _retry_delay(text)
         raise Retryable(reason, status, retry_after)
     raise Fatal(reason, status)
+
+
+def _retry_delay(text: str) -> float | None:
+    """Gemini's 429 body names the wait: error.details[].retryDelay, e.g. "30s"."""
+    try:
+        details = json.loads(text)["error"]["details"]
+        for detail in details:
+            if str(detail.get("@type", "")).endswith("RetryInfo"):
+                delay = str(detail["retryDelay"])
+                return float(delay[:-1] if delay.endswith("s") else delay)
+    except (ValueError, KeyError, TypeError, AttributeError):
+        return None
+    return None

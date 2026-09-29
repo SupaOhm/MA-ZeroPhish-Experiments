@@ -72,6 +72,27 @@ class CheckStatus(unittest.TestCase):
             check_status(429, {"Retry-After": "12"}, b"slow down")
         self.assertEqual(ctx.exception.retry_after, 12.0)
 
+    def test_429_without_header_reads_gemini_retry_delay(self):
+        body = json.dumps({"error": {"code": 429, "details": [
+            {"@type": "type.googleapis.com/google.rpc.QuotaFailure"},
+            {"@type": "type.googleapis.com/google.rpc.RetryInfo", "retryDelay": "30s"},
+        ]}}).encode()
+        with self.assertRaises(Retryable) as ctx:
+            check_status(429, {}, body)
+        self.assertEqual(ctx.exception.retry_after, 30.0)
+
+    def test_retry_after_header_wins_over_body(self):
+        body = json.dumps({"error": {"details": [
+            {"@type": "type.googleapis.com/google.rpc.RetryInfo", "retryDelay": "30s"}]}}).encode()
+        with self.assertRaises(Retryable) as ctx:
+            check_status(429, {"Retry-After": "4"}, body)
+        self.assertEqual(ctx.exception.retry_after, 4.0)
+
+    def test_429_with_unparseable_body_has_no_retry_after(self):
+        with self.assertRaises(Retryable) as ctx:
+            check_status(429, {}, b"slow down")
+        self.assertIsNone(ctx.exception.retry_after)
+
     def test_503_is_retryable(self):
         with self.assertRaises(Retryable):
             check_status(503, {}, b"")
@@ -168,6 +189,20 @@ class Gemini(unittest.TestCase):
         self.assertEqual(config["temperature"], 0.0)
         self.assertEqual(config["responseMimeType"], "application/json")
         self.assertEqual(config["responseSchema"]["type"], "OBJECT")
+
+    def test_safety_filters_are_off_by_default(self):
+        transport, sent = transport_returning(200, GEMINI_OK)
+        self.client(transport).generate("s", "u")
+        settings = sent[0]["body"]["safetySettings"]
+        self.assertEqual(
+            {s["category"] for s in settings},
+            {"HARM_CATEGORY_HARASSMENT", "HARM_CATEGORY_HATE_SPEECH",
+             "HARM_CATEGORY_SEXUALLY_EXPLICIT", "HARM_CATEGORY_DANGEROUS_CONTENT"},
+        )
+        self.assertEqual({s["threshold"] for s in settings}, {"BLOCK_NONE"})
+        transport, sent = transport_returning(200, GEMINI_OK)
+        self.client(transport, safety_off=False).generate("s", "u")
+        self.assertNotIn("safetySettings", sent[0]["body"])
 
     def test_no_system_role_folds_system_into_user(self):
         transport, sent = transport_returning(200, GEMINI_OK)

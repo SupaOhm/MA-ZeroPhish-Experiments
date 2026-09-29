@@ -71,6 +71,22 @@ class Retry(unittest.TestCase):
         client.generate("s", "u", tag=TAG)
         self.assertEqual(delays, [7.0])
 
+    def test_every_retry_delay_is_capped(self):
+        delays = []
+        client = RecordedClient(
+            scripted(Retryable("http_429", 429, retry_after=3600.0), {"ok": True}),
+            sleep=delays.append,
+        )
+        client.generate("s", "u", tag=TAG)
+        self.assertEqual(delays, [120])
+        delays = []
+        client = RecordedClient(
+            scripted(Retryable("http_503", 503), {"ok": True}),
+            sleep=delays.append, backoff_s=500.0, max_retry_after_s=10.0,
+        )
+        client.generate("s", "u", tag=TAG)
+        self.assertEqual(delays, [10.0])
+
     def test_unparseable_text_is_retried(self):
         client = RecordedClient(scripted("not json", {"ok": True}))
         self.assertEqual(client.generate("s", "u", tag=TAG).parsed, {"ok": True})

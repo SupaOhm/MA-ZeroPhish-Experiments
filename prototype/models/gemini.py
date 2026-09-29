@@ -19,6 +19,15 @@ BLOCKING_FINISH = frozenset(
     {"SAFETY", "PROHIBITED_CONTENT", "BLOCKLIST", "SPII", "RECITATION"}
 )
 _KEPT_KEYS = ("enum", "required", "description", "minimum", "maximum")
+# The evidence is phishing content, which trips these filters. Category and
+# threshold names follow the v1beta docs; confirm them in the first smoke run
+# (a rejected name is an http_400, a blocked reply a `blocked:` failure).
+SAFETY_CATEGORIES = (
+    "HARM_CATEGORY_HARASSMENT",
+    "HARM_CATEGORY_HATE_SPEECH",
+    "HARM_CATEGORY_SEXUALLY_EXPLICIT",
+    "HARM_CATEGORY_DANGEROUS_CONTENT",
+)
 
 
 def to_gemini_schema(schema: dict) -> dict:
@@ -40,9 +49,10 @@ class GeminiClient(BaseClient):
 
     def __init__(
         self, model, *, api_key=None, structured=True, system_role=True,
-        temperature=0.0, timeout_s=300.0, transport=http_post, **kw,
+        temperature=0.0, timeout_s=300.0, transport=http_post, safety_off=True, **kw,
     ):
         super().__init__(model, **kw)
+        self.safety_off = safety_off
         self._key = api_key if api_key is not None else os.environ.get("GEMINI_API_KEY", "")
         if not self._key:
             raise ValueError("GEMINI_API_KEY is not set")
@@ -66,6 +76,11 @@ class GeminiClient(BaseClient):
         }
         if self.system_role:
             body["system_instruction"] = {"parts": [{"text": system}]}
+        if self.safety_off:
+            body["safetySettings"] = [
+                {"category": category, "threshold": "BLOCK_NONE"}
+                for category in SAFETY_CATEGORIES
+            ]
         if self.structured and schema is not None:
             body["generationConfig"]["responseMimeType"] = "application/json"
             body["generationConfig"]["responseSchema"] = to_gemini_schema(schema)

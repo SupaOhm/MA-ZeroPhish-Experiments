@@ -126,6 +126,7 @@ class BaseClient:
         max_attempts: int = 4,
         min_interval_s: float = 0.0,
         backoff_s: float = 2.0,
+        max_retry_after_s: float = 120.0,
         sleep=time.sleep,
         clock=time.monotonic,
     ):
@@ -134,6 +135,7 @@ class BaseClient:
         self.max_attempts = max_attempts
         self.min_interval_s = min_interval_s
         self.backoff_s = backoff_s
+        self.max_retry_after_s = max_retry_after_s
         self.sleep = sleep
         self.clock = clock
         self.usage = Usage()
@@ -202,9 +204,13 @@ class BaseClient:
         self._last_start = self.clock()
 
     def _delay(self, attempt: int, error: Retryable) -> float:
+        # Capped: a provider asking for an hour stalls the run rather than
+        # failing the case, and the cap bounds that stall.
         if error.retry_after is not None:
-            return error.retry_after
-        return self.backoff_s * 2 ** (attempt - 1) * (1 + 0.25 * random.random())
+            delay = error.retry_after
+        else:
+            delay = self.backoff_s * 2 ** (attempt - 1) * (1 + 0.25 * random.random())
+        return min(delay, self.max_retry_after_s)
 
     def _log(self, system, user, images, tag, attempt, response, error):
         if self.call_log is None:

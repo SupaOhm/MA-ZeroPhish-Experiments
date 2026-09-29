@@ -176,6 +176,30 @@ class Runner(unittest.TestCase):
         self.assertTrue(invocation["repo_dirty"])
         self.assertIn("WARNING", err.getvalue())
 
+    def test_blocked_failures_are_counted(self):
+        blocked = lambda tag: Fatal("blocked: SAFETY") if tag["case_id"] == "syn-msg-002" else None
+        invocation = run_corpus.run(args(self.dataset, self.output),
+                                    client=RecordedClient(grounded_responder(fail=blocked)))
+        stats = invocation["arms"]["mazerophish"]
+        self.assertEqual(stats["failure_events"], 1)
+        self.assertEqual(stats["blocked_failures"], 1)
+
+    def test_backoff_and_retry_cap_reach_the_client(self):
+        made = {}
+
+        def fake_make_client(provider, model, **kw):
+            made.update(kw)
+            return RecordedClient(grounded_responder(), model=model)
+
+        with mock.patch.object(run_corpus, "make_client", fake_make_client):
+            run_corpus.run(args(self.dataset, self.output, "--backoff", "7.5",
+                                "--max-retry-after", "60"))
+        self.assertEqual((made["backoff_s"], made["max_retry_after_s"]), (7.5, 60.0))
+        defaults = run_corpus.parse_args(["--data", "d", "--split", "dev", "--arms", "a",
+                                          "--provider", "gemini", "--model", "m",
+                                          "--output", "o"])
+        self.assertEqual((defaults.backoff, defaults.max_retry_after), (5.0, 120.0))
+
     def test_provenance_comes_from_the_client(self):
         run_corpus.run(args(self.dataset, self.output), client=RecordedClient(grounded_responder()))
         events = read(str(self.output / "mazerophish.jsonl"))

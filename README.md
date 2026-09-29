@@ -91,7 +91,16 @@ python3 -B -m experiments.runner.run_corpus \
 - Start with a small `--limit` on `dev` to confirm the provider accepts the
   request format. Add `--no-structured` / `--no-system-role` if the model rejects
   JSON-schema mode or system instructions, and `--min-interval` for free-tier
-  rate limits.
+  rate limits. Retries back off from `--backoff` seconds (default 5) and honour a
+  429's `Retry-After` header or Gemini's `retryDelay` body, every wait capped at
+  `--max-retry-after` (default 120).
+- Gemini requests set `safetySettings` to `BLOCK_NONE` for the four adjustable
+  harm categories, because the evidence is phishing content. Confirm in the smoke
+  run that the API accepts those names; `run.json` counts `blocked_failures`
+  (failures whose reason starts with `blocked:`) per arm.
+- Quotes must match the raw field text (whitespace collapsed); HTML entities
+  such as `&amp;` are not decoded. Watch the web_structure rejection rate
+  (`rejections_by_agent` in `run.json`) on the dev smoke run.
 - Output: `<arm>.jsonl` ledgers, `calls.jsonl` (every attempt, raw) and `run.json`.
   A failed call writes a `failure` event and no decision; `--resume` re-attempts it.
 - `--resume` refuses to continue a run with a different provider, model, split,

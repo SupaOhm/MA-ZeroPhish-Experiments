@@ -61,6 +61,9 @@ def parse_args(argv=None):
     ap.add_argument("--field-char-limit", type=int, default=12000)
     ap.add_argument("--min-interval", type=float, default=0.0, help="seconds between calls")
     ap.add_argument("--max-attempts", type=int, default=4)
+    ap.add_argument("--backoff", type=float, default=5.0, help="base retry backoff, seconds")
+    ap.add_argument("--max-retry-after", type=float, default=120.0,
+                    help="cap on any single retry wait, seconds")
     ap.add_argument("--no-structured", action="store_true", help="no provider JSON schema mode")
     ap.add_argument("--no-system-role", action="store_true", help="fold the system prompt into the user turn")
     return ap.parse_args(argv)
@@ -88,7 +91,7 @@ def decided_cases(path: Path, repeat: int) -> set:
 
 def ledger_stats(path: Path, repeat: int) -> dict:
     executed, rejected, verdicts = Counter(), Counter(), Counter()
-    failures = invalid = repairs = input_tokens = output_tokens = 0
+    failures = blocked = invalid = repairs = input_tokens = output_tokens = 0
     for e in read(str(path)):
         if e.get("repeat", 0) != repeat:
             continue
@@ -98,6 +101,7 @@ def ledger_stats(path: Path, repeat: int) -> dict:
             rejected[e["agent"]] += 1
         elif e["kind"] == "failure":
             failures += 1
+            blocked += str(e.get("reason", "")).startswith("blocked:")
         elif e["kind"] == "decision":
             input_tokens += e.get("input_tokens", 0)
             output_tokens += e.get("output_tokens", 0)
@@ -108,6 +112,7 @@ def ledger_stats(path: Path, repeat: int) -> dict:
     return {
         "parent_verdicts": dict(verdicts),
         "failure_events": failures,
+        "blocked_failures": blocked,
         "executed_by_agent": dict(executed),
         "rejections_by_agent": dict(rejected),
         "judge_invalid_citations": invalid,
@@ -200,6 +205,7 @@ def run(args, client=None) -> dict:
             client = make_client(
                 args.provider, args.model,
                 max_attempts=args.max_attempts, min_interval_s=args.min_interval,
+                backoff_s=args.backoff, max_retry_after_s=args.max_retry_after,
                 structured=not args.no_structured, system_role=not args.no_system_role,
             )
         except ValueError as exc:

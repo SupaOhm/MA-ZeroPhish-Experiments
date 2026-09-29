@@ -12,6 +12,11 @@ that cannot resolve, and the common validator rejects the whole record, as his
 eq:record-validity requires. A reply of the wrong shape is a failed call
 (`ModelCallFailed`), re-run rather than scored.
 
+Quotes must match the field text as shown, which is the raw field text with
+whitespace collapsed: HTML entities such as `&amp;` are **not** decoded, so a
+model that quotes the rendered character does not ground. Watch the
+web_structure rejection rate on the dev smoke run for this.
+
 A collaboration re-invocation passes a `RevisionRequest` (contract/issues.py).
 A newly selected specialist (`initial`) gets the initial prompt, tagged
 `initial:collaboration`. Otherwise the revision instructions are added and the
