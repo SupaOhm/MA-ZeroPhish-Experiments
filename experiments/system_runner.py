@@ -125,12 +125,19 @@ def run_grid(arms: dict, case_paths: list[Path], out_dir: Path, tag: str, args,
     model = ChatModel(args.model, env_path=args.env, cache_dir=args.cache, extra=extra,
                       min_interval=args.min_interval, key_env=args.key_env)
     k, n = (int(x) for x in getattr(args, "shard", "0/1").split("/"))
+    base = tag
     if n > 1:
         case_paths, tag = case_paths[k::n], f"{tag}__shard{k}of{n}"
     ledgers = {a: out_dir / f"{tag}__{a}.jsonl" for a in arms}
     failures = out_dir / f"{tag}.failures.jsonl"
-    done = {a: ({json.loads(l)["case_id"] for l in p.open(encoding="utf-8") if '"decision"' in l}
-                if p.exists() else set()) for a, p in ledgers.items()}
+    # Finished (arm, case) pairs across EVERY ledger of this run (any shard count), so a
+    # re-shard or a resume never runs a pair twice.
+    done = {a: set() for a in arms}
+    for a in arms:
+        for lp in {out_dir / f"{base}__{a}.jsonl", *out_dir.glob(f"{base}__shard*of*__{a}.jsonl")}:
+            if lp.exists():
+                done[a] |= {json.loads(l)["case_id"] for l in lp.open(encoding="utf-8")
+                            if '"decision"' in l}
     todo = [(c, a) for c in case_paths for a in arms if c.stem not in done[a]]
     print(f"{tag}: {len(case_paths)} cases x {len(arms)} arms, {len(todo)} (case, arm) to run",
           flush=True)

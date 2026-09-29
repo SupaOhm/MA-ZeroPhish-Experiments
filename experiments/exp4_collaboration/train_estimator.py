@@ -39,8 +39,16 @@ def main() -> None:
 
     man = {json.loads(l)["case_id"]: json.loads(l)
            for l in open(args.manifest, encoding="utf-8") if l.strip()}
-    states = [json.loads(l) for path in args.states for l in open(path, encoding="utf-8")
-              if l.strip()]
+    paths = [p for p in args.states if not p.endswith("__ledger.jsonl")]
+    raw = [json.loads(l) for path in paths for l in open(path, encoding="utf-8") if l.strip()]
+    seen, states = set(), []
+    for s in raw:                      # one state per (case, object, round), whatever the file
+        key = (s["case_id"], s.get("object_id"), s.get("round"))
+        if key not in seen:
+            seen.add(key)
+            states.append(s)
+    if len(states) < len(raw):
+        print(f"note: dropped {len(raw) - len(states)} duplicate states")
     states = [s for s in states if not s.get("parent_object_id")]
     models = sorted({str(s.get("model_id")) for s in states})
     if len(models) != 1:

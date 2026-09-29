@@ -180,11 +180,23 @@ class ChatModel:
             if status >= 500:
                 time.sleep(min(60, 2 ** attempt * 2))
                 continue
+            if status == 402:
+                # OpenRouter: credits exhausted / spend limit reached. Stop the run (resumable),
+                # exactly like a daily quota -- never fail case after case.
+                raise QuotaExhausted(f"HTTP 402 (credits/spend limit): {text[:300]}")
             if status != 200:
                 raise APIError(f"HTTP {status}: {text[:400]}")
+            try:
+                payload = json.loads(text)
+            except ValueError:
+                raise APIError(f"HTTP 200 with non-JSON body: {text[:200]}")
+            if payload.get("error") or not payload.get("choices"):
+                # A 200 carrying an error / no choices is a transport failure, not an answer:
+                # never cached, never scored.
+                raise APIError(f"HTTP 200 without an answer: {str(payload.get('error') or text)[:300]}")
             rec = {"request_sha": sha, "spec": self.spec, "model": self.model, "extra": self.extra,
                    "timestamp": time.strftime("%Y-%m-%dT%H:%M:%S%z"), "latency_s": latency,
-                   "request": body, "response": json.loads(text)}
+                   "request": body, "response": payload}
             path.write_text(json.dumps(rec, ensure_ascii=False, indent=1), encoding="utf-8")
             return self._result(rec, cached=False)
         raise APIError("gave up after repeated 429/5xx/network errors")

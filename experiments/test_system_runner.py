@@ -86,5 +86,22 @@ class SystemRunnerTests(unittest.TestCase):
             self.assertEqual(len(ids), len(set(ids)))
 
 
+class ReshardTests(unittest.TestCase):
+    def test_resume_with_a_different_shard_count_runs_no_pair_twice(self):
+        tmp = Path(tempfile.mkdtemp())
+        cases = sorted(FIXTURES.glob("c[1-5]*.json"))
+        arms = {"a": MAZEROPHISH}
+        with mock.patch.object(sr, "ChatModel", lambda *a, **k: Scripted(fail_after=6)):
+            sr.run_grid(arms, cases, tmp, "t", args(tmp))              # unsharded, cut short
+        for k in (0, 1):                                                # resumed as 2 shards
+            a2 = args(tmp)
+            a2.shard = f"{k}/2"
+            with mock.patch.object(sr, "ChatModel", lambda *a, **kw: Scripted()):
+                sr.run_grid(arms, cases, tmp, "t", a2)
+        ids = [c for p in tmp.glob("t*__a.jsonl") for c in parents(p)]
+        self.assertEqual(sorted(ids), sorted(c.stem for c in cases))
+        self.assertEqual(len(ids), len(set(ids)))
+
+
 if __name__ == "__main__":
     unittest.main()

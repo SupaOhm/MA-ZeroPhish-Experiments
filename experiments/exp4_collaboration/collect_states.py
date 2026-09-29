@@ -78,10 +78,11 @@ def main() -> None:
     tag = f"calib_states__{args.trigger_cover}" + (f"__shard{k}of{n}" if n > 1 else "")
     states_path, ledger_path = out / f"{tag}.jsonl", out / f"{tag}__ledger.jsonl"
     failures = out / f"{tag}.failures.jsonl"
+    # Finished cases across EVERY ledger of this collection (unsharded + any shard count),
+    # so a pilot or a re-shard never collects a case twice.
     done = set()
-    if ledger_path.exists():
-        done = {json.loads(l)["case_id"] for l in ledger_path.open(encoding="utf-8")
-                if '"decision"' in l}
+    for lp in out.glob(f"calib_states__{args.trigger_cover}*__ledger.jsonl"):
+        done |= {json.loads(l)["case_id"] for l in lp.open(encoding="utf-8") if '"decision"' in l}
 
     cap_dir = Path(args.data) / "captures" / args.split
     ids = sorted(p.stem for p in cap_dir.glob("*.json"))
