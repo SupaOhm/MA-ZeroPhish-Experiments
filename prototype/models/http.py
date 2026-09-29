@@ -1,5 +1,6 @@
 """One POST, and what its status means for retrying. Standard library only."""
 
+import http.client
 import json
 import urllib.error
 import urllib.request
@@ -16,7 +17,7 @@ def http_post(url: str, headers: dict, body: bytes, timeout_s: float):
             return response.status, dict(response.headers), response.read()
     except urllib.error.HTTPError as exc:
         return exc.code, dict(exc.headers or {}), exc.read()
-    except (urllib.error.URLError, TimeoutError, OSError) as exc:
+    except (urllib.error.URLError, http.client.HTTPException, TimeoutError, OSError) as exc:
         raise Retryable(f"transport: {exc}") from exc
 
 

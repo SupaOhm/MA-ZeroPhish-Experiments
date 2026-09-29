@@ -81,6 +81,74 @@ class CheckStatus(unittest.TestCase):
             check_status(400, {}, b"bad request")
 
 
+class Transport(unittest.TestCase):
+    def test_incomplete_read_is_retryable_transport(self):
+        import http.client
+        from models.http import http_post
+
+        with mock.patch("urllib.request.urlopen",
+                        side_effect=http.client.IncompleteRead(b"par")):
+            with self.assertRaises(Retryable) as ctx:
+                http_post("https://example.invalid", {}, b"{}", 1.0)
+        self.assertTrue(ctx.exception.reason.startswith("transport: "))
+
+    def test_remote_disconnect_is_retryable_transport(self):
+        import http.client
+        from models.http import http_post
+
+        with mock.patch("urllib.request.urlopen",
+                        side_effect=http.client.BadStatusLine("x")):
+            with self.assertRaises(Retryable):
+                http_post("https://example.invalid", {}, b"{}", 1.0)
+
+
+class FailedRepliesKeepPayloadAndTokens(unittest.TestCase):
+    def test_gemini_block_carries_payload_and_usage(self):
+        client = GeminiClient("m", api_key="k")
+        payload = {"candidates": [{"finishReason": "SAFETY"}],
+                   "usageMetadata": {"promptTokenCount": 40, "candidatesTokenCount": 0,
+                                     "thoughtsTokenCount": 3}}
+        with self.assertRaises(Fatal) as ctx:
+            client.parse_response(payload)
+        self.assertEqual(ctx.exception.raw, payload)
+        self.assertEqual((ctx.exception.input_tokens, ctx.exception.output_tokens), (40, 3))
+        for payload in ({"promptFeedback": {"blockReason": "SAFETY"},
+                         "usageMetadata": {"promptTokenCount": 9}},
+                        {"candidates": [{"finishReason": "MAX_TOKENS"}],
+                         "usageMetadata": {"promptTokenCount": 9}}):
+            with self.assertRaises(Fatal) as ctx:
+                client.parse_response(payload)
+            self.assertEqual(ctx.exception.raw, payload)
+            self.assertEqual(ctx.exception.input_tokens, 9)
+
+    def test_gemini_failed_call_counts_tokens(self):
+        payload = {"promptFeedback": {"blockReason": "SAFETY"},
+                   "usageMetadata": {"promptTokenCount": 33}}
+        transport, _ = transport_returning(200, payload)
+        client = GeminiClient("m", api_key="k", transport=transport, sleep=lambda s: None)
+        with self.assertRaises(ModelCallFailed):
+            client.generate("s", "u")
+        self.assertEqual(client.usage.input_tokens, 33)
+
+    def test_openrouter_failures_carry_payload_and_usage(self):
+        client = OpenRouterClient("m", api_key="k")
+        usage = {"prompt_tokens": 21, "completion_tokens": 4}
+        cases = [
+            ({"error": {"code": 429, "message": "slow"}, "usage": usage}, Retryable),
+            ({"error": {"code": 400, "message": "bad"}, "usage": usage}, Fatal),
+            ({"choices": [], "usage": usage}, Retryable),
+            ({"choices": [{"finish_reason": "length", "message": {"content": "x"}}],
+              "usage": usage}, Fatal),
+            ({"choices": [{"finish_reason": "content_filter", "message": {}}],
+              "usage": usage}, Fatal),
+        ]
+        for payload, kind in cases:
+            with self.assertRaises(kind) as ctx:
+                client.parse_response(payload)
+            self.assertEqual(ctx.exception.raw, payload)
+            self.assertEqual((ctx.exception.input_tokens, ctx.exception.output_tokens), (21, 4))
+
+
 class Gemini(unittest.TestCase):
     def client(self, transport, **kw):
         return GeminiClient("gemma-4-31b-it", api_key="k", transport=transport, sleep=lambda s: None, **kw)

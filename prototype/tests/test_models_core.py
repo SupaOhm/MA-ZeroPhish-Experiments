@@ -136,5 +136,70 @@ class Logging(unittest.TestCase):
         self.assertNotIn("png", json.dumps(entries[1]["image_sha256"]))
 
 
+class FailedAttemptsKeepTheirRecord(unittest.TestCase):
+    def log_entries(self, responder, **kw):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = os.path.join(tmp, "calls.jsonl")
+            with CallLog(path) as log:
+                client = RecordedClient(responder, call_log=log, **kw)
+                try:
+                    client.generate("s", "u", tag=TAG, validate=kw.pop("validate", None))
+                except ModelCallFailed:
+                    pass
+                outcome = client
+            with open(path, encoding="utf-8") as handle:
+                return outcome, [json.loads(line) for line in handle]
+
+    def test_failed_reply_tokens_are_counted_and_raw_is_logged(self):
+        raw = {"promptFeedback": {"blockReason": "SAFETY"}}
+        client, entries = self.log_entries(
+            scripted(Fatal("blocked: SAFETY", raw=raw, input_tokens=50, output_tokens=0)))
+        self.assertEqual(client.usage.input_tokens, 50)
+        self.assertEqual(entries[0]["raw"], raw)
+        self.assertEqual(entries[0]["input_tokens"], 50)
+        self.assertFalse(entries[0]["ok"])
+
+    def test_retryable_tokens_are_counted_across_attempts(self):
+        client, entries = self.log_entries(
+            scripted(Retryable("no_choices", raw={"x": 1}, input_tokens=7, output_tokens=2),
+                     {"ok": True}))
+        self.assertEqual(client.usage.output_tokens, 2 + len('{"ok": true}'))
+        self.assertEqual(entries[0]["raw"], {"x": 1})
+        self.assertEqual(entries[0]["output_tokens"], 2)
+
+    def test_key_and_type_errors_in_a_validator_are_invalid_shape(self):
+        for error in (KeyError("phishing"), TypeError("bad")):
+            def validate(parsed, error=error):
+                raise error
+
+            client = RecordedClient(lambda *a: {"a": 1}, max_attempts=2)
+            with self.assertRaises(ModelCallFailed) as ctx:
+                client.generate("s", "u", validate=validate, tag=TAG)
+            self.assertIn("invalid_shape", ctx.exception.reason)
+            self.assertEqual(ctx.exception.attempts, 2)
+
+    def test_an_unexpected_exception_is_logged_then_raised(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = os.path.join(tmp, "calls.jsonl")
+            with CallLog(path) as log:
+                client = RecordedClient(scripted(RuntimeError("boom")), call_log=log)
+                with self.assertRaises(RuntimeError):
+                    client.generate("s", "u", tag=TAG)
+            with open(path, encoding="utf-8") as handle:
+                entries = [json.loads(line) for line in handle]
+        self.assertEqual(len(entries), 1)
+        self.assertFalse(entries[0]["ok"])
+        self.assertEqual(entries[0]["error"], "unexpected: RuntimeError: boom")
+
+    def test_call_log_writes_values_json_cannot_encode(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = os.path.join(tmp, "calls.jsonl")
+            with CallLog(path) as log:
+                log.write({"odd": frozenset({"x"})})
+            with open(path, encoding="utf-8") as handle:
+                entry = json.loads(handle.read())
+        self.assertIn("x", entry["odd"])
+
+
 if __name__ == "__main__":
     unittest.main()

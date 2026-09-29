@@ -73,25 +73,29 @@ class GeminiClient(BaseClient):
         return ENDPOINT.format(model=self.model), headers, body
 
     def parse_response(self, payload: dict) -> ModelResponse:
+        usage = payload.get("usageMetadata") or {}
+        input_tokens = int(usage.get("promptTokenCount", 0))
+        output_tokens = int(usage.get("candidatesTokenCount", 0)) + int(
+            usage.get("thoughtsTokenCount", 0)
+        )
+        spent = {"raw": payload, "input_tokens": input_tokens, "output_tokens": output_tokens}
         candidates = payload.get("candidates") or []
         if not candidates:
             block = (payload.get("promptFeedback") or {}).get("blockReason", "no_candidates")
-            raise Fatal(f"blocked: {block}")
+            raise Fatal(f"blocked: {block}", **spent)
         first = candidates[0]
         finish = first.get("finishReason", "")
         if finish in BLOCKING_FINISH:
-            raise Fatal(f"blocked: {finish}")
+            raise Fatal(f"blocked: {finish}", **spent)
         if finish == "MAX_TOKENS":
-            raise Fatal("truncated: MAX_TOKENS")
+            raise Fatal("truncated: MAX_TOKENS", **spent)
         parts = (first.get("content") or {}).get("parts") or []
         text = "".join(p.get("text", "") for p in parts if not p.get("thought"))
-        usage = payload.get("usageMetadata") or {}
         return ModelResponse(
             text=text,
             parsed=None,
-            input_tokens=int(usage.get("promptTokenCount", 0)),
-            output_tokens=int(usage.get("candidatesTokenCount", 0))
-            + int(usage.get("thoughtsTokenCount", 0)),
+            input_tokens=input_tokens,
+            output_tokens=output_tokens,
             latency_s=0.0,
             model_version=payload.get("modelVersion", self.model),
             raw=payload,

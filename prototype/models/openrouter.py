@@ -58,31 +58,35 @@ class OpenRouterClient(BaseClient):
         return ENDPOINT, headers, body
 
     def parse_response(self, payload: dict) -> ModelResponse:
+        usage = payload.get("usage") or {}
+        input_tokens = int(usage.get("prompt_tokens", 0) or 0)
+        output_tokens = int(usage.get("completion_tokens", 0) or 0)
+        spent = {"raw": payload, "input_tokens": input_tokens, "output_tokens": output_tokens}
         if "error" in payload:
             error = payload["error"] or {}
             code = error.get("code")
+            status = code if isinstance(code, int) else None
             reason = f"provider_error_{code}: {str(error.get('message', ''))[:300]}"
             if code in (408, 429) or (isinstance(code, int) and code >= 500):
-                raise Retryable(reason, code if isinstance(code, int) else None)
-            raise Fatal(reason, code if isinstance(code, int) else None)
+                raise Retryable(reason, status, **spent)
+            raise Fatal(reason, status, **spent)
         choices = payload.get("choices") or []
         if not choices:
-            raise Retryable("no_choices")
+            raise Retryable("no_choices", **spent)
         choice = choices[0]
         finish = choice.get("finish_reason") or ""
         if finish == "length":
-            raise Fatal("truncated: length")
+            raise Fatal("truncated: length", **spent)
         if finish == "content_filter":
-            raise Fatal("blocked: content_filter")
+            raise Fatal("blocked: content_filter", **spent)
         content = (choice.get("message") or {}).get("content") or ""
         if isinstance(content, list):
             content = "".join(p.get("text", "") for p in content if isinstance(p, dict))
-        usage = payload.get("usage") or {}
         return ModelResponse(
             text=content,
             parsed=None,
-            input_tokens=int(usage.get("prompt_tokens", 0)),
-            output_tokens=int(usage.get("completion_tokens", 0)),
+            input_tokens=input_tokens,
+            output_tokens=output_tokens,
             latency_s=0.0,
             model_version=payload.get("model", self.model),
             raw=payload,

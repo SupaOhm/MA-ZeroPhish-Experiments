@@ -33,22 +33,41 @@ class ModelCallFailed(Exception):
 
 
 class Retryable(Exception):
-    """Worth another attempt: transport, 408/429/5xx, unparseable or wrong shape."""
+    """Worth another attempt: transport, 408/429/5xx, unparseable or wrong shape.
 
-    def __init__(self, reason, status=None, retry_after=None):
+    `raw` and the token counts are the provider's reply when there was one: a
+    failed reply is still logged in full and its tokens are still spent.
+    """
+
+    def __init__(self, reason, status=None, retry_after=None, *, raw=None,
+                 input_tokens=0, output_tokens=0):
         super().__init__(reason)
         self.reason = reason
         self.status = status
         self.retry_after = retry_after
+        self.raw = raw
+        self.input_tokens = input_tokens
+        self.output_tokens = output_tokens
 
 
 class Fatal(Exception):
     """Not retried: another 4xx, a safety block, a truncated reply."""
 
-    def __init__(self, reason, status=None):
+    def __init__(self, reason, status=None, *, raw=None, input_tokens=0, output_tokens=0):
         super().__init__(reason)
         self.reason = reason
         self.status = status
+        self.raw = raw
+        self.input_tokens = input_tokens
+        self.output_tokens = output_tokens
+
+
+class _Unexpected:
+    """How an unexpected exception is written to the call log."""
+
+    def __init__(self, reason):
+        self.reason = reason
+        self.status = None
 
 
 @dataclass(frozen=True, slots=True)
@@ -141,15 +160,23 @@ class BaseClient:
                 if validate is not None:
                     try:
                         validate(response.parsed)
-                    except ValueError as exc:
+                    except (ValueError, KeyError, TypeError) as exc:
                         raise Retryable(f"invalid_shape: {exc}") from exc
             except Retryable as exc:
                 error = exc
+                self._count_failed(response, exc)
             except Fatal as exc:
+                self._count_failed(response, exc)
                 self._log(system, user, images, tag, attempt, response, exc)
                 raise ModelCallFailed(
                     self.provider, exc.reason, attempt, exc.status, tag
                 ) from exc
+            except Exception as exc:
+                # A bug, not a provider failure: logged so no attempt goes
+                # unrecorded, then raised to stop the run.
+                self._log(system, user, images, tag, attempt, response,
+                          _Unexpected(f"unexpected: {type(exc).__name__}: {exc}"))
+                raise
             self._log(system, user, images, tag, attempt, response, error)
             if error is None:
                 return response
@@ -159,6 +186,13 @@ class BaseClient:
                 ) from error
             self.sleep(self._delay(attempt, error))
         raise AssertionError("unreachable")
+
+    def _count_failed(self, response, error) -> None:
+        # A reply that parsed into a response was counted already; tokens a
+        # provider reported on a reply it refused are counted here.
+        if response is None:
+            self.usage.input_tokens += getattr(error, "input_tokens", 0)
+            self.usage.output_tokens += getattr(error, "output_tokens", 0)
 
     def _throttle(self):
         if self.min_interval_s > 0 and self._last_start is not None:
@@ -189,9 +223,11 @@ class BaseClient:
                 "user": user,
                 "image_sha256": [_sha256(image) for image in images],
                 "text": response.text if response else None,
-                "raw": response.raw if response else None,
-                "input_tokens": response.input_tokens if response else 0,
-                "output_tokens": response.output_tokens if response else 0,
+                "raw": response.raw if response else getattr(error, "raw", None),
+                "input_tokens": (response.input_tokens if response
+                                 else getattr(error, "input_tokens", 0)),
+                "output_tokens": (response.output_tokens if response
+                                  else getattr(error, "output_tokens", 0)),
                 "latency_s": response.latency_s if response else None,
             }
         )

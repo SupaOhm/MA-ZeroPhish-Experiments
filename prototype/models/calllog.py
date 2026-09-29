@@ -16,7 +16,7 @@ class CallLog:
 
     def write(self, entry: dict) -> None:
         record = {"ts": datetime.now(timezone.utc).isoformat(), **self.context, **entry}
-        self._handle.write(json.dumps(record, sort_keys=True, ensure_ascii=False) + "\n")
+        self._handle.write(json.dumps(record, sort_keys=True, ensure_ascii=False, default=str) + "\n")
         self._handle.flush()
 
     def close(self) -> None:
