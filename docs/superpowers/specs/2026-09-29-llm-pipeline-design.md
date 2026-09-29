@@ -118,6 +118,11 @@ For each call, the reasoner:
    `{"findings": [{"field", "quote", "observation", "direction", "strength"}]}`, with
    `direction` in `phishing | benign | neutral` and `strength` in
    `marginal | consistent | distinctive` (`contract/vocabulary.py`).
+   A reply whose shape is wrong (not an object, `findings` not a list, a missing
+   key, an enum value outside the vocabulary) is a parse failure. It is retried and
+   then raises `ModelCallFailed`, matching the handoff's rule that parse failures
+   are re-run rather than scored. A well-shaped finding that names an unauthorized
+   field or quotes ungrounded text is a record-validation failure (see below).
 5. **Grounding:** locates `quote` in the text of the declared field as shown to the
    model. Matching is exact after whitespace normalization, which collapses runs of
    whitespace to one space on both sides. This rule is ours: the paper says only
@@ -155,18 +160,32 @@ Moderator cites, never as peer verdicts or bands.
   `{"sufficient": bool, "defensible": bool, "cited_locators": [str]}`. The Judge also
   returns `p_phishing: float` in [0, 1] and an `explanation` string.
 - **Decision rule stays in code** (eq:judge-conditions, eq:judge-decision): a
-  conclusion holds (Γ) only if it is `sufficient` and `defensible` and every cited
-  locator names an eligible observation in the context. A citation to a locator that
-  is not in the context makes that conclusion fail. The count is recorded as
-  `judge_invalid_citations` and not repaired. The paper's own verdict and cause
+  conclusion holds (Γ) only if the model marks it `sufficient` and `defensible` and
+  the code-side rubric holds for its cited observations (see below). The paper's
   mapping follows: Γ^P alone gives `phishing`, Γ^B alone gives `benign`, both give
   `insufficient` with cause `contested`, and neither gives `insufficient` with cause
   `insufficient_support`. The `undirected` cause belongs to the stand-in Judge and
   never appears with the model Judge.
-- **Existing requirements are preserved:** `MIN_SUPPORTING_FIELDS` and the coverage
-  criterion stay as code-side preconditions on Suf. A model cannot declare a
-  conclusion sufficient on fewer distinct eligible fields than the rule allows, and
-  common-cause discounting (`_discounted_fields`) applies before the count.
+- **Decision validation and repair follow Phase 4 Step 4** (eq:decision-validity).
+  `CitationValid` requires every cited locator to name an eligible observation in
+  the context. If it fails, the Judge gets **one repair attempt**, a second call that
+  lists the invalid citations and asks only for corrected citations and format, with
+  no new evidence and no rubric change. If the repair also fails, the object's
+  outcome is **`finalization_error`**, which is distinct from `insufficient`. It is
+  written as a `decision` event with `verdict: "finalization_error"`, because it is a
+  real system outcome and not an API failure. `CoverageReported` and
+  `IssuesReported` hold by construction, since code fills them from the context.
+  Invalid citations and repairs are counted (`judge_invalid_citations`,
+  `judge_repairs`).
+- **Existing rubric preconditions are kept:** `MIN_SUPPORTING_FIELDS` and the
+  coverage criterion are part of Suf (`RubricConsistent`), evaluated in code over
+  the conclusion's cited observations after common-cause discounting
+  (`_discounted_fields`). A model cannot make a conclusion hold on fewer distinct
+  eligible fields than the rubric allows.
+- **Scorer change (shared, role 2):** `experiments/data_eval/evaluate.py` accepts
+  `finalization_error`. It counts as non-substantive (it is excluded from `decided`,
+  so it lowers coverage), counts as an error under the forced-decision setting, and
+  is reported in its own `finalization_error` count and rate.
 - **Output record:** `DecisionRecord.cited_provenance` holds the provenance of the
   cited observations only. `score = p_phishing` goes to the decision event for PR-AUC.
 - **Audit-only:** feedback cannot change the decision, and the existing prohibition
@@ -235,11 +254,12 @@ decision rule → buffered events. When the case completes, the events are flush
 
 | Situation | Outcome |
 |---|---|
-| Transport, 429, 5xx, or unparseable / schema-invalid JSON | retried with backoff; each attempt logged |
+| Transport, 429, 5xx, or unparseable JSON | retried with backoff; each attempt logged |
 | Retries exhausted | `ModelCallFailed` → case `failure` event, no decision; re-run by `--resume` |
 | Well-formed reply with an ungrounded quote | record `error` (fails `Resolve`), `rejection` event, counted |
 | Revision with an ungrounded quote | revision rejected, prior valid record kept |
-| Judge cites a locator not in the context | that conclusion fails; `judge_invalid_citations` counted |
+| Judge cites a locator not in the context | one repair call; if still invalid, verdict `finalization_error` |
+| Well-formed JSON with the wrong shape (missing keys, bad enum) | treated as a parse failure: retried, then `ModelCallFailed` |
 | Screenshot file missing | field unavailable (a coverage gap), never benign |
 | Failure rate above threshold | run stops; `run.json` records it |
 
@@ -256,7 +276,7 @@ decision rule → buffered events. When the case completes, the events are flush
     the truncated tail, a quote from an unauthorized field.
   - A record with one bad quote becomes `error` with `locators_resolve` failed.
   - A rejected revision keeps the prior record.
-  - Judge: Γ mapping for all four combinations, invalid-citation handling,
+  - Judge: Γ mapping for all four combinations, one repair then `finalization_error`,
     `MIN_SUPPORTING_FIELDS` enforcement, blinded prompt text containing no
     direction, strength or band strings, and the Ablation 5 prompt containing them.
   - Retry and backoff classification; a failed attempt is logged; atomic case writes
