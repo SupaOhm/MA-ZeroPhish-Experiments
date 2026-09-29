@@ -21,6 +21,7 @@ import json
 from collections import Counter
 from pathlib import Path
 
+from .fingerprint import PSL_SOURCE, host_of, platform_suffix
 from .manifest import read
 
 INSTR_SOURCE = "phreshphish_crawler"          # the dataset's own capture of served HTML
@@ -37,12 +38,29 @@ def _days(a: str, b: str) -> int:
     return (date.fromisoformat(b[:10]) - date.fromisoformat(a[:10])).days
 
 
+def cert_scope(c: dict) -> tuple[str, str | None]:
+    """(scope, platform suffix). scope: `host` -- some covering cert names the host
+    exactly; `platform_wildcard` -- only wildcard certs, and the wildcard is the
+    platform's own (`*.<PSL private suffix>`); `own_wildcard` -- only wildcard certs
+    over a parent that is not a PSL private suffix."""
+    plat = platform_suffix(c["host"])
+    if c["n_exact"]:
+        return "host", plat
+    parent = c["host"].split(".", 1)[1] if "." in c["host"] else ""
+    return ("platform_wildcard" if plat and parent == plat else "own_wildcard"), plat
+
+
 def ct_text(c: dict, observed: str) -> str:
-    """CT v2 (enrich.ct): certificates covering the submitted host only."""
+    """CT v2 (enrich.ct): certificates covering the submitted host only. The first two
+    keys are fixed for extractors: cert_scope=host|platform_wildcard|own_wildcard and
+    platform_hosted=true|false (Public Suffix List private section)."""
+    scope, plat = cert_scope(c)
     last = c["certs_before"][-1]
     first = c["first_not_before"]
     names = " ".join((last.get("name_value") or "").split())[:300]
-    return (f"host={c['host']}; certs_covering_host_valid_on_or_before_observation={c['n_before']} "
+    return (f"cert_scope={scope}; platform_hosted={'true' if plat else 'false'}"
+            f"{f' (platform={plat})' if plat else ''}; "
+            f"host={c['host']}; certs_covering_host_valid_on_or_before_observation={c['n_before']} "
             f"(exact_name={c['n_exact']}, wildcard={c['n_wildcard']}); "
             f"first_covering_cert_valid_from={first[:10]} ({_days(first, observed)} days before observation); "
             f"latest_cert_covers={last.get('covers')}; latest_cert_issuer={last.get('issuer_name')}; "
@@ -85,11 +103,15 @@ def build(row, data: Path, stats: Counter) -> dict:
         reason = render["failure_reason"] if render else "not_collected"
         for f in ("dom", "page_content", "screenshot"):
             failures[f] = reason
+    plat = "platform" if platform_suffix(host_of(url)) else "own_domain"
     if ct and ct["status"] == "obtained":
         artifacts.append({"field": "ct", "content": ct_text(ct, row.observed_at),
                           "instrument": ct["instrument"]})
+        stats[f"ct_by_platform:{plat}:{cert_scope(ct)[0]}:{row.label}"] += 1
     else:
         failures["ct"] = ct["failure_reason"] if ct else "not_collected"
+        stats[f"ct_by_platform:{plat}:unavailable:{row.label}"] += 1
+    stats[f"hosting_kind:{plat}:{row.label}"] += 1
     if RDAP_POLICY == "exclude":
         # RDAP is looked up today; a 404 mostly means the domain was taken down or
         # expired AFTER observation, which is future information that correlates
@@ -151,6 +173,16 @@ def main() -> None:
             print(f"  WARNING: '{f}' availability differs by label "
                   f"(phishing {rate['phishing']:.0%} vs benign {rate['benign']:.0%}); "
                   f"missingness can leak the label")
+    # Evaluation-side check (requested by role 3): is platform hosting itself, or the
+    # CT cert scope, tied to the label? A strong tie is a potential URL/CT shortcut
+    # that must be reported, not hidden. Labels never reach the runtime from here.
+    report["_ct_by_platform"] = {
+        "platform_definition": PSL_SOURCE,
+        "hosting_kind_by_label": {k.split(":", 1)[1]: v for k, v in sorted(stats.items())
+                                  if k.startswith("hosting_kind:")},
+        "ct_scope_by_platform_and_label": {k.split(":", 1)[1]: v for k, v in sorted(stats.items())
+                                           if k.startswith("ct_by_platform:")},
+    }
     (data / f"coverage_by_label_{args.split}.json").write_text(json.dumps(report, indent=1),
                                                               encoding="utf-8")
 

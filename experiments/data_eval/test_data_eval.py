@@ -170,6 +170,14 @@ class CTCoveringTests(unittest.TestCase):
         self.assertIn("(exact_name=0, wildcard=2)", t)
         self.assertIn("first_covering_cert_valid_from=2024-01-01 (397 days", t)
         self.assertNotIn("queried_name", t)
+        self.assertTrue(t.startswith("cert_scope=platform_wildcard; platform_hosted=true (platform=webflow.io); "))
+
+    def test_cert_scope_three_values(self):
+        from experiments.data_eval.build_captures import cert_scope
+        self.assertEqual(cert_scope({"host": "a.webflow.io", "n_exact": 0}), ("platform_wildcard", "webflow.io"))
+        self.assertEqual(cert_scope({"host": "shop.example.com", "n_exact": 0}), ("own_wildcard", None))
+        self.assertEqual(cert_scope({"host": "www.etsy.com", "n_exact": 3}), ("host", None))
+        self.assertEqual(cert_scope({"host": "u.github.io", "n_exact": 1}), ("host", "github.io"))
 
 
 if __name__ == "__main__":
