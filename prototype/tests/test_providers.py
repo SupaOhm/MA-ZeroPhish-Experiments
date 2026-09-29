@@ -5,6 +5,7 @@ import json
 import os
 import sys
 import unittest
+from unittest import mock
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
@@ -138,13 +139,9 @@ class Gemini(unittest.TestCase):
         self.assertEqual(item["properties"]["direction"]["enum"], ["phishing", "benign"])
 
     def test_missing_key_is_refused(self):
-        saved = os.environ.pop("GEMINI_API_KEY", None)
-        try:
+        with mock.patch.dict(os.environ, {}, clear=True):
             with self.assertRaises(ValueError):
                 GeminiClient("m")
-        finally:
-            if saved is not None:
-                os.environ["GEMINI_API_KEY"] = saved
 
 
 class OpenRouter(unittest.TestCase):
@@ -191,6 +188,11 @@ class OpenRouter(unittest.TestCase):
         transport, _ = transport_returning(200, payload)
         with self.assertRaises(ModelCallFailed):
             self.client(transport).generate("s", "u")
+
+    def test_missing_key_is_refused(self):
+        with mock.patch.dict(os.environ, {}, clear=True):
+            with self.assertRaises(ValueError):
+                OpenRouterClient("m")
 
 
 class Factory(unittest.TestCase):
