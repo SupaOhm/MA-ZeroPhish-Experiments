@@ -30,15 +30,16 @@ from pathlib import Path
 INCLUDE = [
     "*/manifest*.jsonl", "*/build_report.json", "*/coverage_by_label_*.json",
     "*/captures/**/*.json", "*/shots/*.png",
+    "*/captures_platform_supplementary/**/*.json", "*/platform_exclusion_changes.json",
     "*/evidence/*/screenshot.png", "*/evidence/*/render.json",
-    "*/evidence/*/ct.json", "*/evidence/*/rdap.json",
+    "*/evidence/*/ct.json", "*/evidence/*/ct_v1.json", "*/evidence/*/rdap.json",
 ]
 THIRD_PARTY = re.compile(rb"AIza[0-9A-Za-z_-]{30,}")
 
 README = """# MA-ZeroPhish shared data package
 
 DATA_VERSION: {version}
-Built: {built} from branch data-eval commit {commit}
+Built: {built} from commit {commit}
 
 WARNING: contains REAL PHISHING pages (HTML inside captures). Never open captured
 HTML in a browser; process it with code only. Anti-phishing research use only
@@ -51,7 +52,8 @@ Everyone must report the same DATA_VERSION with their results.
 ## Layout (paths are relative to this folder)
 | dataset | files | role |
 |---|---|---|
-| phreshphish/ | manifest.jsonl; captures/{{dev,calib,test,test_conflict}}; manifest_test_conflict.jsonl; evidence/<case>/ | ZERO-DAY main test (test, n=200), dev (300), calib (300), Exp 5 conflicts (560) |
+| phreshphish/ | manifest.jsonl; captures/{{dev,calib,test,test_conflict}}; manifest_test_conflict.jsonl; evidence/<case>/ | ZERO-DAY main test (test, n=200), dev (300), calib (300), Exp 5 conflicts; OWN-DOMAIN pages only (platform-hosted excluded: label shortcut, see DATASET_PROVENANCE.md) |
+| phreshphish/captures_platform_supplementary/ | captures of the 107 excluded platform-hosted phishing pages; platform_exclusion_changes.json; manifest_v2_with_platform.jsonl | supplementary recall-only study, never pooled with the main splits |
 | trop/ | manifest.jsonl; captures/test; shots/ | PhishDebate comparison, 500/500, pre-cutoff |
 | mendeley/ | manifest.jsonl; captures/test | PhishDebate comparison, 500/500, pre-cutoff |
 | messages/ | manifest.jsonl; captures/{{dev,test}} | SMS + email, pre-cutoff |
