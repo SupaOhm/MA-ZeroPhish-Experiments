@@ -27,7 +27,8 @@ def table(score_dir: str, title: str = "") -> str:
                    f"{f(r['forced_accuracy'])} | {f(r['selective_risk'])} | {f(r['mean_model_calls'], 1)} | "
                    f"{f(r['mean_input_tokens'], 0)} / {f(r['mean_output_tokens'], 0)} | {f(r['mean_latency_s'], 1)} |")
     out += ["", "\\* on decided cases only; forced metrics count `insufficient` as an error.", ""]
-    comp = list(csv.DictReader((d / "comparisons.csv").open(encoding="utf-8")))
+    cp = d / "comparisons.csv"
+    comp = list(csv.DictReader(cp.open(encoding="utf-8"))) if cp.exists() else []
     if comp:
         out += ["| arm vs reference | paired n | Δ forced F1 [95% CI] | Δ coverage [95% CI] | McNemar p |",
                 "|---|---|---|---|---|"]

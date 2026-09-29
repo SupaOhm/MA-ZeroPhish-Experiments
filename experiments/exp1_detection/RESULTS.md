@@ -1,5 +1,11 @@
 # Experiment 1 — baseline results (PhreshPhish test, 200 URLs, 100 phishing / 100 benign)
 
+> **GPT-4o-mini runs (advisor's choice, all four arms incl. MA-ZeroPhish, own-domain test,
+> DATA_VERSION `b34836430981d74e`): see `experiments/RESULTS_GPT4OMINI.md`.** The Gemini
+> numbers below are on the earlier test selection (with platform-hosted pages) and are kept
+> as an additional free-model check.
+
+
 Frozen protocol: [PROTOCOL.md](PROTOCOL.md). Model `gemini:gemini-3.1-flash-lite` (free tier)
 for every arm; knowledge cutoff January 2025, and every test case was observed
 September–December 2025, so all 200 are post-cutoff. Real model output only; API/quota

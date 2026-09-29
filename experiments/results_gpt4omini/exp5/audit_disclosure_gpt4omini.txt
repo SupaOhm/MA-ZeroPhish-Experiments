@@ -1,0 +1,32 @@
+Paired verdict transitions vs base (label: base -> condition):
+  cum3_+html_no_browser: changed 10/100; phishing->benign transitions: 0; {('benign', 'benign', 'insufficient'): 1, ('benign', 'phishing', 'insufficient'): 4, ('phishing', 'phishing', 'insufficient'): 5}
+  no_dom: changed 9/100; phishing->benign transitions: 0; {('benign', 'benign', 'insufficient'): 1, ('benign', 'insufficient', 'benign'): 1, ('benign', 'insufficient', 'phishing'): 2, ('benign', 'phishing', 'insufficient'): 2, ('phishing', 'insufficient', 'phishing'): 1, ('phishing', 'phishing', 'insufficient'): 2}
+  no_html: changed 13/100; phishing->benign transitions: 1; {('benign', 'benign', 'insufficient'): 1, ('benign', 'insufficient', 'benign'): 2, ('benign', 'insufficient', 'phishing'): 2, ('benign', 'phishing', 'insufficient'): 3, ('phishing', 'insufficient', 'benign'): 1, ('phishing', 'insufficient', 'phishing'): 3, ('phishing', 'phishing', 'insufficient'): 1}
+  no_network_metadata: changed 4/100; phishing->benign transitions: 0; {('benign', 'benign', 'insufficient'): 1, ('benign', 'insufficient', 'benign'): 1, ('benign', 'phishing', 'insufficient'): 2}
+  transient_browser_recoverable: changed 0/100; phishing->benign transitions: 0; {}
+
+Conflict swaps (base case verdict -> conflict verdict):
+  ('benign', 'content', 'benign', 'insufficient'): 1
+  ('benign', 'content', 'insufficient', 'insufficient'): 6
+  ('benign', 'content', 'phishing', 'insufficient'): 1
+  ('benign', 'metadata', 'benign', 'insufficient'): 1
+  ('benign', 'metadata', 'insufficient', 'insufficient'): 6
+  ('benign', 'metadata', 'phishing', 'insufficient'): 1
+  ('benign', 'structure', 'benign', 'insufficient'): 1
+  ('benign', 'structure', 'insufficient', 'insufficient'): 5
+  ('benign', 'structure', 'insufficient', 'phishing'): 1
+  ('benign', 'structure', 'phishing', 'phishing'): 1
+  ('phishing', 'content', 'insufficient', 'insufficient'): 7
+  ('phishing', 'content', 'insufficient', 'phishing'): 1
+  ('phishing', 'metadata', 'insufficient', 'insufficient'): 8
+  ('phishing', 'structure', 'insufficient', 'insufficient'): 5
+  ('phishing', 'structure', 'insufficient', 'phishing'): 3
+
+Disclosure / citation audit over every Exp 5 decision:
+  decisions: 648
+  no_judge_disclosure (finalization_error): 118
+  cited_subset_of_eligible: 530
+  with_gaps: 530
+  gaps_disclosed: 530
+  with_open_issues: 530
+  issues_disclosed: 530
