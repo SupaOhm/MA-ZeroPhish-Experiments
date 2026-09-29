@@ -4,6 +4,36 @@ Independent implementation repository for coworkers extending the shared prototy
 for the paper's six experiments. It has its own Git history and requires no access
 to the original research repository.
 
+## Team status — read this first (updated 2026-09-29)
+
+**Role 2 (Data & Evaluation) is done.** The corpus, evidence, prototype captures and the
+scoring tool are on branch `data-eval`; the full handoff — what is ready, what the data means,
+and what each role does next — is in
+[experiments/data_eval/HANDOFF.md](experiments/data_eval/HANDOFF.md).
+
+- **Data:** download the shared package `ma-zerophish-data-7fa6084808ee4025.zip` (Drive link in
+  the team chat), unzip, and run
+  `python -m experiments.data_eval.package verify --dir <folder>`; it must report
+  `DATA_VERSION 7fa6084808ee4025 … version check OK`. It contains real phishing pages: never
+  open captured HTML in a browser.
+- **Main zero-day test:** PhreshPhish `test` (200 cases, all after every model's cutoff).
+  Tune on `dev`, fit the estimator/τ on `calib`, report final numbers on `test` only.
+- **PhishDebate comparison:** TR-OP and Mendeley, 500/500 each. SMS/Email reported separately.
+- **Models:** free models first (Gemma 4 31B best in screening, gpt-oss-120b fastest); a paid
+  model only if the free run succeeds.
+- **Results:** write one `decision` event per submission (format in HANDOFF §4) and send the
+  ledger to role 2, who scores all arms with `experiments/data_eval/evaluate.py`.
+
+### Rules for every experiment: real results only
+1. **No simulation.** The fake specialists and stand-in Judge are for tests only. The scorer
+   refuses ledgers from `fake-deterministic` or unnamed models. Never write, estimate or
+   extrapolate a number by hand.
+2. **No AI hallucination.** Model outputs must cite evidence that exists and quote it verbatim;
+   invalid citations are rejected and their rate is reported. AI coding assistants must not
+   invent results, citations, dataset facts or model details — verify every claim at the source.
+3. **Keep raw logs** of every model call. **Report failures** (API/quota/parse) instead of
+   filling them in. **Report bad news** too: no cherry-picking after seeing test results.
+
 ## What is included
 
 - `prototype/`: all implemented phase logic, contracts, replay, budget accounting,
