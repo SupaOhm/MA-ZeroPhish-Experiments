@@ -32,6 +32,20 @@ from pathlib import Path
 from .manifest import read as read_manifest
 
 VERDICTS = ("phishing", "benign", "insufficient")
+# Results from the prototype's deterministic stand-ins are plumbing checks, not
+# measurements. They are refused unless --allow-simulated is given (tests only).
+SIMULATED_MODEL_IDS = {"fake-deterministic", "fake", "simulated", "mock", ""}
+
+
+def check_real(decisions: dict) -> list[str]:
+    """Return problems if any scored decision did not come from a real, named model."""
+    problems = []
+    for (arm, rep), dec in decisions.items():
+        ids = {str(e.get("model_id", "")).strip().lower() for e in dec.values()}
+        fake = ids & SIMULATED_MODEL_IDS
+        if fake:
+            problems.append(f"{arm}#r{rep}: decisions from simulated/unnamed model {sorted(fake)}")
+    return problems
 COST_KEYS = ("model_calls", "input_tokens", "output_tokens", "monetary_cost", "latency_s")
 
 
@@ -164,10 +178,17 @@ def main() -> None:
                     help="report the post-cutoff subset for this model (see manifest.MODEL_CUTOFFS)")
     ap.add_argument("--n-boot", type=int, default=2000)
     ap.add_argument("--out", required=True)
+    ap.add_argument("--allow-simulated", action="store_true",
+                    help="score fake/stand-in model output (plumbing tests only; never for results)")
     args = ap.parse_args()
 
     rows = {r.case_id: r for r in read_manifest(args.manifest) if r.split == args.split}
     decisions = load_decisions(args.ledgers)
+    problems = check_real(decisions)
+    if problems and not args.allow_simulated:
+        raise SystemExit("REFUSED: these ledgers are not real model output:\n  "
+                         + "\n  ".join(problems)
+                         + "\nReal experiments only. (--allow-simulated exists for plumbing tests.)")
     subsets = {"all": set(rows)}
     for s in sorted({r.stratum for r in rows.values()}):
         subsets[f"stratum={s}"] = {c for c, r in rows.items() if r.stratum == s}

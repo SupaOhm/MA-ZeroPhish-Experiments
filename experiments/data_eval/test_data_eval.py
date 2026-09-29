@@ -56,6 +56,15 @@ class ScoringTests(unittest.TestCase):
         self.assertEqual(bs["delta"], 0.0)
         self.assertEqual((bs["ci_low"], bs["ci_high"]), (0.0, 0.0))
 
+    def test_simulated_output_is_refused(self):
+        from experiments.data_eval.evaluate import check_real
+        fake = {("mazerophish", 0): {"c1": {"verdict": "phishing", "model_id": "fake-deterministic"}}}
+        none = {("single", 0): {"c1": {"verdict": "phishing"}}}
+        real = {("single", 0): {"c1": {"verdict": "phishing", "model_id": "gemma-4-31b-it"}}}
+        self.assertTrue(check_real(fake))
+        self.assertTrue(check_real(none))
+        self.assertEqual(check_real(real), [])
+
     def test_pairing_and_parent_filter(self):
         with tempfile.TemporaryDirectory() as d:
             p = os.path.join(d, "l.jsonl")

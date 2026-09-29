@@ -6,6 +6,28 @@ This is what role 2 has finished, what it means for your part, and what each of 
 does next. Details and commands: [README.md](README.md). Evidence of prior IEEE use of
 every dataset: [DATASET_PROVENANCE.md](DATASET_PROVENANCE.md).
 
+## 0. Non-negotiable: real experiments only — no simulation, no AI hallucination
+Every number that goes into the paper must come from a **real run of a real, named model on
+the real data**, and must be traceable to a saved raw response.
+1. **No simulated results.** `agents/fake.py` and the deterministic Judge are plumbing tests
+   only. `evaluate.py` **refuses** ledgers whose `model_id` is `fake-deterministic` or missing.
+   Never hand-write, estimate, "fill in" or extrapolate a result, a table cell or a plot.
+2. **No AI hallucination in the pipeline.** Every model observation must cite an evidence id
+   that exists in its input and a quote that appears verbatim in that evidence; validators
+   reject anything that does not resolve (paper Phase 2 Step 4 / Phase 4 Step 4). Report the
+   rejection / ungrounded-citation rates; do not hide them.
+3. **No AI hallucination in our own work.** If you use an AI coding assistant, it must not
+   invent results, citations, model names, cutoff dates, dataset facts or API behaviour. Check
+   every claim against the source (paper, model card, dataset card, raw output) before it goes
+   into code, the paper or a message.
+4. **Save the raw evidence.** Keep every request/response (prompt, raw output, token usage,
+   latency, timestamp, model version). A result without its raw log is not a result.
+5. **Failures are reported, never disguised.** API/quota/parse failures are not verdicts:
+   record them, re-run the cases, and report how many failed. Never replace a failed call
+   with a guess or a default label.
+6. **Report what happened, including bad news.** If MA-ZeroPhish does not beat a baseline,
+   that is the result. No cherry-picking runs, seeds, subsets or prompts after seeing test.
+
 ## 1. What is ready
 
 ### Datasets (all load with `capture.store.load_capture`, 3,960 captures)
