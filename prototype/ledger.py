@@ -10,14 +10,19 @@ import json
 
 
 class Ledger:
-    def __init__(self, path: str, arm: str):
-        self._handle = open(path, "w", encoding="utf-8")
+    def __init__(self, path: str, arm: str, mode: str = "w"):
+        # "a" for a resumed corpus run: earlier cases' events are kept.
+        self._handle = open(path, mode, encoding="utf-8")
         self._arm = arm
 
     def event(self, kind: str, case_id: str, **payload) -> None:
         record = {"kind": kind, "arm": self._arm, "case_id": case_id}
         record.update(payload)
         self._handle.write(json.dumps(record, sort_keys=True) + "\n")
+
+    def flush(self) -> None:
+        """Push written events to disk: a killed run loses at most the case in flight."""
+        self._handle.flush()
 
     def close(self) -> None:
         self._handle.close()

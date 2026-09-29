@@ -4,16 +4,25 @@ coverage, selective risk, strata/subsets, paired bootstrap CIs, McNemar test.
 Input is the prototype ledger format (JSON lines). Every arm -- the framework
 configurations AND the separate baselines (single-agent, PhishDebate, CoT) --
 must write `decision` events with at least:
-    {"kind": "decision", "arm": str, "case_id": str, "verdict": "phishing"|"benign"|"insufficient",
+    {"kind": "decision", "arm": str, "case_id": str, "verdict": "phishing"|"benign"|"insufficient"|"finalization_error",
      "parent_object_id": null, "repeat": int (optional, default 0),
-     "score": float|null (optional P(phishing), for PR-AUC),
-     "model_calls", "input_tokens", "output_tokens", "monetary_cost", "latency_s" (optional)}
+     "score": float|null (optional P(phishing), for PR-AUC over the scored cases;
+                          `n_scored` reports how many),
+     "model_calls", "input_tokens", "output_tokens", "monetary_cost", "latency_s" (optional),
+     "case_model_calls", "case_input_tokens", "case_output_tokens", "case_monetary_cost"
+     (optional: whole-case cost including child URLs; preferred for cost means)}
 Only parent decisions are scored (one row per submission). API/quota failures
 must NOT be written as decisions; a missing case is reported, never scored.
 
+Verdicts: `phishing`, `benign`, `insufficient` (abstention) and
+`finalization_error` (paper Phase 4 Step 4: the Judge's decision failed
+validation after its one repair). `finalization_error` is a system outcome, never
+a substantive verdict: it is not decided, lowers coverage, is counted and rated
+on its own, and carries no score.
+
 Forced-decision setting (paper Sec. IV / PhishDebate protocol): `insufficient`
-is an error on both classes -- on a phishing case it is a false negative, on a
-benign case a false positive.
+and `finalization_error` are errors on both classes -- on a phishing case a
+false negative, on a benign case a false positive.
 
     python -m experiments.data_eval.evaluate --manifest .../manifest.jsonl --split test \
         --ledgers runs/*.jsonl --reference mazerophish --out reports/exp1
@@ -31,17 +40,20 @@ from pathlib import Path
 
 from .manifest import read as read_manifest
 
-VERDICTS = ("phishing", "benign", "insufficient")
+# `finalization_error` is the paper's Phase 4 Step 4 outcome when the Judge's
+# decision fails validation after its one repair: a real system outcome, distinct
+# from `insufficient`, never a substantive verdict.
+VERDICTS = ("phishing", "benign", "insufficient", "finalization_error")
 # Results from the prototype's deterministic stand-ins are plumbing checks, not
 # measurements. They are refused unless --allow-simulated is given (tests only).
-SIMULATED_MODEL_IDS = {"fake-deterministic", "fake", "simulated", "mock", ""}
+SIMULATED_MODEL_IDS = {"fake-deterministic", "fake", "simulated", "mock", "recorded-fixture", ""}
 
 
 def check_real(decisions: dict) -> list[str]:
     """Return problems if any scored decision did not come from a real, named model."""
     problems = []
     for (arm, rep), dec in decisions.items():
-        ids = {str(e.get("model_id", "")).strip().lower() for e in dec.values()}
+        ids = {str(e.get("model_id") or "").strip().lower() for e in dec.values()}
         fake = ids & SIMULATED_MODEL_IDS
         if fake:
             problems.append(f"{arm}#r{rep}: decisions from simulated/unnamed model {sorted(fake)}")
@@ -67,6 +79,15 @@ def load_decisions(paths: list[str]) -> dict[tuple[str, int], dict[str, dict]]:
                 if e["case_id"] in out[key]:
                     raise ValueError(f"{p}: duplicate decision for {key} {e['case_id']}")
                 out[key][e["case_id"]] = e
+    # One (arm, repeat) is one run: decisions from two models or two data
+    # versions (e.g. a resumed run against a rebuilt package) are never mixed.
+    for key, dec in out.items():
+        models = {e.get("model_id") for e in dec.values()}
+        if len(models) > 1:
+            raise ValueError(f"{key}: decisions from more than one model_id {sorted(map(str, models))}")
+        versions = {e["data_version"] for e in dec.values() if e.get("data_version") is not None}
+        if len(versions) > 1:
+            raise ValueError(f"{key}: decisions from more than one data_version {sorted(versions)}")
     return out
 
 
@@ -91,25 +112,32 @@ def average_precision(labels: list[str], scores: list[float]) -> float | None:
 def metrics(labels: list[str], verdicts: list[str], scores: list | None = None,
             costs: list[dict] | None = None) -> dict:
     n = len(labels)
-    tp = fp = tn = fn = ins_p = ins_b = 0
+    tp = fp = tn = fn = ins_p = ins_b = fe_p = fe_b = 0
     for y, v in zip(labels, verdicts):
         if v == "insufficient":
             ins_p += y == "phishing"
             ins_b += y == "benign"
+        elif v == "finalization_error":
+            fe_p += y == "phishing"
+            fe_b += y == "benign"
         elif v == "phishing":
             tp += y == "phishing"
             fp += y == "benign"
-        else:
+        elif v == "benign":
             tn += y == "benign"
             fn += y == "phishing"
+        else:
+            raise ValueError(f"unknown verdict {v!r}")
     decided = tp + fp + tn + fn
     p, r = _div(tp, tp + fp), _div(tp, tp + fn)
-    # forced: abstention on phishing -> FN, on benign -> FP
-    ftp, ffp, ftn, ffn = tp, fp + ins_b, tn, fn + ins_p
+    # forced: abstention or finalization error on phishing -> FN, on benign -> FP
+    ftp, ffp, ftn, ffn = tp, fp + ins_b + fe_b, tn, fn + ins_p + fe_p
     fp_, fr = _div(ftp, ftp + ffp), _div(ftp, ftp + ffn)
     out = {
         "n": n, "decided": decided, "insufficient": ins_p + ins_b,
         "coverage": _div(decided, n), "insufficient_rate": _div(ins_p + ins_b, n),
+        "finalization_error": fe_p + fe_b,
+        "finalization_error_rate": _div(fe_p + fe_b, n),
         "tp": tp, "fp": fp, "tn": tn, "fn": fn,
         "precision": p, "recall": r,
         "f1": _div(2 * p * r, p + r) if p is not None and r is not None else None,
@@ -120,13 +148,18 @@ def metrics(labels: list[str], verdicts: list[str], scores: list | None = None,
         "forced_f1": _div(2 * fp_ * fr, fp_ + fr) if fp_ is not None and fr is not None else None,
         "forced_fpr": _div(ffp, ffp + ftn), "forced_accuracy": _div(tp + tn, n),
     }
-    if scores is not None and all(s is not None for s in scores) and scores:
-        out["pr_auc"] = average_precision(labels, scores)
-    else:
-        out["pr_auc"] = None          # no ranking score produced by this arm
+    # Over the cases that carry a score (a finalization_error has none);
+    # n_scored says how many. None only when no case has a score.
+    scored = [(y, s) for y, s in zip(labels, scores or []) if s is not None]
+    out["n_scored"] = len(scored)
+    out["pr_auc"] = (average_precision([y for y, _ in scored], [s for _, s in scored])
+                     if scored else None)
     if costs:
         for k in COST_KEYS:
-            vals = [c.get(k) for c in costs if c.get(k) is not None]
+            # `case_<key>` is the whole submission's cost (parent plus child
+            # URLs) where the ledger records it; the parent's own figure otherwise.
+            vals = [c.get(f"case_{k}", c.get(k)) for c in costs]
+            vals = [v for v in vals if v is not None]
             out[f"mean_{k}"] = sum(vals) / len(vals) if vals else None
     return out
 
@@ -245,7 +278,7 @@ def main() -> None:
     (out / "missing_cases.json").write_text(json.dumps(missing, indent=1), encoding="utf-8")
     fmt = lambda v: "-" if v is None else (f"{v:.3f}" if isinstance(v, float) else str(v))
     cols = ["arm", "repeat", "subset", "n", "coverage", "precision", "recall", "f1", "fpr",
-            "forced_f1", "forced_accuracy", "selective_risk", "pr_auc"]
+            "forced_f1", "forced_accuracy", "selective_risk", "pr_auc", "n_scored"]
     print(" | ".join(cols))
     for r in table:
         print(" | ".join(fmt(r.get(c)) for c in cols))

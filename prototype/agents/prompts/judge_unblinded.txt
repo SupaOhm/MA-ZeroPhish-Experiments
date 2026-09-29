@@ -1,0 +1,1 @@
+In this configuration each observation also carries specialist_direction, the reporting specialist's own assessment of which way it points, and agent, the specialist that reported it. These are the specialists' assessments, not verified facts. You may take them into account.

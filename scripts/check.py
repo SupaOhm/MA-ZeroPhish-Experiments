@@ -29,9 +29,12 @@ for tex in paper.rglob("*.tex"):
         if not destination.is_file():
             errors.append(f"{tex.relative_to(ROOT)}: missing paper asset {target}")
 for path in ROOT.rglob("*.md"):
-    if any(part in {".git", ".venv", "runs", "data"} for part in path.relative_to(ROOT).parts):
+    if any(part in {".git", ".venv", ".superpowers", "runs", "data"}
+           for part in path.relative_to(ROOT).parts):
         continue
-    for target in re.findall(r"\]\(([^)\n]+)\)", path.read_text()):
+    # Code in fenced blocks (e.g. `f[x](y)`) is not a link.
+    prose = re.sub(r"^(`{3,}).*?^\1", "", path.read_text(), flags=re.M | re.S)
+    for target in re.findall(r"\]\(([^)\n]+)\)", prose):
         if target.startswith("#") or re.match(r"^[a-zA-Z]+:", target):
             continue
         destination = (path.parent / unquote(target.split("#")[0])).resolve()

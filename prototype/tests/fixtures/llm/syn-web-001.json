@@ -1,0 +1,25 @@
+{
+  "case_id": "syn-web-001",
+  "submission_type": "url",
+  "payload": "http://example-bank.login-verify.test/signin",
+  "label": "phishing",
+  "inapplicable": ["message_body"],
+  "artifacts": [
+    {"field": "url", "content": "http://example-bank.login-verify.test/signin", "instrument": "submission"},
+    {"field": "html", "content": "<html><head><title>Example Bank sign in</title></head><body><form action=\"http://collect.example.test/p\" method=\"post\"><input name=\"user\"><input type=\"password\" name=\"pw\"></form></body></html>", "instrument": "phreshphish_crawler"},
+    {"field": "dom", "content": "<html><head><title>Example Bank sign in</title></head><body><form action=\"http://collect.example.test/p\" method=\"post\"><input name=\"user\"><input type=\"password\" name=\"pw\"><input type=\"hidden\" name=\"otp\"></form></body></html>", "instrument": "offline_render"},
+    {"field": "page_content", "content": "Example Bank. Sign in to continue. Your account is locked; verify within 24 hours.", "instrument": "offline_render"},
+    {"field": "screenshot", "content": "screens/syn-web-001.png", "instrument": "offline_render"},
+    {"field": "ct", "content": "queried_name=example-bank.login-verify.test; certs_valid_on_or_before_observation=1; first_cert_valid_from=2025-09-01 (2 days before observation); latest_cert_issuer=Example CA; latest_not_before=2025-09-01; latest_not_after=2025-11-30; latest_names=example-bank.login-verify.test", "instrument": "crtsh"}
+  ],
+  "failures": {
+    "redirect_chain": "not_in_source_dataset",
+    "page_resources": "not_in_source_dataset",
+    "dns": "not_retrospectively_observable",
+    "tls": "not_retrospectively_observable",
+    "hosting": "not_retrospectively_observable",
+    "registration": "excluded_retrospective_lookup_leaks_future_takedown"
+  },
+  "findings": {},
+  "revisions": {}
+}

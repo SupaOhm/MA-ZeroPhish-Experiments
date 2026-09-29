@@ -106,6 +106,29 @@ the free run succeeds.
 The prototype's `run_arm` ledgers already use this shape; add `repeat`, `model_id`,
 `data_version`, and real token counts once models are connected.
 
+Additions from the model-backed runner (`experiments/runner/run_corpus.py`):
+- Each invocation writes a `header` event at the start of each ledger (provider,
+  model, data version, prompt SHA-256s, repo commit, estimator status). It is not scored.
+- `failure` events record model calls that failed after retries. The case has
+  no decision; `--resume` re-attempts it. Report how many there were.
+- `verdict` may be `finalization_error` (paper Phase 4 Step 4: the Judge's
+  decision failed validation after one repair). `evaluate.py` counts it as not
+  decided and as an error in the forced metrics, and reports its rate.
+- Decision events also carry `score` (the Judge's P(phishing)),
+  `judge_invalid_citations` and `judge_repairs`. Every event carries `repeat`.
+- The scorer refuses `recorded-fixture` (test replies), as it does `fake-deterministic`.
+- The parent decision carries the whole submission's cost, child URLs included:
+  `case_model_calls`, `case_input_tokens`, `case_output_tokens` (sums) and
+  `case_monetary_cost` (the maximum, since the case budget is cumulative).
+  `evaluate.py` cost means use `case_<key>` when present.
+- `failure` events also carry `data_version` and the `input_tokens` /
+  `output_tokens` the case spent before failing. `run.json` counts
+  `blocked_failures` (provider safety blocks) per arm; report them.
+- `evaluate.py` refuses to score one (arm, repeat) whose decisions carry more
+  than one `model_id` or more than one non-null `data_version`: runs are never
+  mixed. PR-AUC is computed over the cases that have a score and reports
+  `n_scored`.
+
 ## 5. What each role does next
 **Repo owner (SupaOhm)**
 - Review and merge `data-eval` (or open a PR); add teammates as collaborators.

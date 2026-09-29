@@ -34,6 +34,7 @@ from contract.submission import AcquisitionPlan
 from contract.vocabulary import Band, Direction, SourceAvailability, Status
 from phases.acquire import ATTEMPT_COST, BudgetLedger
 from phases.band import compute_band
+from phases.grounding import resolves
 from phases.select import applicable_agents
 
 
@@ -219,7 +220,9 @@ def validate(record: FindingRecord, envelope: EvidenceEnvelope) -> RecordValidit
         tool_valid=all(
             a.tool in fields.AGENT_TOOLS[record.agent] for a in record.acquisition_log
         ),
-        locators_resolve=all(h.declared_field in obtained for h in record.items),
+        # A span locator must name text that exists in the obtained artifact
+        # (phases/grounding.py); a fixture locator keeps the obtained-field rule.
+        locators_resolve=all(resolves(h, envelope) for h in record.items),
     )
 
 
