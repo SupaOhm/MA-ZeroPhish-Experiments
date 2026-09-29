@@ -41,6 +41,7 @@ def choose_tau(pairs, grid=TAU_GRID, epsilon=EPSILON):
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--estimator", required=True)
+    ap.add_argument("--model", required=True, help="model the calib states came from")
     args = ap.parse_args()
     est = json.loads(Path(args.estimator).read_text(encoding="utf-8"))
     meta = est.get("meta", est)
@@ -48,17 +49,22 @@ def main() -> None:
     if not pairs:
         raise SystemExit("REFUSED: estimator has no held-out calib pairs; re-run train_estimator.py")
     tau, met, table = choose_tau(pairs)
-    dst = HERE / "estimator.json"
+    slug = args.model.replace("/", "_").replace(":", "_")
+    if meta.get("state_model_id") != args.model:
+        raise SystemExit(f"REFUSED: estimator was trained on states from {meta.get('state_model_id')}, "
+                         f"not {args.model}; a gate never transfers between models")
+    dst = HERE / f"estimator__{slug}.json"
     shutil.copyfile(args.estimator, dst)
-    frozen = {"estimator": str(dst.relative_to(ROOT)).replace("\\", "/"), "tau": tau,
+    frozen = {"model_id": args.model, "estimator": str(dst.relative_to(ROOT)).replace("\\", "/"), "tau": tau,
               "epsilon": EPSILON, "tau_grid": list(TAU_GRID), "risk_target_met": met,
               "rule": "largest tau with held-out calib error among stopped states <= epsilon",
               "calib_table": table,
               "estimator_report": {k: meta.get(k) for k in ("brier_eval", "auroc_eval",
                                    "eval_states", "train_states", "abstention_rate")}}
-    (HERE / "frozen_gate.json").write_text(json.dumps(frozen, indent=1), encoding="utf-8")
+    out = HERE / f"frozen_gate__{slug}.json"
+    out.write_text(json.dumps(frozen, indent=1), encoding="utf-8")
     print(json.dumps({k: frozen[k] for k in ("tau", "risk_target_met", "calib_table")}, indent=1))
-    print(f"frozen -> {HERE / 'frozen_gate.json'}")
+    print(f"frozen -> {out}")
 
 
 if __name__ == "__main__":

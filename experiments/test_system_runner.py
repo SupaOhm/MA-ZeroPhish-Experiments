@@ -59,7 +59,7 @@ def args(tmp):
 
 class SystemRunnerTests(unittest.TestCase):
     def test_refuses_without_frozen_gate(self):
-        with mock.patch.object(sr, "GATE", Path(tempfile.mkdtemp()) / "missing.json"):
+        with mock.patch.object(sr, "GATE_DIR", Path(tempfile.mkdtemp())):
             with self.assertRaises(SystemExit):
                 sr.frozen_system("testdouble:none")
 

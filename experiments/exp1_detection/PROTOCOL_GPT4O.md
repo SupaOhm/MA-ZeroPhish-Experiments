@@ -1,5 +1,9 @@
 # Protocol addendum: GPT-4o runs (frozen 2026-09-29, before any GPT-4o call)
 
+**Status: deferred.** The advisor chose GPT-4o-mini first (`PROTOCOL_GPT4OMINI.md`); this
+protocol applies if and when the GPT-4o runs are made. Its gate file would be
+`frozen_gate__openrouter_openai_gpt-4o-2024-08-06.json`, trained on GPT-4o calib states only.
+
 Reason: the PhishDebate paper (IEEE BigData 2025) reports GPT-4o as its best backbone;
 running every arm on GPT-4o makes our PhishDebate baseline comparable to the published
 one and gives the study a second model next to the free Gemini 3.1 Flash-Lite runs

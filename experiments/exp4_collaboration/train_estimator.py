@@ -42,6 +42,9 @@ def main() -> None:
     states = [json.loads(l) for path in args.states for l in open(path, encoding="utf-8")
               if l.strip()]
     states = [s for s in states if not s.get("parent_object_id")]
+    models = sorted({str(s.get("model_id")) for s in states})
+    if len(models) != 1:
+        raise SystemExit(f"REFUSED: states from several models {models}; train one gate per model")
     wrong_split = sorted({s["case_id"] for s in states if man.get(s["case_id"], {}).get("split") != "calib"})
     if wrong_split:
         raise SystemExit(f"REFUSED: {len(wrong_split)} states are not from the calib split "
@@ -67,6 +70,7 @@ def main() -> None:
         "reliability_eval": reliability(yev, pev) if yev else [],
         "features": FEATURES,
     }
+    report["state_model_id"] = models[0]
     est.meta.update(report)
     # Held-out (p_hat, wrong) pairs, for freeze_gate.py's declared tau rule.
     est.meta["eval_pairs"] = [[round(p, 6), y] for p, y in zip(pev, yev)]

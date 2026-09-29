@@ -4,7 +4,8 @@ conditions, Exp 6 ablations.
 
 * `frozen_system()` builds THE system: Experiment 2's frozen Phase 1
   (`exp2_selection/frozen.json`) + Experiment 4's frozen gate
-  (`exp4_collaboration/frozen_gate.json`: trained estimator + tau). It REFUSES to run
+  (`exp4_collaboration/frozen_gate__<model>.json`: estimator + tau trained on THAT
+  model's calib states -- a gate never transfers between models). It REFUSES to run
   without the frozen gate -- results from an unfrozen system are never produced.
 * `run_grid()` runs cases x arms CASE-MAJOR (every arm on a case before the next case),
   so a run cut short by the daily quota still leaves complete pairs across arms.
@@ -42,7 +43,13 @@ from phases.judge_llm import LLMJudge  # noqa: E402
 from run import run_case  # noqa: E402
 
 PHASE1 = ROOT / "experiments" / "exp2_selection" / "frozen.json"
-GATE = ROOT / "experiments" / "exp4_collaboration" / "frozen_gate.json"
+GATE_DIR = ROOT / "experiments" / "exp4_collaboration"
+
+
+def gate_path(model_id: str) -> Path:
+    """The frozen gate of one model (estimator and tau are model-specific)."""
+    slug = model_id.replace("/", "_").replace(":", "_")
+    return GATE_DIR / f"frozen_gate__{slug}.json"
 DATA = ROOT / "experiments" / "data_eval" / "data"
 
 
@@ -54,20 +61,23 @@ def phase1_config(base, model_id: str, trigger_cover: str = "all_fields"):
                    trigger_cover=trigger_cover)
 
 
-def frozen_gate() -> tuple[LogisticEstimator, float, dict]:
-    if not GATE.exists():
+def frozen_gate(model_id: str) -> tuple[LogisticEstimator, float, dict]:
+    gate = gate_path(model_id)
+    if not gate.exists():
         raise SystemExit(
-            "REFUSED: no frozen gate (experiments/exp4_collaboration/frozen_gate.json). "
-            "Train the estimator on calib and freeze tau first (Experiment 4); results "
-            "from an unfrozen system are not produced.")
-    g = json.loads(GATE.read_text(encoding="utf-8"))
+            f"REFUSED: no frozen gate for {model_id} ({gate.name}). Train the estimator on "
+            "THIS model's calib states and freeze tau first (Experiment 4); results from an "
+            "unfrozen system are not produced.")
+    g = json.loads(gate.read_text(encoding="utf-8"))
+    if g.get("model_id") != model_id:
+        raise SystemExit(f"REFUSED: {gate.name} was frozen for {g.get('model_id')}, not {model_id}")
     est = LogisticEstimator.load(str(ROOT / g["estimator"]))
     return est, float(g["tau"]), g
 
 
 def frozen_system(model_id: str, base=MAZEROPHISH, trigger_cover: str = "all_fields"):
     """(config, estimator) of the frozen system, applied to `base` (an arm/ablation)."""
-    est, tau, _ = frozen_gate()
+    est, tau, _ = frozen_gate(model_id)
     return replace(phase1_config(base, model_id, trigger_cover), tau=tau), est
 
 
