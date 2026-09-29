@@ -31,10 +31,13 @@ from pathlib import Path
 
 from .manifest import read as read_manifest
 
-VERDICTS = ("phishing", "benign", "insufficient")
+# `finalization_error` is the paper's Phase 4 Step 4 outcome when the Judge's
+# decision fails validation after its one repair: a real system outcome, distinct
+# from `insufficient`, never a substantive verdict.
+VERDICTS = ("phishing", "benign", "insufficient", "finalization_error")
 # Results from the prototype's deterministic stand-ins are plumbing checks, not
 # measurements. They are refused unless --allow-simulated is given (tests only).
-SIMULATED_MODEL_IDS = {"fake-deterministic", "fake", "simulated", "mock", ""}
+SIMULATED_MODEL_IDS = {"fake-deterministic", "fake", "simulated", "mock", "recorded-fixture", ""}
 
 
 def check_real(decisions: dict) -> list[str]:
@@ -91,25 +94,32 @@ def average_precision(labels: list[str], scores: list[float]) -> float | None:
 def metrics(labels: list[str], verdicts: list[str], scores: list | None = None,
             costs: list[dict] | None = None) -> dict:
     n = len(labels)
-    tp = fp = tn = fn = ins_p = ins_b = 0
+    tp = fp = tn = fn = ins_p = ins_b = fe_p = fe_b = 0
     for y, v in zip(labels, verdicts):
         if v == "insufficient":
             ins_p += y == "phishing"
             ins_b += y == "benign"
+        elif v == "finalization_error":
+            fe_p += y == "phishing"
+            fe_b += y == "benign"
         elif v == "phishing":
             tp += y == "phishing"
             fp += y == "benign"
-        else:
+        elif v == "benign":
             tn += y == "benign"
             fn += y == "phishing"
+        else:
+            raise ValueError(f"unknown verdict {v!r}")
     decided = tp + fp + tn + fn
     p, r = _div(tp, tp + fp), _div(tp, tp + fn)
-    # forced: abstention on phishing -> FN, on benign -> FP
-    ftp, ffp, ftn, ffn = tp, fp + ins_b, tn, fn + ins_p
+    # forced: abstention or finalization error on phishing -> FN, on benign -> FP
+    ftp, ffp, ftn, ffn = tp, fp + ins_b + fe_b, tn, fn + ins_p + fe_p
     fp_, fr = _div(ftp, ftp + ffp), _div(ftp, ftp + ffn)
     out = {
         "n": n, "decided": decided, "insufficient": ins_p + ins_b,
         "coverage": _div(decided, n), "insufficient_rate": _div(ins_p + ins_b, n),
+        "finalization_error": fe_p + fe_b,
+        "finalization_error_rate": _div(fe_p + fe_b, n),
         "tp": tp, "fp": fp, "tn": tn, "fn": fn,
         "precision": p, "recall": r,
         "f1": _div(2 * p * r, p + r) if p is not None and r is not None else None,
