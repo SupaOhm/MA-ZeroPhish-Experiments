@@ -42,8 +42,8 @@ snapshot; e.g. webflow.io, vercel.app, pages.dev, github.io). Measured on the UR
   split (`build_phreshphish.py --exclude-platform --keep-manifest ... --cutoff 2025-07-06`).
   Every own-domain case already selected was kept; only the dropped cases were replaced,
   drawn uniformly from the remaining own-domain candidates of the same split window with
-  their own seed (dev 54, calib 31, test 22 phishing/benign-balanced replacements; the
-  validator reports no errors). Main results are therefore on own-domain websites; the
+  their own seed (replacements: dev 54 phishing; calib 29 phishing + 2 benign; test 22
+  phishing; every split stays balanced per class; the validator reports no errors). Main results are therefore on own-domain websites; the
   107 platform-hosted phishing pages (`captures_platform_supplementary/`) are reported
   separately as a recall-only study. The table above describes the earlier selection
   (`manifest_v2_with_platform.jsonl`); the replaced ids are in
