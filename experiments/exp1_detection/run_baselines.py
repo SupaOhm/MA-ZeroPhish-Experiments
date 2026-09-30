@@ -70,6 +70,9 @@ def main() -> None:
     ap.add_argument("--r-max", type=int, default=3)
     ap.add_argument("--tau", type=float, default=0.8)
     ap.add_argument("--data-version", default="7fa6084808ee4025")
+    ap.add_argument("--screenshots", action="store_true",
+                    help="PROTOCOL_V4 2d: attach the capture's screenshot when the render succeeded "
+                         "(else the case runs text-only, as for MA-ZeroPhish)")
     ap.add_argument("--out", default="runs/exp1")
     args = ap.parse_args()
 
@@ -106,18 +109,19 @@ def main() -> None:
             skipped += 1
             continue
         if r["case_id"] not in done:
-            todo.append((r["case_id"], art["url"], art["html"]))
+            shot = str(data / art["screenshot"]) if args.screenshots and art.get("screenshot") else None
+            todo.append((r["case_id"], art["url"], art["html"], shot))
     print(f"{args.arm} on {data.name}/{args.split}: {len(rows)} selected, {len(done)} already done, "
           f"{len(todo)} to run, {skipped} non-webpage skipped, {no_capture} without capture", flush=True)
 
     lock, stop = threading.Lock(), threading.Event()
     n_ok = n_fail = 0
 
-    def one(case_id, url, html):
+    def one(case_id, url, html, shot=None):
         if stop.is_set():
             return
         t0 = time.time()
-        res = arm.run(url, html)
+        res = arm.run(url, html, image=shot)
         event = {"kind": "decision", "arm": args.arm, "case_id": case_id, "verdict": res.verdict,
                  "parent_object_id": None, "repeat": args.repeat, "score": res.score,
                  "model_id": args.model, "model_extra": extra, "data_version": args.data_version,

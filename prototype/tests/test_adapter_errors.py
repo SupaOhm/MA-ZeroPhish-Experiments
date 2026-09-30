@@ -62,6 +62,34 @@ class AdapterErrorTests(unittest.TestCase):
         self.assertEqual((out["input_tokens"], out["output_tokens"]), (10, 3))
         self.assertEqual(len(self.cached(m)), 1)
 
+    def test_text_only_request_and_cache_key_are_unchanged_by_image_support(self):
+        import hashlib
+        m = model(self.tmp)
+        with mock.patch.object(adapter, "_http", return_value=(200, {}, OK)) as http:
+            out = m.chat("s", "u", 50, json_mode=True)
+        old_body = {"model": m.model, "temperature": 0, "max_completion_tokens": 50,
+                    "messages": [{"role": "system", "content": "s"}, {"role": "user", "content": "u"}],
+                    "response_format": {"type": "json_object"}}
+        self.assertEqual(http.call_args[0][3], old_body)
+        self.assertEqual(out["request_sha"],
+                         hashlib.sha256(json.dumps(old_body, sort_keys=True).encode()).hexdigest())
+
+    def test_image_is_sent_as_bytes_and_logged_as_its_hash(self):
+        import hashlib
+        png = os.path.join(self.tmp, "s.png")
+        with open(png, "wb") as f:
+            f.write(b"PNG fake")
+        m = model(self.tmp)
+        with mock.patch.object(adapter, "_http", return_value=(200, {}, OK)) as http:
+            m.chat("s", "u", images=[png])
+        sent = http.call_args[0][3]["messages"][1]["content"]
+        self.assertEqual(sent[0], {"type": "text", "text": "u"})
+        self.assertTrue(sent[1]["image_url"]["url"].startswith("data:image/png;base64,"))
+        self.assertEqual(sent[1]["image_url"]["detail"], "low")
+        (rec,) = [json.loads(p.read_text(encoding="utf-8")) for p in self.cached(m)]
+        logged = rec["request"]["messages"][1]["content"][1]["image_url"]["url"]
+        self.assertEqual(logged, "sha256:" + hashlib.sha256(b"PNG fake").hexdigest())
+
 
 if __name__ == "__main__":
     unittest.main()

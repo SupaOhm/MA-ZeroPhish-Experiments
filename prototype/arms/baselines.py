@@ -88,13 +88,15 @@ class SingleAgent:
         self.model, self.html_chars, self.text_chars, self.max_tokens = \
             model, html_chars, text_chars, max_tokens
 
-    def run(self, url: str, raw_html: str) -> ArmResult:
+    def run(self, url: str, raw_html: str, image=None) -> ArmResult:
         s = prepare(url, raw_html, self.html_chars, self.text_chars)
-        out = self.model.chat(self.template, prompts.SAMPLE.format(**s), self.max_tokens)
+        user = prompts.SAMPLE.format(**s) + (prompts.SCREENSHOT_NOTE if image else "")
+        out = self.model.chat(self.template, user, self.max_tokens,
+                              images=[image] if image else None)
         r = ArmResult(parse_classification(out["text"], self.marker), None)
         r.add(out)
         r.extras.update(html_truncated=s["html_truncated"], finish_reason=out["finish_reason"],
-                        parse_failed=r.verdict == "insufficient")
+                        parse_failed=r.verdict == "insufficient", screenshot=bool(image))
         return r
 
 
@@ -125,13 +127,21 @@ class PhishDebate:
     def _context(responses: dict[str, str]) -> str:
         return "\n\n".join(f"[{a} agent]\n{t.strip()}" for a, t in responses.items())
 
-    def run(self, url: str, raw_html: str) -> ArmResult:
+    # PROTOCOL_V4 2d: with a screenshot, the page-presentation agents see it.
+    VISUAL_AGENTS = ("content", "brand")
+
+    def run(self, url: str, raw_html: str, image=None) -> ArmResult:
         s = prepare(url, raw_html, self.html_chars, self.text_chars)
         base = self._agent_prompts(s)
+        imgs = {a: None for a in base}
+        if image:
+            for a in self.VISUAL_AGENTS:
+                base[a] += prompts.SCREENSHOT_NOTE
+                imgs[a] = [image]
         r = ArmResult("insufficient", None)
         history, responses, moderator_log, rnd = [], {}, [], 1
         for a, p in base.items():                                   # Phase 1
-            out = self.model.chat("", p, self.max_tokens)
+            out = self.model.chat("", p, self.max_tokens, images=imgs[a])
             r.add(out)
             responses[a] = out["text"]
         history.append((1, dict(responses)))
@@ -152,7 +162,7 @@ class PhishDebate:
             responses = {}
             for a, p in base.items():
                 out = self.model.chat("", p + prompts.DEBATE_SUFFIX.format(context=ctx),
-                                      self.max_tokens)
+                                      self.max_tokens, images=imgs[a])
                 r.add(out)
                 responses[a] = out["text"]
             history.append((rnd, dict(responses)))
@@ -172,7 +182,8 @@ class PhishDebate:
                             moderator_log and str(moderator_log[-1]["consensus"]).lower() == "yes"),
                         judge_parsed=bool(j), judge_confidence=jc,
                         parse_failed=r.verdict == "insufficient",
-                        html_truncated=s["html_truncated"], r_max=self.r_max, tau=self.tau)
+                        html_truncated=s["html_truncated"], r_max=self.r_max, tau=self.tau,
+                        screenshot=bool(image))
         return r
 
 

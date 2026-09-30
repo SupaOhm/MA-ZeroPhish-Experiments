@@ -69,6 +69,8 @@ class Config:
     # text chars); a re-invoked specialist gets twice its evidence budget.
     specialist_baseline_view: tuple[int, int] | None = None
     specialist_expand_on_focus: bool = False
+    # v4 2d: the Content Agent also receives the capture's screenshot image.
+    specialist_vision: bool = False
     cost_scale: float = 1000.0
     budget: CaseBudget = field(default_factory=lambda: CaseBudget(100.0, 100.0, 20.0))
     evidence_removal: frozenset[str] = frozenset()

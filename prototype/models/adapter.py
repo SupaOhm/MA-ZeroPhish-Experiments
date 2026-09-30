@@ -24,6 +24,7 @@ Rules this module enforces (paper Sec. IV + team rules):
 
 from __future__ import annotations
 
+import base64
 import hashlib
 import json
 import os
@@ -148,14 +149,30 @@ class ChatModel:
         if start > now:
             time.sleep(start - now)
 
-    def chat(self, system: str, user: str, max_tokens: int = 2048, json_mode: bool = False) -> dict:
-        messages = ([{"role": "system", "content": system}] if system else []) + \
-                   [{"role": "user", "content": user}]
-        body = {"model": self.model, "temperature": 0, "max_completion_tokens": max_tokens,
-                "messages": messages, **self.extra}
-        if json_mode:
-            body["response_format"] = {"type": "json_object"}
-        sha = hashlib.sha256(json.dumps(body, sort_keys=True).encode()).hexdigest()
+    def chat(self, system: str, user: str, max_tokens: int = 2048, json_mode: bool = False,
+             images: list | None = None) -> dict:
+        """`images`: PNG file paths sent with the user turn as OpenAI `image_url` parts
+        (detail "low"). The cache key and the stored request hold each image's SHA-256
+        instead of its bytes. Without images the request (and its cache key) is unchanged."""
+        parts, keyparts = [], []
+        for img in images or []:
+            data = Path(img).read_bytes()
+            parts.append({"type": "image_url", "image_url": {
+                "url": "data:image/png;base64," + base64.b64encode(data).decode(), "detail": "low"}})
+            keyparts.append({"type": "image_url", "image_url": {
+                "url": "sha256:" + hashlib.sha256(data).hexdigest(), "detail": "low"}})
+
+        def build(img_parts: list) -> dict:
+            content = ([{"type": "text", "text": user}] + img_parts) if img_parts else user
+            messages = ([{"role": "system", "content": system}] if system else []) + \
+                       [{"role": "user", "content": content}]
+            b = {"model": self.model, "temperature": 0, "max_completion_tokens": max_tokens,
+                 "messages": messages, **self.extra}
+            if json_mode:
+                b["response_format"] = {"type": "json_object"}
+            return b
+        body, key_body = build(parts), build(keyparts)
+        sha = hashlib.sha256(json.dumps(key_body, sort_keys=True).encode()).hexdigest()
         path = self.cache / f"{sha}.json"
         if path.exists():
             rec = json.loads(path.read_text(encoding="utf-8"))
@@ -196,7 +213,7 @@ class ChatModel:
                 raise APIError(f"HTTP 200 without an answer: {str(payload.get('error') or text)[:300]}")
             rec = {"request_sha": sha, "spec": self.spec, "model": self.model, "extra": self.extra,
                    "timestamp": time.strftime("%Y-%m-%dT%H:%M:%S%z"), "latency_s": latency,
-                   "request": body, "response": payload}
+                   "request": key_body, "response": payload}
             path.write_text(json.dumps(rec, ensure_ascii=False, indent=1), encoding="utf-8")
             return self._result(rec, cached=False)
         raise APIError("gave up after repeated 429/5xx/network errors")

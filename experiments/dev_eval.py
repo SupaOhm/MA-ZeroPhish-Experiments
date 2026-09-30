@@ -20,7 +20,8 @@ from config import MAZEROPHISH  # noqa: E402
 def variants(model: str) -> dict:
     v3 = replace(v3_settings(phase1_config(MAZEROPHISH, model), (1.0, 0.0), 0.0), gate="always")
     v4a = replace(v3, specialist_baseline_view=(12000, 4000))
-    return {"v3": v3, "v4a": v4a, "v4ab": replace(v4a, specialist_expand_on_focus=True)}
+    v4ab = replace(v4a, specialist_expand_on_focus=True)
+    return {"v3": v3, "v4a": v4a, "v4ab": v4ab, "v4abd": replace(v4ab, specialist_vision=True)}
 
 
 def main() -> None:
@@ -34,7 +35,7 @@ def main() -> None:
     allv = variants(args.model)
     arms = {f"ma_{v}": allv[v] for v in args.variants}
     cases = select_cases(args.dataset, "dev", args.per_label, args.limit)
-    run_grid(arms, cases, Path(args.out), "dev", args, estimator=None)
+    run_grid(arms, cases, Path(args.out), f"devv4_{args.dataset}_dev", args, estimator=None)
 
 
 if __name__ == "__main__":

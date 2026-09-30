@@ -18,8 +18,8 @@ class Scripted:
     def __init__(self, replies):
         self.replies, self.calls = list(replies), []
 
-    def chat(self, system, user, max_tokens=2048, json_mode=False):
-        self.calls.append((system, user, json_mode))
+    def chat(self, system, user, max_tokens=2048, json_mode=False, images=None):
+        self.calls.append((system, user, json_mode, images))
         return {"text": self.replies.pop(0), "finish_reason": "stop", "input_tokens": 10,
                 "output_tokens": 5, "latency_s": 0.1, "request_sha": str(len(self.calls)),
                 "model": "test-double", "cached": False}
@@ -124,6 +124,26 @@ class ArmFlowTests(unittest.TestCase):
         r = PhishDebate(m, r_max=3, tau=0.8).run(self.URL, self.HTML)
         self.assertEqual((r.verdict, r.score), ("insufficient", None))
         self.assertTrue(r.extras["parse_failed"])
+
+    def test_screenshot_goes_to_single_agent_and_only_to_debate_presentation_agents(self):
+        from arms.prompts import SCREENSHOT_NOTE
+        m = Scripted(["PHISHING"])
+        r = SingleAgent(m).run(self.URL, self.HTML, image="shot.png")
+        self.assertEqual(m.calls[0][3], ["shot.png"])
+        self.assertIn(SCREENSHOT_NOTE, m.calls[0][1])
+        self.assertTrue(r.extras["screenshot"])
+        m = Scripted(["PHISHING"])
+        SingleAgent(m).run(self.URL, self.HTML)
+        self.assertIsNone(m.calls[0][3])
+        self.assertNotIn(SCREENSHOT_NOTE, m.calls[0][1])
+        agents = ["- Claim: phishing"] * 4
+        mod = ['{"consensus": "Yes", "assessment": "PHISHING", "confidence": 0.9}']
+        m = Scripted(agents + mod + ['{"assessment": "PHISHING", "confidence": 0.8}'])
+        PhishDebate(m, r_max=3, tau=0.8).run(self.URL, self.HTML, image="shot.png")
+        with_image = [i for i, c in enumerate(m.calls) if c[3]]
+        self.assertEqual(with_image, [2, 3])            # agent order: url, html, content, brand
+        self.assertIsNone(m.calls[4][3])                # moderator
+        self.assertIsNone(m.calls[5][3])                # judge
 
 
 if __name__ == "__main__":

@@ -155,3 +155,9 @@ SAMPLE = """1. URL: {url}
 
 3. Visible text content:
 {text}"""
+
+# PROTOCOL_V4 2d: appended (to baselines and MA alike) only when a screenshot is attached.
+SCREENSHOT_NOTE = """
+
+A screenshot of the page is attached. It was rendered offline from the stored HTML with all
+network access blocked, so external images, styles and scripts may be missing."""

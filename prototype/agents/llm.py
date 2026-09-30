@@ -9,18 +9,23 @@ Each specialist (paper Table 1 + "Agent Operating Constraints"):
   drops (reported as the ungrounded-finding rate) -- no invented evidence reaches Phase 3;
 * on re-invocation (`focus` = a Phase 3 Issue) is shown the issue and the EVIDENCE LINES
   its references point to, not a peer's opinion.
-Screenshots: the adapter is text-only, so the `screenshot` field is not shown and no
-finding may cite it (a stated limitation until image input is added).
+Screenshots: by default (v1-v3) the `screenshot` field is not shown and no finding may cite
+it. With `vision_root` (v4, PROTOCOL_V4 2d) the Content Agent receives the screenshot image
+and one citable line `screenshot:V0`; a finding citing it cannot be string-checked against
+the image, so such findings are counted separately (`visual_findings`) and disclosed.
 """
 
 from __future__ import annotations
 
 import json
 import re
+from pathlib import Path
 
 import fields
 from contract.evidence import EvidenceItem, Provenance
 from contract.vocabulary import Direction, SourceAvailability, Strength
+
+from arms.prompts import SCREENSHOT_NOTE
 
 from .evidence_lines import baseline_view_lines, lines_for
 
@@ -39,7 +44,10 @@ ROLES = {
                  "infrastructure are NOT standalone indicators of phishing or benignity."),
 }
 TEXT_ONLY_EXCLUDED = frozenset({"screenshot"})
-_LEADING_ID = re.compile(r"^\[?\s*([A-Za-z_]+:[LRT]\d+(?:\.\d+)?|L\d+)\s*\]?")
+_LEADING_ID = re.compile(r"^\[?\s*([A-Za-z_]+:[LRTV]\d+(?:\.\d+)?|L\d+)\s*\]?")
+SCREENSHOT_LINE = ("screenshot:V0", "rendered screenshot of the page (image attached)")
+VISION_RULE = ("\nA finding about the attached screenshot cites line screenshot:V0 and quotes "
+               "the visible text or element it refers to (max 80 characters).")
 
 SYSTEM = """You are the {name} of a phishing-detection framework. Your analytical
 responsibility: {role}
@@ -112,7 +120,8 @@ class LLMSpecialists:
 
     def __init__(self, model, max_findings: int = 6, max_tokens: int = 2048,
                  max_lines: int | None = None, max_chars: int | None = None,
-                 baseline_view: tuple[int, int] | None = None, expand_on_focus: bool = False):
+                 baseline_view: tuple[int, int] | None = None, expand_on_focus: bool = False,
+                 vision_root=None):
         """max_lines / max_chars: evidence limits per field (None = v1 defaults 40 x 200;
         v3 = 80 x 300, PROTOCOL_V3)."""
         self.model, self.max_findings, self.max_tokens = model, max_findings, max_tokens
@@ -121,6 +130,10 @@ class LLMSpecialists:
         # v4 (PROTOCOL_V4 2a/2b): the baselines' own view of the served HTML as extra html:R* /
         # html:T* lines; on re-invocation, twice the budget (appended lines, ids stable).
         self.baseline_view, self.expand_on_focus = baseline_view, expand_on_focus
+        # v4 2d: screenshot paths in a capture are relative to this data directory.
+        self.vision_root = vision_root
+        self.unreadable_fields = frozenset() if vision_root is not None else TEXT_ONLY_EXCLUDED
+        self.visual_findings = 0
         self.calls = self.input_tokens = self.output_tokens = 0
         self.findings_returned = self.dropped_bad_line = self.dropped_bad_quote = 0
         self.parse_failures = self.resolved_bare_line = self.resolved_echoed_line = 0
@@ -153,12 +166,18 @@ class LLMSpecialists:
         def reason(envelope, focus=None) -> tuple[EvidenceItem, ...]:
             obtained = {f for f, a in envelope.availability.items()
                         if a is SourceAvailability.OBTAINED}
-            allowed = (fields.AGENT_FIELDS[agent] & obtained) - TEXT_ONLY_EXCLUDED
+            allowed = (fields.AGENT_FIELDS[agent] & obtained) - self.unreadable_fields
             all_lines = self._lines(envelope, expand=bool(focus is not None and self.expand_on_focus))
             mine = {lid: txt for f in sorted(allowed) for lid, txt in all_lines.get(f, [])}
+            image, shot = None, envelope.normalized.get("screenshot")
+            if "screenshot" in allowed and self.vision_root is not None and isinstance(shot, str):
+                image = Path(self.vision_root) / shot
+                mine[SCREENSHOT_LINE[0]] = SCREENSHOT_LINE[1]
             if not mine:
                 return ()
             user = "\n".join(f"[{lid}] {txt}" for lid, txt in mine.items())
+            if image is not None:
+                user += SCREENSHOT_NOTE + VISION_RULE
             if focus is not None:
                 ref_lines = {lid: txt for f in all_lines for lid, txt in all_lines[f]}
                 shown = [f"[{r}] {ref_lines[r]}" for r in focus.evidence_refs if r in ref_lines]
@@ -171,7 +190,8 @@ class LLMSpecialists:
             name, role = ROLES[agent]
             out = self.model.chat(SYSTEM.format(name=name, role=role,
                                                 max_findings=self.max_findings),
-                                  user, self.max_tokens, json_mode=True)
+                                  user, self.max_tokens, json_mode=True,
+                                  **({"images": [image]} if image is not None else {}))
             self.calls += 1
             self.input_tokens += out["input_tokens"]
             self.output_tokens += out["output_tokens"]
@@ -205,7 +225,8 @@ class LLMSpecialists:
                 if lid not in mine:
                     self.dropped_bad_line += 1
                     continue
-                if not quote or quote not in _norm(mine[lid]):
+                visual = lid == SCREENSHOT_LINE[0]      # quote not string-checkable on an image
+                if not quote or (not visual and quote not in _norm(mine[lid])):
                     self.dropped_bad_quote += 1
                     continue
                 try:
@@ -221,6 +242,7 @@ class LLMSpecialists:
                     continue
                 n = used.get(lid, 0)
                 used[lid] = n + 1
+                self.visual_findings += visual
                 items.append(EvidenceItem(
                     observation=str(fnd.get("observation", ""))[:300] or quote,
                     declared_field=field, locator=lid if n == 0 else f"{lid}.{n}",
@@ -236,4 +258,5 @@ class LLMSpecialists:
                 "dropped_bad_quote": self.dropped_bad_quote, "parse_failures": self.parse_failures,
                 "resolved_bare_line": self.resolved_bare_line,
                 "resolved_echoed_line": self.resolved_echoed_line,
+                "visual_findings": self.visual_findings,
                 "ungrounded_rate": (self.dropped_bad_line + self.dropped_bad_quote) / n if n else None}

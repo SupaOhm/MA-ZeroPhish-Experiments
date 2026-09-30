@@ -31,8 +31,9 @@ class Scripted:
     def __init__(self, replies=None, raw=None):
         self.replies, self.raw, self.prompts = replies or {}, raw, []
 
-    def chat(self, system, user, max_tokens=2048, json_mode=False):
+    def chat(self, system, user, max_tokens=2048, json_mode=False, images=None):
         self.prompts.append((system, user))
+        self.images = getattr(self, "images", []) + [images]
         if self.raw is not None:
             text = self.raw
         else:
@@ -220,6 +221,35 @@ class UnreadableEvidenceTests(unittest.TestCase):
             events = [json.loads(l) for l in fh]
         content = next(e for e in events if e.get("kind") == "record" and e["agent"] == "content")
         self.assertEqual(content["status"], "no_data")
+
+
+class VisionTests(unittest.TestCase):
+    """v4 2d: with vision_root the Content Agent gets the screenshot; visual findings are kept
+    (quote cannot be string-checked on an image) and counted; nobody else gets the image."""
+
+    def test_content_agent_gets_the_image_and_visual_findings_are_counted(self):
+        _, env, _ = phase1and2("c1")
+        if not isinstance(env.normalized.get("screenshot"), str):
+            self.skipTest("fixture c1 has no screenshot")
+        model = Scripted({"screenshot:V0": [finding("screenshot:V0", "PayPal logo", obs="logo")]})
+        spec = LLMSpecialists(model, vision_root="/data")
+        self.assertEqual(spec.unreadable_fields, frozenset())
+        items = spec.make_reasoners()["content"](env)
+        self.assertEqual([i.locator for i in items if i.declared_field == "screenshot"],
+                         ["screenshot:V0"])
+        self.assertEqual(spec.visual_findings, 1)
+        self.assertEqual(len(model.images[-1]), 1)
+        model.images = []
+        spec.make_reasoners()["url"](env)
+        self.assertEqual(model.images, [None])
+
+    def test_without_vision_the_screenshot_is_never_shown(self):
+        _, env, _ = phase1and2("c1")
+        model = Scripted({"screenshot:V0": [finding("screenshot:V0", "x")]})
+        spec = LLMSpecialists(model)
+        spec.make_reasoners()["content"](env)
+        self.assertNotIn("screenshot:V0", model.prompts[-1][1] if model.prompts else "")
+        self.assertEqual(spec.visual_findings, 0)
 
 
 if __name__ == "__main__":
