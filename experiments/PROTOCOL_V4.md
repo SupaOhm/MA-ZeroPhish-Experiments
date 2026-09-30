@@ -160,3 +160,22 @@ pending approval). Tool outputs are analysis over already-acquired evidence, not
 acquisition, so they are not entered in the acquisition log (SA3's "additional evidence"
 remains unused in this retrospective evaluation, stated as a limitation).
 Variant v4abdfT2 (= v4abdf + T2) run on dev-A and calib.
+Brand map approved by the user (2026-09-30) and added (prototype/data/, README has source/sha/licence).
+T1/T5 screening (dev-A): T1a phishing 0.44 vs benign **0.68**; T1b 0.00 vs 0.02; T5a 0.02 vs
+**0.14**; T5b/T5c 0 vs 0. The indicators meant as phishing evidence fire MORE on benign pages.
+Cause (matches inspected on dev-A): (i) the expanded Phishpedia list contains generic words
+stored as all-lowercase names (home, icon, business, time, health, service, global); (ii) real
+brand names are mentioned on legitimate pages (Facebook/Instagram/Google/YouTube footers and
+share buttons) -- a mention is not a brand claim.
+Rule correction (post hoc, stated as such): a phishing-evidence indicator is wired only if
+rate_phishing - rate_benign >= 0.10 (direction required). Under it T1/T5 as declared are NOT wired.
+**One bounded revision (T1s/T5s), declared before re-screening; if it fails, T1/T5 are dropped:**
+names matched case-sensitively; map entries whose name is entirely lowercase are skipped
+(reference-format rule, label-blind); T1s positions only title, h1, h2 and text inside a form,
+and a claim is reported only on a page with a password field (a credential page); T5s only brand
+domain names of >= 5 characters. Re-screened once on dev-A with the same corrected rule.
+Re-screen of the bounded revision (dev-A, strict): T1a 0.02 vs 0.00; T1b 0 vs 0; T5a 0.02 vs
+0.04; T5b/T5c 0 vs 0 -> none reaches +0.10. **T1 and T5 dropped** (no further revision). Likely
+reason: on these pages the brand is carried by logos/images, which the offline render does not
+load; a text-only brand claim on a credential page is rare. Round 4 wires **T2 only**
+(variant v4abdfT2, already running on dev-A and calib).

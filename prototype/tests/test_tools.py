@@ -50,6 +50,18 @@ class ToolTests(unittest.TestCase):
         (ing,) = bt.brand_reference_lookup("<title>ING login</title>", "https://x.example.com/")
         self.assertIn("'ING'", ing)
 
+    def test_strict_revision(self):
+        bt = BrandTools({**MAP, "home": ["home.example.com"]}, strict=True)
+        (none,) = bt.brand_reference_lookup("<title>AT&T</title>", "https://x.example.com/")
+        self.assertIn("no password field", none)                       # not a credential page
+        (line,) = bt.brand_reference_lookup(PHISH, "https://mail-att.example.com/login")
+        self.assertIn("page names brand 'AT&T' in h1, title", line)
+        (gen,) = bt.brand_reference_lookup("<title>home</title><input type=password>", "https://x.example.com/")
+        self.assertIn("no brand of the reference list", gen)            # lowercase entry skipped
+        (foot,) = bt.brand_reference_lookup("<img alt='Facebook'><input type=password>",
+                                            "https://x.example.com/")
+        self.assertIn("no brand of the reference list", foot)           # alt text not a strict position
+
     def test_one_edit(self):
         from agents.tools import one_edit
         self.assertTrue(one_edit("paypal", "paypa1") and one_edit("paypal", "paypall")

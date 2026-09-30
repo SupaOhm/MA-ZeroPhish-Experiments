@@ -55,8 +55,9 @@ def indicators(art: dict, bt: BrandTools | None) -> dict:
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--brand-map", default=None)
+    ap.add_argument("--strict", action="store_true", help="the bounded revision T1s/T5s")
     args = ap.parse_args()
-    bt = BrandTools(json.load(open(args.brand_map, encoding="utf-8"))) if args.brand_map else None
+    bt = BrandTools(json.load(open(args.brand_map, encoding="utf-8")), strict=args.strict)         if args.brand_map else None
     man = {json.loads(l)["case_id"]: json.loads(l)["label"] for l in open(DATA / "manifest.jsonl", encoding="utf-8")}
     cases = select_cases("phreshphish", "dev", 50, None)          # dev-A only
     rows = []
@@ -70,7 +71,9 @@ def main() -> None:
     for k in keys:
         rp = sum(r[k] for l, r in rows if l == "phishing") / n["phishing"]
         rb = sum(r[k] for l, r in rows if l == "benign") / n["benign"]
-        wire = abs(rp - rb) >= 0.10 or (k == "T1b" and rb >= 0.10)
+        # corrected rule: phishing-evidence indicators need the phishing direction; T1b is the
+        # benign-evidence indicator
+        wire = (rb >= 0.10) if k == "T1b" else (rp - rb >= 0.10)
         print(f"{k}: phishing {rp:.2f}  benign {rb:.2f}  diff {rp - rb:+.2f}  -> {'WIRE' if wire else 'no'}")
 
 

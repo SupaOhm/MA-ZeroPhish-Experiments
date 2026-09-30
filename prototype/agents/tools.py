@@ -167,10 +167,17 @@ def one_edit(a: str, b: str) -> bool:
     return s[i:] == t[i + 1:]
 
 
-def _brand_patterns(brand_map: dict[str, list[str]]):
+def _brand_patterns(brand_map: dict[str, list[str]], strict: bool = False):
     pats = []
     for brand in brand_map:
         name = brand.strip()
+        if strict:
+            # T1s: case-sensitive; entries whose name is entirely lowercase are skipped
+            # (the expanded list stores generic words such as 'home' or 'icon' that way).
+            if name == name.lower() or (len(name) < 4 and not (name.isupper() and name.isalpha())):
+                continue
+            pats.append((brand, re.compile(r"(?<![A-Za-z0-9])" + re.escape(name) + r"(?![A-Za-z0-9])")))
+            continue
         if len(name) < 4:
             if not (name.isupper() and name.isalpha()):
                 continue
@@ -184,14 +191,20 @@ def _brand_patterns(brand_map: dict[str, list[str]]):
 class BrandTools:
     """T1 and T5; built once from the brand -> official-domains map."""
 
-    def __init__(self, brand_map: dict[str, list[str]]):
+    STRICT_POSITIONS = {"title", "h1", "h2", "form text"}
+
+    def __init__(self, brand_map: dict[str, list[str]], strict: bool = False):
+        """strict = the one bounded revision T1s/T5s of PROTOCOL_V4 round 4."""
+        self.strict = strict
         self.map = {b: sorted({registrable(d) for d in ds if d}) for b, ds in brand_map.items()}
-        self.pats = _brand_patterns(self.map)
+        self.pats = _brand_patterns(self.map, strict)
         self.slds = {}                                    # 'paypal' -> brand
         for b, ds in self.map.items():
+            if strict and b.strip() == b.strip().lower():
+                continue
             for d in ds:
                 sld = _EXTRACT(d).domain.lower()
-                if len(sld) >= 4:
+                if len(sld) >= (5 if strict else 4):
                     self.slds.setdefault(sld, b)
 
     def brand_reference_lookup(self, html: str, url: str, page: _Page | None = None,
@@ -199,8 +212,13 @@ class BrandTools:
         """T1: brands named in prominent page text vs the page's own registrable domain."""
         page = page or parse_page(html, url)
         own = registrable(url)
+        if self.strict and not page.password:
+            return [f"tool brand_reference_lookup: no password field on the page, so no brand claim "
+                    f"is assessed; page domain {own}"]
         found: dict[str, set[str]] = {}
         for where, text in page.prominent:
+            if self.strict and where not in self.STRICT_POSITIONS:
+                continue
             for brand, rx in self.pats:
                 if rx.search(text):
                     found.setdefault(brand, set()).add(where)
