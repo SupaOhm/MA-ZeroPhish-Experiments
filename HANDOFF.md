@@ -3,7 +3,24 @@
 For the teammate continuing the experiments. Branch **`role3-specialists`**. Read this, then
 `experiments/PROTOCOL_V4.md` (the full development log, in order).
 
-## Where we are, in five lines
+## Update (later on 2026-09-30): V4 closed, V5 in progress
+- V4 development ran **9 rounds** on dev (all logged in PROTOCOL_V4.md); none beat the frozen v4.
+  Dev pooled (300, seen): v4 0.910 vs CoT 0.926, CoT+shot 0.919, single+shot 0.914, single 0.913,
+  PhishDebate 0.904, PhishDebate+shot 0.895 (no significant difference). The paper's exact
+  conditions Judge was also tried: it answers only 34% (paper forced F1 0.439).
+- **V5 (`experiments/PROTOCOL_V5.md`)**: learn the final decision from labelled training pages.
+  New **fit split**: 839 PhreshPhish pages (339 phishing / 500 benign), Jul-Oct 2024, campaign-
+  disjoint from every other split (`experiments/data_eval/build_fit_split.py`). Run frozen v4 on
+  it, train an L2 logistic model on its evidence features (`experiments/v5_learn.py`; arms B = MA
+  features, C = MA + code features, D = code features only as a reference), calibrate on calib,
+  choose B or C on dev (`experiments/score_v5.py`), then test2 once.
+- Credit: limit raised to $40 (about $24 left before the V5 runs).
+- V5 steps: enrich fit (offline render + CT, free, hours) -> rebuild captures + new data package
+  (check existing splits unchanged) -> `dev_eval.py --fit-collection --variants v4abdf --split fit
+  --per-label 500` (~$3.80) and re-run calib/dev from the cache (free; adds the new
+  `field_findings` log) -> `v5_learn.py` -> `score_v5.py` -> freeze -> test2.
+
+## Where we were before V5, in five lines
 1. **Final system = MA-ZeroPhish v4 ("v4abdf"), frozen.** Settings in
    `experiments/results_gpt4omini/v4_final/FROZEN.json`.
 2. **Detection vs baselines (200 held-out dev cases, "dev-B"): a statistical tie.** MA F1 0.895;
