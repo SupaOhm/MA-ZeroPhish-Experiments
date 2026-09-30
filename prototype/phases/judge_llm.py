@@ -208,7 +208,8 @@ class LLMJudge:
 
     def __init__(self, model, repair_attempts: int = 1, max_tokens: int = 2048,
                  structural_gaps: bool = False, decision_mode: str = "conditions",
-                 platt_ab: tuple[float, float] = (1.0, 0.0), band_w: float = 0.0):
+                 platt_ab: tuple[float, float] = (1.0, 0.0), band_w: float = 0.0,
+                 task_definition: bool = False):
         """`structural_gaps` (v2, Config.judge_structural_gaps): tell the Judge which gaps are
         structural. False = v1: rubric and payload byte-identical to the frozen v1 runs."""
         self.model, self.repair_attempts, self.max_tokens = model, repair_attempts, max_tokens
@@ -219,6 +220,9 @@ class LLMJudge:
         self.decision_mode, self.platt_ab, self.band_w = decision_mode, tuple(platt_ab), float(band_w)
         self._validate = validate_calibrated if decision_mode == "calibrated" else validate
         self.rubric = RUBRIC_STRUCTURAL if structural_gaps else RUBRIC
+        if task_definition:                     # v4 2e: the paper's definition, stated first
+            from task_definition import TASK_DEFINITION
+            self.rubric = TASK_DEFINITION + self.rubric
         self.calls = self.input_tokens = self.output_tokens = 0
         self.last_score: float | None = None
         self.last_score_any: float | None = None

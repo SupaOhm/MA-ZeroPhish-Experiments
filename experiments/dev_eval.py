@@ -21,7 +21,9 @@ def variants(model: str) -> dict:
     v3 = replace(v3_settings(phase1_config(MAZEROPHISH, model), (1.0, 0.0), 0.0), gate="always")
     v4a = replace(v3, specialist_baseline_view=(12000, 4000))
     v4ab = replace(v4a, specialist_expand_on_focus=True)
-    return {"v3": v3, "v4a": v4a, "v4ab": v4ab, "v4abd": replace(v4ab, specialist_vision=True)}
+    v4abd = replace(v4ab, specialist_vision=True)
+    return {"v3": v3, "v4a": v4a, "v4ab": v4ab, "v4abd": v4abd,
+            "v4abde": replace(v4abd, task_definition=True)}
 
 
 def main() -> None:

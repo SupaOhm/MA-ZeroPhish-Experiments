@@ -37,3 +37,11 @@ which exists for this purpose; every dev iteration is logged (`runs/dev_compare/
   the `screenshot:V0` line), counted as `screenshot_refused`.
 - 2026-09-30, data: offline renders that landed on a browser error page are failed renders
   (DATASET_PROVENANCE.md); applies from the next data package (the test2 build).
+- 2026-09-30, dev result of a-d (100 dev cases, forced F1): CoT 0.958, CoT+screenshot 0.939,
+  single+screenshot 0.936, single 0.913, **v4abd 0.913 (FPR 0.12, recall 0.94)**, PhishDebate
+  0.907, v3 0.887, v4a 0.885, v4ab 0.882, PhishDebate+screenshot 0.884
+  (results_gpt4omini/dev_v4/). Error analysis of v4abd on dev: benign adult sites and pages
+  with ordinary features (login form, hidden iframe) judged phishing.
+- 2026-09-30, candidate **2e**: state the paper's own phishing definition (Introduction +
+  Threat Model; `prototype/task_definition.py`) to the specialists and the Judge. Variant
+  v4abde, measured on the same dev cases.

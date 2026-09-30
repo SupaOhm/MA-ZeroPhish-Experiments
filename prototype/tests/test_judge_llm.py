@@ -233,5 +233,13 @@ class V3CalibratedDecisionTests(unittest.TestCase):
         self.assertIs(d.verdict, Verdict.BENIGN)
 
 
+
+class TaskDefinitionTests(unittest.TestCase):
+    def test_definition_is_prepended_only_when_enabled(self):
+        from phases.judge_llm import LLMJudge, RUBRIC
+        from task_definition import TASK_DEFINITION
+        self.assertEqual(LLMJudge(None).rubric, RUBRIC)
+        self.assertEqual(LLMJudge(None, task_definition=True).rubric, TASK_DEFINITION + RUBRIC)
+
 if __name__ == "__main__":
     unittest.main()

@@ -121,7 +121,7 @@ class LLMSpecialists:
     def __init__(self, model, max_findings: int = 6, max_tokens: int = 2048,
                  max_lines: int | None = None, max_chars: int | None = None,
                  baseline_view: tuple[int, int] | None = None, expand_on_focus: bool = False,
-                 vision_root=None):
+                 vision_root=None, task_definition: bool = False):
         """max_lines / max_chars: evidence limits per field (None = v1 defaults 40 x 200;
         v3 = 80 x 300, PROTOCOL_V3)."""
         self.model, self.max_findings, self.max_tokens = model, max_findings, max_tokens
@@ -134,6 +134,7 @@ class LLMSpecialists:
         self.vision_root = vision_root
         self.unreadable_fields = frozenset() if vision_root is not None else TEXT_ONLY_EXCLUDED
         self.visual_findings = self.screenshot_refused = 0
+        self.task_definition = task_definition   # v4 2e: the paper's definition, stated first
         self.calls = self.input_tokens = self.output_tokens = 0
         self.findings_returned = self.dropped_bad_line = self.dropped_bad_quote = 0
         self.parse_failures = self.resolved_bare_line = self.resolved_echoed_line = 0
@@ -189,6 +190,9 @@ class LLMSpecialists:
                            "evidence; cite only your own line ids.")
             name, role = ROLES[agent]
             system = SYSTEM.format(name=name, role=role, max_findings=self.max_findings)
+            if self.task_definition:
+                from task_definition import TASK_DEFINITION
+                system = TASK_DEFINITION + system
             try:
                 out = self.model.chat(system, user, self.max_tokens, json_mode=True,
                                       **({"images": [image]} if image is not None else {}))
