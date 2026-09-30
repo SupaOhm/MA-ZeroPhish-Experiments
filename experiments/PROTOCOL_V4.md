@@ -255,3 +255,12 @@ No Platt map, no threshold. Same Judge prompt as v4abdf (so first calls come fro
 Reported on dev pooled (300) with the paper's own metrics: coverage, selective F1 / risk, and
 forced-decision F1 where every insufficient counts as an error (paper sec. 1.6.2); the
 Judge-score fallback forced view (PROTOCOL_V2 rule) is shown separately and labelled.
+Round 7 result (dev pooled 300; results_gpt4omini/dev_v4_r7/): paper Judge answers 34% (90 phishing,
+12 benign; 171 insufficient_support, 27 finalization_error); selective F1 0.932 (risk 0.118);
+paper forced F1 (insufficient = error) **0.439**; Judge-score fallback 0.878. Baselines 0.895-0.926.
+Cause: benign needs the conclusion to survive coverage gaps, and retrospective fields (DNS, WHOIS,
+TLS, hosting, redirects) are unobservable for every page.
+- **7b (user chose, declared before running): v4abdfPS** = the paper's Judge (conditions decision)
+  + the v2 structural-gap note (PROTOCOL_V2 fix 2: fields unobservable BY CONSTRUCTION in this
+  retrospective setting, identical for every case of both labels, are listed as structural and not
+  treated as unresolved material gaps; operational failures stay material). Same metrics as round 7.
