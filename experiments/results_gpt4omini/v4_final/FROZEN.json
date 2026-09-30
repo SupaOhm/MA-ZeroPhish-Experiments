@@ -1,0 +1,80 @@
+{
+ "variant": "v4abdf",
+ "arm": "ma_v4abdf",
+ "model": "openrouter:openai/gpt-4o-mini-2024-07-18",
+ "data_version": [
+  "d2e85b9b39e5ff51"
+ ],
+ "platt": {
+  "a": 0.6463382796839447,
+  "b": 0.7821315734211108,
+  "w": 0.4,
+  "target_met": true
+ },
+ "platt_grid": [
+  {
+   "w": 0.0,
+   "coverage": 1.0,
+   "selective_risk": 0.14333333333333334
+  },
+  {
+   "w": 0.05,
+   "coverage": 0.95,
+   "selective_risk": 0.1368421052631579
+  },
+  {
+   "w": 0.1,
+   "coverage": 0.9466666666666667,
+   "selective_risk": 0.13380281690140844
+  },
+  {
+   "w": 0.15,
+   "coverage": 0.9466666666666667,
+   "selective_risk": 0.13380281690140844
+  },
+  {
+   "w": 0.2,
+   "coverage": 0.9333333333333333,
+   "selective_risk": 0.125
+  },
+  {
+   "w": 0.25,
+   "coverage": 0.9233333333333333,
+   "selective_risk": 0.1263537906137184
+  },
+  {
+   "w": 0.3,
+   "coverage": 0.7733333333333333,
+   "selective_risk": 0.125
+  },
+  {
+   "w": 0.35,
+   "coverage": 0.63,
+   "selective_risk": 0.10582010582010581
+  },
+  {
+   "w": 0.4,
+   "coverage": 0.13333333333333333,
+   "selective_risk": 0.025
+  },
+  {
+   "w": 0.45,
+   "coverage": 0.0,
+   "selective_risk": null
+  }
+ ],
+ "calib_cases": 300,
+ "forced_rule": "phishing if Platt(p) >= 0.5 else benign; no Judge score -> phishing",
+ "selective_rule": "phishing if Platt(p) >= 0.5 + w, benign if <= 0.5 - w, else insufficient",
+ "code_commit": "6a9521e7caef3d291ff8e05da1f77ddad72de4e2",
+ "calib_ledgers_sha256": {
+  "runs/v4_final/calib\\devv4_phreshphish_calib__shard0of6__ma_v4abdf.jsonl": "dbcda1b78c326eab4e1e1178dc7a127518f0614f52eb82f9c4322a5705225dfc",
+  "runs/v4_final/calib\\devv4_phreshphish_calib__shard1of6__ma_v4abdf.jsonl": "68ad870e6558e40ff00cba795ea8042e423d39c30ee6eface11749ae46d776d9",
+  "runs/v4_final/calib\\devv4_phreshphish_calib__shard2of6__ma_v4abdf.jsonl": "8702bdcc1ec41a9345664466022783f30f1541d42694a0fe518ee5e15fca7d97",
+  "runs/v4_final/calib\\devv4_phreshphish_calib__shard3of6__ma_v4abdf.jsonl": "0ba979ce0860ccb3135f238311f7fe5c6b35ceb010e98189cbf0608bbb8f9b30",
+  "runs/v4_final/calib\\devv4_phreshphish_calib__shard4of6__ma_v4abdf.jsonl": "078447470fa102527cbd778d2396148f6a3589f71a1c1cbaea0643123eb49ebf",
+  "runs/v4_final/calib\\devv4_phreshphish_calib__shard5of6__ma_v4abdf.jsonl": "b6aa87f0ae2d681b13f68051b69b98e5660bf8bd1166bbe809e9783926483edb"
+ },
+ "frozen_at": "2026-09-30",
+ "protocol": "experiments/PROTOCOL_V4.md (FREEZE)"
+}

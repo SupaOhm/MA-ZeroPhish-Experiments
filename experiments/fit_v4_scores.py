@@ -97,7 +97,11 @@ def main() -> None:
     ap.add_argument("--apply-split", default="dev", choices=["dev", "test2"])
     ap.add_argument("--arms", nargs="+", required=True)
     ap.add_argument("--out", required=True)
+    ap.add_argument("--frozen", default=None,
+                    help="apply the Platt map + band of this FROZEN.json instead of fitting (no refit)")
     args = ap.parse_args()
+    if args.frozen:
+        return apply_frozen(args)
     man = {json.loads(l)["case_id"]: json.loads(l) for l in open(MANIFEST, encoding="utf-8")}
     out = Path(args.out)
     out.mkdir(parents=True, exist_ok=True)
@@ -142,6 +146,29 @@ def main() -> None:
                     fo.write(json.dumps(sel) + "\n")
                     fo.write(json.dumps(dict(sel, arm=f"{arm}__{name}_forced", verdict=fv)) + "\n")
     print("applied decisions ->", applied)
+
+
+def apply_frozen(args) -> None:
+    """Apply the frozen final rule (Platt on logit(clip p) + band w; forced: p_cal >= 0.5) to the
+    decisions of the frozen variant in --apply-dir, on --apply-split. Nothing is fitted."""
+    fr = json.loads(Path(args.frozen).read_text(encoding="utf-8"))
+    a, b, w, arm = fr["platt"]["a"], fr["platt"]["b"], fr["platt"]["w"], fr["arm"]
+    man = {json.loads(l)["case_id"]: json.loads(l) for l in open(MANIFEST, encoding="utf-8")}
+    out = Path(args.out)
+    out.mkdir(parents=True, exist_ok=True)
+    path, n = out / f"final_{args.apply_split}.jsonl", 0
+    with path.open("w", encoding="utf-8") as fo:
+        for e in finals(str(Path(args.apply_dir) / f"*__{arm}.jsonl")):
+            if man[e["case_id"]]["split"] != args.apply_split:
+                continue
+            p = e.get("judge_score_any")
+            pc = None if p is None else sig(a * logit(p) + b)
+            sel = dict(e, arm="mazerophish_v4", verdict=band(pc, w), score=pc)
+            fo.write(json.dumps(sel) + "\n")
+            fo.write(json.dumps(dict(sel, arm="mazerophish_v4_forced",
+                                     verdict="phishing" if pc is None or pc >= 0.5 else "benign")) + "\n")
+            n += 1
+    print(f"applied frozen {arm} (a={a:.4f}, b={b:.4f}, w={w}) to {n} {args.apply_split} decisions -> {path}")
 
 
 if __name__ == "__main__":
