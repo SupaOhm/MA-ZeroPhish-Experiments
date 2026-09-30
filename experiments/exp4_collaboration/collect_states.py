@@ -59,7 +59,7 @@ def main() -> None:
     ap.add_argument("--key-env", default=None)
     ap.add_argument("--extra", default="", help="JSON of extra request params (e.g. OpenRouter provider pin)")
     ap.add_argument("--data-version", default=None)
-    ap.add_argument("--system-version", default="v1", choices=("v1", "v2"))
+    ap.add_argument("--system-version", default="v1", choices=("v1", "v2", "v2b"))
     ap.add_argument("--trigger-cover", default="all_fields", choices=("any_field", "all_fields"))
     ap.add_argument("--min-interval", type=float, default=4.0)
     ap.add_argument("--seed", type=int, default=41)

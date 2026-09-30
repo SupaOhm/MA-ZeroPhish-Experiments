@@ -82,7 +82,7 @@ def frozen_system(model_id: str, base=MAZEROPHISH, trigger_cover: str = "all_fie
     version "v2" (experiments/PROTOCOL_V2.md): structural-gap Judge + the v2 gate file."""
     est, tau, _ = frozen_gate(model_id, version)
     cfg = replace(phase1_config(base, model_id, trigger_cover), tau=tau,
-                  judge_structural_gaps=(version == "v2"))
+                  judge_structural_gaps=(version == "v2"))      # v2b keeps the v1 Judge
     return cfg, est
 
 
@@ -120,7 +120,7 @@ def common_args(ap: argparse.ArgumentParser) -> None:
     ap.add_argument("--data-version", required=True, help="DATA_VERSION of the captures used")
     ap.add_argument("--shard", default="0/1",
                     help="k/n: this process takes every n-th case from k (one key per shard)")
-    ap.add_argument("--system-version", default="v1", choices=("v1", "v2"),
+    ap.add_argument("--system-version", default="v1", choices=("v1", "v2", "v2b"),
                     help="v2 = experiments/PROTOCOL_V2.md (structural-gap Judge, v2 gate)")
 
 

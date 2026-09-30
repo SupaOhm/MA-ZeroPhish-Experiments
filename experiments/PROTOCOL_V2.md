@@ -51,3 +51,16 @@ brand_reference as not_in_source_dataset"). No other field is affected (audit of
 **DATA_VERSION `d014eb0152251d9c`**; the only difference from `b34836430981d74e` is this
 reason string, which v1 never reads. A v2 calib collection started on the old data was
 stopped after a few cases and discarded.
+
+## Amendment 2 (2026-09-30, before any v2 or v2b TEST run) — two pre-declared variants
+Calib evidence (not test): with fix 2 the GPT-4o-mini Judge became MORE cautious — it now
+cites "operational gaps" when declining definitiveness; calib cases decided fell from 85/300
+(v1 Judge) to 20/300 (v2 Judge); its p_phishing is still produced. v2 calib gate: 600 states,
+94% abstentions, tau = 0.05 (risk target not met -> collaborate whenever issues remain).
+The user chose to run BOTH variants on test, declared here before either test run:
+- **v2**  = fixes 1 + 2 + 3 (as originally declared; `--system-version v2`).
+- **v2b** = fixes 1 + 3, v1 Judge rubric (`--system-version v2b`). Its gate: target
+  stop_failure, trained on v1-Judge calib states re-collected on DATA_VERSION
+  `d014eb0152251d9c` (byte-identical prompts to the v1 collection, served from the cache),
+  frozen by the same declared rule into `frozen_gate__<model>__v2b.json`.
+No further variant will be created; both are reported next to v1, whatever the results.

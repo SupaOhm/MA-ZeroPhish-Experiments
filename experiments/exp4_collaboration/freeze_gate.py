@@ -42,7 +42,7 @@ def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--estimator", required=True)
     ap.add_argument("--model", required=True, help="model the calib states came from")
-    ap.add_argument("--system-version", default="v1", choices=("v1", "v2"))
+    ap.add_argument("--system-version", default="v1", choices=("v1", "v2", "v2b"))
     args = ap.parse_args()
     est = json.loads(Path(args.estimator).read_text(encoding="utf-8"))
     meta = est.get("meta", est)
