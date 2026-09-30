@@ -31,8 +31,9 @@ def main() -> None:
     ap.add_argument("--conditions", nargs="+", default=list(CONDITIONS))
     ap.add_argument("--out", default=str(ROOT / "runs" / "exp2"))
     args = ap.parse_args()
-    ada, est = frozen_system(args.model, version=args.system_version)
-    literal = frozen_system(args.model, trigger_cover="any_field", version=args.system_version)[0]
+    ada, est = frozen_system(args.model, version=args.system_version, keep_selection=True)
+    literal = frozen_system(args.model, trigger_cover="any_field", version=args.system_version,
+                            keep_selection=True)[0]
     fixed = frozen_system(args.model, BASELINE_FIXED_ALL, version=args.system_version)[0]
     arms = {}
     for cond in args.conditions:

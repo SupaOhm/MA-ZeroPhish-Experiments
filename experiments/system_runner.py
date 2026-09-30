@@ -76,10 +76,28 @@ def frozen_gate(model_id: str, version: str = "v1") -> tuple[LogisticEstimator, 
     return est, float(g["tau"]), g
 
 
+V4_FROZEN = ROOT / "experiments" / "results_gpt4omini" / "v4_final" / "FROZEN.json"
+
+
+def v4_settings(cfg, frozen: dict, keep_selection: bool = False):
+    """The frozen v4 pipeline on an arm/ablation config (PROTOCOL_V5 'Exp 2-6'). An arm keeps
+    the setting it tests: its selection when keep_selection, and any non-default gate."""
+    p = frozen["platt"]
+    cfg = v3_settings(cfg, (p["a"], p["b"]), p["w"], full_dispatch=not keep_selection)
+    return replace(cfg, specialist_baseline_view=(12000, 4000), specialist_expand_on_focus=True,
+                   specialist_vision=True, judge_shows_evidence=True,
+                   gate="always" if cfg.gate == "calibrated" else cfg.gate)
+
+
 def frozen_system(model_id: str, base=MAZEROPHISH, trigger_cover: str = "all_fields",
-                  version: str = "v1"):
+                  version: str = "v1", keep_selection: bool = False):
     """(config, estimator) of the frozen system, applied to `base` (an arm/ablation).
     version "v2" (experiments/PROTOCOL_V2.md): structural-gap Judge + the v2 gate file."""
+    if version == "v4":
+        fz = json.loads(V4_FROZEN.read_text(encoding="utf-8"))
+        if fz["model"] != model_id:
+            raise SystemExit(f"REFUSED: v4 was frozen for {fz['model']}, not {model_id}")
+        return v4_settings(phase1_config(base, model_id, trigger_cover), fz, keep_selection), None
     est, tau, g = frozen_gate(model_id, version)
     cfg = replace(phase1_config(base, model_id, trigger_cover), tau=tau,
                   judge_structural_gaps=(version == "v2"))      # v2b keeps the v1 Judge
@@ -133,7 +151,7 @@ def common_args(ap: argparse.ArgumentParser) -> None:
     ap.add_argument("--data-version", required=True, help="DATA_VERSION of the captures used")
     ap.add_argument("--shard", default="0/1",
                     help="k/n: this process takes every n-th case from k (one key per shard)")
-    ap.add_argument("--system-version", default="v1", choices=("v1", "v2", "v2b", "v3"),
+    ap.add_argument("--system-version", default="v1", choices=("v1", "v2", "v2b", "v3", "v4"),
                     help="v2 = experiments/PROTOCOL_V2.md (structural-gap Judge, v2 gate)")
 
 

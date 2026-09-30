@@ -71,3 +71,14 @@ CT runs in case-id (hash) order, so the snapshot is a pseudo-random sample of fi
 99 phishing / 125 benign with final CT). The snapshot's case list is saved with the results.
 Everything else as sections 2-3. The **final** V5 model is still trained on the full fit split
 once CT completes (rule unchanged); the preview is reported as a preview, never as the final.
+
+## Exp 2-6 with the final pipeline (declared 2026-09-30, before running; user request)
+Exp 2, 4, 5, 6 are re-run with the v4 pipeline (FROZEN.json: Platt a/b, band w; baseline-view
+lines, expansion on re-invocation, screenshot for the Content Agent, Judge sees evidence lines) on
+the SAME 100-case test subset as before (DATA_VERSION d2e85b9b39e5ff51; test captures are identical
+in the coming fit package). Each arm keeps what it tests: Exp 2's adaptive / literal-eq.(10) arms
+keep their selection (v4 otherwise runs every ready specialist); arms that set a gate keep it
+("never" = no collaboration, "fixed", full debate "always"); otherwise v4's gate "always". In v4,
+"ablation1 no selection" and "ablation3 no calibrated gate" coincide with the full system (reported
+as such). Scored with v4's frozen decision rule; if V5 is adopted, the same ledgers are rescored
+with the frozen V5 learner (decision layer only) and both are reported.
