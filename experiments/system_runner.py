@@ -169,7 +169,9 @@ def run_grid(arms: dict, case_paths: list[Path], out_dir: Path, tag: str, args,
         cfg = replace(arms[arm], name=arm)
         capture = load_capture(str(path))
         specialists = LLMSpecialists(model, max_lines=cfg.evidence_max_lines,
-                                     max_chars=cfg.evidence_max_chars)
+                                     max_chars=cfg.evidence_max_chars,
+                                     baseline_view=cfg.specialist_baseline_view,
+                                     expand_on_focus=cfg.specialist_expand_on_focus)
         judge = LLMJudge(model, structural_gaps=cfg.judge_structural_gaps,
                          decision_mode=cfg.judge_mode, platt_ab=cfg.judge_platt,
                          band_w=cfg.judge_band_w)

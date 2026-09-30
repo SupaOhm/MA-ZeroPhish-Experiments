@@ -22,7 +22,7 @@ import fields
 from contract.evidence import EvidenceItem, Provenance
 from contract.vocabulary import Direction, SourceAvailability, Strength
 
-from .evidence_lines import lines_for
+from .evidence_lines import baseline_view_lines, lines_for
 
 ROLES = {
     "url": ("URL Agent", "pre-render lexical and structural analysis of the URL and its redirect "
@@ -39,7 +39,7 @@ ROLES = {
                  "infrastructure are NOT standalone indicators of phishing or benignity."),
 }
 TEXT_ONLY_EXCLUDED = frozenset({"screenshot"})
-_LEADING_ID = re.compile(r"^\[?\s*([A-Za-z_]+:L\d+(?:\.\d+)?|L\d+)\s*\]?")
+_LEADING_ID = re.compile(r"^\[?\s*([A-Za-z_]+:[LRT]\d+(?:\.\d+)?|L\d+)\s*\]?")
 
 SYSTEM = """You are the {name} of a phishing-detection framework. Your analytical
 responsibility: {role}
@@ -111,23 +111,36 @@ class LLMSpecialists:
     unreadable_fields = TEXT_ONLY_EXCLUDED      # run.py: such evidence cannot make a record `ran`
 
     def __init__(self, model, max_findings: int = 6, max_tokens: int = 2048,
-                 max_lines: int | None = None, max_chars: int | None = None):
+                 max_lines: int | None = None, max_chars: int | None = None,
+                 baseline_view: tuple[int, int] | None = None, expand_on_focus: bool = False):
         """max_lines / max_chars: evidence limits per field (None = v1 defaults 40 x 200;
         v3 = 80 x 300, PROTOCOL_V3)."""
         self.model, self.max_findings, self.max_tokens = model, max_findings, max_tokens
         self._limits = {k: v for k, v in (("max_lines", max_lines), ("max_chars", max_chars))
                         if v is not None}
+        # v4 (PROTOCOL_V4 2a/2b): the baselines' own view of the served HTML as extra html:R* /
+        # html:T* lines; on re-invocation, twice the budget (appended lines, ids stable).
+        self.baseline_view, self.expand_on_focus = baseline_view, expand_on_focus
         self.calls = self.input_tokens = self.output_tokens = 0
         self.findings_returned = self.dropped_bad_line = self.dropped_bad_quote = 0
         self.parse_failures = self.resolved_bare_line = self.resolved_echoed_line = 0
 
-    def _lines(self, envelope) -> dict[str, list[tuple[str, str]]]:
+    def _lines(self, envelope, expand: bool = False) -> dict[str, list[tuple[str, str]]]:
         base = envelope.normalized.get("url", "") if isinstance(envelope.normalized.get("url"), str) else ""
         out = {}
         for f, content in envelope.normalized.items():
             if f in TEXT_ONLY_EXCLUDED or not isinstance(content, str):
                 continue
-            out[f] = [(f"{f}:L{i}", t) for i, t in enumerate(lines_for(f, content, base, **self._limits))]
+            lim = dict(self._limits)
+            if expand:
+                lim = {"max_lines": 2 * lim.get("max_lines", 40), "max_chars": lim.get("max_chars", 200)}
+            out[f] = [(f"{f}:L{i}", t) for i, t in enumerate(lines_for(f, content, base, **lim))]
+            if f == "html" and self.baseline_view:
+                hc, tc = self.baseline_view
+                raw, txt = baseline_view_lines(content, base, 2 * hc if expand else hc,
+                                               2 * tc if expand else tc)
+                out[f] += [(f"html:R{i}", t) for i, t in enumerate(raw)]
+                out[f] += [(f"html:T{i}", t) for i, t in enumerate(txt)]
         return out
 
     def make_reasoners(self, capture=None):
@@ -141,7 +154,7 @@ class LLMSpecialists:
             obtained = {f for f, a in envelope.availability.items()
                         if a is SourceAvailability.OBTAINED}
             allowed = (fields.AGENT_FIELDS[agent] & obtained) - TEXT_ONLY_EXCLUDED
-            all_lines = self._lines(envelope)
+            all_lines = self._lines(envelope, expand=bool(focus is not None and self.expand_on_focus))
             mine = {lid: txt for f in sorted(allowed) for lid, txt in all_lines.get(f, [])}
             if not mine:
                 return ()

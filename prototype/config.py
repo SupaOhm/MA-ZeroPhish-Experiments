@@ -65,6 +65,10 @@ class Config:
     # Evidence lines per field for the LLM specialists (None = v1 defaults 40 x 200).
     evidence_max_lines: int | None = None
     evidence_max_chars: int | None = None
+    # v4 (PROTOCOL_V4): specialists also see the baselines' preprocessed page (html chars,
+    # text chars); a re-invoked specialist gets twice its evidence budget.
+    specialist_baseline_view: tuple[int, int] | None = None
+    specialist_expand_on_focus: bool = False
     cost_scale: float = 1000.0
     budget: CaseBudget = field(default_factory=lambda: CaseBudget(100.0, 100.0, 20.0))
     evidence_removal: frozenset[str] = frozenset()

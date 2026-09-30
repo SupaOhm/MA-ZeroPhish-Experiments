@@ -118,3 +118,26 @@ def lines_for(field: str, content: str, base_url: str = "", max_lines: int = MAX
     if field in ("url", "redirect_chain"):
         return [_clip(content, max_chars)]
     return record_lines(content, max_lines, max_chars)   # ct, registration, dns, tls, hosting, ...
+
+
+def baseline_view_lines(html: str, url: str, html_chars: int, text_chars: int,
+                        chunk: int = 300) -> tuple[list[str], list[str]]:
+    """v4 information parity (PROTOCOL_V4 2a): the SAME preprocessed page the baselines read
+    (arms/preprocess.prepare: cleaned HTML truncated at a tag boundary, extracted text), cut
+    into quotable chunks. Returns (raw HTML chunks, text chunks)."""
+    from arms.preprocess import prepare
+    view = prepare(url, html, html_chars, text_chars)
+    raw, cur = [], ""
+    for piece in re.split(r"(?<=>)", view["html"]):
+        if len(cur) + len(piece) > chunk and cur:
+            raw.append(cur)
+            cur = ""
+        cur += piece
+        while len(cur) > chunk:
+            raw.append(cur[:chunk])
+            cur = cur[chunk:]
+    if cur.strip():
+        raw.append(cur)
+    text = view["text"]
+    txt = [text[i:i + chunk] for i in range(0, len(text), chunk)]
+    return [re.sub(r"\s+", " ", r).strip() for r in raw if r.strip()], [t.strip() for t in txt if t.strip()]
