@@ -156,7 +156,7 @@ class ChatModel:
             time.sleep(start - now)
 
     def chat(self, system: str, user: str, max_tokens: int = 2048, json_mode: bool = False,
-             images: list | None = None) -> dict:
+             images: list | None = None, temperature: float = 0, sample: int | None = None) -> dict:
         """`images`: PNG file paths sent with the user turn as OpenAI `image_url` parts
         (detail "low"). The cache key and the stored request hold each image's SHA-256
         instead of its bytes. Without images the request (and its cache key) is unchanged."""
@@ -172,12 +172,16 @@ class ChatModel:
             content = ([{"type": "text", "text": user}] + img_parts) if img_parts else user
             messages = ([{"role": "system", "content": system}] if system else []) + \
                        [{"role": "user", "content": content}]
-            b = {"model": self.model, "temperature": 0, "max_completion_tokens": max_tokens,
+            b = {"model": self.model, "temperature": temperature, "max_completion_tokens": max_tokens,
                  "messages": messages, **self.extra}
             if json_mode:
                 b["response_format"] = {"type": "json_object"}
             return b
         body, key_body = build(parts), build(keyparts)
+        if sample is not None:
+            # Repeated sampling of an identical request: the index keys the cache (and the stored
+            # record) so each sample is a separate real call; it is NOT sent to the API.
+            key_body = dict(key_body, _sample_index=sample)
         sha = hashlib.sha256(json.dumps(key_body, sort_keys=True).encode()).hexdigest()
         path = self.cache / f"{sha}.json"
         if path.exists():

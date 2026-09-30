@@ -27,7 +27,8 @@ def variants(model: str) -> dict:
             "v4abdf": replace(v4abd, judge_shows_evidence=True),
             "v4abdf3a": replace(v4abd, judge_shows_evidence=True,
                                 specialist_peer_lines_uncitable=True),
-            "v4abdfT2": replace(v4abd, judge_shows_evidence=True, specialist_tools=("T2",))}
+            "v4abdfT2": replace(v4abd, judge_shows_evidence=True, specialist_tools=("T2",)),
+            "v4abdfS": replace(v4abd, judge_shows_evidence=True, judge_samples=5)}
 
 
 def main() -> None:

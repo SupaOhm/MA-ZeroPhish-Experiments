@@ -220,7 +220,8 @@ class LLMJudge:
     def __init__(self, model, repair_attempts: int = 1, max_tokens: int = 2048,
                  structural_gaps: bool = False, decision_mode: str = "conditions",
                  platt_ab: tuple[float, float] = (1.0, 0.0), band_w: float = 0.0,
-                 task_definition: bool = False, show_evidence: bool = False):
+                 task_definition: bool = False, show_evidence: bool = False,
+                 samples: int = 1, sample_temperature: float = 1.0):
         """`structural_gaps` (v2, Config.judge_structural_gaps): tell the Judge which gaps are
         structural. False = v1: rubric and payload byte-identical to the frozen v1 runs."""
         self.model, self.repair_attempts, self.max_tokens = model, repair_attempts, max_tokens
@@ -232,6 +233,9 @@ class LLMJudge:
         self._validate = validate_calibrated if decision_mode == "calibrated" else validate
         self.rubric = RUBRIC_STRUCTURAL if structural_gaps else RUBRIC
         self.show_evidence = show_evidence
+        # v4 2h: `samples` - 1 extra Judge samples at `sample_temperature`; score = mean p.
+        self.samples, self.sample_temperature = int(samples), float(sample_temperature)
+        self.last_samples = None
         if show_evidence:                       # v4 2f
             self.rubric = self.rubric + EVIDENCE_NOTE
         if task_definition:                     # v4 2e: the paper's definition, stated first
@@ -274,6 +278,16 @@ class LLMJudge:
         self.output_tokens += out["output_tokens"]
         return _json(out["text"])
 
+    def _sample_p(self, payload: str, k: int) -> float | None:
+        """One extra Judge sample (v4 2h); only its p_phishing is used."""
+        out = self.model.chat(self.rubric, payload, self.max_tokens, json_mode=True,
+                              temperature=self.sample_temperature, sample=k)
+        self.calls += 1
+        self.input_tokens += out["input_tokens"]
+        self.output_tokens += out["output_tokens"]
+        p = (_json(out["text"]) or {}).get("p_phishing")
+        return float(p) if isinstance(p, (int, float)) and not isinstance(p, bool) and 0 <= p <= 1 else None
+
     def __call__(self, context: JudgeContext, object_id: str):
         payload = json.dumps(_context_payload(context, self.structural_gaps, self.show_evidence),
                              ensure_ascii=False)
@@ -294,6 +308,14 @@ class LLMJudge:
         p_any = (d or {}).get("p_phishing")
         self.last_score_any = (float(p_any) if isinstance(p_any, (int, float))
                                and not isinstance(p_any, bool) and 0 <= p_any <= 1 else None)
+        self.last_samples = None
+        if self.samples > 1:
+            ps = [self.last_score_any] + [self._sample_p(payload, k) for k in range(1, self.samples)]
+            self.last_samples = ps
+            valid = [p for p in ps if p is not None]
+            self.last_score_any = sum(valid) / len(valid) if valid else None
+            if isinstance(d, dict) and self.last_score_any is not None:
+                d = dict(d, p_phishing=self.last_score_any)
         if errs:
             decision = DecisionRecord(object_id=object_id, verdict=Verdict.INSUFFICIENT,
                                       explanation="finalization_error: " + "; ".join(errs)[:500],

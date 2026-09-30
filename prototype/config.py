@@ -79,6 +79,8 @@ class Config:
     specialist_peer_lines_uncitable: bool = False
     # v4 round 4: deterministic specialist tools wired in (subset of T1, T2, T5).
     specialist_tools: tuple = ()
+    # v4 2h: Judge self-consistency (1 = off).
+    judge_samples: int = 1
     cost_scale: float = 1000.0
     budget: CaseBudget = field(default_factory=lambda: CaseBudget(100.0, 100.0, 20.0))
     evidence_removal: frozenset[str] = frozenset()

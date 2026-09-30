@@ -257,5 +257,33 @@ class TaskDefinitionTests(unittest.TestCase):
         self.assertEqual(LLMJudge(None).rubric, RUBRIC)
         self.assertEqual(LLMJudge(None, task_definition=True).rubric, TASK_DEFINITION + RUBRIC)
 
+
+class SelfConsistencyTests(unittest.TestCase):
+    def test_mean_of_samples_decides_and_samples_are_logged(self):
+        from contract.judge import CoverageReport, JudgeContext
+
+        class Rec:
+            def __init__(self, texts):
+                self.texts, self.calls = list(texts), []
+
+            def chat(self, system, user, max_tokens=2048, json_mode=False, temperature=0, sample=None):
+                self.calls.append((temperature, sample))
+                return {"text": self.texts.pop(0), "input_tokens": 1, "output_tokens": 1}
+
+        p = Provenance("html", "headless_browser", "case1")
+        ctx = JudgeContext((EligibleObservation("x", "html", "html:L0", p),), (),
+                           CoverageReport(frozenset({"html"}), frozenset({"html"}), {}, {}), ())
+        first = json.dumps({"suf_phishing": True, "def_phishing": True, "suf_benign": False,
+                            "def_benign": False, "phishing_support": ["html:L0"], "benign_support": [],
+                            "cited": ["html:L0"], "coverage_limitations": [], "unresolved_issues": [],
+                            "p_phishing": 0.9, "explanation": "html:L0"})
+        m = Rec([first, '{"p_phishing": 0.1}', '{"p_phishing": 0.3}', "not json", '{"p_phishing": 0.5}'])
+        j = LLMJudge(m, decision_mode="calibrated", samples=5)
+        j(ctx, "o1")
+        self.assertEqual(j.last_samples, [0.9, 0.1, 0.3, None, 0.5])
+        self.assertAlmostEqual(j.last_score_any, 0.45)
+        self.assertEqual(m.calls[0], (0, None))
+        self.assertEqual(m.calls[1:], [(1.0, 1), (1.0, 2), (1.0, 3), (1.0, 4)])
+
 if __name__ == "__main__":
     unittest.main()

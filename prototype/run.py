@@ -237,6 +237,7 @@ def run_case(cfg: Config, capture, ledger: Ledger, adjudicator=None, estimator=N
             judge_calls=judge_calls,
             score=getattr(adjudicator, "last_score", None),
             judge_score_any=getattr(adjudicator, "last_score_any", None),
+            judge_samples=getattr(adjudicator, "last_samples", None),     # v4 2h
             # v4 2g: the design's own evidence measurements (phases/band.py) over the final
             # eligible items, per direction -- input of the calib-fitted evidence score.
             # Logged only; nothing here reaches the Judge.
