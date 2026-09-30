@@ -45,3 +45,7 @@ which exists for this purpose; every dev iteration is logged (`runs/dev_compare/
 - 2026-09-30, candidate **2e**: state the paper's own phishing definition (Introduction +
   Threat Model; `prototype/task_definition.py`) to the specialists and the Judge. Variant
   v4abde, measured on the same dev cases.
+- 2026-09-30, dev result of 2e: v4abde forced F1 **0.844** (FPR 0.26, recall 0.92) vs v4abd
+  0.913 on the same 100 dev cases -- WORSE. Judge scores of benign pages shifted up (benign
+  cases with p >= 0.7: 11 vs 5). **2e rejected**; the option stays in code, off by default.
+  Current best MA on dev: **v4abd** (a + b + c + d).
