@@ -192,3 +192,20 @@ temperature-0 call). Platt + band fitted on calib on logit(mean p), as before. E
 has its own cache key (sample index, not sent to the API). Variant v4abdfS on dev-A and calib,
 compared with v4abdf + Platt on dev-A. Model unchanged (GPT-4o-mini). Commits local; pushed
 only with the user's approval.
+
+## FREEZE (2026-09-30; user: no extra credit, "do the best choice")
+Round 5 (2h) NOT run: remaining OpenRouter credit $6.46 vs ~$4.65 needed to finish (dev-B MA
+~$1.00, test2 MA ~$1.00, v1 ~$0.60, six baseline arms ~$1.95 at the measured $0.0097/case,
+recalibration ~$0.10); adopting 2h would leave ~$0.20. It stays declared-but-unrun and is
+reported as such.
+**Final system = v4abdf**: v3 settings (full dispatch, calibrated Judge, 80 x 300 evidence) +
+2a baseline-view lines + 2b expansion on re-invocation + 2d screenshot for the Content Agent +
+2f Judge sees the cited evidence lines; collaboration gate "always" (as in every v4 dev run --
+the learned stop-error gate of spec MC3 is not used in v4, stated as a limitation);
+GPT-4o-mini. Verdict: Platt map + band fitted on CALIB (method of PROTOCOL_V3), applied to the
+logged Judge score; forced verdict = calibrated p >= 0.5.
+Before dev-B: rebuild the data package with test2 (includes the error-page fix), check that
+calib/dev capture files differ only in the documented error-page cases, re-collect v4abdf on
+calib under the new DATA_VERSION (cache: only changed cases cost), refit, and write
+experiments/results_gpt4omini/v4_final/FROZEN.json. Then dev-B once (go/no-go rule above),
+then test2 once only on a go.
