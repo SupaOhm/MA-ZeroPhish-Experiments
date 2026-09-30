@@ -15,7 +15,7 @@ import sys
 from collections import Counter, defaultdict
 from dataclasses import asdict, dataclass, field
 
-SPLITS = ("dev", "calib", "test", "test2")   # test2 = sealed parallel sample of the test period
+SPLITS = ("fit", "dev", "calib", "test", "test2")   # fit = training pages before dev (PROTOCOL_V5); test2 = sealed parallel sample of the test period
 LABELS = ("phishing", "benign")
 STRATA = ("webpage", "url", "sms", "email", "multi_url_message")
 
@@ -102,8 +102,8 @@ def validate(rows: list[ManifestRow]) -> tuple[list[str], list[str]]:
     for src, sp in by_src.items():
         # test2 is drawn from the SAME period as test (parallel, not later): it must only
         # follow calib, so it is checked as its own chain dev <= calib <= test2.
-        chains = [[s for s in ("dev", "calib", "test") if sp.get(s)],
-                  [s for s in ("dev", "calib", "test2") if sp.get(s)] if sp.get("test2") else []]
+        chains = [[s for s in ("fit", "dev", "calib", "test") if sp.get(s)],
+                  [s for s in ("fit", "dev", "calib", "test2") if sp.get(s)] if sp.get("test2") else []]
         pairs = {(a, b) for order in chains for a, b in zip(order, order[1:])}
         for a, b in sorted(pairs):
             if max(sp[a]) > min(sp[b]):

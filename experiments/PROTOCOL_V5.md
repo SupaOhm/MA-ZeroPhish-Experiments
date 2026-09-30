@@ -50,3 +50,11 @@ whatever it shows, with every round of V4 and V5 listed.
 ## Budget (estimates, GPT-4o-mini)
 Fit split: v4 on ~1,000 pages ~$4.50. test2 (MA + six baseline arms): ~$3.60-4.00. Needed with
 margin: ~$10 more than the $4.25 left on 2026-09-30.
+
+## Build log
+- 2026-09-30: fit split built (experiments/data_eval/build_fit_split.py): **839 pages = 339
+  phishing + 500 benign**, 2024-07-02..2024-10-31, one page per campaign group, 1,330 groups
+  blocked (any group touching dev/calib/test/test2 or a PhreshPhish test row; also blocked by the
+  stored group keys of existing cases -- the first attempt was refused by the validator because
+  de-duplication had kept 2024 copies of 2 dev cases). Phishing short by 161 (campaign reuse);
+  the learner uses all 839 as they are. Existing 1,000 manifest rows byte-identical.
