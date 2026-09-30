@@ -19,9 +19,13 @@ Suggested replacement (after eq. judge-decision, or replacing it):
 
 Keep the two abstention causes and the validator; `RubricConsistent` then checks that citations
 and disclosures are consistent with the reported support lists (the Suf/Def pair no longer decides).
-If V5 is adopted, add: "The calibrated probability comes from a logistic model over the validated
-evidence (per-field findings, evidence breadth/strength/opposition, the Judge's probability),
-trained on a separate fit split of earlier pages." (TODO: only if score_v5 chooses it.)
+V5 WAS ADOPTED (PROTOCOL_V5, final system). Add: "The final probability comes from a logistic model
+over the validated evidence (per-field counts of findings by direction and strength, evidence
+breadth/strength/opposition, open issues, coverage gaps, the Judge's probability) and deterministic
+page features (link and form destinations, certificate history, URL form), trained on a separate
+fit split of 839 earlier pages (Jul-Oct 2024, campaign-disjoint) and calibrated on the calibration
+split; the Judge's rubric, blinding and validated explanation are unchanged." Report the ablation:
+without the multi-agent evidence (code features only) dev F1 falls from 0.919 to 0.863 (p = 0.014).
 
 ## 2. Evaluation setup (sec. exp-setup): forced decision and the band width
 The text defines the forced setting as "every insufficient counts as an error". For the comparison
@@ -66,10 +70,13 @@ d2e85b9b39e5ff51). Offline renders that landed on a browser error page count as 
 / 500 benign), Jul-Oct 2024, campaign-disjoint (PROTOCOL_V5).
 
 ## 8. Results sections
-- Exp 1: main comparison = frozen system on dev-B (and on test2 once it is run). All arms
-  GPT-4o-mini; baselines text-only and + screenshot. TODO: V5 row, test2 table.
-- Exp 2, 4, 5, 6 were run with v2b on the 100-case test subset; say so, or re-run with the final
-  version (cost ~$3.50-4.00).
+- Exp 1: v5 on dev (300): forced F1 0.919, PR-AUC 0.973 vs CoT 0.926, single 0.913, PhishDebate
+  0.904 (ties; results_gpt4omini/v5_final/). test2 table: TODO (not run). Exploratory, 100 test
+  cases: v5 0.918 vs CoT/single 0.872, PhishDebate 0.863 (not significant; label as exploratory).
+- Run-to-run variability: 8 identical v4 copies on 100 test cases, forced F1 0.804-0.845 (v5
+  decision: 0.909-0.939); report it and avoid claiming single-run gaps below ~0.04.
+- Exp 2, 4, 5, 6 were re-run with the final pipeline (v4 pipeline; v5 decision layer):
+  results_gpt4omini/v5_exps/ (v4 decision: v4_exps/). Older v2b tables are superseded.
 - Exp 3 is code-only on constructed records (pair F1 0.952, 0% double counting).
 - Report every development round (PROTOCOL_V4 rounds 1-9, V5) in an appendix or supplement.
 

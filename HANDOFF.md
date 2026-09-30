@@ -3,6 +3,24 @@
 For the teammate continuing the experiments. Branch **`role3-specialists`**. Read this, then
 `experiments/PROTOCOL_V4.md` (the full development log, in order).
 
+## STATUS 2026-10-01 (read this first)
+- **Final system = MA-ZeroPhish v5** (`experiments/results_gpt4omini/v5_final/FROZEN_V5.json`): the
+  frozen v4 pipeline + a learned decision layer (L2 logistic over the validated evidence + code
+  features, trained on the 839-page fit split, calibrated on calib). Model GPT-4o-mini everywhere.
+- **Dev (300, seen):** v5 forced F1 0.919 (PR-AUC 0.973) vs CoT 0.926, CoT+shot 0.919, single 0.913,
+  PhishDebate 0.904 -- statistically a tie with the best baselines; v5 beats code-features-only
+  (0.863, p = 0.014), so the multi-agent evidence matters.
+- **Exp 2-6 re-run with the v4 pipeline** and scored with both v4 and v5 decisions
+  (`results_gpt4omini/v4_exps/`, `v5_exps/`). Full v5 on the 100 test cases: ~0.92 (8 identical
+  copies, SD 0.008). Exploratory: same 100 cases, CoT/single 0.872, PhishDebate 0.863 (not significant).
+- **Run-to-run noise:** identical configurations differ by up to ~0.04 F1 on 100 cases (GPT-4o-mini
+  is not deterministic at temperature 0); treat single-run gaps below that as noise.
+- **test2 (200 sealed zero-day cases) has NOT been run.** Running it once with v5 + the six baseline
+  arms costs ~$4; it is the team's decision (it is the last clean test). Credit left: $18.44 (limit $40).
+- Data package for all of this: DATA_VERSION **7b75f889a10e7839** (share via Drive, not git).
+- Protocols: `experiments/PROTOCOL_V4.md` (9 rounds), `experiments/PROTOCOL_V5.md` (learned decision).
+- Paper edits proposed in `experiments/PAPER_CHANGES.md`.
+
 ## Update (later on 2026-09-30): V4 closed, V5 in progress
 - V4 development ran **9 rounds** on dev (all logged in PROTOCOL_V4.md); none beat the frozen v4.
   Dev pooled (300, seen): v4 0.910 vs CoT 0.926, CoT+shot 0.919, single+shot 0.914, single 0.913,
