@@ -108,3 +108,11 @@ format as own lines) and are dropped by the grounding check; first-pass invalid 
   ("- another agent's <field> evidence (not citable): <text>"); own lines keep "[id] text".
   Grounding and the own-fields rule are unchanged.
 Variant v4abdf3a on dev-A (and calib, for its Platt fit); compared with v4abdf + Platt.
+
+## Round 3 result (dev-A, forced F1; results_gpt4omini/dev_v4_r3/)
+3a cut dropped findings from 17.1% to 6.9% of all findings (bad line ids 230 -> 12), but
+accuracy fell: v4abdf3a + Platt 0.897 (FPR 0.18, recall 0.96); + 2g 0.904 (FPR 0.14) vs
+v4abdf + Platt 0.940 (FPR 0.06). The re-invocation findings that were being dropped would, when
+kept, mostly push benign pages toward phishing. **3a rejected**. Best so far: v4abdf + Platt,
+0.940 vs CoT 0.958 on dev-A (paired dF1 -0.018 [-0.072, 0.030], McNemar p = 0.69: not
+significant). dev-B still unspent.
