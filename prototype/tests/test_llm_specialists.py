@@ -233,8 +233,9 @@ class RunCaseTests(unittest.TestCase):
         feats = dec["evidence_features"]                         # v4 2g inputs, logged
         self.assertEqual(set(feats), {"breadth_phishing", "top_phishing", "opposition_phishing",
                                       "breadth_benign", "top_benign", "opposition_benign",
-                                      "open_issues", "coverage_gaps"})
+                                      "open_issues", "coverage_gaps", "field_findings"})
         self.assertEqual((feats["breadth_phishing"], feats["top_phishing"]), (1, 2))
+        self.assertEqual(feats["field_findings"], {"tls:neutral:marginal": 1, "url:phishing:consistent": 1})
 
 
 class UnreadableEvidenceTests(unittest.TestCase):

@@ -44,10 +44,14 @@ def main() -> None:
     ap.add_argument("--out", default=str(ROOT / "runs" / "dev_compare" / "ma"))
     ap.add_argument("--calib-collection", action="store_true",
                     help="PROTOCOL_V4 round 2 step 2: collect CALIB decisions for fitting only")
+    ap.add_argument("--fit-collection", action="store_true",
+                    help="PROTOCOL_V5: run on the FIT split (training pages) for the learner")
     ap.add_argument("--sealed-test2-final", action="store_true",
                     help="the ONE final test2 run of the frozen system (needs FROZEN.json + GO.json)")
     args = ap.parse_args()
     allowed = ("dev", "calib") if args.calib_collection else ("dev",)
+    if args.fit_collection:
+        allowed = ("fit",)
     if args.sealed_test2_final:
         final = ROOT / "experiments" / "results_gpt4omini" / "v4_final"
         frozen, go = final / "FROZEN.json", final / "GO.json"

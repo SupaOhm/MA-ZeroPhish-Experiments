@@ -56,6 +56,12 @@ def evidence_features(records, context) -> dict:
         out[f"breadth_{d.value}"] = breadth(items, d)
         out[f"top_{d.value}"] = top.value if top is not None else 0
         out[f"opposition_{d.value}"] = opposition(items, d)
+    # V5: per-field counts of validated findings by direction and strength (logging only).
+    ff = {}
+    for it in items:
+        k = f"{it.declared_field}:{it.direction.value}:{it.strength.name.lower()}"
+        ff[k] = ff.get(k, 0) + 1
+    out["field_findings"] = dict(sorted(ff.items()))
     out["open_issues"] = len(context.issues)
     out["coverage_gaps"] = sum(1 for a in context.coverage.availability.values()
                                if a.value == "applicable_unavailable")
