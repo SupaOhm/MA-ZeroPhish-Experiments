@@ -283,3 +283,8 @@ standard technique; it adds no evidence (rounds 2e/3a/T2/6a all added evidence a
   ruled out counts as distinctive support. JSON gains a first key "alternatives". Everything else
   (blinding, citations, disclosures, calibrated decision, Platt + band fitted on calib) unchanged.
 Run on dev pooled (300) and calib (300); compared on dev pooled with v4abdf and the six baselines.
+Round 8 result (dev pooled 300; calib Platt a=0.665 b=2.276 w=0.20; results_gpt4omini/dev_v4_r8/):
+v4abdfC forced F1 **0.758** (P 0.915, R 0.647, FPR 0.060) vs v4abdf 0.910 (R 0.940, FPR 0.127).
+False alarms fell to CoT's level (legitimate pages scored >= 0.7: 8 vs 18 of 150), but the Judge
+explained away real phishing (phishing pages scored 0.0: 53 vs 6 of 150). **8a rejected.**
+Best system remains the frozen v4abdf.
