@@ -94,6 +94,9 @@ def build(row, data: Path, stats: Counter) -> dict:
     failures = {
         "redirect_chain": "not_in_source_dataset",
         "page_resources": "not_in_source_dataset",
+        # PhreshPhish holds no runtime brand-reference material for any case; recorded
+        # explicitly (was missing, so replay reported the generic "not_captured").
+        "brand_reference": "not_in_source_dataset",
         "dns": NOT_RETRO, "tls": NOT_RETRO, "hosting": NOT_RETRO,
     }
     render, ct, rdap = _load(ev / "render.json"), _load(ev / "ct.json"), _load(ev / "rdap.json")
