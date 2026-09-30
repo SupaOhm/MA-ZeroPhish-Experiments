@@ -110,8 +110,13 @@ class LLMSpecialists:
 
     unreadable_fields = TEXT_ONLY_EXCLUDED      # run.py: such evidence cannot make a record `ran`
 
-    def __init__(self, model, max_findings: int = 6, max_tokens: int = 2048):
+    def __init__(self, model, max_findings: int = 6, max_tokens: int = 2048,
+                 max_lines: int | None = None, max_chars: int | None = None):
+        """max_lines / max_chars: evidence limits per field (None = v1 defaults 40 x 200;
+        v3 = 80 x 300, PROTOCOL_V3)."""
         self.model, self.max_findings, self.max_tokens = model, max_findings, max_tokens
+        self._limits = {k: v for k, v in (("max_lines", max_lines), ("max_chars", max_chars))
+                        if v is not None}
         self.calls = self.input_tokens = self.output_tokens = 0
         self.findings_returned = self.dropped_bad_line = self.dropped_bad_quote = 0
         self.parse_failures = self.resolved_bare_line = self.resolved_echoed_line = 0
@@ -122,7 +127,7 @@ class LLMSpecialists:
         for f, content in envelope.normalized.items():
             if f in TEXT_ONLY_EXCLUDED or not isinstance(content, str):
                 continue
-            out[f] = [(f"{f}:L{i}", t) for i, t in enumerate(lines_for(f, content, base))]
+            out[f] = [(f"{f}:L{i}", t) for i, t in enumerate(lines_for(f, content, base, **self._limits))]
         return out
 
     def make_reasoners(self, capture=None):

@@ -59,7 +59,7 @@ def main() -> None:
     ap.add_argument("--key-env", default=None)
     ap.add_argument("--extra", default="", help="JSON of extra request params (e.g. OpenRouter provider pin)")
     ap.add_argument("--data-version", default=None)
-    ap.add_argument("--system-version", default="v1", choices=("v1", "v2", "v2b"))
+    ap.add_argument("--system-version", default="v1", choices=("v1", "v2", "v2b", "v3"))
     ap.add_argument("--trigger-cover", default="all_fields", choices=("any_field", "all_fields"))
     ap.add_argument("--min-interval", type=float, default=4.0)
     ap.add_argument("--seed", type=int, default=41)
@@ -78,6 +78,12 @@ def main() -> None:
     model = ChatModel(args.model, env_path=args.env, cache_dir=args.cache, extra=extra,
                       min_interval=args.min_interval, key_env=args.key_env)
     cfg = replace(frozen_system(args.model, args.trigger_cover, args.system_version), gate="always")
+    if args.system_version == "v3":
+        # Calibration is fitted AFTER this collection (fit_v3_judge.py): collect with the
+        # identity map and w = 0; every state records the Judge's raw score, and the state
+        # verdicts are recomputed with the frozen map before the gate is trained.
+        from system_runner import v3_settings
+        cfg = v3_settings(cfg, (1.0, 0.0), 0.0)
     tag = f"calib_states__{args.trigger_cover}" + (f"__shard{k}of{n}" if n > 1 else "")
     states_path, ledger_path = out / f"{tag}.jsonl", out / f"{tag}__ledger.jsonl"
     failures = out / f"{tag}.failures.jsonl"
@@ -98,8 +104,11 @@ def main() -> None:
     n_ok = n_fail = 0
     for case_id in todo:
         capture = load_capture(str(cap_dir / f"{case_id}.json"))
-        specialists = LLMSpecialists(model)
-        judge = LLMJudge(model, structural_gaps=cfg.judge_structural_gaps)
+        specialists = LLMSpecialists(model, max_lines=cfg.evidence_max_lines,
+                                     max_chars=cfg.evidence_max_chars)
+        judge = LLMJudge(model, structural_gaps=cfg.judge_structural_gaps,
+                         decision_mode=cfg.judge_mode, platt_ab=cfg.judge_platt,
+                         band_w=cfg.judge_band_w)
         sink: list = []
         fd, scratch = tempfile.mkstemp(suffix=".jsonl")
         os.close(fd)

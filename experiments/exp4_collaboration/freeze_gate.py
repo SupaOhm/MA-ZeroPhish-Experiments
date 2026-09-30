@@ -42,7 +42,9 @@ def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--estimator", required=True)
     ap.add_argument("--model", required=True, help="model the calib states came from")
-    ap.add_argument("--system-version", default="v1", choices=("v1", "v2", "v2b"))
+    ap.add_argument("--system-version", default="v1", choices=("v1", "v2", "v2b", "v3"))
+    ap.add_argument("--judge-calibration", default=None,
+                    help="v3: JSON file with the frozen Platt map and band (fit_v3_judge.py)")
     args = ap.parse_args()
     est = json.loads(Path(args.estimator).read_text(encoding="utf-8"))
     meta = est.get("meta", est)
@@ -63,6 +65,8 @@ def main() -> None:
               "calib_table": table,
               "estimator_report": {k: meta.get(k) for k in ("brier_eval", "auroc_eval",
                                    "eval_states", "train_states", "abstention_rate")}}
+    if args.judge_calibration:
+        frozen["judge_calibration"] = json.loads(Path(args.judge_calibration).read_text(encoding="utf-8"))
     out = HERE / f"frozen_gate__{slug}{sfx}.json"
     out.write_text(json.dumps(frozen, indent=1), encoding="utf-8")
     print(json.dumps({k: frozen[k] for k in ("tau", "risk_target_met", "calib_table")}, indent=1))

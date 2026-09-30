@@ -15,9 +15,9 @@ MAX_CHARS = 200
 _PASSWORD = re.compile(r"""type\s*=\s*["']?password""", re.I)
 
 
-def _clip(s: str) -> str:
+def _clip(s: str, max_chars: int = MAX_CHARS) -> str:
     s = re.sub(r"\s+", " ", s).strip()
-    return s if len(s) <= MAX_CHARS else s[: MAX_CHARS - 1] + "…"
+    return s if len(s) <= max_chars else s[: max_chars - 1] + "…"
 
 
 def _host(u: str) -> str:
@@ -73,7 +73,8 @@ class _Structure(HTMLParser):
             self._title += data
 
 
-def structure_lines(html: str, base_url: str) -> list[str]:
+def structure_lines(html: str, base_url: str, max_lines: int = MAX_LINES,
+                    max_chars: int = MAX_CHARS) -> list[str]:
     p = _Structure(base_url)
     try:
         p.feed(html)
@@ -87,31 +88,33 @@ def structure_lines(html: str, base_url: str) -> list[str]:
     out.append(f"password inputs: {len(_PASSWORD.findall(html))}")
     ext = sorted(p.hosts.items(), key=lambda kv: -kv[1])[:10]
     out.append("external hosts referenced: " + (", ".join(f"{h}({n})" for h, n in ext) or "none"))
-    return [_clip(l) for l in out][:MAX_LINES]
+    return [_clip(l, max_chars) for l in out][:max_lines]
 
 
-def text_lines(text: str) -> list[str]:
+def text_lines(text: str, max_lines: int = MAX_LINES, max_chars: int = MAX_CHARS) -> list[str]:
     parts = [p for p in re.split(r"(?<=[.!?])\s+|\n+", text) if len(p.strip()) >= 3]
     seen, out = set(), []
     for p in parts:
-        c = _clip(p)
+        c = _clip(p, max_chars)
         if c.lower() not in seen:
             seen.add(c.lower())
             out.append(c)
-        if len(out) >= MAX_LINES:
+        if len(out) >= max_lines:
             break
     return out
 
 
-def record_lines(text: str) -> list[str]:
-    return [_clip(p) for p in re.split(r";\s*|\n+", text) if p.strip()][:MAX_LINES]
+def record_lines(text: str, max_lines: int = MAX_LINES, max_chars: int = MAX_CHARS) -> list[str]:
+    return [_clip(p, max_chars) for p in re.split(r";\s*|\n+", text) if p.strip()][:max_lines]
 
 
-def lines_for(field: str, content: str, base_url: str = "") -> list[str]:
+def lines_for(field: str, content: str, base_url: str = "", max_lines: int = MAX_LINES,
+              max_chars: int = MAX_CHARS) -> list[str]:
+    """Defaults = v1 limits (40 lines x 200 chars); v3 passes 80 x 300 (PROTOCOL_V3)."""
     if field in ("html", "dom"):
-        return structure_lines(content, base_url)
+        return structure_lines(content, base_url, max_lines, max_chars)
     if field in ("page_content", "message_body"):
-        return text_lines(content)
+        return text_lines(content, max_lines, max_chars)
     if field in ("url", "redirect_chain"):
-        return [_clip(content)]
-    return record_lines(content)          # ct, registration, dns, tls, hosting, ...
+        return [_clip(content, max_chars)]
+    return record_lines(content, max_lines, max_chars)   # ct, registration, dns, tls, hosting, ...

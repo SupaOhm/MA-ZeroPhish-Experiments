@@ -57,6 +57,14 @@ class Config:
     # STRUCTURAL (unobservable by construction in a retrospective evaluation) and does not
     # treat them as unresolved material gaps. False = v1 behaviour, payload unchanged.
     judge_structural_gaps: bool = False
+    # v3 (experiments/PROTOCOL_V3.md): "calibrated" = verdict from Platt(p_phishing) vs a band
+    # 0.5 +- w, both frozen on calib; "conditions" = v1/v2 (Suf/Def decide).
+    judge_mode: str = "conditions"
+    judge_platt: tuple[float, float] = (1.0, 0.0)
+    judge_band_w: float = 0.0
+    # Evidence lines per field for the LLM specialists (None = v1 defaults 40 x 200).
+    evidence_max_lines: int | None = None
+    evidence_max_chars: int | None = None
     cost_scale: float = 1000.0
     budget: CaseBudget = field(default_factory=lambda: CaseBudget(100.0, 100.0, 20.0))
     evidence_removal: frozenset[str] = frozenset()

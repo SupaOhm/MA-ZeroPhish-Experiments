@@ -147,6 +147,7 @@ def run_case(cfg: Config, capture, ledger: Ledger, adjudicator=None, estimator=N
                     "features": _features(recs, iss, _env, solicited, cfg.reconciliation, lineage),
                     "p_hat": p_hat,
                     "judge_verdict": dec.verdict.value, "judge_cause": fb.notes,
+                    "judge_score_any": getattr(adjudicator, "last_score_any", None),
                 })
         later: list[dict] = []
         records, accepted = collaborate(

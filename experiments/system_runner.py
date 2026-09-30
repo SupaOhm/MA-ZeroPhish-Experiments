@@ -80,10 +80,23 @@ def frozen_system(model_id: str, base=MAZEROPHISH, trigger_cover: str = "all_fie
                   version: str = "v1"):
     """(config, estimator) of the frozen system, applied to `base` (an arm/ablation).
     version "v2" (experiments/PROTOCOL_V2.md): structural-gap Judge + the v2 gate file."""
-    est, tau, _ = frozen_gate(model_id, version)
+    est, tau, g = frozen_gate(model_id, version)
     cfg = replace(phase1_config(base, model_id, trigger_cover), tau=tau,
                   judge_structural_gaps=(version == "v2"))      # v2b keeps the v1 Judge
+    if version == "v3":
+        cal = g["judge_calibration"]                   # frozen on calib (fit_v3_judge.py)
+        # PROTOCOL_V3 declares only the Exp 1-style test2 comparison for v3: full dispatch
+        # always (selection arms of Exp 2 are not part of the v3 protocol).
+        cfg = v3_settings(cfg, (cal["a"], cal["b"]), cal["w"])
     return cfg, est
+
+
+def v3_settings(cfg, platt_ab, band_w, full_dispatch: bool = True):
+    """PROTOCOL_V3 changes 1-3 on a config. `full_dispatch` only for the main system: an arm
+    or ablation keeps its own selection switch (e.g. Exp 2's literal/adaptive arms)."""
+    return replace(cfg, judge_mode="calibrated", judge_platt=tuple(platt_ab), judge_band_w=band_w,
+                   evidence_max_lines=80, evidence_max_chars=300,
+                   **({"selection": "all_applicable"} if full_dispatch else {}))
 
 
 def select_cases(dataset: str, split: str, per_label: int | None, limit: int | None,
@@ -120,7 +133,7 @@ def common_args(ap: argparse.ArgumentParser) -> None:
     ap.add_argument("--data-version", required=True, help="DATA_VERSION of the captures used")
     ap.add_argument("--shard", default="0/1",
                     help="k/n: this process takes every n-th case from k (one key per shard)")
-    ap.add_argument("--system-version", default="v1", choices=("v1", "v2", "v2b"),
+    ap.add_argument("--system-version", default="v1", choices=("v1", "v2", "v2b", "v3"),
                     help="v2 = experiments/PROTOCOL_V2.md (structural-gap Judge, v2 gate)")
 
 
@@ -155,8 +168,11 @@ def run_grid(arms: dict, case_paths: list[Path], out_dir: Path, tag: str, args,
     for path, arm in todo:
         cfg = replace(arms[arm], name=arm)
         capture = load_capture(str(path))
-        specialists = LLMSpecialists(model)
-        judge = LLMJudge(model, structural_gaps=cfg.judge_structural_gaps)
+        specialists = LLMSpecialists(model, max_lines=cfg.evidence_max_lines,
+                                     max_chars=cfg.evidence_max_chars)
+        judge = LLMJudge(model, structural_gaps=cfg.judge_structural_gaps,
+                         decision_mode=cfg.judge_mode, platt_ab=cfg.judge_platt,
+                         band_w=cfg.judge_band_w)
         fd, scratch = tempfile.mkstemp(suffix=".jsonl")
         os.close(fd)
         t0 = time.time()

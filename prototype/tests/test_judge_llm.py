@@ -193,5 +193,45 @@ class UnavailableReasonsTests(unittest.TestCase):
         self.assertEqual(env.unavailable_reasons, {"dns": "not_retrospectively_observable"})
 
 
+class V3CalibratedDecisionTests(unittest.TestCase):
+    """PROTOCOL_V3 change 2: verdict from Platt(p) vs band; evidence rules still enforced."""
+
+    def judge(self, reply, w=0.1, ab=(1.0, 0.0)):
+        return LLMJudge(Scripted([json.dumps(reply)] * 2), decision_mode="calibrated",
+                        platt_ab=ab, band_w=w)
+
+    def test_one_field_support_no_longer_vetoes_a_scored_verdict(self):
+        r = dict(GOOD, phishing_support=["html:0"], p_phishing=0.9)     # v1 would reject this
+        d, fb = self.judge(r)(ctx(gaps=True), "o1")
+        self.assertIs(d.verdict, Verdict.PHISHING)
+        self.assertEqual(fb.notes, "decided")
+
+    def test_band_abstains_and_benign_side(self):
+        d, fb = self.judge(dict(GOOD, p_phishing=0.55))(ctx(gaps=True), "o1")
+        self.assertEqual((d.verdict, fb.notes), (Verdict.INSUFFICIENT, "abstain_band"))
+        d, fb = self.judge(dict(GOOD, p_phishing=0.2))(ctx(gaps=True), "o1")
+        self.assertIs(d.verdict, Verdict.BENIGN)
+
+    def test_evidence_rules_still_enforced(self):
+        bad = dict(GOOD, cited=["html:0", "ct:9"], p_phishing=0.95)      # non-eligible citation
+        d, fb = self.judge(bad)(ctx(gaps=True), "o1")
+        self.assertEqual((d.verdict, fb.notes), (Verdict.INSUFFICIENT, "finalization_error"))
+        hidden = dict(GOOD, coverage_limitations=[], p_phishing=0.95)     # gap not disclosed
+        d, fb = self.judge(hidden)(ctx(gaps=True), "o1")
+        self.assertEqual(fb.notes, "finalization_error")
+
+    def test_no_score_abstains(self):
+        r = {k: v for k, v in GOOD.items() if k != "p_phishing"}
+        d, fb = self.judge(r)(ctx(gaps=True), "o1")
+        self.assertEqual((d.verdict, fb.notes), (Verdict.INSUFFICIENT, "no_score"))
+
+    def test_platt_is_applied(self):
+        from phases.judge_llm import platt
+        self.assertAlmostEqual(platt(0.5, 2.0, 0.0), 0.5)
+        self.assertLess(platt(0.7, 1.0, -2.0), 0.5)          # a shift can move 0.7 below 0.5
+        d, _ = self.judge(dict(GOOD, p_phishing=0.7), w=0.0, ab=(1.0, -2.0))(ctx(gaps=True), "o1")
+        self.assertIs(d.verdict, Verdict.BENIGN)
+
+
 if __name__ == "__main__":
     unittest.main()
