@@ -240,3 +240,8 @@ Planned ablation for 6a (declared 2026-09-30 BEFORE any 6a result was looked at;
 the user's approval, ~$0.80): **"Judge only"** = the same Judge (rubric, page view, calibration
 procedure) with NO specialist observations, dependencies or issues -- to attribute any 6a gain
 to the multi-agent part vs the Judge simply reading the page like CoT. Reported whatever it shows.
+Round 6 result (dev pooled, 300 cases; calib-fitted Platt a=0.666 b=0.890 w=0.40;
+results_gpt4omini/dev_v4_r6/): v4abdf6a forced F1 **0.891** (P 0.882, R 0.900, FPR 0.120) vs frozen
+v4abdf 0.910 (R 0.940, FPR 0.127); baselines 0.895-0.926 (CoT 0.926). **6a rejected** (FPR not
+reduced, recall lost). The "Judge only" ablation is not run (no gain to attribute; saves ~$0.80).
+Best system remains the frozen v4abdf.
