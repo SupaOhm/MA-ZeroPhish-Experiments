@@ -249,7 +249,7 @@ def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("step", choices=["render", "ct", "rdap"])
     ap.add_argument("--data", required=True)
-    ap.add_argument("--split", choices=["dev", "calib", "test", "all"], default="test")
+    ap.add_argument("--split", choices=["dev", "calib", "test", "test2", "all"], default="test")
     ap.add_argument("--force", action="store_true")
     ap.add_argument("--retry", action="store_true", help="render: redo failed renders")
     ap.add_argument("--timeout", type=int, default=60)

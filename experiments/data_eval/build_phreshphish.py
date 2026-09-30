@@ -95,6 +95,10 @@ def main() -> None:
                     help="drop platform-hosted rows (host under a Public Suffix List PRIVATE "
                          "suffix, fingerprint.platform_suffix) from every split: in PhreshPhish "
                          "platform hosting is ~only phishing, a label shortcut")
+    ap.add_argument("--n-test2", type=int, default=0,
+                    help="per class: a SEALED second test sample drawn, with its own seed, from "
+                         "the test candidates NOT picked for `test` (one per campaign group, so "
+                         "campaign-disjoint from test). Other splits are unchanged.")
     ap.add_argument("--keep-manifest", default=None,
                     help="with --exclude-platform: keep every own-domain case this manifest "
                          "already selected and draw replacements only for the dropped ones "
@@ -230,6 +234,16 @@ def main() -> None:
             log[f"{split}:{label}:candidate_groups"] = len(cands)
             for r in pick:
                 chosen.append((split, r))
+            if split == "test" and args.n_test2:
+                picked = {r["sha256"] for r in pick}
+                rest2 = [r for r in cands if r["sha256"] not in picked]
+                pick2 = random.Random(f"{args.seed}:test2:{label}").sample(
+                    rest2, min(len(rest2), args.n_test2))
+                log[f"test2:{label}:candidate_groups"] = len(rest2)
+                if len(pick2) < args.n_test2:
+                    log[f"test2:{label}:SHORT_by"] = args.n_test2 - len(pick2)
+                for r in pick2:
+                    chosen.append(("test2", r))
 
     manifest = []
     for split, r in chosen:
