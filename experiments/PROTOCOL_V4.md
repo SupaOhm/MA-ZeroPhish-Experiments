@@ -288,3 +288,22 @@ v4abdfC forced F1 **0.758** (P 0.915, R 0.647, FPR 0.060) vs v4abdf 0.910 (R 0.9
 False alarms fell to CoT's level (legitimate pages scored >= 0.7: 8 vs 18 of 150), but the Judge
 explained away real phishing (phishing pages scored 0.0: 53 vs 6 of 150). **8a rejected.**
 Best system remains the frozen v4abdf.
+
+## Round 9 -- two-Judge average (POST HOC: conceived after seeing rounds 4/8 on dev; declared
+before computing it; no model calls)
+v4abdf's Judge over-flags legitimate pages; v4abdfC's Judge explains away phishing. **9a** = per
+case, the mean of the two Judges' raw p_phishing (same specialist records; if one score is
+missing, the other is used; none -> no score). Platt + band fitted on CALIB (both Judges' calib
+runs, DATA_VERSION d2e85b9b39e5ff51); forced: calibrated p >= 0.5 (no score -> phishing). Compared
+on dev pooled (300) with the six baselines. Because it is post hoc on seen data, a dev win is only
+a candidate: test2 decides. If adopted, a case costs both Judge calls.
+Round 9 result (dev pooled 300; calib Platt a=0.810 b=1.492 w=0.30; results_gpt4omini/dev_v4_r9/):
+forced F1 **0.910** (P 0.881, R 0.940, FPR 0.127) = identical decisions to v4abdf (the calibrated cut
+falls at averaged raw p >= 0.14, so every page v4 flags stays flagged). No gain, double Judge cost:
+**9a rejected.**
+
+## Development closed (2026-09-30)
+Nine rounds on dev; none beats the frozen v4abdf on forced F1. Final system = **frozen v4abdf**
+(v4_final/FROZEN.json). Dev pooled (300, seen data): v4 0.910 vs CoT 0.926, CoT+shot 0.919,
+single+shot 0.914, single 0.913, PhishDebate 0.904, PhishDebate+shot 0.895 -- no significant
+difference against any arm. Held-out dev-B (200): 0.895 vs 0.900-0.914 (no-go). test2 sealed.
