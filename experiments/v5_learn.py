@@ -58,7 +58,10 @@ def _num(rx, s, default=0.0):
 
 def det_features(case_id: str, split: str) -> list[float]:
     cap = json.loads((DATA / "captures" / split / f"{case_id}.json").read_text(encoding="utf-8"))
-    art = {a["field"]: a["content"] for a in cap["artifacts"]}
+    return det_features_from_art({a["field"]: a["content"] for a in cap["artifacts"]})
+
+
+def det_features_from_art(art: dict) -> list[float]:
     url, html, ct = art.get("url", ""), art.get("html", ""), art.get("ct")
     anchors, forms, res = link_form_destinations(html, url, parse_page(html, url))
     host = re.sub(r"^[a-z]+://", "", url.lower()).split("/")[0].split("@")[-1].split(":")[0]

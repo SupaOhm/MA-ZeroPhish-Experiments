@@ -128,3 +128,20 @@ Choice rule -> **C, frozen as MA-ZeroPhish v5** (v5_final/FROZEN_V5.json). The p
 had given 0.929; the drop is within the measured run-to-run noise (SD 0.013). Reading: v5 ties the
 strongest baselines on F1 (no significant difference), ranks cases best (PR-AUC 0.973), and its
 multi-agent evidence adds significantly over the code features alone. test2 NOT run (user decides).
+
+## Exp 2-6 with the frozen v5 decision layer (as declared; results_gpt4omini/v5_exps/)
+Same v4-pipeline ledgers, v5 learner applied (code features respect each Exp 5 arm's withheld
+evidence; conflict swaps use their own captures). Forced F1 (100 test cases):
+- Exp 2 complete: fixed-all 0.918, adaptive 0.909, literal eq.(10) 0.884; budget 2: fixed-all
+  0.917, adaptive 0.896, literal 0.884 (none significant).
+- Exp 4: fixed round 0.918, MA 0.909, full debate 0.902 (FPR 0.12), no collaboration 0.902 (FPR 0.12).
+- Exp 5: base 0.918; transient recovered 0.918; no DOM 0.904; no network metadata 0.885; no HTML
+  0.860 (FPR 0.22); no browser 0.848; conflict swaps (48) 0.706.
+- Exp 6: full 0.939; no selection 0.918; no reconciliation 0.918; no calibrated gate 0.918; no
+  targeted collaboration 0.911; no independent adjudication 0.907 (none significant).
+The eight identical-configuration copies: mean 0.920, SD 0.008, range 0.909-0.939.
+**Exploratory (not declared; test cases informed the earlier v1-v4 redesign, but never the v5
+learner, its calibration or its choice):** on the same 100 test cases, the text baselines' Exp 1
+runs score CoT 0.872, single-agent 0.872, PhishDebate 0.863; one v5 copy (Exp 5 base) 0.918 (P 0.938,
+R 0.900, FPR 0.060). Paired: CoT -0.046 [-0.122, +0.023] p=0.39; single -0.046 p=0.42; PhishDebate
+-0.056 p=0.24 -- a consistent but not significant margin at n=100. Only sealed test2 can confirm.
