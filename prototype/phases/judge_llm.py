@@ -64,6 +64,13 @@ STRUCTURAL_REASONS = frozenset({
     "excluded_retrospective_lookup_leaks_future_takedown",
 })
 
+# v4 2f: each observation also carries the verbatim evidence line it cites.
+EVIDENCE_NOTE = """
+
+Each observation carries "evidence": the verbatim line extracted from the artifact that the
+observation cites. The observation text is a specialist's reading of that line; weigh the
+evidence line itself, and do not accept an observation that its evidence line does not bear out."""
+
 RUBRIC_STRUCTURAL = RUBRIC + """
 
 Coverage note: fields in coverage.structural_gaps are unobservable BY CONSTRUCTION in this
@@ -73,12 +80,16 @@ def_phishing or def_benign. Fields in coverage.operational_gaps (failed or withh
 acquisition) remain material gaps."""
 
 
-def _context_payload(context: JudgeContext, structural_gaps: bool = False) -> dict:
+def _context_payload(context: JudgeContext, structural_gaps: bool = False,
+                     show_evidence: bool = False) -> dict:
     obs = []
     for o in context.observations:
         row = {"locator": o.locator, "field": o.declared_field, "observation": o.observation,
                "source": o.provenance.artifact, "instrument": o.provenance.instrument,
                "capture": o.provenance.capture_id, "revised": o.revision_accepted}
+        if show_evidence:          # v4 2f: the verbatim evidence line behind the observation
+            ev = getattr(o, "evidence_text", None)
+            row["evidence"] = ev if ev is not None else "(not text: see observation)"
         for extra in ("direction", "agent"):                    # Ablation 5 only
             v = getattr(o, extra, None)
             if v is not None:
@@ -209,7 +220,7 @@ class LLMJudge:
     def __init__(self, model, repair_attempts: int = 1, max_tokens: int = 2048,
                  structural_gaps: bool = False, decision_mode: str = "conditions",
                  platt_ab: tuple[float, float] = (1.0, 0.0), band_w: float = 0.0,
-                 task_definition: bool = False):
+                 task_definition: bool = False, show_evidence: bool = False):
         """`structural_gaps` (v2, Config.judge_structural_gaps): tell the Judge which gaps are
         structural. False = v1: rubric and payload byte-identical to the frozen v1 runs."""
         self.model, self.repair_attempts, self.max_tokens = model, repair_attempts, max_tokens
@@ -220,6 +231,9 @@ class LLMJudge:
         self.decision_mode, self.platt_ab, self.band_w = decision_mode, tuple(platt_ab), float(band_w)
         self._validate = validate_calibrated if decision_mode == "calibrated" else validate
         self.rubric = RUBRIC_STRUCTURAL if structural_gaps else RUBRIC
+        self.show_evidence = show_evidence
+        if show_evidence:                       # v4 2f
+            self.rubric = self.rubric + EVIDENCE_NOTE
         if task_definition:                     # v4 2e: the paper's definition, stated first
             from task_definition import TASK_DEFINITION
             self.rubric = TASK_DEFINITION + self.rubric
@@ -261,7 +275,8 @@ class LLMJudge:
         return _json(out["text"])
 
     def __call__(self, context: JudgeContext, object_id: str):
-        payload = json.dumps(_context_payload(context, self.structural_gaps), ensure_ascii=False)
+        payload = json.dumps(_context_payload(context, self.structural_gaps, self.show_evidence),
+                             ensure_ascii=False)
         d = self._ask(payload)
         errs = self._validate(d, context)
         for _ in range(self.repair_attempts):

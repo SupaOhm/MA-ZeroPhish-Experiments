@@ -41,6 +41,7 @@ class EligibleObservation:
     locator: str
     provenance: Provenance
     revision_accepted: bool = False
+    evidence_text: str | None = None     # the cited evidence line itself (v4 2f)
 
 
 @dataclass(frozen=True, slots=True)

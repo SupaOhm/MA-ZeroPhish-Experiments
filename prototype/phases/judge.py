@@ -106,6 +106,7 @@ def project_for_judge(
                     locator=item.locator,
                     provenance=item.provenance,
                     revision_accepted=item.locator in revised,
+                    evidence_text=item.evidence_text,
                 )
             )
         elif judge_input == "sees_verdicts":

@@ -40,6 +40,9 @@ class EvidenceItem:
     direction: Direction
     strength: Strength
     provenance: Provenance
+    # The verbatim evidence line the finding cites (checked to contain its quote); None when
+    # it is not text (a screenshot) or not recorded. Evidence, not an assessment.
+    evidence_text: str | None = None
 
 
 @dataclass(frozen=True, slots=True)

@@ -49,3 +49,29 @@ which exists for this purpose; every dev iteration is logged (`runs/dev_compare/
   0.913 on the same 100 dev cases -- WORSE. Judge scores of benign pages shifted up (benign
   cases with p >= 0.7: 11 vs 5). **2e rejected**; the option stays in code, off by default.
   Current best MA on dev: **v4abd** (a + b + c + d).
+
+## Round 2 (declared 2026-09-30, BEFORE any run of f or g)
+Diagnosis on dev-A (the 100 cases used so far): v4abd recall 0.94 but FPR 0.12; Judge scores
+coarse (PR-AUC 0.912). Candidates:
+- **2f, Judge sees the evidence line.** Each eligible observation also carries the verbatim
+  evidence line it cites (already checked to contain the quote; screenshot findings carry
+  none). Rubric note: weigh the line itself. No verdict/direction/strength/band is added.
+- **2g, evidence-based score (calib-fitted).** Logistic regression of the label on the
+  decision's evidence features -- breadth, top strength and opposition for each direction
+  (phases/band.py over the final eligible items), open issues, coverage gaps -- and
+  logit(clip(Judge p, 0.01, 0.99)); fitted on CALIB only. Verdict band rule of PROTOCOL_V3
+  (smallest w in {0,...,0.45} with calib selective risk <= 0.10).
+- 2h (Judge self-consistency, 5 samples) only if f/g leave MA below the baselines on dev-A.
+Procedure:
+1. Re-run v4abd on dev-A from the cache (no new calls) to log the evidence features; run
+   v4abdf on dev-A.
+2. Collect calib (300) for v4abd and v4abdf (gate always); fit Platt (Judge p only) and 2g on
+   calib for each.
+3. Choose among {v4abd, v4abdf} x {Platt, 2g} on dev-A (forced F1, then FPR).
+4. **dev-B = the other 200 dev cases (150+150 per label minus dev-A), untouched so far**:
+   run the chosen system and the baselines (text and screenshot) there ONCE, as a check of
+   dev-A overfitting. Reported whatever it shows; no change after it except bug fixes.
+5. Rebuild calib on the final DATA_VERSION (cache makes unchanged cases free), refit, freeze,
+   test2 once.
+Label note: dev_compare/ma ledgers before this round carry system_version "v1" (a default of
+dev_eval.py); the arm name identifies the configuration. Fixed from round 2.

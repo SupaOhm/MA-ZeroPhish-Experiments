@@ -166,6 +166,22 @@ class V2StructuralGapsTests(unittest.TestCase):
         self.assertNotIn("structural_gaps", cov)
         self.assertNotIn("operational_gaps", cov)
 
+    def test_v4f_evidence_line_shown_only_when_enabled(self):
+        from contract.judge import CoverageReport, JudgeContext
+        from phases.judge_llm import EVIDENCE_NOTE, RUBRIC, _context_payload
+        p = Provenance("html", "headless_browser", "case1")
+        obs = (EligibleObservation("hidden iframe", "html", "html:L2", p,
+                                   evidence_text="iframe src='https://t.example/ns' hidden=True"),
+               EligibleObservation("logo of a bank", "screenshot", "screenshot:V0", p))
+        ctx = JudgeContext(obs, (), CoverageReport(frozenset(), frozenset(), {}, {}), ())
+        off = _context_payload(ctx)["observations"]
+        self.assertTrue(all("evidence" not in r for r in off))           # v1-v4abd unchanged
+        on = _context_payload(ctx, show_evidence=True)["observations"]
+        self.assertEqual(on[0]["evidence"], "iframe src='https://t.example/ns' hidden=True")
+        self.assertEqual(on[1]["evidence"], "(not text: see observation)")
+        self.assertTrue(all("direction" not in r and "strength" not in r for r in on))
+        self.assertEqual(LLMJudge(Scripted([]), show_evidence=True).rubric, RUBRIC + EVIDENCE_NOTE)
+
     def test_v2_splits_only_the_declared_structural_reasons(self):
         from phases.judge_llm import RUBRIC_STRUCTURAL, _context_payload
         self.assertIs(LLMJudge(Scripted([]), structural_gaps=True).rubric, RUBRIC_STRUCTURAL)

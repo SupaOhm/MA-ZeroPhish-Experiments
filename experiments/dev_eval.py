@@ -23,7 +23,8 @@ def variants(model: str) -> dict:
     v4ab = replace(v4a, specialist_expand_on_focus=True)
     v4abd = replace(v4ab, specialist_vision=True)
     return {"v3": v3, "v4a": v4a, "v4ab": v4ab, "v4abd": v4abd,
-            "v4abde": replace(v4abd, task_definition=True)}
+            "v4abde": replace(v4abd, task_definition=True),
+            "v4abdf": replace(v4abd, judge_shows_evidence=True)}
 
 
 def main() -> None:
@@ -31,13 +32,18 @@ def main() -> None:
     common_args(ap)
     ap.add_argument("--variants", nargs="+", default=["v3", "v4a", "v4ab"])
     ap.add_argument("--out", default=str(ROOT / "runs" / "dev_compare" / "ma"))
+    ap.add_argument("--calib-collection", action="store_true",
+                    help="PROTOCOL_V4 round 2 step 2: collect CALIB decisions for fitting only")
     args = ap.parse_args()
-    if args.split != "dev":
-        raise SystemExit("REFUSED: development runs are on the dev split only (PROTOCOL_V4)")
+    allowed = ("dev", "calib") if args.calib_collection else ("dev",)
+    if args.split not in allowed:
+        raise SystemExit("REFUSED: development runs are on dev (calib only with --calib-collection; "
+                         "never test/test2) -- PROTOCOL_V4")
+    args.system_version = "v4dev:" + "+".join(args.variants)     # label; arm names identify configs
     allv = variants(args.model)
     arms = {f"ma_{v}": allv[v] for v in args.variants}
-    cases = select_cases(args.dataset, "dev", args.per_label, args.limit)
-    run_grid(arms, cases, Path(args.out), f"devv4_{args.dataset}_dev", args, estimator=None)
+    cases = select_cases(args.dataset, args.split, args.per_label, args.limit)
+    run_grid(arms, cases, Path(args.out), f"devv4_{args.dataset}_{args.split}", args, estimator=None)
 
 
 if __name__ == "__main__":

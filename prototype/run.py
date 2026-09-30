@@ -14,11 +14,12 @@ from capture.replay import Replay
 from config import Config
 from contract.budget import BudgetPool
 from contract.submission import AcquisitionPlan, Submission, SubmissionType
-from contract.vocabulary import Status
+from contract.vocabulary import Direction, Status
 from ledger import Ledger
 from phases import classify
 from phases.acquire import BudgetLedger, acquire
-from phases.judge import adjudicate, coverage_fraction, project_for_judge
+from phases.band import breadth, opposition, top_strength
+from phases.judge import _eligible, adjudicate, coverage_fraction, project_for_judge
 from phases.moderator import collaborate, moderate
 from phases.normalize import normalize
 from phases.select import selection_detail
@@ -44,6 +45,21 @@ def _counting(reasoners: dict, calls: list) -> dict:
 
     return {agent: wrap(agent, fn) for agent, fn in reasoners.items()}
 
+
+def evidence_features(records, context) -> dict:
+    """Breadth / top strength (0 none .. 3 distinctive) / opposition of the final eligible
+    items for each direction, plus open-issue and coverage-gap counts."""
+    items = tuple(item for _, item in _eligible(records))
+    out = {}
+    for d in (Direction.PHISHING, Direction.BENIGN):
+        top = top_strength(items, d)
+        out[f"breadth_{d.value}"] = breadth(items, d)
+        out[f"top_{d.value}"] = top.value if top is not None else 0
+        out[f"opposition_{d.value}"] = opposition(items, d)
+    out["open_issues"] = len(context.issues)
+    out["coverage_gaps"] = sum(1 for a in context.coverage.availability.values()
+                               if a.value == "applicable_unavailable")
+    return out
 
 def run_case(cfg: Config, capture, ledger: Ledger, adjudicator=None, estimator=None,
              state_sink=None, specialists=None) -> None:
@@ -221,6 +237,10 @@ def run_case(cfg: Config, capture, ledger: Ledger, adjudicator=None, estimator=N
             judge_calls=judge_calls,
             score=getattr(adjudicator, "last_score", None),
             judge_score_any=getattr(adjudicator, "last_score_any", None),
+            # v4 2g: the design's own evidence measurements (phases/band.py) over the final
+            # eligible items, per direction -- input of the calib-fitted evidence score.
+            # Logged only; nothing here reaches the Judge.
+            evidence_features=evidence_features(records, context),
             # For Experiment 5's citation/disclosure audit: what the decision says and
             # cites, what was materially missing, and what issues were open.
             explanation=decision.explanation,

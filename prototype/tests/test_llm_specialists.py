@@ -85,6 +85,7 @@ class GroundingTests(unittest.TestCase):
         spec, reason, env = self.reasoner("url", model)
         (item,) = reason(env)
         self.assertEqual((item.declared_field, item.locator), ("url", "url:L0"))
+        self.assertIn("secure-login.example.test", item.evidence_text)   # the cited line itself
         self.assertIs(item.direction, Direction.PHISHING)
         self.assertIs(item.strength, Strength.DISTINCTIVE)
         binding = next(b for b in env.provenance if b.source == "url")
@@ -205,6 +206,11 @@ class RunCaseTests(unittest.TestCase):
         self.assertGreater(spec.calls, 0)
         recs = {e["agent"]: e for e in events if e.get("kind") == "record"}
         self.assertEqual(recs["url"]["items"], 1)
+        feats = dec["evidence_features"]                         # v4 2g inputs, logged
+        self.assertEqual(set(feats), {"breadth_phishing", "top_phishing", "opposition_phishing",
+                                      "breadth_benign", "top_benign", "opposition_benign",
+                                      "open_issues", "coverage_gaps"})
+        self.assertEqual((feats["breadth_phishing"], feats["top_phishing"]), (1, 2))
 
 
 class UnreadableEvidenceTests(unittest.TestCase):
@@ -238,6 +244,7 @@ class VisionTests(unittest.TestCase):
         self.assertEqual([i.locator for i in items if i.declared_field == "screenshot"],
                          ["screenshot:V0"])
         self.assertEqual(spec.visual_findings, 1)
+        self.assertIsNone(next(i for i in items if i.locator == "screenshot:V0").evidence_text)
         self.assertEqual(len(model.images[-1]), 1)
         model.images = []
         spec.make_reasoners()["url"](env)

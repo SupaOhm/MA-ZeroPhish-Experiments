@@ -262,7 +262,8 @@ class LLMSpecialists:
                     observation=str(fnd.get("observation", ""))[:300] or quote,
                     declared_field=field, locator=lid if n == 0 else f"{lid}.{n}",
                     direction=direction, strength=strength,
-                    provenance=Provenance(b.source, b.instrument, b.capture_id)))
+                    provenance=Provenance(b.source, b.instrument, b.capture_id),
+                    evidence_text=None if visual else mine[lid]))
             return tuple(items)
 
         return reason
