@@ -98,3 +98,17 @@ configuration (Exp 4 MA + fixed round, Exp 6 MA + no selection + no calibrated g
 GPT-4o-mini is not deterministic at temperature 0. Their forced F1: mean 0.832, SD 0.013, range
 0.804-0.845; the copies disagree on 13 of 100 cases. Single-run differences below ~0.03-0.04 F1
 are within this noise. (Earlier experiments ran each configuration once; the same caveat applies.)
+
+## V5-preview result (snapshot 23:21: 411 fit pages = 180 phishing / 231 benign; DATA_VERSION
+a9361ed8317f8d0a; results_gpt4omini/v5_preview/) -- PREVIEW, not the final model
+Learner (CV on fit): B lambda 0.1, C lambda 0.1, D lambda 0.001. Calib Platt: B a=1.333 b=0.498 w=0.10;
+C a=1.418 b=0.695 w=0.05; D a=0.769 b=0.339 w=0.30. Dev re-run from the cache reproduced all 300
+v4 Judge scores exactly. Dev pooled (300, seen data), forced F1:
+**C (MA + code features) 0.929** (P 0.895, R 0.967, FPR 0.113, PR-AUC 0.972) | CoT 0.926 | CoT+shot
+0.919 | single+shot 0.914 | single 0.913 | v4 0.910 (PR-AUC 0.905) | B (MA only) 0.906 | PhishDebate
+0.904 | PhishDebate+shot 0.895 | D (code only) 0.856.
+Paired vs C: CoT -0.004 [-0.033, +0.026] p=1.00; single -0.016 p=0.70; PhishDebate -0.025 p=0.21;
+PhishDebate+shot -0.035 [-0.065, -0.006] p=0.052; v4 -0.020 p=0.15; D -0.073 [-0.116, -0.028]
+p=0.004. Choice rule -> C. Reading: C has the best point estimate and ranking, ties CoT and
+single-agent statistically, and the MA evidence adds significantly over code features alone.
+The final model is trained on the full fit split when its CT completes (unchanged rule).
