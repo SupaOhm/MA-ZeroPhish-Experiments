@@ -245,3 +245,13 @@ results_gpt4omini/dev_v4_r6/): v4abdf6a forced F1 **0.891** (P 0.882, R 0.900, F
 v4abdf 0.910 (R 0.940, FPR 0.127); baselines 0.895-0.926 (CoT 0.926). **6a rejected** (FPR not
 reduced, recall lost). The "Judge only" ablation is not run (no gain to attribute; saves ~$0.80).
 Best system remains the frozen v4abdf.
+
+## Round 7 -- the paper's Judge (declared 2026-09-30, before running; user: "I need the Judge to do
+its job like I wrote in the paper")
+**v4abdfP** = v4abdf with the Judge decision of the paper (spec FD3 / eq. judge-decision): the fixed
+rubric's four conditions decide -- phishing iff Suf+Def(phishing) and not Suf+Def(benign), benign
+symmetric, otherwise insufficient; the conditions-mode validator with one repair (v1 behaviour).
+No Platt map, no threshold. Same Judge prompt as v4abdf (so first calls come from the cache).
+Reported on dev pooled (300) with the paper's own metrics: coverage, selective F1 / risk, and
+forced-decision F1 where every insufficient counts as an error (paper sec. 1.6.2); the
+Judge-score fallback forced view (PROTOCOL_V2 rule) is shown separately and labelled.
