@@ -264,3 +264,10 @@ TLS, hosting, redirects) are unobservable for every page.
   + the v2 structural-gap note (PROTOCOL_V2 fix 2: fields unobservable BY CONSTRUCTION in this
   retrospective setting, identical for every case of both labels, are listed as structural and not
   treated as unresolved material gaps; operational failures stay material). Same metrics as round 7.
+Round 7b result (dev pooled 300; results_gpt4omini/dev_v4_r7b/): coverage **12%** (19 phishing, 17
+benign; 232 insufficient_support, 32 finalization_error); selective F1 0.850 (risk 0.167); paper
+forced F1 **0.112**; Judge-score fallback 0.889. The structural-gap note made the conditions Judge
+MORE reluctant. **7b rejected.** Conclusion of rounds 7/7b: with GPT-4o-mini, the paper's
+conditions decision abstains on most cases; the calibrated score decision of v3/v4 (same rubric,
+same blinded input, rubric-guided p mapped by a calib-fitted Platt + abstention band) remains the
+best (dev pooled forced F1 0.910). Best system: frozen v4abdf.
