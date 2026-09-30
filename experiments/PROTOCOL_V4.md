@@ -116,3 +116,40 @@ v4abdf + Platt 0.940 (FPR 0.06). The re-invocation findings that were being drop
 kept, mostly push benign pages toward phishing. **3a rejected**. Best so far: v4abdf + Platt,
 0.940 vs CoT 0.958 on dev-A (paired dF1 -0.018 [-0.072, 0.030], McNemar p = 0.69: not
 significant). dev-B still unspent.
+
+## Round 4 -- deterministic specialist tools (declared 2026-09-30, BEFORE any feature is computed)
+Motivation: spec SA3 (specialists use declared, modality-specific tools) and the team's tool list
+(MA-ZeroPhish.md). Excluded here, with reasons: live DNS / RDAP / TLS / ASN lookups and redirect
+following (querying 2025 pages today leaks takedown status and contacts live phishing hosts);
+YOLO/Siamese logo matching and OCR (offline screenshots have no external images -- 3 dev
+phishing screenshots checked: logos render as broken-image placeholders); CT history (already in
+the CT evidence line: cert count and first-cert age). Code: prototype/agents/tools.py, standard
+library + tldextract only (no new packages). Every tool is pure code over the stored capture,
+label-blind, identical on every split; its output is a citable line `<field>:F<n>` shown only to
+the agent authorised for that field.
+- **T1 brand_reference_lookup (Content Agent):** names from a published brand -> official-domain
+  map found as whole words in prominent page text (title, h1-h3, button, any text inside a
+  form, img alt, input placeholder / submit value); names < 4 characters only as case-sensitive
+  all-uppercase acronyms, longer names case-insensitive. Line: brand, where, the brand's
+  official domains, the page's registrable domain, whether it is one of them, links to the
+  brand's domains, password field yes/no. Reference map: Phishpedia's published domain_map
+  (CC0) -- use PENDING the user's approval (external data).
+- **T2 link_form_destinations (Web Structure Agent; Cantina+-style):** anchors / forms by action /
+  resources (img, script, link[href]) to the own registrable domain vs external vs empty/#/js.
+- **T3 text_obfuscation (Content Agent):** mixed-script words (Unicode character names), zero-width
+  characters, and words that contain non-ASCII letters but equal, without diacritics, a word of
+  {password, passcode, username, login, signin, account, verify, verification, email, security,
+  card, pin, otp, code, bank, update, confirm}.
+- **T5 url_brand_position (URL Agent; same brand map):** a brand's domain name (>= 4 chars) as a
+  token of the subdomain / path / query while the registrable domain is not that brand's; a
+  registrable name (>= 5 chars) exactly one edit (Damerau-Levenshtein) from a brand's; punycode;
+  IP host; '@' in the URL.
+Screening on dev-A only (no model calls), binary indicators fixed here:
+T1a brand named, domain not the brand's | T1b brand named, domain is the brand's |
+T2a >= 1 form posts to an external domain | T2b < 50% of non-empty anchors to the own domain |
+T2c >= 50% of anchors empty/#/js (with >= 1 anchor) | T3a disguised credential word |
+T3b mixed-script word | T3c zero-width char | T5a brand name outside the registrable domain |
+T5b one-edit look-alike | T5c punycode / IP host / '@'.
+A tool is wired in if any of its indicators has |rate_phishing - rate_benign| >= 0.10, or (T1b)
+fires on >= 10% of benign pages. Then variant v4abdfT = v4abdf + wired tools: dev-A and calib,
+Platt fit on calib, compared on dev-A. dev-B still unspent.
