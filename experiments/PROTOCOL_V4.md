@@ -209,3 +209,14 @@ calib/dev capture files differ only in the documented error-page cases, re-colle
 calib under the new DATA_VERSION (cache: only changed cases cost), refit, and write
 experiments/results_gpt4omini/v4_final/FROZEN.json. Then dev-B once (go/no-go rule above),
 then test2 once only on a go.
+
+## dev-B result (frozen v4abdf, run once, 2026-09-30) -> **NO-GO**
+200 untouched dev cases (100/100), DATA_VERSION d2e85b9b39e5ff51 (MA); baselines on the same cases.
+Forced F1: single-agent 0.914 | CoT 0.910 | CoT+shot 0.910 | single+shot 0.904 | PhishDebate
+0.903 | PhishDebate+shot 0.900 | **MA-ZeroPhish v4 0.895** (precision 0.855, recall 0.940 --
+highest, FPR 0.160 -- highest). Paired differences vs MA: +0.004 to +0.018, every 95% CI includes
+0, McNemar p 0.36-1.00: no significant difference in either direction. Selective MA (band
+w=0.40): coverage 16.5%, selective F1 0.969, selective risk 0.061.
+dev-A -> dev-B: MA 0.940 -> 0.895; CoT 0.958 -> 0.910 (dev-B is harder for every arm; MA's
+larger drop is consistent with dev-A overfitting over 5 rounds).
+Per the declared rule, test2 stays sealed (v4_final/GO.json = no-go). No test/test2 number seen.

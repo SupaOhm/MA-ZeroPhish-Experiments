@@ -1,0 +1,15 @@
+{
+ "decision": "no-go",
+ "dev_b_cases": 200,
+ "ma_forced_f1": 0.8952380952380952,
+ "baseline_forced_f1": {
+  "single_agent": 0.9137055837563451,
+  "cot": 0.91,
+  "phishdebate": 0.9029126213592233,
+  "vision__single_agent": 0.9035532994923858,
+  "vision__cot": 0.91,
+  "vision__phishdebate": 0.8995215311004784
+ },
+ "rule": "go iff MA forced F1 >= every baseline arm's forced F1 on dev-B",
+ "frozen": "v4_final/FROZEN.json"
+}
