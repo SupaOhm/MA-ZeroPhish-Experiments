@@ -18,6 +18,7 @@ from __future__ import annotations
 import argparse
 import gzip
 import json
+import re
 from collections import Counter
 from pathlib import Path
 
@@ -27,6 +28,17 @@ from .manifest import read
 INSTR_SOURCE = "phreshphish_crawler"          # the dataset's own capture of served HTML
 RDAP_POLICY = "exclude"                        # exclude | include  (see build())
 NOT_RETRO = "not_retrospectively_observable"   # live-only records for a 2025 sample
+# A page that navigates away on load (meta refresh / script) is rendered offline, so the
+# browser lands on its own error interstitial (blocked http -> ERR_PROXY_CONNECTION_FAILED,
+# relative/local path -> ERR_FILE_NOT_FOUND). That text and screenshot are the environment's,
+# not the submission's: such a render counts as failed (label-blind; declared 2026-09-30).
+_NET_ERROR = re.compile(r"\bERR_[A-Z_]{4,}\b")
+_INTERSTITIAL = ("It may have been moved, edited, or deleted",
+                 "something wrong with the proxy server")
+
+
+def offline_error_page(visible_text: str) -> bool:
+    return bool(_NET_ERROR.search(visible_text)) and any(k in visible_text for k in _INTERSTITIAL)
 
 
 def _load(p: Path) -> dict | None:
@@ -100,6 +112,9 @@ def build(row, data: Path, stats: Counter) -> dict:
         "dns": NOT_RETRO, "tls": NOT_RETRO, "hosting": NOT_RETRO,
     }
     render, ct, rdap = _load(ev / "render.json"), _load(ev / "ct.json"), _load(ev / "rdap.json")
+    if render and render["status"] == "obtained" and offline_error_page(render.get("visible_text", "")):
+        render = dict(render, status="failed", failure_reason="offline_navigation_error")
+        stats[f"render_offline_navigation_error:{row.label}"] += 1
     if render and render["status"] == "obtained":
         artifacts += [
             {"field": "dom", "content": (ev / "rendered_dom.html").read_text(encoding="utf-8"),

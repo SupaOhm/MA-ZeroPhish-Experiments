@@ -57,6 +57,17 @@ phishing subdomains (dev 68 / calib 23 / test 5 cases, all phishing). CT v2 keep
 certificates covering the host (exact name or one-label wildcard) and states
 `cert_scope` / `platform_hosted` explicitly. v1 records remain as `ct_v1.json`.
 
+**Offline render of a page that navigates away (found 2026-09-30, fixed in the next
+package).** A page that redirects on load (meta refresh / script) is rendered offline, so the
+browser lands on its own error interstitial (blocked http -> `ERR_PROXY_CONNECTION_FAILED`;
+relative or local path -> `ERR_FILE_NOT_FOUND`), and that interstitial was stored as the
+page's `dom` / `page_content` / `screenshot`. Found while testing screenshot input on dev.
+Rendered cases affected: calib 2 (benign), dev 1 (benign), **test 1 (phishing,
+pp-788086eb634b) -- present in every result reported on test under DATA_VERSIONs b348 /
+d014**, test2 3 (phishing). Fix (label-blind rule in `build_captures.offline_error_page`):
+visible text with a Chromium `ERR_*` code AND the interstitial wording -> render failed,
+reason `offline_navigation_error` (the redirect itself stays visible in the served HTML).
+
 **No retrospective redirect chain.** The source dataset has no redirect information and a
 re-crawl today would observe post-takedown behaviour (future information); the
 `host_mismatch` trigger's URL-vs-redirect case therefore never fires on PhreshPhish.

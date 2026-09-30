@@ -186,5 +186,15 @@ class CTCoveringTests(unittest.TestCase):
         self.assertEqual(cert_scope({"host": "u.github.io", "n_exact": 1}), ("host", "github.io"))
 
 
+
+class OfflineErrorPageTests(unittest.TestCase):
+    def test_browser_interstitials_are_detected_and_page_text_is_not(self):
+        from experiments.data_eval.build_captures import offline_error_page as f
+        self.assertTrue(f("file:///h5/ File not found It may have been moved, edited, or deleted. "
+                          "ERR_FILE_NOT_FOUND"))
+        self.assertTrue(f("There's something wrong with the proxy server ERR_PROXY_CONNECTION_FAILED"))
+        self.assertFalse(f("Sign in. Error code ERR_LOGIN_FAILED shown by the site"))
+        self.assertFalse(f("It may have been moved, edited, or deleted."))
+
 if __name__ == "__main__":
     unittest.main()
