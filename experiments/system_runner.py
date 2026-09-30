@@ -137,6 +137,20 @@ def common_args(ap: argparse.ArgumentParser) -> None:
                     help="v2 = experiments/PROTOCOL_V2.md (structural-gap Judge, v2 gate)")
 
 
+_BRAND_TOOLS = {}
+
+
+def brand_tools(cfg):
+    """BrandTools for T1/T5, built once from prototype/data/phishpedia_domain_map.json."""
+    if not {"T1", "T5"} & set(cfg.specialist_tools):
+        return None
+    if "bt" not in _BRAND_TOOLS:
+        from agents.tools import BrandTools
+        path = ROOT / "prototype" / "data" / "phishpedia_domain_map.json"
+        _BRAND_TOOLS["bt"] = BrandTools(json.loads(path.read_text(encoding="utf-8")))
+    return _BRAND_TOOLS["bt"]
+
+
 def run_grid(arms: dict, case_paths: list[Path], out_dir: Path, tag: str, args,
              estimator=None, meta: dict | None = None) -> None:
     """arms: {arm_name: Config}. Each arm writes <tag>__<arm>.jsonl in out_dir."""
@@ -174,7 +188,8 @@ def run_grid(arms: dict, case_paths: list[Path], out_dir: Path, tag: str, args,
                                      expand_on_focus=cfg.specialist_expand_on_focus,
                                      vision_root=(DATA / args.dataset) if cfg.specialist_vision else None,
                                      task_definition=cfg.task_definition,
-                                     peer_lines_uncitable=cfg.specialist_peer_lines_uncitable)
+                                     peer_lines_uncitable=cfg.specialist_peer_lines_uncitable,
+                                     tools=cfg.specialist_tools, brand_tools=brand_tools(cfg))
         judge = LLMJudge(model, structural_gaps=cfg.judge_structural_gaps,
                          decision_mode=cfg.judge_mode, platt_ab=cfg.judge_platt,
                          band_w=cfg.judge_band_w, task_definition=cfg.task_definition,

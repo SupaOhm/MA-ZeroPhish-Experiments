@@ -153,3 +153,10 @@ T5b one-edit look-alike | T5c punycode / IP host / '@'.
 A tool is wired in if any of its indicators has |rate_phishing - rate_benign| >= 0.10, or (T1b)
 fires on >= 10% of benign pages. Then variant v4abdfT = v4abdf + wired tools: dev-A and calib,
 Platt fit on calib, compared on dev-A. dev-B still unspent.
+Screening result (dev-A, 50 phishing / 50 benign; experiments/screen_tools.py):
+T2a 0.06 vs 0.02 | **T2b 0.56 vs 0.20** | **T2c 0.24 vs 0.06** | T3a 0.02 vs 0.00 | T3b 0.06 vs
+0.04 | T3c 0.06 vs 0.04. -> **T2 wired**, T3 not wired. T1/T5 not yet screened (brand map
+pending approval). Tool outputs are analysis over already-acquired evidence, not new
+acquisition, so they are not entered in the acquisition log (SA3's "additional evidence"
+remains unused in this retrospective evaluation, stated as a limitation).
+Variant v4abdfT2 (= v4abdf + T2) run on dev-A and calib.

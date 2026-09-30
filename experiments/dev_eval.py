@@ -26,7 +26,8 @@ def variants(model: str) -> dict:
             "v4abde": replace(v4abd, task_definition=True),
             "v4abdf": replace(v4abd, judge_shows_evidence=True),
             "v4abdf3a": replace(v4abd, judge_shows_evidence=True,
-                                specialist_peer_lines_uncitable=True)}
+                                specialist_peer_lines_uncitable=True),
+            "v4abdfT2": replace(v4abd, judge_shows_evidence=True, specialist_tools=("T2",))}
 
 
 def main() -> None:

@@ -188,6 +188,19 @@ class GroundingTests(unittest.TestCase):
         self.assertIn("- another agent's html evidence (not citable): form 0:", cited)
         self.assertNotIn("[html:L0]", cited)
 
+    def test_t2_tool_lines_are_citable_by_the_web_structure_agent_only(self):
+        _, env, _ = phase1and2("c6")
+        model = Scripted({"html:F0": [finding("html:F0", "tool link_form_destinations: anchors")]})
+        spec = LLMSpecialists(model, tools=("T2",))
+        items = spec.make_reasoners()["web_structure"](env)
+        self.assertIn("html:F0", [i.locator for i in items])
+        self.assertIn("[html:F1] tool link_form_destinations: forms by action", model.prompts[-1][1])
+        model.prompts.clear()
+        spec.make_reasoners()["url"](env)
+        self.assertNotIn(":F", model.prompts[-1][1])
+        with self.assertRaises(ValueError):
+            LLMSpecialists(model, tools=("T1",))
+
     def test_focus_shows_the_cited_lines_not_opinions(self):
         model = Scripted()
         _, reason, env = self.reasoner("content", model, "c6")

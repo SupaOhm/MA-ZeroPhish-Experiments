@@ -77,6 +77,8 @@ class Config:
     judge_shows_evidence: bool = False
     # v4 3a: on re-invocation, peer evidence lines are shown in a non-citable form.
     specialist_peer_lines_uncitable: bool = False
+    # v4 round 4: deterministic specialist tools wired in (subset of T1, T2, T5).
+    specialist_tools: tuple = ()
     cost_scale: float = 1000.0
     budget: CaseBudget = field(default_factory=lambda: CaseBudget(100.0, 100.0, 20.0))
     evidence_removal: frozenset[str] = frozenset()

@@ -44,7 +44,7 @@ ROLES = {
                  "infrastructure are NOT standalone indicators of phishing or benignity."),
 }
 TEXT_ONLY_EXCLUDED = frozenset({"screenshot"})
-_LEADING_ID = re.compile(r"^\[?\s*([A-Za-z_]+:[LRTV]\d+(?:\.\d+)?|L\d+)\s*\]?")
+_LEADING_ID = re.compile(r"^\[?\s*([A-Za-z_]+:[LRTVF]\d+(?:\.\d+)?|L\d+)\s*\]?")
 SCREENSHOT_LINE = ("screenshot:V0", "rendered screenshot of the page (image attached)")
 VISION_RULE = ("\nA finding about the attached screenshot cites line screenshot:V0 and quotes "
                "the visible text or element it refers to (max 80 characters).")
@@ -122,7 +122,7 @@ class LLMSpecialists:
                  max_lines: int | None = None, max_chars: int | None = None,
                  baseline_view: tuple[int, int] | None = None, expand_on_focus: bool = False,
                  vision_root=None, task_definition: bool = False,
-                 peer_lines_uncitable: bool = False):
+                 peer_lines_uncitable: bool = False, tools: tuple = (), brand_tools=None):
         """max_lines / max_chars: evidence limits per field (None = v1 defaults 40 x 200;
         v3 = 80 x 300, PROTOCOL_V3)."""
         self.model, self.max_findings, self.max_tokens = model, max_findings, max_tokens
@@ -137,6 +137,12 @@ class LLMSpecialists:
         self.visual_findings = self.screenshot_refused = 0
         self.task_definition = task_definition   # v4 2e: the paper's definition, stated first
         self.peer_lines_uncitable = peer_lines_uncitable   # v4 3a
+        # v4 round 4: deterministic tools (agents/tools.py) -> citable `<field>:F<n>` lines.
+        # T2 -> html (Web Structure); T1 -> page_content (Content); T5 -> url (URL).
+        # T1/T5 need `brand_tools` (a BrandTools built from the brand map).
+        self.tools, self.brand_tools = frozenset(tools), brand_tools
+        if {"T1", "T5"} & self.tools and brand_tools is None:
+            raise ValueError("T1/T5 need brand_tools")
         self.calls = self.input_tokens = self.output_tokens = 0
         self.findings_returned = self.dropped_bad_line = self.dropped_bad_quote = 0
         self.parse_failures = self.resolved_bare_line = self.resolved_echoed_line = 0
@@ -157,6 +163,20 @@ class LLMSpecialists:
                                                2 * tc if expand else tc)
                 out[f] += [(f"html:R{i}", t) for i, t in enumerate(raw)]
                 out[f] += [(f"html:T{i}", t) for i, t in enumerate(txt)]
+        if self.tools:
+            from .tools import link_form_destinations, parse_page
+            html = envelope.normalized.get("html")
+            page = parse_page(html, base) if isinstance(html, str) and base else None
+            extra = {}
+            if "T2" in self.tools and page is not None:
+                extra["html"] = link_form_destinations(html, base, page)
+            if "T1" in self.tools and page is not None:
+                extra["page_content"] = self.brand_tools.brand_reference_lookup(html, base, page)
+            if "T5" in self.tools and base:
+                extra["url"] = self.brand_tools.url_brand_position(base)
+            for f, lines in extra.items():
+                if f in out:                       # only for a field the case actually has
+                    out[f] += [(f"{f}:F{i}", t) for i, t in enumerate(lines)]
         return out
 
     def make_reasoners(self, capture=None):
