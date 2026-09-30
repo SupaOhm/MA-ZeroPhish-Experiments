@@ -82,3 +82,19 @@ keep their selection (v4 otherwise runs every ready specialist); arms that set a
 "ablation1 no selection" and "ablation3 no calibrated gate" coincide with the full system (reported
 as such). Scored with v4's frozen decision rule; if V5 is adopted, the same ledgers are rescored
 with the frozen V5 learner (decision layer only) and both are reported.
+
+## Exp 2-6 with v4 -- results (100 test cases; results_gpt4omini/v4_exps/; forced = calibrated p >= 0.5)
+All runs complete (one HTTP 504 timeout retried, never scored). Forced F1:
+- Exp 2 complete: fixed-all 0.837, literal eq.(10) 0.837, adaptive 0.820; budget 2: fixed-all
+  0.854, literal 0.837, adaptive 0.808 (no difference significant).
+- Exp 4: fixed round 0.837, full debate 0.811 (FPR 0.26), MA 0.804, no collaboration 0.796 (FPR 0.30).
+- Exp 5: base 0.845; no network metadata 0.865; no HTML 0.838; transient recovered 0.837; no DOM
+  0.808; no browser 0.732 (recall 0.60, FPR 0.04); conflict swaps (48) 0.604.
+- Exp 6: full 0.825; no selection 0.837; no calibrated gate 0.837; no reconciliation 0.812; no
+  targeted collaboration 0.819 (FPR 0.24); no independent adjudication 0.804 (FPR 0.28).
+**Run-to-run variability (important for every comparison):** in v4, eight arms are the SAME
+configuration (Exp 4 MA + fixed round, Exp 6 MA + no selection + no calibrated gate, Exp 5 base
++ transient, Exp 2 complete fixed-all). They ran in parallel, so each made its own API calls;
+GPT-4o-mini is not deterministic at temperature 0. Their forced F1: mean 0.832, SD 0.013, range
+0.804-0.845; the copies disagree on 13 of 100 cases. Single-run differences below ~0.03-0.04 F1
+are within this noise. (Earlier experiments ran each configuration once; the same caveat applies.)
