@@ -75,3 +75,13 @@ Procedure:
    test2 once.
 Label note: dev_compare/ma ledgers before this round carry system_version "v1" (a default of
 dev_eval.py); the arm name identifies the configuration. Fixed from round 2.
+
+## Go / no-go rule for test2 (declared 2026-09-30, before any dev-B result; user instruction:
+"make sure we win before testing test2")
+test2 is run ONLY if the frozen candidate, on **dev-B** (200 untouched dev cases), has a forced
+F1 >= that of EVERY baseline arm on the same cases: single-agent, CoT, PhishDebate, each
+text-only and with screenshot. Paired bootstrap CIs and McNemar p are reported alongside; a
+tie or a win that is not significant is reported as such, never as "significantly better".
+If no-go: development continues on dev (dev-A + dev-B pooled; dev-B is then no longer a
+held-out check, and this is stated), test2 stays sealed, and every further round is logged here.
+No test/test2 number is looked at before a go.
