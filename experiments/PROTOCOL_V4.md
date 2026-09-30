@@ -85,3 +85,7 @@ tie or a win that is not significant is reported as such, never as "significantl
 If no-go: development continues on dev (dev-A + dev-B pooled; dev-B is then no longer a
 held-out check, and this is stated), test2 stays sealed, and every further round is logged here.
 No test/test2 number is looked at before a go.
+Model decision (user, 2026-09-30): every arm stays on GPT-4o-mini
+(`openrouter:openai/gpt-4o-mini-2024-07-18`) even on a no-go; no switch to GPT-4o (cost).
+No-go fixes are therefore system changes only (e.g. grounding format -- 17% of dev-A findings
+dropped by the grounding check; evidence-line detail; Judge self-consistency; adaptive selection).
