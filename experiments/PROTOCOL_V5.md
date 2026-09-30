@@ -112,3 +112,19 @@ PhishDebate+shot -0.035 [-0.065, -0.006] p=0.052; v4 -0.020 p=0.15; D -0.073 [-0
 p=0.004. Choice rule -> C. Reading: C has the best point estimate and ranking, ties CoT and
 single-agent statistically, and the MA evidence adds significantly over code features alone.
 The final model is trained on the full fit split when its CT completes (unchanged rule).
+
+## V5 FINAL (full fit: 839 pages = 339 phishing / 500 benign; DATA_VERSION 7b75f889a10e7839;
+results_gpt4omini/v5_final/)
+Fit CT finished 03:59 (718 obtained, 118 no covering cert, 3 still unreachable after 3 retries);
+rebuilt captures changed only 426 fit pages (none of the 411 preview pages); new pages run with
+v4abdf (0 failures); calib/dev from the cache. Learner: B lambda 0.01, C lambda 0.01, D lambda 0.001;
+calib Platt: C a=1.003 b=0.783 w=0.00; B a=1.037 b=0.517 w=0.05; D a=0.759 b=0.614 w=0.30.
+Dev pooled (300, seen), forced F1: CoT 0.926 | CoT+shot 0.919 | **C 0.919** (P 0.898, R 0.940,
+FPR 0.107, PR-AUC 0.973) | single+shot 0.914 | single 0.913 | v4 0.910 (PR-AUC 0.905) | PhishDebate
+0.904 | PhishDebate+shot 0.895 | B 0.893 | D 0.863.
+Paired vs C: CoT +0.007 [-0.026, +0.038] p=0.70; single -0.005 p=1.00; PhishDebate -0.014 p=0.56;
+v4 -0.009 p=0.66; B -0.025 p=0.14; D -0.056 [-0.095, -0.015] p=0.014.
+Choice rule -> **C, frozen as MA-ZeroPhish v5** (v5_final/FROZEN_V5.json). The preview (411 pages)
+had given 0.929; the drop is within the measured run-to-run noise (SD 0.013). Reading: v5 ties the
+strongest baselines on F1 (no significant difference), ranks cases best (PR-AUC 0.973), and its
+multi-agent evidence adds significantly over the code features alone. test2 NOT run (user decides).

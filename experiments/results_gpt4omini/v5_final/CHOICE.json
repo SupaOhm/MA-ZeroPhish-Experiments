@@ -1,0 +1,17 @@
+{
+ "choice": "v5C_ma_det",
+ "rule": "higher of B and C by forced F1 on dev pooled; ties -> B",
+ "choice_forced_f1": 0.9185667752442996,
+ "v4A_forced_f1": 0.9096774193548387,
+ "D_det_only_forced_f1": 0.8628762541806019,
+ "baselines_forced_f1": {
+  "single_agent": 0.9134948096885813,
+  "cot": 0.9256756756756757,
+  "phishdebate": 0.9042904290429042,
+  "vision__single_agent": 0.9140893470790379,
+  "vision__cot": 0.9194630872483222,
+  "vision__phishdebate": 0.894736842105263
+ },
+ "beats_every_baseline_on_dev": false,
+ "note": "dev pooled is seen data; only test2 can confirm"
+}

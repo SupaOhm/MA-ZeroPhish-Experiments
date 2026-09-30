@@ -1,0 +1,32 @@
+{
+ "system": "MA-ZeroPhish v5 = frozen v4abdf pipeline + learned decision (arm C: MA + code features)",
+ "pipeline": "experiments/results_gpt4omini/v4_final/FROZEN.json (variant v4abdf)",
+ "learner": "experiments/results_gpt4omini/v5_final/v5C_ma_det.json",
+ "arm": "v5C_ma_det",
+ "n_fit": 839,
+ "fit_positives": 339,
+ "lambda": 0.01,
+ "platt": {
+  "a": 1.002712214576135,
+  "b": 0.7826720852560664,
+  "w": 0.0,
+  "target_met": true
+ },
+ "data_version": "7b75f889a10e7839",
+ "model": "openrouter:openai/gpt-4o-mini-2024-07-18",
+ "forced_rule": "phishing if calibrated learner p >= 0.5 else benign",
+ "selective_rule": "phishing if p_cal >= 0.5 + w, benign if <= 0.5 - w, else insufficient",
+ "code_commit": "6ef95549ad98d8cae90c2ae5d015e065e1eb53d4",
+ "fit_ledgers_sha256": {
+  "runs/v5f/fit\\devv4_phreshphish_fit__shard0of8__ma_v4abdf.jsonl": "e9dc0b5da8c3768a7fa97020371f61d936d4b96be0d9c9ad33ce59044b286f59",
+  "runs/v5f/fit\\devv4_phreshphish_fit__shard1of8__ma_v4abdf.jsonl": "42dc2ae4d768a91369c1122c1729ffd4db965ef8d31312bac9a018694a0b6919",
+  "runs/v5f/fit\\devv4_phreshphish_fit__shard2of8__ma_v4abdf.jsonl": "0a81de6f15b166fe724b26e3b67f84170dc8531f755f12ba28b2709526e056dc",
+  "runs/v5f/fit\\devv4_phreshphish_fit__shard3of8__ma_v4abdf.jsonl": "7140b50e4534d0c8f9796069681d2b618b525b1bfda89fd29a66bde3f131eeef",
+  "runs/v5f/fit\\devv4_phreshphish_fit__shard4of8__ma_v4abdf.jsonl": "21029ffecd6c87eb1bf260111f40cf1782f12cd05bc7c8e4bd6f2534b0a0fe22",
+  "runs/v5f/fit\\devv4_phreshphish_fit__shard5of8__ma_v4abdf.jsonl": "af54d37f13783601851767b700f4b51681413c99fd8a7beb1aadcf20962e9f68",
+  "runs/v5f/fit\\devv4_phreshphish_fit__shard6of8__ma_v4abdf.jsonl": "ae67ce1b8643470f7074d7fe605b0a465a49d7826acb160acb9578fb6ac6304c",
+  "runs/v5f/fit\\devv4_phreshphish_fit__shard7of8__ma_v4abdf.jsonl": "e601e2de8a3a1c9a8c1a4b8b80c9cead13aecef6e101b2552a9ca32db7349767"
+ },
+ "frozen_at": "2026-10-01",
+ "protocol": "experiments/PROTOCOL_V5.md"
+}
