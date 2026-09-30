@@ -324,8 +324,7 @@ class ConsiderOppositeTests(unittest.TestCase):
         from phases.judge_llm import OPPOSITE_NOTE, RUBRIC
         self.assertEqual(LLMJudge(None).rubric, RUBRIC)
         self.assertEqual(LLMJudge(None, consider_opposite=True).rubric, RUBRIC + OPPOSITE_NOTE)
-        self.assertEqual(LLMJudge(None, show_evidence=True, consider_opposite=True).rubric[-len(OPPOSITE_NOTE):],
-                         OPPOSITE_NOTE)
+        self.assertEqual(LLMJudge(None, show_evidence=True, consider_opposite=True).rubric.count(OPPOSITE_NOTE), 1)
 
 if __name__ == "__main__":
     unittest.main()
