@@ -46,8 +46,8 @@ fixes 1-3 (2026-09-30).
 While verifying the v2 Judge payload, `brand_reference` appeared as an operational gap: the
 capture builder recorded no reason for it in any of the 800 cases, so replay reported the
 generic `not_captured`. PhreshPhish contains no brand-reference material for any case, so
-its reason is `not_in_source_dataset` (commit 6d5b1e0-series, "Captures: record
-brand_reference ..."). No other field is affected (audit of all fields' reasons). v2 runs use
+its reason is `not_in_source_dataset` (commit 502122a, "Captures: record
+brand_reference as not_in_source_dataset"). No other field is affected (audit of all fields' reasons). v2 runs use
 **DATA_VERSION `d014eb0152251d9c`**; the only difference from `b34836430981d74e` is this
 reason string, which v1 never reads. A v2 calib collection started on the old data was
 stopped after a few cases and discarded.
