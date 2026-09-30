@@ -58,3 +58,7 @@ margin: ~$10 more than the $4.25 left on 2026-09-30.
   stored group keys of existing cases -- the first attempt was refused by the validator because
   de-duplication had kept 2024 copies of 2 dev cases). Phishing short by 161 (campaign reuse);
   the learner uses all 839 as they are. Existing 1,000 manifest rows byte-identical.
+- Enrichment of fit (operational, no effect on content): CT started in parallel with rendering
+  (it only needs the URL). crt.sh was slow (~1.4 pages/min with 4 workers); 8 workers produced
+  more `crtsh_unreachable` failures and fewer results, so it runs with 4 workers plus three retry
+  passes. Same instrument (crt.sh JSON), same covering_v2 rule and retry behaviour as every split.
