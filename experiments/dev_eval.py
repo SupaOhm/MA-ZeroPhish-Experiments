@@ -44,6 +44,8 @@ def main() -> None:
     ap.add_argument("--out", default=str(ROOT / "runs" / "dev_compare" / "ma"))
     ap.add_argument("--calib-collection", action="store_true",
                     help="PROTOCOL_V4 round 2 step 2: collect CALIB decisions for fitting only")
+    ap.add_argument("--case-list", default=None,
+                    help="file with one case_id per line: run only these (PROTOCOL_V5 preview)")
     ap.add_argument("--fit-collection", action="store_true",
                     help="PROTOCOL_V5: run on the FIT split (training pages) for the learner")
     ap.add_argument("--sealed-test2-final", action="store_true",
@@ -69,6 +71,9 @@ def main() -> None:
     allv = variants(args.model)
     arms = {f"ma_{v}": allv[v] for v in args.variants}
     cases = select_cases(args.dataset, args.split, args.per_label, args.limit)
+    if args.case_list:
+        keep = {l.strip() for l in open(args.case_list, encoding="utf-8") if l.strip()}
+        cases = [c for c in cases if Path(c).stem in keep]
     run_grid(arms, cases, Path(args.out), f"devv4_{args.dataset}_{args.split}", args, estimator=None)
 
 

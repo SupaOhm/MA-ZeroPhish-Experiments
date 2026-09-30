@@ -62,3 +62,12 @@ margin: ~$10 more than the $4.25 left on 2026-09-30.
   (it only needs the URL). crt.sh was slow (~1.4 pages/min with 4 workers); 8 workers produced
   more `crtsh_unreachable` failures and fewer results, so it runs with 4 workers plus three retry
   passes. Same instrument (crt.sh JSON), same covering_v2 rule and retry behaviour as every split.
+
+## Amendment (2026-09-30 21:10, before any v5 run or result; user: "train on what we already have")
+CT collection for fit runs at ~1.7 pages/min. **V5-preview:** train and score on the fit pages
+whose enrichment is FINAL at a snapshot taken after the render retry ends: render obtained or failed
+after the 120 s retry, and CT obtained or unavailable for a reason other than `crtsh_unreachable`.
+CT runs in case-id (hash) order, so the snapshot is a pseudo-random sample of fit (at 21:10:
+99 phishing / 125 benign with final CT). The snapshot's case list is saved with the results.
+Everything else as sections 2-3. The **final** V5 model is still trained on the full fit split
+once CT completes (rule unchanged); the preview is reported as a preview, never as the final.
