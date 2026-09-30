@@ -183,6 +183,8 @@ def run_case(cfg: Config, capture, ledger: Ledger, adjudicator=None, estimator=N
         )
         judge_before = (getattr(adjudicator, "calls", 0), getattr(adjudicator, "input_tokens", 0),
                         getattr(adjudicator, "output_tokens", 0))
+        if hasattr(adjudicator, "set_page"):          # v4 6a: the case's own page (if obtained)
+            adjudicator.set_page(envelope.normalized.get("url"), envelope.normalized.get("html"))
         decision, feedback = adjudicator(context, ref.object_id)
         judge_calls = getattr(adjudicator, "calls", 0) - judge_before[0]
         judge_in = getattr(adjudicator, "input_tokens", 0) - judge_before[1]

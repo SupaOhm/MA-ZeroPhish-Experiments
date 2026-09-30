@@ -285,5 +285,38 @@ class SelfConsistencyTests(unittest.TestCase):
         self.assertEqual(m.calls[0], (0, None))
         self.assertEqual(m.calls[1:], [(1.0, 1), (1.0, 2), (1.0, 3), (1.0, 4)])
 
+
+class PageViewTests(unittest.TestCase):
+    def test_page_context_only_when_enabled_and_set(self):
+        from contract.judge import CoverageReport, JudgeContext
+        from phases.judge_llm import PAGE_NOTE, RUBRIC
+
+        class Rec:
+            def __init__(self):
+                self.users = []
+
+            def chat(self, system, user, max_tokens=2048, json_mode=False):
+                self.users.append(user)
+                return {"text": "{}", "input_tokens": 1, "output_tokens": 1}
+
+        p = Provenance("html", "headless_browser", "case1")
+        ctx = JudgeContext((EligibleObservation("x", "html", "html:L0", p),), (),
+                           CoverageReport(frozenset({"html"}), frozenset({"html"}), {}, {}), ())
+        m = Rec()
+        j = LLMJudge(m, decision_mode="calibrated", page_view=(100, 50), repair_attempts=0)
+        self.assertEqual(j.rubric, RUBRIC + PAGE_NOTE)
+        j.set_page("https://a.example.com/", "<html><title>Hi</title><body>Hello world</body></html>")
+        j(ctx, "o1")
+        body = json.loads(m.users[-1])
+        self.assertEqual(body["page_context"]["url"], "https://a.example.com/")
+        self.assertIn("Hello world", body["page_context"]["text"])
+        j(ctx, "o1")                                   # consumed: not reused for the next case
+        self.assertNotIn("page_context", json.loads(m.users[-1]))
+        m2 = Rec()
+        off = LLMJudge(m2, decision_mode="calibrated", repair_attempts=0)
+        off.set_page("https://a.example.com/", "<html>x</html>")   # no page_view: ignored
+        off(ctx, "o1")
+        self.assertNotIn("page_context", json.loads(m2.users[-1]))
+
 if __name__ == "__main__":
     unittest.main()

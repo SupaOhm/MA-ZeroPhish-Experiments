@@ -220,3 +220,19 @@ w=0.40): coverage 16.5%, selective F1 0.969, selective risk 0.061.
 dev-A -> dev-B: MA 0.940 -> 0.895; CoT 0.958 -> 0.910 (dev-B is harder for every arm; MA's
 larger drop is consistent with dev-A overfitting over 5 rounds).
 Per the declared rule, test2 stays sealed (v4_final/GO.json = no-go). No test/test2 number seen.
+
+## Round 6 (declared 2026-09-30, after the dev-B no-go; user: keep improving until we beat the baselines)
+Status of data: dev-A and dev-B are both SEEN, so development now uses all 300 dev cases ("dev
+pooled") and any dev gain is optimistic; the only valid proof of a win is sealed test2, run once
+for the final version. Every round is logged here. Model stays GPT-4o-mini.
+Diagnosis (frozen v4 on dev-B, no threshold can reach the baselines -- best possible F1 0.895):
+the Judge scores 15 of 100 legitimate pages >= 0.7. It sees only the specialists' fragments
+(observations + their evidence lines), while the baselines read the whole page.
+- **6a, Judge page view (information parity at the decision):** the Judge also receives the SAME
+  preprocessed page the baselines read (arms/preprocess.prepare: URL, cleaned HTML <= 12,000
+  chars, visible text <= 4,000 chars), labelled as context. It still sees no specialist verdict,
+  direction, strength or band (blinding kept); it must still cite eligible observations; rubric
+  note: judge whether the observations are meaningful given the whole page. This changes the
+  Judge's input set of spec FD2 (reported as a design change).
+Variant v4abdf6a on dev pooled (300) and calib (300); Platt + band refit on calib; compared on dev
+pooled with v4abdf and the six baseline arms (same rule as the go/no-go: forced F1 >= every arm).

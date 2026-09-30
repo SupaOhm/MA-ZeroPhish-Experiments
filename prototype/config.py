@@ -81,6 +81,8 @@ class Config:
     specialist_tools: tuple = ()
     # v4 2h: Judge self-consistency (1 = off).
     judge_samples: int = 1
+    # v4 6a: the Judge also sees the baselines' page view (html chars, text chars).
+    judge_page_view: tuple | None = None
     cost_scale: float = 1000.0
     budget: CaseBudget = field(default_factory=lambda: CaseBudget(100.0, 100.0, 20.0))
     evidence_removal: frozenset[str] = frozenset()
