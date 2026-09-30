@@ -49,6 +49,12 @@ class APIError(Exception):
     """The provider refused the request (not a model answer)."""
 
 
+class ImageRefused(APIError):
+    """The provider's moderation refused a request that carried an image. Declared rule
+    (PROTOCOL_V4 2d), identical for every arm: that call is repeated WITHOUT the image and
+    the case is recorded as `screenshot_refused`."""
+
+
 class QuotaExhausted(Exception):
     """Daily quota reached; re-run later, the cache resumes the work."""
 
@@ -202,6 +208,8 @@ class ChatModel:
                 # exactly like a daily quota -- never fail case after case.
                 raise QuotaExhausted(f"HTTP 402 (credits/spend limit): {text[:300]}")
             if status != 200:
+                if status == 403 and parts and "moderation" in text:
+                    raise ImageRefused(f"HTTP 403 moderation with image: {text[:300]}")
                 raise APIError(f"HTTP {status}: {text[:400]}")
             try:
                 payload = json.loads(text)

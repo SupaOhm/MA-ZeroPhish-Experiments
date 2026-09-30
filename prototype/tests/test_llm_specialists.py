@@ -243,6 +243,26 @@ class VisionTests(unittest.TestCase):
         spec.make_reasoners()["url"](env)
         self.assertEqual(model.images, [None])
 
+    def test_image_refused_call_is_repeated_without_image_note_or_line(self):
+        _, env, _ = phase1and2("c1")
+        if not isinstance(env.normalized.get("screenshot"), str):
+            self.skipTest("fixture c1 has no screenshot")
+
+        class ImageRefused(Exception):
+            pass
+
+        class Refusing(Scripted):
+            def chat(self, system, user, max_tokens=2048, json_mode=False, images=None):
+                if images:
+                    raise ImageRefused("403 moderation")
+                return super().chat(system, user, max_tokens, json_mode, images)
+
+        model = Refusing({"screenshot:V0": [finding("screenshot:V0", "x")]})
+        spec = LLMSpecialists(model, vision_root="/data")
+        self.assertEqual(spec.make_reasoners()["content"](env), ())
+        self.assertEqual(spec.screenshot_refused, 1)
+        self.assertNotIn("screenshot", model.prompts[-1][1])
+
     def test_without_vision_the_screenshot_is_never_shown(self):
         _, env, _ = phase1and2("c1")
         model = Scripted({"screenshot:V0": [finding("screenshot:V0", "x")]})

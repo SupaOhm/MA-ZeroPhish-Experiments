@@ -145,6 +145,23 @@ class ArmFlowTests(unittest.TestCase):
         self.assertIsNone(m.calls[4][3])                # moderator
         self.assertIsNone(m.calls[5][3])                # judge
 
+    def test_image_refusal_repeats_the_call_text_only(self):
+        from arms.prompts import SCREENSHOT_NOTE
+
+        class ImageRefused(Exception):
+            pass
+
+        class Refusing(Scripted):
+            def chat(self, system, user, max_tokens=2048, json_mode=False, images=None):
+                if images:
+                    raise ImageRefused("403 moderation")
+                return super().chat(system, user, max_tokens, json_mode, images)
+
+        m = Refusing(["LEGITIMATE"])
+        r = SingleAgent(m).run(self.URL, self.HTML, image="shot.png")
+        self.assertEqual((r.verdict, r.model_calls, r.extras["screenshot_refused"]), ("benign", 1, 1))
+        self.assertNotIn(SCREENSHOT_NOTE, m.calls[0][1])
+
 
 if __name__ == "__main__":
     unittest.main()

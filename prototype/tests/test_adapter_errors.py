@@ -90,6 +90,20 @@ class AdapterErrorTests(unittest.TestCase):
         logged = rec["request"]["messages"][1]["content"][1]["image_url"]["url"]
         self.assertEqual(logged, "sha256:" + hashlib.sha256(b"PNG fake").hexdigest())
 
+    def test_moderation_refusal_with_image_is_image_refused_not_an_answer(self):
+        png = os.path.join(self.tmp, "s.png")
+        with open(png, "wb") as f:
+            f.write(b"PNG fake")
+        m = model(self.tmp)
+        body = '{"error":{"message":"requires moderation on OpenAI. Your input was flagged"}}'
+        with mock.patch.object(adapter, "_http", return_value=(403, {}, body)):
+            with self.assertRaises(adapter.ImageRefused):
+                m.chat("s", "u", images=[png])
+            with self.assertRaises(APIError) as ctx:
+                m.chat("s", "u")
+            self.assertNotIsInstance(ctx.exception, adapter.ImageRefused)
+        self.assertEqual(self.cached(m), [])
+
 
 if __name__ == "__main__":
     unittest.main()

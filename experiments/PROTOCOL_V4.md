@@ -24,3 +24,16 @@ which exists for this purpose; every dev iteration is logged (`runs/dev_compare/
 4. Final: freeze v4 (code commit + calib fit), then run v4, v1 and the baselines (with the
    same inputs as v4 where 2d applies) ONCE on test2; report whatever it shows, with every
    dev iteration listed.
+
+## Amendments (dev, logged in order)
+- 2026-09-30, 2d implementation: screenshot sent at `detail: low`; baselines get the same
+  image (single-agent and CoT: their one call; PhishDebate: content and brand agents) and the
+  same one-sentence note. MA: the Content Agent cites `screenshot:V0`; such findings cannot be
+  string-checked and are counted (`visual_findings`).
+- 2026-09-30, provider moderation: on dev case pp-84e1de495513 OpenAI moderation (via
+  OpenRouter, HTTP 403, no charge) refused the SCREENSHOT for both vision arms, while the
+  text-only calls passed. Rule, identical for every arm: a call refused for moderation while
+  carrying an image is repeated without the image and the screenshot note (MA: also without
+  the `screenshot:V0` line), counted as `screenshot_refused`.
+- 2026-09-30, data: offline renders that landed on a browser error page are failed renders
+  (DATASET_PROVENANCE.md); applies from the next data package (the test2 build).

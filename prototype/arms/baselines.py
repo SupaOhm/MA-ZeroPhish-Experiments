@@ -17,6 +17,22 @@ from dataclasses import dataclass, field
 from . import prompts
 from .preprocess import prepare
 
+
+def chat_with_image(model, system: str, user: str, max_tokens: int, image, r, **kw) -> dict:
+    """PROTOCOL_V4 2d rule, identical for every arm: when the provider's moderation refuses a
+    call because of the attached screenshot (adapter.ImageRefused), that call is repeated
+    without the image and without the screenshot note, and the arm records it."""
+    if not image:
+        return model.chat(system, user, max_tokens, images=None, **kw)
+    try:
+        return model.chat(system, user, max_tokens, images=[image], **kw)
+    except Exception as e:  # noqa: BLE001 -- only the declared refusal is handled
+        if type(e).__name__ != "ImageRefused":
+            raise
+        r.extras["screenshot_refused"] = r.extras.get("screenshot_refused", 0) + 1
+        return model.chat(system, user.replace(prompts.SCREENSHOT_NOTE, ""), max_tokens,
+                          images=None, **kw)
+
 VERDICT = {"PHISHING": "phishing", "LEGITIMATE": "benign"}
 
 
@@ -91,9 +107,9 @@ class SingleAgent:
     def run(self, url: str, raw_html: str, image=None) -> ArmResult:
         s = prepare(url, raw_html, self.html_chars, self.text_chars)
         user = prompts.SAMPLE.format(**s) + (prompts.SCREENSHOT_NOTE if image else "")
-        out = self.model.chat(self.template, user, self.max_tokens,
-                              images=[image] if image else None)
-        r = ArmResult(parse_classification(out["text"], self.marker), None)
+        r = ArmResult("insufficient", None)
+        out = chat_with_image(self.model, self.template, user, self.max_tokens, image, r)
+        r.verdict = parse_classification(out["text"], self.marker)
         r.add(out)
         r.extras.update(html_truncated=s["html_truncated"], finish_reason=out["finish_reason"],
                         parse_failed=r.verdict == "insufficient", screenshot=bool(image))
@@ -141,7 +157,7 @@ class PhishDebate:
         r = ArmResult("insufficient", None)
         history, responses, moderator_log, rnd = [], {}, [], 1
         for a, p in base.items():                                   # Phase 1
-            out = self.model.chat("", p, self.max_tokens, images=imgs[a])
+            out = chat_with_image(self.model, "", p, self.max_tokens, imgs[a] and imgs[a][0], r)
             r.add(out)
             responses[a] = out["text"]
         history.append((1, dict(responses)))
@@ -161,8 +177,8 @@ class PhishDebate:
             ctx = self._context(responses)
             responses = {}
             for a, p in base.items():
-                out = self.model.chat("", p + prompts.DEBATE_SUFFIX.format(context=ctx),
-                                      self.max_tokens, images=imgs[a])
+                out = chat_with_image(self.model, "", p + prompts.DEBATE_SUFFIX.format(context=ctx),
+                                      self.max_tokens, imgs[a] and imgs[a][0], r)
                 r.add(out)
                 responses[a] = out["text"]
             history.append((rnd, dict(responses)))

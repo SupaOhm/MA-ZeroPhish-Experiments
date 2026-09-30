@@ -133,7 +133,7 @@ class LLMSpecialists:
         # v4 2d: screenshot paths in a capture are relative to this data directory.
         self.vision_root = vision_root
         self.unreadable_fields = frozenset() if vision_root is not None else TEXT_ONLY_EXCLUDED
-        self.visual_findings = 0
+        self.visual_findings = self.screenshot_refused = 0
         self.calls = self.input_tokens = self.output_tokens = 0
         self.findings_returned = self.dropped_bad_line = self.dropped_bad_quote = 0
         self.parse_failures = self.resolved_bare_line = self.resolved_echoed_line = 0
@@ -188,10 +188,21 @@ class LLMSpecialists:
                          + "\nReconsider your findings. Keep, revise or add findings about YOUR "
                            "evidence; cite only your own line ids.")
             name, role = ROLES[agent]
-            out = self.model.chat(SYSTEM.format(name=name, role=role,
-                                                max_findings=self.max_findings),
-                                  user, self.max_tokens, json_mode=True,
-                                  **({"images": [image]} if image is not None else {}))
+            system = SYSTEM.format(name=name, role=role, max_findings=self.max_findings)
+            try:
+                out = self.model.chat(system, user, self.max_tokens, json_mode=True,
+                                      **({"images": [image]} if image is not None else {}))
+            except Exception as e:  # noqa: BLE001 -- only the declared refusal is handled
+                if image is None or type(e).__name__ != "ImageRefused":
+                    raise
+                # PROTOCOL_V4 2d rule (same as the baselines): repeat without the image, the
+                # screenshot note and the screenshot line.
+                self.screenshot_refused += 1
+                del mine[SCREENSHOT_LINE[0]]
+                user = user.replace(f"[{SCREENSHOT_LINE[0]}] {SCREENSHOT_LINE[1]}\n", "") \
+                           .replace(f"\n[{SCREENSHOT_LINE[0]}] {SCREENSHOT_LINE[1]}", "") \
+                           .replace(SCREENSHOT_NOTE + VISION_RULE, "")
+                out = self.model.chat(system, user, self.max_tokens, json_mode=True)
             self.calls += 1
             self.input_tokens += out["input_tokens"]
             self.output_tokens += out["output_tokens"]
@@ -259,4 +270,5 @@ class LLMSpecialists:
                 "resolved_bare_line": self.resolved_bare_line,
                 "resolved_echoed_line": self.resolved_echoed_line,
                 "visual_findings": self.visual_findings,
+                "screenshot_refused": self.screenshot_refused,
                 "ungrounded_rate": (self.dropped_bad_line + self.dropped_bad_quote) / n if n else None}
