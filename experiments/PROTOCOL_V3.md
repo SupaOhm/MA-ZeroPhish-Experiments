@@ -39,3 +39,8 @@ pages from the same period, campaign-disjoint from test, drawn before v3 existed
    `openrouter:openai/gpt-4o-mini-2024-07-18`, same extras; scored with evaluate.py
    (selective and forced metrics). Data: the DATA_VERSION built after test2 enrichment
    (recorded in every ledger row). Results reported whatever they are.
+
+## Status update (2026-09-30)
+v3 will NOT be run on test2 on its own: test2 is the last clean test sample, so the user
+chose to develop further on dev first (PROTOCOL_V4) and spend test2 once, at the end. The v3
+calib collection (runs/v3/exp4) is complete and kept.
