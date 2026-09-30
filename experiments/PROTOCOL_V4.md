@@ -271,3 +271,15 @@ MORE reluctant. **7b rejected.** Conclusion of rounds 7/7b: with GPT-4o-mini, th
 conditions decision abstains on most cases; the calibrated score decision of v3/v4 (same rubric,
 same blinded input, rubric-guided p mapped by a calib-fitted Platt + abstention band) remains the
 best (dev pooled forced F1 0.910). Best system: frozen v4abdf.
+
+## Round 8 -- Judge "consider the opposite" (declared 2026-09-30, before running; user approved)
+Diagnosis: the Judge over-reads single fragments (e.g. a hidden iframe) as phishing; 15 of 100
+legitimate dev-B pages scored >= 0.7. Debiasing by considering alternative explanations is a
+standard technique; it adds no evidence (rounds 2e/3a/T2/6a all added evidence and raised FPR).
+- **8a, v4abdfC** = v4abdf with one rubric addition: before the conditions, the Judge lists, for
+  every observation pointing to phishing, the most plausible BENIGN explanation (ordinary legitimate
+  practice producing the same evidence) and whether the evidence rules it out -- and for every
+  benign observation the most plausible phishing explanation; only evidence whose alternative is
+  ruled out counts as distinctive support. JSON gains a first key "alternatives". Everything else
+  (blinding, citations, disclosures, calibrated decision, Platt + band fitted on calib) unchanged.
+Run on dev pooled (300) and calib (300); compared on dev pooled with v4abdf and the six baselines.

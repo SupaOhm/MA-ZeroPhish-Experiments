@@ -318,5 +318,14 @@ class PageViewTests(unittest.TestCase):
         off(ctx, "o1")
         self.assertNotIn("page_context", json.loads(m2.users[-1]))
 
+
+class ConsiderOppositeTests(unittest.TestCase):
+    def test_note_only_when_enabled(self):
+        from phases.judge_llm import OPPOSITE_NOTE, RUBRIC
+        self.assertEqual(LLMJudge(None).rubric, RUBRIC)
+        self.assertEqual(LLMJudge(None, consider_opposite=True).rubric, RUBRIC + OPPOSITE_NOTE)
+        self.assertEqual(LLMJudge(None, show_evidence=True, consider_opposite=True).rubric[-len(OPPOSITE_NOTE):],
+                         OPPOSITE_NOTE)
+
 if __name__ == "__main__":
     unittest.main()

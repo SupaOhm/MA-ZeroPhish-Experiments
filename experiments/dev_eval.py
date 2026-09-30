@@ -33,7 +33,8 @@ def variants(model: str) -> dict:
             "v4abdf6a": replace(v4abd, judge_shows_evidence=True, judge_page_view=(12000, 4000)),
             "v4abdfP": replace(v4abd, judge_shows_evidence=True, judge_mode="conditions"),
             "v4abdfPS": replace(v4abd, judge_shows_evidence=True, judge_mode="conditions",
-                                judge_structural_gaps=True)}
+                                judge_structural_gaps=True),
+            "v4abdfC": replace(v4abd, judge_shows_evidence=True, judge_consider_opposite=True)}
 
 
 def main() -> None:

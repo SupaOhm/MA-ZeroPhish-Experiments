@@ -194,7 +194,8 @@ def run_grid(arms: dict, case_paths: list[Path], out_dir: Path, tag: str, args,
                          decision_mode=cfg.judge_mode, platt_ab=cfg.judge_platt,
                          band_w=cfg.judge_band_w, task_definition=cfg.task_definition,
                          show_evidence=cfg.judge_shows_evidence, samples=cfg.judge_samples,
-                         page_view=cfg.judge_page_view)
+                         page_view=cfg.judge_page_view,
+                         consider_opposite=cfg.judge_consider_opposite)
         fd, scratch = tempfile.mkstemp(suffix=".jsonl")
         os.close(fd)
         t0 = time.time()

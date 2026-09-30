@@ -83,6 +83,8 @@ class Config:
     judge_samples: int = 1
     # v4 6a: the Judge also sees the baselines' page view (html chars, text chars).
     judge_page_view: tuple | None = None
+    # v4 8a: the Judge considers the opposite explanation of each observation first.
+    judge_consider_opposite: bool = False
     cost_scale: float = 1000.0
     budget: CaseBudget = field(default_factory=lambda: CaseBudget(100.0, 100.0, 20.0))
     evidence_removal: frozenset[str] = frozenset()

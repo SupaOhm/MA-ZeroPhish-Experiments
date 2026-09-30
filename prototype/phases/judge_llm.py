@@ -64,6 +64,17 @@ STRUCTURAL_REASONS = frozenset({
     "excluded_retrospective_lookup_leaks_future_takedown",
 })
 
+# v4 8a: consider the opposite before assessing the conditions.
+OPPOSITE_NOTE = """
+
+Before assessing the conditions, consider the opposite. For every observation that points to
+phishing, state the most plausible BENIGN explanation (ordinary legitimate practice that would
+produce the same evidence, e.g. analytics iframes, third-party scripts, a login form on a site that
+has accounts) and whether the evidence rules it out. For every observation that points to
+legitimacy, state the most plausible phishing explanation and whether it is ruled out. Only evidence
+whose alternative is ruled out counts as distinctive support. Put this list FIRST in your JSON
+answer as "alternatives": [{"locator": "...", "alternative": "...", "ruled_out": true|false}]."""
+
 # v4 6a: the Judge also receives the page itself (the same view the baselines read).
 PAGE_NOTE = """
 
@@ -230,7 +241,7 @@ class LLMJudge:
                  platt_ab: tuple[float, float] = (1.0, 0.0), band_w: float = 0.0,
                  task_definition: bool = False, show_evidence: bool = False,
                  samples: int = 1, sample_temperature: float = 1.0,
-                 page_view: tuple[int, int] | None = None):
+                 page_view: tuple[int, int] | None = None, consider_opposite: bool = False):
         """`structural_gaps` (v2, Config.judge_structural_gaps): tell the Judge which gaps are
         structural. False = v1: rubric and payload byte-identical to the frozen v1 runs."""
         self.model, self.repair_attempts, self.max_tokens = model, repair_attempts, max_tokens
@@ -247,6 +258,8 @@ class LLMJudge:
         self.last_samples = None
         # v4 6a: the baselines' preprocessed page (html chars, text chars) as Judge context.
         self.page_view, self._page = page_view, None
+        if consider_opposite:                   # v4 8a
+            self.rubric = self.rubric + OPPOSITE_NOTE
         if page_view:
             self.rubric = self.rubric + PAGE_NOTE
         if show_evidence:                       # v4 2f
