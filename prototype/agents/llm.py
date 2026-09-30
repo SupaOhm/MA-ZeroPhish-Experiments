@@ -121,7 +121,8 @@ class LLMSpecialists:
     def __init__(self, model, max_findings: int = 6, max_tokens: int = 2048,
                  max_lines: int | None = None, max_chars: int | None = None,
                  baseline_view: tuple[int, int] | None = None, expand_on_focus: bool = False,
-                 vision_root=None, task_definition: bool = False):
+                 vision_root=None, task_definition: bool = False,
+                 peer_lines_uncitable: bool = False):
         """max_lines / max_chars: evidence limits per field (None = v1 defaults 40 x 200;
         v3 = 80 x 300, PROTOCOL_V3)."""
         self.model, self.max_findings, self.max_tokens = model, max_findings, max_tokens
@@ -135,6 +136,7 @@ class LLMSpecialists:
         self.unreadable_fields = frozenset() if vision_root is not None else TEXT_ONLY_EXCLUDED
         self.visual_findings = self.screenshot_refused = 0
         self.task_definition = task_definition   # v4 2e: the paper's definition, stated first
+        self.peer_lines_uncitable = peer_lines_uncitable   # v4 3a
         self.calls = self.input_tokens = self.output_tokens = 0
         self.findings_returned = self.dropped_bad_line = self.dropped_bad_quote = 0
         self.parse_failures = self.resolved_bare_line = self.resolved_echoed_line = 0
@@ -181,7 +183,15 @@ class LLMSpecialists:
                 user += SCREENSHOT_NOTE + VISION_RULE
             if focus is not None:
                 ref_lines = {lid: txt for f in all_lines for lid, txt in all_lines[f]}
-                shown = [f"[{r}] {ref_lines[r]}" for r in focus.evidence_refs if r in ref_lines]
+                if self.peer_lines_uncitable:
+                    # v4 3a: a peer's line is shown for context but not in the citable
+                    # "[id] text" form, so it is not cited (and then dropped) by mistake.
+                    shown = [f"[{r}] {ref_lines[r]}" if r in mine else
+                             f"- another agent's {r.split(':', 1)[0]} evidence (not citable): "
+                             f"{ref_lines[r]}"
+                             for r in focus.evidence_refs if r in ref_lines]
+                else:
+                    shown = [f"[{r}] {ref_lines[r]}" for r in focus.evidence_refs if r in ref_lines]
                 user += ("\n\nYou are re-invoked about an open issue: "
                          f"{focus.kind.value} on fields {sorted(focus.affected_fields)}.\n"
                          "Evidence cited for this issue (lines, not opinions):\n"

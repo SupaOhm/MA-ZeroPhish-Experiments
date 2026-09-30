@@ -89,3 +89,22 @@ Model decision (user, 2026-09-30): every arm stays on GPT-4o-mini
 (`openrouter:openai/gpt-4o-mini-2024-07-18`) even on a no-go; no switch to GPT-4o (cost).
 No-go fixes are therefore system changes only (e.g. grounding format -- 17% of dev-A findings
 dropped by the grounding check; evidence-line detail; Judge self-consistency; adaptive selection).
+
+## Round 2 results (dev-A, forced F1; calib-fitted rules, results_gpt4omini/dev_v4_r2/)
+CoT 0.958 (FPR 0) | **v4abdf + Platt 0.940 (FPR 0.06, recall 0.94)** | CoT+shot 0.939 |
+single+shot 0.936 | v4abdf identity 0.929 | single 0.913 | v4abd 0.913 (FPR 0.12) |
+PhishDebate 0.907 | v4abdf+2g 0.896 | PhishDebate+shot 0.884 | v4abd+2g 0.875.
+2f kept (halves FPR); 2g rejected. Chosen so far: v4abdf + Platt. It still trails text CoT on
+dev-A, so dev-B (a one-shot check) is NOT spent yet; development continues on dev-A.
+Correction: the "iframe host" fix proposed in chat is unnecessary -- iframe lines already
+carry the src.
+
+## Round 3 (declared 2026-09-30, before running)
+Measured on all cached specialist replies: on re-invocation, 3,084 findings (~16% of
+re-invocation findings) cite a PEER's evidence line shown in the issue section (same "[id] text"
+format as own lines) and are dropped by the grounding check; first-pass invalid ids are rare
+(113 of ~12,000).
+- **3a:** on re-invocation, peer evidence lines are shown in a non-citable form
+  ("- another agent's <field> evidence (not citable): <text>"); own lines keep "[id] text".
+  Grounding and the own-fields rule are unchanged.
+Variant v4abdf3a on dev-A (and calib, for its Platt fit); compared with v4abdf + Platt.

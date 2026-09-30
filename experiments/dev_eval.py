@@ -24,7 +24,9 @@ def variants(model: str) -> dict:
     v4abd = replace(v4ab, specialist_vision=True)
     return {"v3": v3, "v4a": v4a, "v4ab": v4ab, "v4abd": v4abd,
             "v4abde": replace(v4abd, task_definition=True),
-            "v4abdf": replace(v4abd, judge_shows_evidence=True)}
+            "v4abdf": replace(v4abd, judge_shows_evidence=True),
+            "v4abdf3a": replace(v4abd, judge_shows_evidence=True,
+                                specialist_peer_lines_uncitable=True)}
 
 
 def main() -> None:

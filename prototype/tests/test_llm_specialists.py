@@ -177,6 +177,17 @@ class GroundingTests(unittest.TestCase):
         self.assertEqual(spec.make_reasoners()["message"](envelope), ())
         self.assertEqual(spec.calls, 0)
 
+    def test_3a_peer_lines_are_shown_but_not_citable(self):
+        model = Scripted()
+        spec, _, env = self.reasoner("content", model, "c6")
+        spec.peer_lines_uncitable = True
+        issue = Issue(IssueKind.CONFLICT, "o1", frozenset({"page_content", "html"}),
+                      frozenset({"content", "web_structure"}), ("html:L0",))
+        spec.make_reasoners()["content"](env, focus=issue)
+        cited = model.prompts[-1][1].split("Evidence cited")[1]
+        self.assertIn("- another agent's html evidence (not citable): form 0:", cited)
+        self.assertNotIn("[html:L0]", cited)
+
     def test_focus_shows_the_cited_lines_not_opinions(self):
         model = Scripted()
         _, reason, env = self.reasoner("content", model, "c6")

@@ -75,6 +75,8 @@ class Config:
     task_definition: bool = False
     # v4 2f: the Judge also sees the verbatim evidence line of each observation.
     judge_shows_evidence: bool = False
+    # v4 3a: on re-invocation, peer evidence lines are shown in a non-citable form.
+    specialist_peer_lines_uncitable: bool = False
     cost_scale: float = 1000.0
     budget: CaseBudget = field(default_factory=lambda: CaseBudget(100.0, 100.0, 20.0))
     evidence_removal: frozenset[str] = frozenset()
