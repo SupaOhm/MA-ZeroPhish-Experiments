@@ -236,3 +236,7 @@ the Judge scores 15 of 100 legitimate pages >= 0.7. It sees only the specialists
   Judge's input set of spec FD2 (reported as a design change).
 Variant v4abdf6a on dev pooled (300) and calib (300); Platt + band refit on calib; compared on dev
 pooled with v4abdf and the six baseline arms (same rule as the go/no-go: forced F1 >= every arm).
+Planned ablation for 6a (declared 2026-09-30 BEFORE any 6a result was looked at; run only with
+the user's approval, ~$0.80): **"Judge only"** = the same Judge (rubric, page view, calibration
+procedure) with NO specialist observations, dependencies or issues -- to attribute any 6a gain
+to the multi-agent part vs the Judge simply reading the page like CoT. Reported whatever it shows.
