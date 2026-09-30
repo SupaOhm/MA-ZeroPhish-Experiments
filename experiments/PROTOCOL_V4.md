@@ -179,3 +179,16 @@ Re-screen of the bounded revision (dev-A, strict): T1a 0.02 vs 0.00; T1b 0 vs 0;
 reason: on these pages the brand is carried by logos/images, which the offline render does not
 load; a text-only brand claim on a credential page is rare. Round 4 wires **T2 only**
 (variant v4abdfT2, already running on dev-A and calib).
+Round 4 result (dev-A, forced F1; results_gpt4omini/dev_v4_r4/): v4abdfT2 + Platt 0.911
+(FPR 0.10, recall 0.92), + 2g 0.863, vs v4abdf + Platt 0.940 (FPR 0.06). **T2 rejected.**
+Pattern across rounds 2e/2g/3a/T2: every addition of evidence raised false positives.
+
+## Round 5 -- 2h Judge self-consistency (declared 2026-09-30, before running)
+The Judge (v4abdf: sees evidence lines) is called as now (temperature 0, validated, one repair)
+plus 4 extra samples at temperature 1.0 (the API default; not tuned), identical prompt. The
+decision score is the mean of the valid p_phishing values of the 5 samples (extra samples
+contribute only their p_phishing; the explanation, citations and disclosures come from the
+temperature-0 call). Platt + band fitted on calib on logit(mean p), as before. Each extra sample
+has its own cache key (sample index, not sent to the API). Variant v4abdfS on dev-A and calib,
+compared with v4abdf + Platt on dev-A. Model unchanged (GPT-4o-mini). Commits local; pushed
+only with the user's approval.
