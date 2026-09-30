@@ -25,12 +25,12 @@ def main() -> None:
     ap.add_argument("--sweep", action="store_true", help="add tau grid, r_max_coll {1,3}, k {1,3}")
     ap.add_argument("--out", default=str(ROOT / "runs" / "exp4"))
     args = ap.parse_args()
-    cfg, est = frozen_system(args.model)
+    cfg, est = frozen_system(args.model, version=args.system_version)
     arms = {
         "mazerophish": cfg,
-        "no_collaboration": frozen_system(args.model, BASELINE_NO_REVISION)[0],
-        "fixed_round": frozen_system(args.model, ABLATION3_NO_CALIBRATED_GATE)[0],
-        "full_debate": frozen_system(args.model, BASELINE_FULL_DEBATE)[0],
+        "no_collaboration": frozen_system(args.model, BASELINE_NO_REVISION, version=args.system_version)[0],
+        "fixed_round": frozen_system(args.model, ABLATION3_NO_CALIBRATED_GATE, version=args.system_version)[0],
+        "full_debate": frozen_system(args.model, BASELINE_FULL_DEBATE, version=args.system_version)[0],
     }
     if args.sweep:
         for t in TAU_GRID:

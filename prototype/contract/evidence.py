@@ -85,3 +85,6 @@ class EvidenceEnvelope:
     instrument_outcomes: tuple[InstrumentOutcome, ...] = ()
     provenance: tuple[ArtifactBinding, ...] = ()
     parent_object_id: str | None = None
+    # field -> failure reason of its final attempt, for applicable-but-unavailable fields
+    # (v2: the Judge distinguishes structural from operational gaps).
+    unavailable_reasons: dict[str, str] = field(default_factory=dict)

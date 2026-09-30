@@ -53,6 +53,10 @@ class Config:
     # triggers involve the URL, so under "any_field" the URL Agent alone covered
     # almost every trigger it cannot read (Experiment 2, dev).
     trigger_cover: str = "all_fields"
+    # v2 (experiments/PROTOCOL_V2.md): the LLM Judge is told which unavailable fields are
+    # STRUCTURAL (unobservable by construction in a retrospective evaluation) and does not
+    # treat them as unresolved material gaps. False = v1 behaviour, payload unchanged.
+    judge_structural_gaps: bool = False
     cost_scale: float = 1000.0
     budget: CaseBudget = field(default_factory=lambda: CaseBudget(100.0, 100.0, 20.0))
     evidence_removal: frozenset[str] = frozenset()

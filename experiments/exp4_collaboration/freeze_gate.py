@@ -42,6 +42,7 @@ def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--estimator", required=True)
     ap.add_argument("--model", required=True, help="model the calib states came from")
+    ap.add_argument("--system-version", default="v1", choices=("v1", "v2"))
     args = ap.parse_args()
     est = json.loads(Path(args.estimator).read_text(encoding="utf-8"))
     meta = est.get("meta", est)
@@ -53,15 +54,16 @@ def main() -> None:
     if meta.get("state_model_id") != args.model:
         raise SystemExit(f"REFUSED: estimator was trained on states from {meta.get('state_model_id')}, "
                          f"not {args.model}; a gate never transfers between models")
-    dst = HERE / f"estimator__{slug}.json"
+    sfx = "" if args.system_version == "v1" else f"__{args.system_version}"
+    dst = HERE / f"estimator__{slug}{sfx}.json"
     shutil.copyfile(args.estimator, dst)
-    frozen = {"model_id": args.model, "estimator": str(dst.relative_to(ROOT)).replace("\\", "/"), "tau": tau,
+    frozen = {"model_id": args.model, "system_version": args.system_version, "estimator": str(dst.relative_to(ROOT)).replace("\\", "/"), "tau": tau,
               "epsilon": EPSILON, "tau_grid": list(TAU_GRID), "risk_target_met": met,
               "rule": "largest tau with held-out calib error among stopped states <= epsilon",
               "calib_table": table,
               "estimator_report": {k: meta.get(k) for k in ("brier_eval", "auroc_eval",
                                    "eval_states", "train_states", "abstention_rate")}}
-    out = HERE / f"frozen_gate__{slug}.json"
+    out = HERE / f"frozen_gate__{slug}{sfx}.json"
     out.write_text(json.dumps(frozen, indent=1), encoding="utf-8")
     print(json.dumps({k: frozen[k] for k in ("tau", "risk_target_met", "calib_table")}, indent=1))
     print(f"frozen -> {out}")

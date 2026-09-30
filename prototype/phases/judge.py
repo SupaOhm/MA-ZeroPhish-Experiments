@@ -56,6 +56,7 @@ def _coverage(records, envelope) -> CoverageReport:
         applicable=frozenset(applicable),
         analyzed=frozenset(analyzed),
         availability=dict(envelope.availability),
+        unavailable_reasons=dict(getattr(envelope, "unavailable_reasons", {}) or {}),
     )
 
 

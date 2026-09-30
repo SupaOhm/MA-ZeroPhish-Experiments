@@ -21,7 +21,7 @@ def main() -> None:
     common_args(ap)
     ap.add_argument("--out", default=str(ROOT / "runs" / "exp1"))
     args = ap.parse_args()
-    cfg, est = frozen_system(args.model)
+    cfg, est = frozen_system(args.model, version=args.system_version)
     cases = select_cases(args.dataset, args.split, args.per_label, args.limit)
     run_grid({"mazerophish": cfg}, cases, Path(args.out), f"exp1_{args.dataset}_{args.split}",
              args, estimator=est)

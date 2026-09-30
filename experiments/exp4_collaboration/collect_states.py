@@ -42,9 +42,11 @@ sys.path.insert(0, str(ROOT / "experiments"))
 from system_runner import phase1_config  # noqa: E402
 
 
-def frozen_system(model_id: str, trigger_cover: str):
-    """Experiment 2's frozen Phase 1 (the gate is what this script trains data for)."""
-    return phase1_config(MAZEROPHISH, model_id, trigger_cover)
+def frozen_system(model_id: str, trigger_cover: str, version: str = "v1"):
+    """Experiment 2's frozen Phase 1 (the gate is what this script trains data for);
+    v2 adds the structural-gap Judge (experiments/PROTOCOL_V2.md)."""
+    return replace(phase1_config(MAZEROPHISH, model_id, trigger_cover),
+                   judge_structural_gaps=(version == "v2"))
 
 
 def main() -> None:
@@ -57,6 +59,7 @@ def main() -> None:
     ap.add_argument("--key-env", default=None)
     ap.add_argument("--extra", default="", help="JSON of extra request params (e.g. OpenRouter provider pin)")
     ap.add_argument("--data-version", default=None)
+    ap.add_argument("--system-version", default="v1", choices=("v1", "v2"))
     ap.add_argument("--trigger-cover", default="all_fields", choices=("any_field", "all_fields"))
     ap.add_argument("--min-interval", type=float, default=4.0)
     ap.add_argument("--seed", type=int, default=41)
@@ -74,7 +77,7 @@ def main() -> None:
     extra = json.loads(args.extra) if args.extra else {}
     model = ChatModel(args.model, env_path=args.env, cache_dir=args.cache, extra=extra,
                       min_interval=args.min_interval, key_env=args.key_env)
-    cfg = replace(frozen_system(args.model, args.trigger_cover), gate="always")
+    cfg = replace(frozen_system(args.model, args.trigger_cover, args.system_version), gate="always")
     tag = f"calib_states__{args.trigger_cover}" + (f"__shard{k}of{n}" if n > 1 else "")
     states_path, ledger_path = out / f"{tag}.jsonl", out / f"{tag}__ledger.jsonl"
     failures = out / f"{tag}.failures.jsonl"
@@ -95,7 +98,8 @@ def main() -> None:
     n_ok = n_fail = 0
     for case_id in todo:
         capture = load_capture(str(cap_dir / f"{case_id}.json"))
-        specialists, judge = LLMSpecialists(model), LLMJudge(model)
+        specialists = LLMSpecialists(model)
+        judge = LLMJudge(model, structural_gaps=cfg.judge_structural_gaps)
         sink: list = []
         fd, scratch = tempfile.mkstemp(suffix=".jsonl")
         os.close(fd)
@@ -121,7 +125,8 @@ def main() -> None:
         os.unlink(scratch)
         meta = {"model_id": args.model, "model_extra": extra, "data_version": args.data_version,
                 "key_env": model.key_env, "split": args.split,
-                "trigger_cover": args.trigger_cover, "collection_gate": "always"}
+                "trigger_cover": args.trigger_cover, "collection_gate": "always",
+                "system_version": args.system_version}
         with states_path.open("a", encoding="utf-8") as f:
             for s in sink:
                 f.write(json.dumps({**s, **meta}, ensure_ascii=False) + "\n")

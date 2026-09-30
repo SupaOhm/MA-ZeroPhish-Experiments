@@ -46,10 +46,11 @@ PHASE1 = ROOT / "experiments" / "exp2_selection" / "frozen.json"
 GATE_DIR = ROOT / "experiments" / "exp4_collaboration"
 
 
-def gate_path(model_id: str) -> Path:
-    """The frozen gate of one model (estimator and tau are model-specific)."""
+def gate_path(model_id: str, version: str = "v1") -> Path:
+    """The frozen gate of one model and system version (v1 file name unchanged)."""
     slug = model_id.replace("/", "_").replace(":", "_")
-    return GATE_DIR / f"frozen_gate__{slug}.json"
+    return GATE_DIR / (f"frozen_gate__{slug}.json" if version == "v1"
+                       else f"frozen_gate__{slug}__{version}.json")
 DATA = ROOT / "experiments" / "data_eval" / "data"
 
 
@@ -61,8 +62,8 @@ def phase1_config(base, model_id: str, trigger_cover: str = "all_fields"):
                    trigger_cover=trigger_cover)
 
 
-def frozen_gate(model_id: str) -> tuple[LogisticEstimator, float, dict]:
-    gate = gate_path(model_id)
+def frozen_gate(model_id: str, version: str = "v1") -> tuple[LogisticEstimator, float, dict]:
+    gate = gate_path(model_id, version)
     if not gate.exists():
         raise SystemExit(
             f"REFUSED: no frozen gate for {model_id} ({gate.name}). Train the estimator on "
@@ -75,10 +76,14 @@ def frozen_gate(model_id: str) -> tuple[LogisticEstimator, float, dict]:
     return est, float(g["tau"]), g
 
 
-def frozen_system(model_id: str, base=MAZEROPHISH, trigger_cover: str = "all_fields"):
-    """(config, estimator) of the frozen system, applied to `base` (an arm/ablation)."""
-    est, tau, _ = frozen_gate(model_id)
-    return replace(phase1_config(base, model_id, trigger_cover), tau=tau), est
+def frozen_system(model_id: str, base=MAZEROPHISH, trigger_cover: str = "all_fields",
+                  version: str = "v1"):
+    """(config, estimator) of the frozen system, applied to `base` (an arm/ablation).
+    version "v2" (experiments/PROTOCOL_V2.md): structural-gap Judge + the v2 gate file."""
+    est, tau, _ = frozen_gate(model_id, version)
+    cfg = replace(phase1_config(base, model_id, trigger_cover), tau=tau,
+                  judge_structural_gaps=(version == "v2"))
+    return cfg, est
 
 
 def select_cases(dataset: str, split: str, per_label: int | None, limit: int | None,
@@ -115,6 +120,8 @@ def common_args(ap: argparse.ArgumentParser) -> None:
     ap.add_argument("--data-version", required=True, help="DATA_VERSION of the captures used")
     ap.add_argument("--shard", default="0/1",
                     help="k/n: this process takes every n-th case from k (one key per shard)")
+    ap.add_argument("--system-version", default="v1", choices=("v1", "v2"),
+                    help="v2 = experiments/PROTOCOL_V2.md (structural-gap Judge, v2 gate)")
 
 
 def run_grid(arms: dict, case_paths: list[Path], out_dir: Path, tag: str, args,
@@ -142,12 +149,14 @@ def run_grid(arms: dict, case_paths: list[Path], out_dir: Path, tag: str, args,
     print(f"{tag}: {len(case_paths)} cases x {len(arms)} arms, {len(todo)} (case, arm) to run",
           flush=True)
     meta = {"data_version": args.data_version, "dataset": args.dataset, "split": args.split,
-            "model_extra": extra, **(meta or {})}
+            "model_extra": extra, "system_version": getattr(args, "system_version", "v1"),
+            **(meta or {})}
     n_ok = n_fail = 0
     for path, arm in todo:
         cfg = replace(arms[arm], name=arm)
         capture = load_capture(str(path))
-        specialists, judge = LLMSpecialists(model), LLMJudge(model)
+        specialists = LLMSpecialists(model)
+        judge = LLMJudge(model, structural_gaps=cfg.judge_structural_gaps)
         fd, scratch = tempfile.mkstemp(suffix=".jsonl")
         os.close(fd)
         t0 = time.time()

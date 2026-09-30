@@ -143,5 +143,55 @@ class RunWiringTests(unittest.TestCase):
         self.assertEqual(seen, ["o1"])
 
 
+class V2StructuralGapsTests(unittest.TestCase):
+    """PROTOCOL_V2 fix 2 and fix 3; v1 must stay byte-identical when the switch is off."""
+
+    def ctx_with_reasons(self):
+        from contract.judge import CoverageReport, JudgeContext
+        p = Provenance("html", "headless_browser", "case1")
+        obs = (EligibleObservation("form posts to another domain", "html", "html:0", p),)
+        cov = CoverageReport(frozenset({"url"}), frozenset({"url"}),
+                             {"dns": SourceAvailability.APPLICABLE_UNAVAILABLE,
+                              "dom": SourceAvailability.APPLICABLE_UNAVAILABLE,
+                              "ct": SourceAvailability.APPLICABLE_UNAVAILABLE},
+                             {"dns": "not_retrospectively_observable", "dom": "render_timeout",
+                              "ct": "withheld"})
+        return JudgeContext(obs, (), cov, ())
+
+    def test_v1_rubric_and_payload_unchanged(self):
+        from phases.judge_llm import RUBRIC, _context_payload
+        j = LLMJudge(Scripted([]))
+        self.assertIs(j.rubric, RUBRIC)
+        cov = _context_payload(self.ctx_with_reasons())["coverage"]
+        self.assertNotIn("structural_gaps", cov)
+        self.assertNotIn("operational_gaps", cov)
+
+    def test_v2_splits_only_the_declared_structural_reasons(self):
+        from phases.judge_llm import RUBRIC_STRUCTURAL, _context_payload
+        self.assertIs(LLMJudge(Scripted([]), structural_gaps=True).rubric, RUBRIC_STRUCTURAL)
+        cov = _context_payload(self.ctx_with_reasons(), True)["coverage"]
+        self.assertEqual(cov["structural_gaps"], ["dns"])
+        self.assertEqual(cov["operational_gaps"], ["ct", "dom"])     # withheld + timeout stay material
+
+    def test_score_kept_when_the_answer_fails_validation(self):
+        bad = dict(GOOD, phishing_support=["html:0"], p_phishing=0.72)   # 1 field: invalid
+        j = LLMJudge(Scripted([json.dumps(bad), json.dumps(bad)]))
+        d, fb = j(ctx(gaps=True), "o1")
+        self.assertEqual(fb.notes, "finalization_error")
+        self.assertIsNone(j.last_score)
+        self.assertEqual(j.last_score_any, 0.72)
+
+
+class UnavailableReasonsTests(unittest.TestCase):
+    def test_reason_of_the_final_attempt_and_cleared_when_recovered(self):
+        from capture.replay import FetchResult
+        from phases.normalize import normalize
+        U, O = SourceAvailability.APPLICABLE_UNAVAILABLE, SourceAvailability.OBTAINED
+        env = normalize("o1", "c", (FetchResult("dom", None, U, "transient_failure"),
+                                    FetchResult("dom", "<html>", O, None, "b", "c"),
+                                    FetchResult("dns", None, U, "not_retrospectively_observable")))
+        self.assertEqual(env.unavailable_reasons, {"dns": "not_retrospectively_observable"})
+
+
 if __name__ == "__main__":
     unittest.main()

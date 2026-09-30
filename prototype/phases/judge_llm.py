@@ -55,7 +55,24 @@ Answer with JSON only:
  "explanation": "two or three sentences citing locators"}}"""
 
 
-def _context_payload(context: JudgeContext) -> dict:
+# v2 (experiments/PROTOCOL_V2.md): unavailability reasons that are STRUCTURAL -- the field
+# cannot be observed by construction in a retrospective evaluation, identically for every
+# case of both labels. Declared before any v2 run; everything else stays material.
+STRUCTURAL_REASONS = frozenset({
+    "not_retrospectively_observable", "not_in_source_dataset",
+    "excluded_retrospective_lookup_leaks_future_takedown",
+})
+
+RUBRIC_STRUCTURAL = RUBRIC + """
+
+Coverage note: fields in coverage.structural_gaps are unobservable BY CONSTRUCTION in this
+evaluation setting (the same for every submission) -- they are not acquisition failures. List
+them in coverage_limitations, but do NOT treat them as unresolved material gaps when assessing
+def_phishing or def_benign. Fields in coverage.operational_gaps (failed or withheld
+acquisition) remain material gaps."""
+
+
+def _context_payload(context: JudgeContext, structural_gaps: bool = False) -> dict:
     obs = []
     for o in context.observations:
         row = {"locator": o.locator, "field": o.declared_field, "observation": o.observation,
@@ -73,7 +90,12 @@ def _context_payload(context: JudgeContext) -> dict:
                          for d in context.dependencies],
         "coverage": {"applicable_modalities": sorted(cov.applicable),
                      "analyzed_modalities": sorted(cov.analyzed),
-                     "field_availability": {f: a.value for f, a in sorted(cov.availability.items())}},
+                     "field_availability": {f: a.value for f, a in sorted(cov.availability.items())},
+                     **({"structural_gaps": sorted(f for f, r in cov.unavailable_reasons.items()
+                                                   if r in STRUCTURAL_REASONS),
+                         "operational_gaps": sorted(f for f, r in cov.unavailable_reasons.items()
+                                                    if r not in STRUCTURAL_REASONS)}
+                        if structural_gaps else {})},
         "unresolved_issues": [{"id": f"issue{n}", "kind": i.kind.value,
                                "fields": sorted(i.affected_fields)}
                               for n, i in enumerate(context.issues)],
@@ -152,21 +174,27 @@ def validate(d: dict | None, context: JudgeContext) -> list[str]:
 class LLMJudge:
     """Callable with `adjudicate`'s signature. Keeps usage counters for the ledger."""
 
-    def __init__(self, model, repair_attempts: int = 1, max_tokens: int = 2048):
+    def __init__(self, model, repair_attempts: int = 1, max_tokens: int = 2048,
+                 structural_gaps: bool = False):
+        """`structural_gaps` (v2, Config.judge_structural_gaps): tell the Judge which gaps are
+        structural. False = v1: rubric and payload byte-identical to the frozen v1 runs."""
         self.model, self.repair_attempts, self.max_tokens = model, repair_attempts, max_tokens
+        self.structural_gaps = structural_gaps
+        self.rubric = RUBRIC_STRUCTURAL if structural_gaps else RUBRIC
         self.calls = self.input_tokens = self.output_tokens = 0
         self.last_score: float | None = None
+        self.last_score_any: float | None = None
         self.last_disclosure: dict | None = None
 
     def _ask(self, user: str) -> dict | None:
-        out = self.model.chat(RUBRIC, user, self.max_tokens, json_mode=True)
+        out = self.model.chat(self.rubric, user, self.max_tokens, json_mode=True)
         self.calls += 1
         self.input_tokens += out["input_tokens"]
         self.output_tokens += out["output_tokens"]
         return _json(out["text"])
 
     def __call__(self, context: JudgeContext, object_id: str):
-        payload = json.dumps(_context_payload(context), ensure_ascii=False)
+        payload = json.dumps(_context_payload(context, self.structural_gaps), ensure_ascii=False)
         d = self._ask(payload)
         errs = validate(d, context)
         for _ in range(self.repair_attempts):
@@ -179,6 +207,11 @@ class LLMJudge:
             errs = validate(d, context)
         self.last_score = None
         self.last_disclosure = None
+        # v2 forced mode: the Judge's own p_phishing from its FINAL answer, even when that
+        # answer failed validation (the failure concerns Suf/Def consistency, not the score).
+        p_any = (d or {}).get("p_phishing")
+        self.last_score_any = (float(p_any) if isinstance(p_any, (int, float))
+                               and not isinstance(p_any, bool) and 0 <= p_any <= 1 else None)
         if errs:
             decision = DecisionRecord(object_id=object_id, verdict=Verdict.INSUFFICIENT,
                                       explanation="finalization_error: " + "; ".join(errs)[:500],

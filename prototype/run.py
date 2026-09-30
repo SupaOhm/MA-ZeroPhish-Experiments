@@ -219,6 +219,7 @@ def run_case(cfg: Config, capture, ledger: Ledger, adjudicator=None, estimator=N
             output_tokens=judge_out + getattr(specialists, "output_tokens", 0) - spec_before[1],
             judge_calls=judge_calls,
             score=getattr(adjudicator, "last_score", None),
+            judge_score_any=getattr(adjudicator, "last_score_any", None),
             # For Experiment 5's citation/disclosure audit: what the decision says and
             # cites, what was materially missing, and what issues were open.
             explanation=decision.explanation,

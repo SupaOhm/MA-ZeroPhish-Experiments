@@ -78,6 +78,7 @@ class CoverageReport:
     applicable: frozenset[str] = field(default_factory=frozenset)
     analyzed: frozenset[str] = field(default_factory=frozenset)
     availability: dict[str, SourceAvailability] = field(default_factory=dict)
+    unavailable_reasons: dict[str, str] = field(default_factory=dict)
 
 
 @dataclass(frozen=True, slots=True)

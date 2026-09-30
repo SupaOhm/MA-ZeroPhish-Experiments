@@ -32,7 +32,7 @@ def main() -> None:
     ap.add_argument("--conflicts", type=int, default=0)
     ap.add_argument("--out", default=str(ROOT / "runs" / "exp5"))
     args = ap.parse_args()
-    cfg, est = frozen_system(args.model)
+    cfg, est = frozen_system(args.model, version=args.system_version)
     arms = {}
     for name in args.conditions:
         withhold, transient, r_max, capset, _ = CONDITIONS[name]

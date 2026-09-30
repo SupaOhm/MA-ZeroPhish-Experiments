@@ -28,8 +28,8 @@ def main() -> None:
     common_args(ap)
     ap.add_argument("--out", default=str(ROOT / "runs" / "exp6"))
     args = ap.parse_args()
-    est = frozen_system(args.model)[1]
-    arms = {name: frozen_system(args.model, base)[0] for name, base in BASES.items()}
+    est = frozen_system(args.model, version=args.system_version)[1]
+    arms = {name: frozen_system(args.model, base, version=args.system_version)[0] for name, base in BASES.items()}
     cases = select_cases(args.dataset, args.split, args.per_label, args.limit)
     run_grid(arms, cases, Path(args.out), f"exp6_{args.dataset}_{args.split}", args, estimator=est)
 
