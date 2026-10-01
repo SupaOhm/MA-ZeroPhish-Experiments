@@ -427,3 +427,25 @@ Grouped CV on fit (839): S0 (P1) recall@P95 0.855 / AP 0.9654; S1 (+B5a) 0.867 /
 0.853 / 0.9656; S3 (both) 0.867 / 0.9628. No set is better on BOTH criteria, so by the declared rule
 S0 stays; nothing applied to dev or test. (B5a raised recall at high precision but lowered AP;
 B5b did not help.)
+
+## DRAFT: test2 analysis plan and interpretation rules (written 2026-10-01; NOT yet confirmed)
+Status: draft for the team. It must be confirmed (and the open items filled) in a dated commit
+BEFORE test2 is run; after that it cannot change. test2 has not been run.
+- System: the version frozen at that time (currently P1; B1/B2 if adopted by their rules), written
+  to a FROZEN file with learner, features, Platt parameters and threshold, plus a GO file.
+- Arms on test2 (200 pages, 100/100): ours; single-agent, CoT, PhishDebate (paper prompts), each
+  text-only and + screenshot; single-agent minimal and CoT minimal. One run per arm.
+- Model: GPT-4o-mini for every arm (primary). OPEN ITEM: GPT-4o as a second model for every arm
+  (needs a decision and a credit top-up; if chosen, the GPT-4o decision step is re-fitted on fit and
+  calib with GPT-4o runs before test2 is touched).
+- Primary measure: forced F1. Comparison: paired bootstrap 95% CI of the F1 difference and McNemar,
+  ours vs each baseline arm, Holm correction over the baseline arms.
+- Reading, fixed in advance (S = the baseline arm with the highest test2 F1):
+  WIN = ours has the highest F1 AND the difference to S is significant (Holm p < 0.05 and CI
+  excludes 0). TIE = no significant difference to S in either direction. LOSS = S is
+  significantly better than ours. Each other baseline is reported the same way.
+- Secondary (reported, not used for the reading): precision, recall, FPR at our calib threshold;
+  PR-AUC against the score-producing arms; model calls per page.
+- What the paper says in each case: WIN -> the main claim; TIE -> "matches the strongest baseline"
+  plus the evidence-integrity, explanation and cost results; LOSS -> reported as the main result,
+  with analysis labelled post hoc. In no case is the system changed and test2 re-run.
