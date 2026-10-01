@@ -722,3 +722,21 @@ PR-AUC (average precision) on test2, ours (H1 scores) vs the score-producing bas
 (2000 resamples, seed "20261001:prauc"): vs PhishDebate 0.957 vs 0.914, +0.043 [+0.009, +0.090];
 vs PhishDebate + screenshot 0.957 vs 0.918, +0.039 [+0.009, +0.100]. Cost per page on test2: ours 7.73
 model calls / 26,316 tokens; PhishDebate 8.38 / 13,220; PhishDebate + screenshot 7.83 / 18,815; CoT 1 / 4,823.
+
+## Normal vs zero-day comparison (descriptive, from existing results; professor's question, 2026-10-01)
+F1 on TR-OP (largely pre-cutoff, Tranco benign + 2023 OpenPhish phishing; 200 pages) vs test2
+(zero-day PhreshPhish; 200 pages). H1 on TR-OP computed now from the existing TR-OP ledgers (58 of 200
+pages routed to B2): P 0.797 R 0.940 FPR 0.240 F1 0.862.
+| system | TR-OP (normal) | test2 (zero-day) | change |
+|---|---|---|---|
+| H1 (ours) | 0.862 | 0.887 | +0.025 |
+| CoT | 0.943 | 0.828 | -0.115 |
+| CoT + screenshot | 0.952 | 0.831 | -0.121 |
+| single-agent | 0.931 | 0.813 | -0.118 |
+| single-agent + screenshot | 0.938 | 0.777 | -0.161 |
+| PhishDebate | 0.929 | 0.823 | -0.106 |
+| PhishDebate + screenshot | 0.915 | 0.838 | -0.077 |
+Reading (descriptive): every baseline loses 0.08-0.16 F1 from the older set to the zero-day set; ours
+does not. Caveats: the two sets differ in source and crawler, not only in age; our decision step was
+trained on PhreshPhish, which lowers our TR-OP score (FPR 0.24); no CI computed. A cleaner comparison
+would add a second pre-cutoff set (e.g. Mendeley 500/500) under a declared plan.
