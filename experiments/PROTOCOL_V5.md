@@ -581,3 +581,14 @@ over the three B2 dev missing-evidence conditions (100 pages each).
 Rule: a candidate is eligible if (a) >= max(P1, B2) on the same 500 pages AND (b) >= B2's (b) - 0.005.
 If both are eligible, the one with the higher (a); a tie (< 0.002) -> H1 (simpler). If neither is
 eligible, B2 stays. Whatever is chosen is frozen for test2.
+
+## Round HY -- RESULT: neither candidate eligible; B2 stays (results_gpt4omini/hybrid/result.json)
+Thresholds: P1 0.5915, B2 0.5456, H2 0.5800.
+| | dev | dev-2 | pooled 500 (a) | missing mean (b) |
+|---|---|---|---|---|
+| P1 | 0.923 | 0.939 | 0.929 | 0.883 |
+| B2 | 0.930 | 0.902 | 0.919 | 0.930 |
+| H1 routing | 0.923 | 0.933 | 0.927 | 0.930 |
+| H2 flags | 0.930 | 0.890 | 0.914 | 0.923 |
+Bars: (a) >= 0.929, (b) >= 0.925. H1 meets (b) but misses (a) by 0.002 (about one page); H2 misses
+both. By the declared rule B2 stays the best version. The rule is not revised after the fact.
