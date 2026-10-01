@@ -26,12 +26,12 @@ OUT = ROOT / "experiments" / "results_gpt4omini" / "v5_exps"
 FZ = json.loads((ROOT / "experiments/results_gpt4omini/v5_final/FROZEN_V5.json").read_text(encoding="utf-8"))
 M = json.loads((ROOT / FZ["learner"]).read_text(encoding="utf-8"))
 EXPS = {
-    "exp2_complete": ("exp2/exp2_phreshphish_test__shard*of3__complete__*.jsonl", "complete__fixed_all", "manifest.jsonl", "test"),
-    "exp2_matched": ("exp2/exp2_phreshphish_test__shard*of3__matched_agent_2__*.jsonl", "matched_agent_2__fixed_all", "manifest.jsonl", "test"),
-    "exp4": ("exp4/exp4_phreshphish_test__shard*of3__*.jsonl", "mazerophish", "manifest.jsonl", "test"),
-    "exp5": ("exp5/exp5_phreshphish_test__shard*of3__*.jsonl", "base", "manifest.jsonl", "test"),
-    "exp5_conflict": ("exp5/exp5_phreshphish_test_conflict__shard*of3__*.jsonl", None, "manifest_test_conflict.jsonl", "test_conflict"),
-    "exp6": ("exp6/exp6_phreshphish_test__shard*of3__*.jsonl", "mazerophish", "manifest.jsonl", "test"),
+    "exp2_complete": ("exp2/exp2_phreshphish_test__shard*of*__complete__*.jsonl", "complete__fixed_all", "manifest.jsonl", "test"),
+    "exp2_matched": ("exp2/exp2_phreshphish_test__shard*of*__matched_agent_2__*.jsonl", "matched_agent_2__fixed_all", "manifest.jsonl", "test"),
+    "exp4": ("exp4/exp4_phreshphish_test__shard*of*__*.jsonl", "mazerophish", "manifest.jsonl", "test"),
+    "exp5": ("exp5/exp5_phreshphish_test__shard*of*__*.jsonl", "base", "manifest.jsonl", "test"),
+    "exp5_conflict": ("exp5/exp5_phreshphish_test_conflict__shard*of*__*.jsonl", None, "manifest_test_conflict.jsonl", "test_conflict"),
+    "exp6": ("exp6/exp6_phreshphish_test__shard*of*__*.jsonl", "mazerophish", "manifest.jsonl", "test"),
 }
 
 
@@ -49,12 +49,22 @@ def score(e: dict, capdir: str, withheld: frozenset) -> float:
 
 
 def main() -> None:
+    import argparse
+    global OUT
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--runs", default="runs/v4_exp")
+    ap.add_argument("--out", default=str(OUT))
+    ap.add_argument("--only", nargs="*", default=None)
+    args = ap.parse_args()
+    OUT = Path(args.out)
     OUT.mkdir(parents=True, exist_ok=True)
     w = FZ["platt"]["w"]
     for name, (pat, ref, manifest, capdir) in EXPS.items():
+        if args.only and name not in args.only:
+            continue
         comb = OUT / f"_{name}.jsonl"
         with comb.open("w", encoding="utf-8") as f:
-            for p in glob.glob(str(ROOT / "runs" / "v4_exp" / pat)):
+            for p in glob.glob(str(ROOT / args.runs / pat)):
                 for line in open(p, encoding="utf-8"):
                     e = json.loads(line)
                     if e["kind"] != "decision" or e.get("parent_object_id"):

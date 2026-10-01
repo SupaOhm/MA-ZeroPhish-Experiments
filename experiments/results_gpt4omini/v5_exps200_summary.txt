@@ -1,0 +1,46 @@
+== exp2_complete
+  complete__fixed_all                      forced F1 0.868 P 0.921 R 0.820 FPR 0.070 PR-AUC 0.959
+  complete__literal_eq10                   forced F1 0.865 P 0.941 R 0.800 FPR 0.050 PR-AUC 0.960
+  complete__mazerophish                    forced F1 0.884 P 0.933 R 0.840 FPR 0.060 PR-AUC 0.963
+    complete__literal_eq10                 vs ref -0.003 [-0.051,+0.047] p=1.000
+    complete__mazerophish                  vs ref +0.016 [-0.031,+0.067] p=0.648
+== exp2_matched
+  matched_agent_2__fixed_all               forced F1 0.882 P 0.905 R 0.860 FPR 0.090 PR-AUC 0.954
+  matched_agent_2__literal_eq10            forced F1 0.865 P 0.941 R 0.800 FPR 0.050 PR-AUC 0.960
+  matched_agent_2__mazerophish             forced F1 0.878 P 0.933 R 0.830 FPR 0.060 PR-AUC 0.962
+    matched_agent_2__literal_eq10          vs ref -0.017 [-0.063,+0.027] p=0.815
+    matched_agent_2__mazerophish           vs ref -0.004 [-0.042,+0.035] p=1.000
+== exp4
+  fixed_round                              forced F1 0.868 P 0.921 R 0.820 FPR 0.070 PR-AUC 0.959
+  full_debate                              forced F1 0.888 P 0.906 R 0.870 FPR 0.090 PR-AUC 0.954
+  mazerophish                              forced F1 0.863 P 0.911 R 0.820 FPR 0.080 PR-AUC 0.959
+  no_collaboration                         forced F1 0.883 P 0.897 R 0.870 FPR 0.100 PR-AUC 0.954
+    fixed_round                            vs ref +0.005 [-0.010,+0.020] p=1.000
+    full_debate                            vs ref +0.025 [-0.021,+0.072] p=0.481
+    no_collaboration                       vs ref +0.020 [-0.026,+0.069] p=0.648
+== exp5
+  base                                     forced F1 0.868 P 0.921 R 0.820 FPR 0.070 PR-AUC 0.958
+  cum3_+html_no_browser                    forced F1 0.857 P 0.875 R 0.840 FPR 0.120 PR-AUC 0.935
+  no_dom                                   forced F1 0.816 P 0.833 R 0.800 FPR 0.160 PR-AUC 0.916
+  no_html                                  forced F1 0.858 P 0.812 R 0.910 FPR 0.210 PR-AUC 0.941
+  no_network_metadata                      forced F1 0.857 P 0.845 R 0.870 FPR 0.160 PR-AUC 0.924
+  transient_browser_recoverable            forced F1 0.868 P 0.921 R 0.820 FPR 0.070 PR-AUC 0.959
+    cum3_+html_no_browser                  vs ref -0.011 [-0.079,+0.055] p=0.736
+    no_dom                                 vs ref -0.051 [-0.102,-0.004] p=0.035
+    no_html                                vs ref -0.009 [-0.063,+0.048] p=0.473
+    no_network_metadata                    vs ref -0.011 [-0.057,+0.035] p=0.503
+    transient_browser_recoverable          vs ref +0.000 [+0.000,+0.000] p=1.000
+== exp5_conflict
+  conflict_swaps                           forced F1 0.706 P 0.632 R 0.800 FPR 0.400 PR-AUC 0.777
+== exp6
+  ablation1_no_selection                   forced F1 0.868 P 0.921 R 0.820 FPR 0.070 PR-AUC 0.959
+  ablation2_no_reconciliation              forced F1 0.869 P 0.912 R 0.830 FPR 0.080 PR-AUC 0.958
+  ablation3_no_calibrated_gate             forced F1 0.868 P 0.921 R 0.820 FPR 0.070 PR-AUC 0.959
+  ablation4_no_targeted_collaboration      forced F1 0.892 P 0.916 R 0.870 FPR 0.080 PR-AUC 0.955
+  ablation5_no_independent_adjudication    forced F1 0.862 P 0.920 R 0.810 FPR 0.070 PR-AUC 0.957
+  mazerophish                              forced F1 0.878 P 0.933 R 0.830 FPR 0.060 PR-AUC 0.960
+    ablation1_no_selection                 vs ref -0.011 [-0.028,+0.000] p=0.500
+    ablation2_no_reconciliation            vs ref -0.009 [-0.032,+0.012] p=0.625
+    ablation3_no_calibrated_gate           vs ref -0.011 [-0.028,+0.000] p=0.500
+    ablation4_no_targeted_collaboration    vs ref +0.014 [-0.031,+0.058] p=0.815
+    ablation5_no_independent_adjudication  vs ref -0.017 [-0.039,+0.000] p=0.250

@@ -174,3 +174,24 @@ Reporting: per arm, forced F1 (v5 decision) per repeat and the mean over the 3 r
 differences vs the full system per repeat and their mean. Exp 6 rows that coincide with the full
 system in the final configuration (no selection, no calibrated gate) are reported as identical
 configurations. Cost estimate ~$7.
+
+## Results: Exp 2-6 at full size (200 test pages) + Exp 4/6 repeats (v5 decision)
+All runs complete, 0 failures (results_gpt4omini/v5_exps200/, v5_repeats/). The second 100 test
+pages are harder: the full system falls from ~0.92 (first 100) to ~0.87 (all 200).
+Single run, 200 pages (forced F1): Exp 2 complete: adaptive 0.884, fixed-all 0.868, literal 0.865;
+budget 2: fixed-all 0.882, adaptive 0.878, literal 0.865 (none significant). Exp 5: base 0.868;
+transient 0.868; no browser 0.857; no HTML 0.858; no network metadata 0.857; **no rendered page
+0.816 (-0.051 [-0.102, -0.004], p = 0.035)**; conflict swaps 0.706.
+Three independent runs (fresh caches: ~2,350 new responses each; Judge scores differ between runs on
+~75 of 200 pages, yet v5's verdicts barely move -- the learned decision is far more stable than the
+raw Judge). Mean forced F1 over 3 runs, difference vs the full system [95% page-bootstrap CI]:
+- Exp 4: full system 0.866; one extra round 0.868 (+0.002); **full debate 0.890 (+0.024 [-0.007,
+  +0.059])**; **no collaboration 0.887 (+0.021 [-0.010, +0.055])**.
+- Exp 6: full 0.871; no selection / no calibrated gate 0.868 (identical configurations, -0.004);
+  no reconciliation 0.863 (-0.009 [-0.019, +0.002]); no independent adjudication 0.862 (-0.009
+  [-0.021, +0.001]); no targeted collaboration 0.892 (+0.021 [-0.009, +0.056]).
+Reading (honest): with the v5 decision, targeted collaboration does NOT improve F1 -- full debate and
+no collaboration are slightly higher (not significant). Common-cause reconciliation and the
+independent Judge show small, consistent benefits whose CIs just include 0. Adaptive selection
+matches running every specialist at ~20% fewer model calls. Losing the rendered page is the one
+significant evidence loss.
