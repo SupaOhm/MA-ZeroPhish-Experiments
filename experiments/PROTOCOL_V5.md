@@ -559,3 +559,7 @@ calibrated p >= 0.5 gives P 0.860 R 0.920 FPR 0.150 F1 0.889 (SMS 0.876, e-mail 
 every baseline. Reading: on these pre-cutoff messages our pipeline reduces to one specialist (the
 SMS/Email Agent; ~90% of messages carry no URL) plus the Judge, and it loses to a single model reading
 the message. Report as a limitation; the messages are not zero-day.
+Team decision (2026-10-01, after Exp M): no further message runs. The paper reports Exp M as a
+capability check -- declared rule F1 0.188; post hoc at calibrated p >= 0.5 F1 0.889 (recall 0.92,
+FPR 0.15), labelled post hoc; Judge AUC 0.90 -- and states that single-model baselines are better on
+these pre-cutoff messages.
