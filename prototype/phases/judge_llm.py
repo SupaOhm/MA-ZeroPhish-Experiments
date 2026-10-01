@@ -75,6 +75,14 @@ legitimacy, state the most plausible phishing explanation and whether it is rule
 whose alternative is ruled out counts as distinctive support. Put this list FIRST in your JSON
 answer as "alternatives": [{"locator": "...", "alternative": "...", "ruled_out": true|false}]."""
 
+# PROTOCOL_V5 round G: the score requires shown deception (the paper's phishing definition).
+DECEPTION_NOTE = """
+
+Phishing means deception aimed at the user's credentials, payment or personal data, or other
+actions: an impersonated identity or a false pretext. Give p_phishing above 0.5 only if the
+observations, with their evidence lines, show such deception; a page that is merely unusual,
+low-quality or of a particular site category, without it, is not phishing."""
+
 # v4 6a: the Judge also receives the page itself (the same view the baselines read).
 PAGE_NOTE = """
 
@@ -241,7 +249,8 @@ class LLMJudge:
                  platt_ab: tuple[float, float] = (1.0, 0.0), band_w: float = 0.0,
                  task_definition: bool = False, show_evidence: bool = False,
                  samples: int = 1, sample_temperature: float = 1.0,
-                 page_view: tuple[int, int] | None = None, consider_opposite: bool = False):
+                 page_view: tuple[int, int] | None = None, consider_opposite: bool = False,
+                 requires_deception: bool = False):
         """`structural_gaps` (v2, Config.judge_structural_gaps): tell the Judge which gaps are
         structural. False = v1: rubric and payload byte-identical to the frozen v1 runs."""
         self.model, self.repair_attempts, self.max_tokens = model, repair_attempts, max_tokens
@@ -264,6 +273,8 @@ class LLMJudge:
             self.rubric = self.rubric + PAGE_NOTE
         if show_evidence:                       # v4 2f
             self.rubric = self.rubric + EVIDENCE_NOTE
+        if requires_deception:                  # PROTOCOL_V5 round G
+            self.rubric = self.rubric + DECEPTION_NOTE
         if task_definition:                     # v4 2e: the paper's definition, stated first
             from task_definition import TASK_DEFINITION
             self.rubric = TASK_DEFINITION + self.rubric

@@ -34,7 +34,9 @@ def variants(model: str) -> dict:
             "v4abdfP": replace(v4abd, judge_shows_evidence=True, judge_mode="conditions"),
             "v4abdfPS": replace(v4abd, judge_shows_evidence=True, judge_mode="conditions",
                                 judge_structural_gaps=True),
-            "v4abdfC": replace(v4abd, judge_shows_evidence=True, judge_consider_opposite=True)}
+            "v4abdfC": replace(v4abd, judge_shows_evidence=True, judge_consider_opposite=True),
+            "v4abdfG": replace(v4abd, judge_shows_evidence=True, specialist_strength_scale=True,
+                               judge_requires_deception=True)}
 
 
 def main() -> None:

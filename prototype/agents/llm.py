@@ -46,6 +46,20 @@ ROLES = {
 TEXT_ONLY_EXCLUDED = frozenset({"screenshot"})
 _LEADING_ID = re.compile(r"^\[?\s*([A-Za-z_]+:[LRTVF]\d+(?:\.\d+)?|L\d+)\s*\]?")
 SCREENSHOT_LINE = ("screenshot:V0", "rendered screenshot of the page (image attached)")
+# PROTOCOL_V5 round G: what each strength means, stated from the paper's phishing definition
+# (deception about who operates the page or what it does with the user's data or actions).
+STRENGTH_SCALE = """
+
+Strength scale (apply it the same way in both directions):
+- distinctive: the quoted evidence by itself shows who really operates the page or what it does
+  with the user's data, e.g. a brand or service named on a domain unrelated to it, a lookalike
+  of a known domain, a credential or payment form submitting to an unrelated destination
+  (phishing); or the page's stated identity matching its domain and destinations (benign).
+- consistent: fits the direction but is also common on pages of the other class, e.g. a login
+  form, urgency wording, long random-looking path or query tokens, many subdomains, third-party
+  scripts, a recently issued certificate.
+- marginal: merely unusual, low-quality or unfamiliar, with no shown link to deception.
+Do not call a finding distinctive only because the URL or the page looks unusual."""
 VISION_RULE = ("\nA finding about the attached screenshot cites line screenshot:V0 and quotes "
                "the visible text or element it refers to (max 80 characters).")
 
@@ -122,7 +136,8 @@ class LLMSpecialists:
                  max_lines: int | None = None, max_chars: int | None = None,
                  baseline_view: tuple[int, int] | None = None, expand_on_focus: bool = False,
                  vision_root=None, task_definition: bool = False,
-                 peer_lines_uncitable: bool = False, tools: tuple = (), brand_tools=None):
+                 peer_lines_uncitable: bool = False, tools: tuple = (), brand_tools=None,
+                 strength_scale: bool = False):
         """max_lines / max_chars: evidence limits per field (None = v1 defaults 40 x 200;
         v3 = 80 x 300, PROTOCOL_V3)."""
         self.model, self.max_findings, self.max_tokens = model, max_findings, max_tokens
@@ -136,6 +151,7 @@ class LLMSpecialists:
         self.unreadable_fields = frozenset() if vision_root is not None else TEXT_ONLY_EXCLUDED
         self.visual_findings = self.screenshot_refused = 0
         self.task_definition = task_definition   # v4 2e: the paper's definition, stated first
+        self.strength_scale = strength_scale     # PROTOCOL_V5 round G
         self.peer_lines_uncitable = peer_lines_uncitable   # v4 3a
         # v4 round 4: deterministic tools (agents/tools.py) -> citable `<field>:F<n>` lines.
         # T2 -> html (Web Structure); T1 -> page_content (Content); T5 -> url (URL).
@@ -220,6 +236,9 @@ class LLMSpecialists:
                            "evidence; cite only your own line ids.")
             name, role = ROLES[agent]
             system = SYSTEM.format(name=name, role=role, max_findings=self.max_findings)
+            if self.strength_scale:
+                system = system.replace("\n\nAnswer with JSON only:",
+                                        STRENGTH_SCALE + "\n\nAnswer with JSON only:", 1)
             if self.task_definition:
                 from task_definition import TASK_DEFINITION
                 system = TASK_DEFINITION + system

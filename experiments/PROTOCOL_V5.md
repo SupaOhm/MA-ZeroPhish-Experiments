@@ -298,3 +298,27 @@ Reading: nothing in P1 was tuned on dev or test. The test gain is large and stab
 but dev shows only a tie, and the 200 test pages are reused; the clean confirmation is sealed
 test2 (not run). Minimal prompts: the single agent becomes very conservative (high precision, low
 recall); CoT-minimal is about as good as the paper's CoT prompt.
+
+## Round G: strength scale for specialists + deception requirement for the Judge (declared 2026-10-01, before running)
+Motivation (dev error analysis, which is what dev is for): of the 11 benign dev pages the P1
+decision flags, 10 carry a URL finding marked phishing/"distinctive" (ad or tracking hosts, long
+identifiers, enrollment links) with nothing impersonated, and the Judge then gives p 0.8-0.9.
+Change, worded from the paper's phishing definition and not from any score (variant v4abdfG =
+v4abdf + both options; code: STRENGTH_SCALE in agents/llm.py, DECEPTION_NOTE in phases/judge_llm.py):
+- specialists: a stated strength scale (distinctive = the evidence itself shows deception about
+  who operates the page or what it does with user data; consistent = also common on the other
+  class; marginal = merely unusual); "do not call a finding distinctive only because it looks
+  unusual".
+- Judge: p_phishing above 0.5 only if the observations show deception (impersonated identity or
+  false pretext aimed at credentials, payment, personal data or actions).
+Precedent stated honestly: 2e (full task definition) and 8a (consider the opposite) were tried in
+PROTOCOL_V4 and rejected (2e RAISED false positives). Moderator prompt unchanged (Exp 4/6: no effect).
+PILOT (before any full re-run): 50 dev pages, 25 phishing + 25 benign drawn at random (seed
+"20261001:pilotG", list experiments/results_gpt4omini/pilot_G_cases.txt) from the 300 dev pages.
+Two fresh runs on them with a NEW empty cache: v4abdfG, and v4abdf (noise reference; the same
+system as before re-run). Measured, all from the ledgers:
+ A = share of benign pages with >= 1 phishing/distinctive finding; B = same for phishing pages;
+ C = ranking AUC of the raw Judge p on the 50 pages; mean Judge p on benign; cost per page.
+GO for the full re-run (fit 839 + calib 300 + dev 300, retrain the decision layer, re-score) only
+if, against the v4abdf re-run: A falls by at least one third (relative), B falls by at most 0.08,
+and C is not lower by more than 0.02. Otherwise round G is rejected. Reported whatever it shows.

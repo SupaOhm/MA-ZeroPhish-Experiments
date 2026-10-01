@@ -85,6 +85,9 @@ class Config:
     judge_page_view: tuple | None = None
     # v4 8a: the Judge considers the opposite explanation of each observation first.
     judge_consider_opposite: bool = False
+    # PROTOCOL_V5 round G: specialists get a stated strength scale; Judge needs shown deception.
+    specialist_strength_scale: bool = False
+    judge_requires_deception: bool = False
     cost_scale: float = 1000.0
     budget: CaseBudget = field(default_factory=lambda: CaseBudget(100.0, 100.0, 20.0))
     evidence_removal: frozenset[str] = frozenset()
