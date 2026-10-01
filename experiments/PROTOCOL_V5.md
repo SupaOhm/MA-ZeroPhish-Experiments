@@ -716,3 +716,9 @@ transient_browser_recoverable, no_html, no_dom, no_network_metadata, cum3_+html_
 test2 pages; withheld fields are also withheld from the decision step's code features and from H1's
 routing check. Reported: F1 / FPR per condition, change vs base with paired bootstrap CI + McNemar.
 No conflict-swap cases (none exist for test2). Reported whatever it shows.
+
+## test2 secondary measures (PR-AUC was a declared secondary measure; its bootstrap CI computed after the run, labelled so)
+PR-AUC (average precision) on test2, ours (H1 scores) vs the score-producing baselines, page bootstrap
+(2000 resamples, seed "20261001:prauc"): vs PhishDebate 0.957 vs 0.914, +0.043 [+0.009, +0.090];
+vs PhishDebate + screenshot 0.957 vs 0.918, +0.039 [+0.009, +0.100]. Cost per page on test2: ours 7.73
+model calls / 26,316 tokens; PhishDebate 8.38 / 13,220; PhishDebate + screenshot 7.83 / 18,815; CoT 1 / 4,823.
