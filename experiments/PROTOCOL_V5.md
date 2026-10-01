@@ -643,3 +643,18 @@ Measures: forced F1, FPR, recall per arm; paired bootstrap 95% CI and McNemar vs
 model calls per case. Reading fixed now: a component "helps on conflicting evidence" if removing it
 lowers F1 by >= 0.03 with the CI excluding 0; otherwise "no measurable effect on these cases".
 Caveat stated now: 65 cases give low power; a null result is not proof of no effect.
+
+## Round B3 -- RESULT: no measurable effect on conflicting evidence either (results_gpt4omini/b3/)
+325 runs, 0 failures; the full-system arm replayed entirely from the Exp 5 cache (identical config and
+captures). 65 conflict cases, H1 decision:
+| arm | P | R | FPR | F1 | vs full [95% CI], p | calls/case |
+|---|---|---|---|---|---|---|
+| full system | 0.743 | 0.867 | 0.257 | 0.800 | -- | 8.34 |
+| no collaboration | 0.732 | 1.000 | 0.314 | 0.845 | +0.045 [-0.033, +0.139], 0.73 | 4.89 |
+| full debate | 0.732 | 1.000 | 0.314 | 0.845 | +0.045 [-0.033, +0.139], 0.73 | 8.78 |
+| no reconciliation | 0.765 | 0.867 | 0.229 | 0.812 | +0.012 [+0.000, +0.044], 1.00 | 8.34 |
+| no independent Judge | 0.722 | 0.867 | 0.286 | 0.788 | -0.012 [-0.057, +0.026], 1.00 | 8.34 |
+Reading (declared): no component "helps on conflicting evidence"; none of the differences is
+significant (65 cases, low power). Targeted collaboration did not improve conflicting cases; without
+collaboration the system used 41% fewer calls. Reported as is; the paper must state that the value
+of these components is not shown by detection accuracy in our evaluation.
