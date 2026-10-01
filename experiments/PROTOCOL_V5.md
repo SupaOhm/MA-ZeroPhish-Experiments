@@ -707,3 +707,12 @@ Holm correction H1 is significantly better only than single-agent minimal.
 Supplementary (appendix), as declared: at each baseline's own precision, H1's recall is higher by
 0.06-0.23 (e.g. vs CoT at precision 0.895: 0.890 vs 0.770; vs CoT minimal at 0.909: 0.860 vs 0.800).
 No system was changed or swapped after seeing these numbers.
+
+## Exp 5 on test2 (declared 2026-10-01, before running; user request; balance checked: $4.47, estimate ~$2.4)
+Purpose: the Exp 5 robustness numbers so far come from dev-2 (development data); this measures them
+on the clean test2 pages with the frozen H1 (no change to the system). Conditions exactly as Exp 5
+(exp5_robustness/run_conditions.py, CONDITIONS in audit.py): base (must replay from the test2 cache),
+transient_browser_recoverable, no_html, no_dom, no_network_metadata, cum3_+html_no_browser; all 200
+test2 pages; withheld fields are also withheld from the decision step's code features and from H1's
+routing check. Reported: F1 / FPR per condition, change vs base with paired bootstrap CI + McNemar.
+No conflict-swap cases (none exist for test2). Reported whatever it shows.
