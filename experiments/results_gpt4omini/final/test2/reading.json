@@ -1,0 +1,67 @@
+{
+ "S": "cot_minimal",
+ "reading": "TIE",
+ "holm": {
+  "single_agent_minimal": 0.024701411692149122,
+  "vision__single_agent": 0.13664330947722192,
+  "phishdebate": 0.4245332758873701,
+  "single_agent": 0.4943587479647249,
+  "cot": 0.7509662359952927,
+  "vision__phishdebate": 0.7509662359952927,
+  "vision__cot": 0.7509662359952927,
+  "cot_minimal": 0.7509662359952927
+ },
+ "dry_run": false,
+ "routed_b2": 40,
+ "pages": 200,
+ "supplementary_matched_precision": {
+  "cot": {
+   "baseline_precision": 0.8953488372093024,
+   "baseline_recall": 0.77,
+   "h1_recall": 0.89,
+   "h1_precision": 0.898989898989899
+  },
+  "cot_minimal": {
+   "baseline_precision": 0.9090909090909091,
+   "baseline_recall": 0.8,
+   "h1_recall": 0.86,
+   "h1_precision": 0.9148936170212766
+  },
+  "phishdebate": {
+   "baseline_precision": 0.8586956521739131,
+   "baseline_recall": 0.79,
+   "h1_recall": 0.9,
+   "h1_precision": 0.8653846153846154
+  },
+  "single_agent": {
+   "baseline_precision": 0.9024390243902439,
+   "baseline_recall": 0.74,
+   "h1_recall": 0.87,
+   "h1_precision": 0.90625
+  },
+  "single_agent_minimal": {
+   "baseline_precision": 0.9375,
+   "baseline_recall": 0.6,
+   "h1_recall": 0.83,
+   "h1_precision": 0.9431818181818182
+  },
+  "vision__cot": {
+   "baseline_precision": 0.9156626506024096,
+   "baseline_recall": 0.76,
+   "h1_recall": 0.86,
+   "h1_precision": 0.9247311827956989
+  },
+  "vision__phishdebate": {
+   "baseline_precision": 0.8791208791208791,
+   "baseline_recall": 0.8,
+   "h1_recall": 0.9,
+   "h1_precision": 0.8823529411764706
+  },
+  "vision__single_agent": {
+   "baseline_precision": 0.9066666666666666,
+   "baseline_recall": 0.68,
+   "h1_recall": 0.86,
+   "h1_precision": 0.9148936170212766
+  }
+ }
+}

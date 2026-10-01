@@ -684,3 +684,26 @@ It will use openrouter:openai/gpt-4o for EVERY arm; our decision steps (P1, B2, 
 re-fitted on fit and calib from GPT-4o pipeline runs before test2 is touched with GPT-4o; and it is
 reported whatever the GPT-4o-mini or GPT-4o results show. It is a replication with a second model,
 not a replacement of the GPT-4o-mini result.
+
+## test2 -- FINAL RESULT (2026-10-01; one run, as declared; results_gpt4omini/final/test2/)
+All 200 pages, all arms complete, 0 failures; cost about $2.81 (OpenRouter balance before $7.28,
+after $4.47). Frozen thresholds reproduced; 40 of 200 pages routed to B2.
+| system | P | R | FPR | F1 | PR-AUC | baseline minus H1 [95% CI], p (Holm) |
+|---|---|---|---|---|---|---|
+| **H1 (primary)** | 0.874 | 0.900 | 0.130 | **0.887** | 0.957 | -- |
+| P1 (secondary) | 0.874 | 0.900 | 0.130 | 0.887 | 0.959 | +0.000 |
+| B2 (secondary) | 0.890 | 0.890 | 0.110 | 0.890 | 0.953 | +0.003 |
+| CoT minimal | 0.909 | 0.800 | 0.080 | 0.851 | -- | -0.036 [-0.096, +0.024], 0.500 (0.751) |
+| PhishDebate + screenshot | 0.879 | 0.800 | 0.110 | 0.838 | 0.918 | -0.049 [-0.115, +0.011], 0.243 (0.751) |
+| CoT + screenshot | 0.916 | 0.760 | 0.070 | 0.831 | -- | -0.056 [-0.125, +0.007], 0.268 (0.751) |
+| CoT | 0.895 | 0.770 | 0.090 | 0.828 | -- | -0.059 [-0.124, +0.005], 0.188 (0.751) |
+| PhishDebate | 0.859 | 0.790 | 0.130 | 0.823 | 0.914 | -0.064 [-0.125, -0.007], 0.071 (0.425) |
+| single-agent | 0.902 | 0.740 | 0.080 | 0.813 | -- | -0.074 [-0.139, -0.011], 0.099 (0.494) |
+| single-agent + screenshot | 0.907 | 0.680 | 0.070 | 0.777 | -- | -0.110 [-0.181, -0.039], 0.020 (0.137) |
+| single-agent minimal | 0.938 | 0.600 | 0.040 | 0.732 | -- | -0.155 [-0.237, -0.082], 0.003 (0.025) |
+READING (pre-declared rule): TIE. H1 has the highest F1 of all eleven systems and the highest recall,
+but against the best baseline (CoT minimal, 0.851) the difference (+0.036) is not significant; after the
+Holm correction H1 is significantly better only than single-agent minimal.
+Supplementary (appendix), as declared: at each baseline's own precision, H1's recall is higher by
+0.06-0.23 (e.g. vs CoT at precision 0.895: 0.890 vs 0.770; vs CoT minimal at 0.909: 0.860 vs 0.800).
+No system was changed or swapped after seeing these numbers.
