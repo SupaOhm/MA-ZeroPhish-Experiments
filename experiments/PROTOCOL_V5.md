@@ -221,3 +221,11 @@ Clarification (2026-10-01): "ranks best / PR-AUC 0.973" above means best AMONG S
 SCORE (v4, v5, PhishDebate's Judge confidence). Single-agent and CoT output only a label (the
 PhishDebate paper's prompts), so they have no PR-AUC; their CoT confidence word (High/Medium/Low) was
 not mapped to numbers (that mapping would be post hoc). Ranking is therefore not compared with them.
+
+## High-precision operating point (declared 2026-10-01, before computing; professor: precision is low)
+Same frozen v5 model and scores; only the decision threshold changes. Rule: on CALIB, the threshold
+t on v5's calibrated probability is the LOWEST value whose calib precision is >= 0.95 (i.e. the
+most recall that keeps precision >= 0.95 on calib). t is then applied unchanged to dev (300) and
+test (200); nothing is chosen on dev or test. Reported next to the default point (p >= 0.5), with
+the baselines' precision/recall on the same pages and paired tests. Also reported: at matched
+precision, whether v5 catches more phishing than the baselines. No model calls.
