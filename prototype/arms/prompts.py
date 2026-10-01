@@ -167,3 +167,77 @@ network access blocked, so external images, styles and scripts may be missing.""
 SINGLE_AGENT_MINIMAL = "Classify this webpage as PHISHING or LEGITIMATE. Answer with one word."
 COT_MINIMAL = ("Classify this webpage as PHISHING or LEGITIMATE. Think step by step, then end with a final "
                "line 'CLASSIFICATION: PHISHING' or 'CLASSIFICATION: LEGITIMATE'.")
+
+
+# PROTOCOL_V5 Exp M (messages): the paper's single-agent / CoT prompts adapted to SMS / e-mail by a
+# fixed rule -- "website(s)" -> "message(s)", the input list replaced, and ONLY the lines about inputs a
+# message does not have (HTML, scripts, forms, HTTPS, metadata, visual elements) removed; every other
+# line is the paper's, word for word. PhishDebate is not adapted (its agents are website-specific).
+SINGLE_AGENT_MESSAGE = """You are an expert cybersecurity analyst specializing in phishing detection. Your task is to analyze messages (SMS or e-mail) and determine if they are phishing or legitimate.
+
+You will be provided with:
+1. Text of the message
+2. URLs found in the message (if any)
+
+Your analysis should consider:
+- URL characteristics (suspicious domains, typosquatting, etc.)
+- Branding
+- Text content and messaging
+- Technical indicators of phishing
+
+You must respond with exactly one of these classifications:
+- PHISHING: If the message is designed to deceive users or steal information
+- LEGITIMATE: If the message appears to be genuine and trustworthy
+
+Provide your classification followed by a brief explanation of your reasoning."""
+
+COT_MESSAGE = """You are an expert cybersecurity analyst specializing in phishing detection. Your task is to analyze messages (SMS or e-mail) and determine if they are phishing or legitimate using a systematic Chain of Thought approach.
+
+You will be provided with:
+1. Text of the message
+2. URLs found in the message (if any)
+
+Please analyze the message step-by-step using the following Chain of Thought process:
+
+STEP 1: URL ANALYSIS
+- Examine the domain name for suspicious patterns
+- Check for typosquatting (misspellings of legitimate brands)
+- Look for suspicious TLDs or subdomains
+- Identify any URL shortening or redirection indicators
+
+STEP 2: CONTENT ANALYSIS
+- Check for legitimate branding vs. impersonation attempts
+
+STEP 3: TEXT ANALYSIS
+- Review the visible text for urgency tactics
+- Check for grammar/spelling errors typical of phishing
+- Look for legitimate contact information
+- Analyze the overall messaging and tone
+
+STEP 4: TECHNICAL INDICATORS
+- Look for suspicious redirects or external links
+
+STEP 5: FINAL ASSESSMENT
+- Weigh all evidence from previous steps
+- Consider the overall risk profile
+- Make a final classification with confidence level
+
+Format your response as:
+STEP 1: [Your URL analysis]
+STEP 2: [Your content analysis]
+STEP 3: [Your text analysis]
+STEP 4: [Your technical analysis]
+STEP 5: [Your final assessment]
+CLASSIFICATION: [PHISHING or LEGITIMATE]
+CONFIDENCE: [High/Medium/Low]
+REASONING: [Brief summary of key factors that led to your decision]"""
+
+SAMPLE_MESSAGE = """1. Text of the message:
+{text}
+
+2. URLs found in the message:
+{urls}"""
+
+SINGLE_AGENT_MINIMAL_MESSAGE = "Classify this message as PHISHING or LEGITIMATE. Answer with one word."
+COT_MINIMAL_MESSAGE = ("Classify this message as PHISHING or LEGITIMATE. Think step by step, then end with a final "
+                       "line 'CLASSIFICATION: PHISHING' or 'CLASSIFICATION: LEGITIMATE'.")

@@ -505,3 +505,24 @@ Adoption rule (fixed now): (1) dev, complete evidence (300): B2 F1 >= 0.918 and 
 (P1 minus 0.005 / 0.01: B2 must not cost accuracy on complete pages); AND (2) dev missing evidence
 (100 pages x 3 conditions): B2's mean F1 over the three conditions exceeds P1's by >= 0.02.
 If adopted, Exp 5 on the 200 test pages is re-scored (exploratory) and the team page updated.
+
+## Exp M: SMS / e-mail (declared 2026-10-01, before running; user chose option A)
+Purpose: the paper claims the framework handles SMS and e-mail; nothing has been measured yet (only a
+fake-model smoke test). This is a SUPPLEMENTARY capability check, NOT zero-day: every message is
+from 2015-2022 (pre-cutoff for GPT-4o-mini) and the sources (Mishra & Soni SMS; Nazario + Enron
+e-mail) are public, so a model may have seen them. Reported with that caveat, whatever it shows.
+Data: messages split of the data package (DATA_VERSION 545370aaf6ad14c6): dev 200, test 400, each
+50/50 phishing/benign, SMS and e-mail in equal parts; about 10% carry a URL (only the URL string:
+the linked pages cannot be fetched retrospectively without leaking takedown status).
+Our system: the v4abdf pipeline unchanged (submission type "message": the SMS/Email Agent reads the
+message, an extracted URL goes to the URL Agent). The learned webpage decision step (P1) does not
+apply to messages (its features are webpage features), so the verdict comes from the Judge's
+probability, Platt-calibrated on the message DEV split with the same high-precision rule as P1
+(lowest threshold with dev precision >= 0.95), applied unchanged to test.
+Baselines (GPT-4o-mini, same inputs: message text <= 12000 chars + URLs found): single-agent and CoT
+with the paper's prompts adapted by a fixed rule (prompts.py SINGLE_AGENT_MESSAGE / COT_MESSAGE:
+"website" -> "message", input list replaced, only lines about inputs a message lacks removed), and
+the minimal prompts (SINGLE_AGENT_MINIMAL_MESSAGE / COT_MINIMAL_MESSAGE). PhishDebate is not run
+(its agents are website-specific: HTML agent, etc.).
+Report: test 400 forced F1 / precision / recall / FPR with paired bootstrap CI and McNemar vs ours;
+also by medium (SMS, e-mail). Estimated cost ~$1.

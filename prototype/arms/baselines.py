@@ -217,3 +217,40 @@ class CoTMinimal(SingleAgent):
 
 ARMS = {"single_agent": SingleAgent, "cot": CoT, "phishdebate": PhishDebate,
         "single_agent_minimal": SingleAgentMinimal, "cot_minimal": CoTMinimal}
+
+
+class MessageSingleAgent:
+    """PROTOCOL_V5 Exp M: the single-agent baseline on an SMS / e-mail (adapted prompt)."""
+    name = "single_agent_message"
+    template, marker = prompts.SINGLE_AGENT_MESSAGE, None
+
+    def __init__(self, model, text_chars=12000, max_tokens=2048):
+        self.model, self.text_chars, self.max_tokens = model, text_chars, max_tokens
+
+    def run_message(self, text: str, urls: list[str]) -> ArmResult:
+        user = prompts.SAMPLE_MESSAGE.format(text=text[: self.text_chars], urls="\n".join(urls) or "(none)")
+        r = ArmResult("insufficient", None)
+        out = self.model.chat(self.template, user, self.max_tokens)
+        r.verdict = parse_classification(out["text"], self.marker)
+        r.add(out)
+        r.extras.update(text_truncated=len(text) > self.text_chars, finish_reason=out["finish_reason"],
+                        parse_failed=r.verdict == "insufficient")
+        return r
+
+
+class MessageCoT(MessageSingleAgent):
+    name = "cot_message"
+    template, marker = prompts.COT_MESSAGE, r"CLASSIFICATION"
+
+
+class MessageSingleAgentMinimal(MessageSingleAgent):
+    name = "single_agent_minimal_message"
+    template, marker = prompts.SINGLE_AGENT_MINIMAL_MESSAGE, None
+
+
+class MessageCoTMinimal(MessageSingleAgent):
+    name = "cot_minimal_message"
+    template, marker = prompts.COT_MINIMAL_MESSAGE, r"CLASSIFICATION"
+
+
+MESSAGE_ARMS = {a.name: a for a in (MessageSingleAgent, MessageCoT, MessageSingleAgentMinimal, MessageCoTMinimal)}
