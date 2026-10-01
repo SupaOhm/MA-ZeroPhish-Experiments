@@ -457,3 +457,23 @@ cache (experiments/verify_inputs.py, network disabled): our pipeline on test 200
 baselines 200/200, dev text baselines 300/300 identical; dev screenshot baselines 299/300 (one
 error-page screenshot later reclassified as a failed render; verdict correct either way) and one
 moderation-refused call that cannot be replayed offline. No reported number changes.
+
+## Round B1 data build -- what happened (2026-10-01; before any B1 model run)
+- Built: 161 phishing pages (242 candidate groups) from 2024-11-01..2025-01-31; fit now 500/500
+  (build_report_fit_ext_b1.json). Offline render and CT v2 as for the existing fit.
+- Incident 1 (operator error, corrected): the follow-up render retry was started over the whole fit
+  split instead of the 161 new pages and touched the evidence of 10 old fit pages (one old page,
+  pp-08fef4d9c209, rendered successfully this time). It was stopped. Restoring those pages from the
+  7b75f889a10e7839 package, a cleanup step also deleted 698 local rendered_dom.html files of old fit
+  pages that the package does not carry (their content lives in the captures); 686 were rewritten
+  from the captures (the rest belonged to renders that the error-page rule had already marked
+  failed, never used). Verification: after rebuilding the fit captures, every file of the
+  7b75f889a10e7839 package is byte-identical on disk except manifest.jsonl (which B1 extends);
+  all 839 old fit captures are byte-identical. The old fit ledgers and results are unaffected.
+- Incident 2 (data quality, corrected before training): 23 new phishing pages had CT
+  "crtsh_unreachable" (a transport failure, vs 3 of 839 old pages); left in, it would tie a
+  transport failure to the phishing label. CT was retried for those 23 pages only (temporary
+  manifest; old pages untouched): 18 obtained, 5 no covering certificate; none unreachable.
+  Remaining CT availability (fit): new phishing 76%, old phishing 80%, benign 89% -- a real
+  difference, present before B1.
+- New data package: DATA_VERSION 545370aaf6ad14c6. B1 pipeline ledgers: runs/b1/fit_ext.
