@@ -334,3 +334,14 @@ and C is not lower by more than 0.02. Otherwise round G is rejected. Reported wh
 A fell as intended, but B fell by 0.44 (limit 0.08): the scale made the specialists more
 conservative on BOTH classes (a shift, not better separation), and the Judge's ranking did not
 improve. Rejected by the declared rule; no full re-run. Options stay in code, off by default.
+
+## Checks on the best version (P1) (declared 2026-10-01, before computing; no model call)
+Check 6 -- do the agents matter once the learner is trees? The same learner (boosted depth-2
+trees, 100 rounds), trained on fit, Platt and high-precision threshold (calib precision >= 0.95)
+from calib, exactly as P1, but on (a) deterministic code features only, (b) multi-agent features
+only. Scored on dev (300) and the 200 test pages, McNemar vs P1. Reading fixed now: if (a) is not
+significantly worse than P1 on BOTH dev and test, the claim that the gain comes from the agents
+must be weakened in the paper.
+Check 5 -- TR-OP external sample (the same 200 pages and ledgers as before; nothing re-run or
+re-collected): the frozen P1 rule applied to the v4abdf decisions, compared with the six baseline
+arms. Not added to the team page (user's decision).
