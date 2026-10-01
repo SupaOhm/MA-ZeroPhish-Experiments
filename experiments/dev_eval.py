@@ -74,14 +74,15 @@ def main() -> None:
             raise SystemExit("REFUSED: --external is for other datasets; PhreshPhish test/test2 stay sealed")
         allowed = ("test",)
     if args.sealed_test2_final:
-        final = ROOT / "experiments" / "results_gpt4omini" / "v4_final"
-        frozen, go = final / "FROZEN.json", final / "GO.json"
+        # PROTOCOL_V5: the frozen final system (H1) and the team's GO for the one test2 run.
+        final = ROOT / "experiments" / "results_gpt4omini" / "final"
+        frozen, go = final / "FROZEN_H1.json", final / "GO_TEST2.json"
         if not (frozen.exists() and go.exists()):
-            raise SystemExit("REFUSED: test2 needs the frozen system and a dev-B GO (PROTOCOL_V4)")
-        g, f = json.loads(go.read_text(encoding="utf-8")), json.loads(frozen.read_text(encoding="utf-8"))
-        if g.get("decision") != "go" or args.variants != [f["variant"]]:
-            raise SystemExit(f"REFUSED: dev-B decision {g.get('decision')!r} / variant {args.variants} "
-                             f"vs frozen {f['variant']!r}")
+            raise SystemExit("REFUSED: test2 needs FROZEN_H1.json and GO_TEST2.json (PROTOCOL_V5)")
+        g = json.loads(go.read_text(encoding="utf-8"))
+        if g.get("decision") != "go" or g.get("system") != "H1" or args.variants != ["v4abdf"]:
+            raise SystemExit(f"REFUSED: GO {g.get('decision')!r} for {g.get('system')!r}; the test2 pipeline "
+                             f"variant must be v4abdf, got {args.variants}")
         allowed = ("test2",)
     if args.split not in allowed:
         raise SystemExit("REFUSED: development runs are on dev (calib only with --calib-collection; "

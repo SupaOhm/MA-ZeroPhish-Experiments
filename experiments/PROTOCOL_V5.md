@@ -672,3 +672,15 @@ release v1.0.1 has 55 train and 21 test shards (about 36 GB, 666,315 rows; sourc
 API, checked 2026-10-01). A further clean zero-day test set can therefore be built from the
 unused shards with the same filters, de-duplication and campaign blocking against every existing
 split. Not done; recorded so the next step is planned on correct facts.
+
+## GO for test2 (2026-10-01; user: "run test2 now") -- written BEFORE any test2 call
+The DRAFT test2 rules above are CONFIRMED with the updates recorded after them (primary H1; secondary
+P1, B2; arms; Holm; WIN / TIE / LOSS; supplementary matched-precision table). GO file:
+results_gpt4omini/final/GO_TEST2.json. dev_eval's sealed guard now requires FROZEN_H1.json + this GO.
+Runs: our pipeline (v4abdf, one run, runs/test2/ma) and the eight baseline arms (runs/test2,
+runs/test2/vision) on all 200 test2 pages; API failures are retried, never scored.
+DECLARED NOW, for later (user request): a GPT-4o replication on test2 is planned when credit allows.
+It will use openrouter:openai/gpt-4o for EVERY arm; our decision steps (P1, B2, routing unchanged) are
+re-fitted on fit and calib from GPT-4o pipeline runs before test2 is touched with GPT-4o; and it is
+reported whatever the GPT-4o-mini or GPT-4o results show. It is a replication with a second model,
+not a replacement of the GPT-4o-mini result.
