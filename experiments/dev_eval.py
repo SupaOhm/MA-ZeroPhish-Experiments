@@ -37,7 +37,17 @@ def variants(model: str) -> dict:
             "v4abdfC": replace(v4abd, judge_shows_evidence=True, judge_consider_opposite=True),
             "v4abdfG": replace(v4abd, judge_shows_evidence=True, specialist_strength_scale=True,
                                judge_requires_deception=True),
-            "v4abdfH": replace(v4abd, judge_shows_evidence=True, specialist_page_assessment=True)}
+            "v4abdfH": replace(v4abd, judge_shows_evidence=True, specialist_page_assessment=True),
+            # PROTOCOL_V5 round B2: the v4abdf pipeline with evidence withheld exactly as in Exp 5.
+            **{f"v4abdf_x{k}": replace(v4abd, judge_shows_evidence=True, evidence_removal=frozenset(w))
+               for k, w in _b2_withheld().items()}}
+
+
+def _b2_withheld() -> dict:
+    sys.path.insert(0, str(Path(__file__).resolve().parent / "exp5_robustness"))
+    from audit import CONDITIONS
+    return {"HTML": CONDITIONS["no_html"][0], "NET": CONDITIONS["no_network_metadata"][0],
+            "BROWSER": CONDITIONS["cum3_+html_no_browser"][0]}
 
 
 def main() -> None:

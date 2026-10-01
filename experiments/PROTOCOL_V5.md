@@ -487,3 +487,21 @@ Dev 300: B1 P 0.933 R 0.840 FPR 0.060 F1 0.884 vs P1 0.923 (-0.039 [-0.068, -0.0
 Fails the adoption rule (F1 must exceed 0.923). Test 200 (exploratory): B1 0.891 vs P1 0.939.
 Reading: the balanced fit raised CV recall, but the calib threshold for precision >= 0.95 moved up
 (0.59 -> 0.78) and dev recall fell. Rejected; P1 remains the best version.
+
+## Round B2: train the decision step on missing-evidence cases (declared 2026-10-01, before running; user approved)
+Problem (Exp 5, best version): without the served HTML FPR 0.36 (F1 -0.101), without the browser
+-0.093, without network metadata -0.037; the decision step only ever saw complete pages in training.
+Conditions: exactly Exp 5's (exp5_robustness/audit.py CONDITIONS): xHTML = no_html, xNET =
+no_network_metadata, xBROWSER = cum3_+html_no_browser. Variants v4abdf_x* = v4abdf with only
+evidence_removal set (checked: everything else identical).
+Fit augmentation: 200 of the 839 original fit pages (100 phishing / 100 benign, seed
+"20261001:b2fit"), each run under the 3 conditions -> 600 extra training rows; their code features
+are computed with the same fields withheld (as Exp 5 scoring does). Training set = 839 complete +
+600 augmented rows. Learner fixed = P1's (boosted depth-2 trees, 100 rounds); Platt + high-precision
+threshold on calib (complete evidence), as P1. B1 pages are not used (B1 was rejected).
+Dev check: 100 of the 300 dev pages (50/50, seed "20261001:b2dev") under the same 3 conditions.
+Estimated cost ~$2.5.
+Adoption rule (fixed now): (1) dev, complete evidence (300): B2 F1 >= 0.918 and precision >= 0.916
+(P1 minus 0.005 / 0.01: B2 must not cost accuracy on complete pages); AND (2) dev missing evidence
+(100 pages x 3 conditions): B2's mean F1 over the three conditions exceeds P1's by >= 0.02.
+If adopted, Exp 5 on the 200 test pages is re-scored (exploratory) and the team page updated.
