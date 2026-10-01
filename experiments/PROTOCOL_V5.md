@@ -449,3 +449,11 @@ BEFORE test2 is run; after that it cannot change. test2 has not been run.
 - What the paper says in each case: WIN -> the main claim; TIE -> "matches the strongest baseline"
   plus the evidence-integrity, explanation and cost results; LOSS -> reported as the main result,
   with analysis labelled post hoc. In no case is the system changed and test2 re-run.
+
+## Data-version audit (2026-10-01, after a teammate's review; results_gpt4omini/DATA_VERSION_AUDIT.md)
+Ledgers in the tables carry DATA_VERSIONs b348..., d014..., d2e8..., 7b75... (the hash covers every
+file of the package, so adding test2/fit changed it). Replay on today's data from each run's own
+cache (experiments/verify_inputs.py, network disabled): our pipeline on test 200/200, test
+baselines 200/200, dev text baselines 300/300 identical; dev screenshot baselines 299/300 (one
+error-page screenshot later reclassified as a failed render; verdict correct either way) and one
+moderation-refused call that cannot be replayed offline. No reported number changes.
