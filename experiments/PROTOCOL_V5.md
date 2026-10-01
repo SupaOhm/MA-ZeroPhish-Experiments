@@ -216,3 +216,8 @@ Exploratory, all 200 test pages (completes the 100-page comparison above; one v5
 200 pages): v5 0.868 (R 0.82, FPR 0.07) vs CoT 0.876, single-agent 0.862, PhishDebate 0.860 (text
 baselines' Exp 1 runs); paired differences -0.008 .. +0.008, p >= 0.74 -- a tie. The first-100
 margin (+0.046) does not hold on the full test split.
+
+Clarification (2026-10-01): "ranks best / PR-AUC 0.973" above means best AMONG SYSTEMS THAT OUTPUT A
+SCORE (v4, v5, PhishDebate's Judge confidence). Single-agent and CoT output only a label (the
+PhishDebate paper's prompts), so they have no PR-AUC; their CoT confidence word (High/Medium/Low) was
+not mapped to numbers (that mapping would be post hoc). Ranking is therefore not compared with them.
