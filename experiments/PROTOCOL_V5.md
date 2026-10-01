@@ -161,3 +161,16 @@ from PhreshPhish (a domain-shift test for the learned decision).
 - Systems: frozen v5 (v4abdf pipeline + v5_final/FROZEN_V5.json decision, no refit, no tuning)
   and the six baseline arms (single-agent, CoT, PhishDebate; text and + screenshot), GPT-4o-mini.
 - Reported whatever it shows, with paired CIs and McNemar. Cost ~$3.
+
+## Exp 2-6 at full size + repeats (declared 2026-10-01, before running; user approved)
+Why: on 100 pages and with run-to-run noise (~0.03 F1), Exp 4/6 differences are not resolvable.
+1. **All 200 test pages** (per label 100): the same scripts and settings (v4 pipeline, v5 decision
+   applied afterwards), resuming the existing runs so only the 100 new pages are called. Scripts run
+   one after another (Exp 4 -> 6 -> 5 -> 2), not in parallel, so identical configurations share the
+   response cache instead of racing.
+2. **Two independent repeats** of Exp 4 (all arms) and Exp 6 (all arms) on all 200 pages, each with
+   its own fresh response cache (runs/llm_cache_rep1, _rep2), i.e. every call made anew.
+Reporting: per arm, forced F1 (v5 decision) per repeat and the mean over the 3 runs; paired
+differences vs the full system per repeat and their mean. Exp 6 rows that coincide with the full
+system in the final configuration (no selection, no calibrated gate) are reported as identical
+configurations. Cost estimate ~$7.
