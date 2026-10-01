@@ -46,6 +46,8 @@ def main() -> None:
                     help="PROTOCOL_V4 round 2 step 2: collect CALIB decisions for fitting only")
     ap.add_argument("--case-list", default=None,
                     help="file with one case_id per line: run only these (PROTOCOL_V5 preview)")
+    ap.add_argument("--external", action="store_true",
+                    help="PROTOCOL_V5 external check: run the test split of a NON-PhreshPhish dataset")
     ap.add_argument("--fit-collection", action="store_true",
                     help="PROTOCOL_V5: run on the FIT split (training pages) for the learner")
     ap.add_argument("--sealed-test2-final", action="store_true",
@@ -54,6 +56,10 @@ def main() -> None:
     allowed = ("dev", "calib") if args.calib_collection else ("dev",)
     if args.fit_collection:
         allowed = ("fit",)
+    if args.external:
+        if args.dataset == "phreshphish":
+            raise SystemExit("REFUSED: --external is for other datasets; PhreshPhish test/test2 stay sealed")
+        allowed = ("test",)
     if args.sealed_test2_final:
         final = ROOT / "experiments" / "results_gpt4omini" / "v4_final"
         frozen, go = final / "FROZEN.json", final / "GO.json"

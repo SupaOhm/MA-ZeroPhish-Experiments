@@ -164,6 +164,10 @@ def main() -> None:
     ap.add_argument("--rdap", choices=["exclude", "include"], default="exclude",
                     help="exclude (default): retrospective RDAP availability leaks future "
                          "takedowns; include: keep RDAP where obtained")
+    ap.add_argument("--trop-mode", choices=["source", "pipeline"], default="source",
+                    help="TR-OP rows: 'source' = the dataset's own artifacts (default); 'pipeline' = "
+                         "the same processing as PhreshPhish (offline render + CT evidence; "
+                         "PROTOCOL_V5 external check)")
     args = ap.parse_args()
     global RDAP_POLICY
     RDAP_POLICY = args.rdap
@@ -175,7 +179,7 @@ def main() -> None:
             continue
         out = data / "captures" / row.split / f"{row.case_id}.json"
         out.parent.mkdir(parents=True, exist_ok=True)
-        if row.source_dataset == "tr-op":
+        if row.source_dataset == "tr-op" and args.trop_mode == "source":
             from .build_trop import build_capture as build_trop_capture
             cap = build_trop_capture(row, data)
             for a in cap["artifacts"]:
