@@ -18,6 +18,8 @@
 - **Data:** new package DATA_VERSION `545370aaf6ad14c6` (fit + 161 B1 pages; all other files identical,
   verified). Input identity across data snapshots verified byte-level: `experiments/verify_inputs.py`,
   `results_gpt4omini/DATA_VERSION_AUDIT.md`.
+- **Correction:** PhreshPhish is not exhausted: only 3 of its 76 shards were downloaded; the other 73
+  (Hugging Face v1.0.1) can supply a further clean zero-day test set (see PROTOCOL_V5, Correction).
 - **Next:** run test2 once (user's GO; ~$4; credit left ~ $5), after pointing the sealed-test2 guard in
   `dev_eval.py` at FROZEN_H1.json + a GO file. GPT-4o is not planned (credit).
 

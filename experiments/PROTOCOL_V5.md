@@ -664,3 +664,11 @@ For each baseline arm: H1's highest recall at any threshold on its own test2 sco
 is at least that baseline's test2 precision. Reported as a SUPPLEMENTARY analysis (appendix /
 supplement, always reported there, whatever it shows); it does not change the system, the primary
 reading or the frozen threshold. Implemented in score_test2.py (also printed in the dry run).
+
+## Correction (2026-10-01): PhreshPhish is NOT exhausted
+Earlier notes (HANDOFF "no further zero-day test set can be built from it") were based on the three
+shards downloaded locally (train-000, train-001, test-000: about 7,800 rows read). The Hugging Face
+release v1.0.1 has 55 train and 21 test shards (about 36 GB, 666,315 rows; source: the dataset's file
+API, checked 2026-10-01). A further clean zero-day test set can therefore be built from the
+unused shards with the same filters, de-duplication and campaign blocking against every existing
+split. Not done; recorded so the next step is planned on correct facts.
