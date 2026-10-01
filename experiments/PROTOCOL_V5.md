@@ -403,3 +403,21 @@ Why the page-level reading is weak: the Content Agent is authorised for brand_re
 and page_content only; it does not see the URL/domain, which is what separates a brand page from its
 imitation. (Correction to a statement made while proposing H: the specialists see the baseline's page
 view only within their own authorised fields, not the whole page.) No full run.
+
+## Round B5: decision features the system already produces (declared 2026-10-01, before computing; no model call)
+B5a (multi-agent outputs already in every ledger record, unused by the decision step so far): the
+Judge's four rubric conditions (suf/def phishing, suf/def benign, 0/1), the sizes of its
+phishing_support / benign_support / cited lists, counts of unresolved issue kinds (basis, conf,
+select), the number of dependency groups, and the evidence-band counts (decisive, strong, suggestive,
+thin, none).
+B5b (deterministic, from the approved Phishpedia brand map via agents/tools.py BrandTools, default
+mode, from the page's own URL and served HTML only): a reference-list brand is named in the prominent
+text; a named brand's official domains exclude the page's domain; the same with a password field;
+a brand's domain name sits outside the registrable domain (T5); the registrable name is one edit
+from a brand's (T5). Fields withheld in an Exp 5 condition are withheld here too.
+Selection on FIT only (current fit, 839 pages; B1 pages are not run yet): the P1 learner (boosted
+depth-2 trees, 100 rounds) fixed; feature sets S0 = P1 features, S1 = S0 + B5a, S2 = S0 + B5b,
+S3 = S0 + B5a + B5b; grouped 5-fold CV (same folds/seed as P1); criterion as P1 (recall at precision
+>= 0.95, then AP); a set replaces S0 only if better on BOTH. Then Platt + high-precision threshold on
+calib. Adoption on dev (fixed now): dev F1 at that threshold > P1's 0.923 and dev precision not lower
+than P1's by more than 0.01. The 200 test pages are reported as exploratory, whatever they show.
