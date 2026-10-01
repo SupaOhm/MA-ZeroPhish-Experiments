@@ -322,3 +322,15 @@ system as before re-run). Measured, all from the ledgers:
 GO for the full re-run (fit 839 + calib 300 + dev 300, retrain the decision layer, re-score) only
 if, against the v4abdf re-run: A falls by at least one third (relative), B falls by at most 0.08,
 and C is not lower by more than 0.02. Otherwise round G is rejected. Reported whatever it shows.
+
+## Round G pilot -- RESULT: NO-GO, round G rejected (results_gpt4omini/pilot_G.json)
+50 dev pages (25/25), fresh cache, 0 failures, about $0.40 in total ($0.004 per page per arm).
+| measure | v4abdf re-run | v4abdfG |
+|---|---|---|
+| A benign pages with a phishing/distinctive finding | 0.16 | 0.04 |
+| B phishing pages with a phishing/distinctive finding | 1.00 | 0.56 |
+| C Judge ranking AUC | 0.985 | 0.975 |
+| mean Judge p, benign / phishing | 0.040 / 0.792 | 0.012 / 0.650 |
+A fell as intended, but B fell by 0.44 (limit 0.08): the scale made the specialists more
+conservative on BOTH classes (a shift, not better separation), and the Judge's ranking did not
+improve. Rejected by the declared rule; no full re-run. Options stay in code, off by default.
