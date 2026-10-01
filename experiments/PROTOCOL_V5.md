@@ -622,3 +622,7 @@ thresholds 0.5915 / 0.5456, training-ledger hashes; rebuild reproduces the thres
   baseline, Holm over the baseline arms; WIN / TIE / LOSS against the best baseline S).
 - Before the real run: a DRY RUN of the whole scoring path on dev-2 (the old test pages, existing
   ledgers, $0) to check the scripts; its numbers are not results.
+Dry run (2026-10-01): score_test2.py --dry-run on dev-2 (old test pages, existing ledgers, $0) ran end
+to end: frozen thresholds reproduced, 38 of 200 pages routed to B2, all text baseline arms found, Holm
+and the WIN / TIE / LOSS reading computed. Plumbing check only; its numbers are not results. Before the
+real run, the sealed-test2 guard in dev_eval.py must be pointed at FROZEN_H1.json plus a GO file.

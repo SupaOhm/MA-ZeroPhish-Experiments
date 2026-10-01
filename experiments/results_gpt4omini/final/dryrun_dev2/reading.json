@@ -1,0 +1,14 @@
+{
+ "S": "cot",
+ "reading": "TIE",
+ "holm": {
+  "single_agent_minimal": 0.0009756279177963734,
+  "phishdebate": 0.042695362120866776,
+  "cot_minimal": 0.04389989376068115,
+  "single_agent": 0.07139627635478973,
+  "cot": 0.08715855330228806
+ },
+ "dry_run": true,
+ "routed_b2": 38,
+ "pages": 200
+}
