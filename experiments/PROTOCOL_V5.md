@@ -599,3 +599,26 @@ flagged them from structural and code evidence, B2 did not. Likely mechanism: B2
 rows (no HTML / no browser) carry no structural features but always a Judge score, so B2 leans more on
 the Judge and less on page structure, which helps when evidence is missing and costs recall on complete
 pages whose Judge score is wrong. On dev B2 is slightly ahead (0.930 vs 0.923).
+
+## TEAM DECISION: H1 is the system frozen for test2 (2026-10-01; before test2 is touched)
+Decision by the user (team), recorded with its history, because it departs from the declared rules:
+- Round B2's rule adopted B2; round HY's rule did not adopt H1 (pooled 500-page F1 0.927 vs bar 0.929).
+- New evidence after those rules: on dev-2 (the reused 200 test pages) B2 trails P1 in all three
+  independent pipeline runs (0.902 / 0.925 / 0.918 vs 0.939 / 0.940 / 0.939), with a plausible
+  mechanism (B2 leans on the Judge and less on page structure). H1 matches B2 on missing evidence (0.930)
+  and is close to P1 on complete evidence (dev 0.923, dev-2 0.933, pooled 0.927 vs B2 0.919).
+- The team therefore selects H1 as the primary system. This is a judgment made on development data
+  only (dev, dev-2, B2's dev missing-evidence runs); test2 is still sealed. P1 and B2 are reported on
+  test2 as secondary systems; no system is swapped after test2 is seen.
+Frozen: experiments/results_gpt4omini/final/FROZEN_H1.json (routing rule, both decision steps, their
+thresholds 0.5915 / 0.5456, training-ledger hashes; rebuild reproduces the thresholds exactly).
+
+## test2 analysis plan, updated (supersedes the DRAFT system line; still needs the GO)
+- Primary: H1. Secondary: P1, B2 (same pipeline run; only the decision step differs).
+- Arms: ours (v4abdf pipeline, one run); single-agent, CoT, PhishDebate (paper prompts), text-only and
+  + screenshot; single-agent minimal and CoT minimal. One run per arm. GPT-4o-mini only (GPT-4o is not
+  planned: the remaining credit does not cover it).
+- Primary measure and reading: as in the draft (forced F1; paired bootstrap CI + McNemar vs each
+  baseline, Holm over the baseline arms; WIN / TIE / LOSS against the best baseline S).
+- Before the real run: a DRY RUN of the whole scoring path on dev-2 (the old test pages, existing
+  ledgers, $0) to check the scripts; its numbers are not results.
