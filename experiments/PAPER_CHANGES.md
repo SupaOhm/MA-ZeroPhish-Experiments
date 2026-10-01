@@ -9,6 +9,13 @@ both are Platt-calibrated on the calibration split with a threshold giving preci
 Report how H1 was chosen (PROTOCOL_V5: B2 adopted by rule, then the team choice of H1 on development data
 before test2) in the appendix. Exp M (SMS/e-mail) goes in as a capability check with its caveats.
 
+**test2 (final evaluation, 2026-10-01):** H1 F1 0.887 (P 0.874, R 0.900, FPR 0.13, PR-AUC 0.957), highest of
+11 systems (baselines 0.732-0.851); TIE by the pre-declared rule (vs CoT minimal 0.851, Holm p = 0.75);
+significant after Holm only vs single-agent minimal (p = 0.025). Supplementary (appendix): at each
+baseline's precision, H1's recall is 6-23 points higher. Suggested headline: "On unseen zero-day pages the
+framework matches the strongest single-model baseline in F1 and, at equal precision, detects more phishing
+than every baseline." Results tables in sec. 9 below are development numbers; replace Exp 1 with test2.
+
 
 Where the implementation evaluated in our experiments differs from `main.md`, and suggested text.
 Numbers come from the result files named in each item (all under `experiments/results_gpt4omini/`).
