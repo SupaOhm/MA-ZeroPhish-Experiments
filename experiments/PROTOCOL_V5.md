@@ -421,3 +421,9 @@ S3 = S0 + B5a + B5b; grouped 5-fold CV (same folds/seed as P1); criterion as P1 
 >= 0.95, then AP); a set replaces S0 only if better on BOTH. Then Platt + high-precision threshold on
 calib. Adoption on dev (fixed now): dev F1 at that threshold > P1's 0.923 and dev precision not lower
 than P1's by more than 0.01. The 200 test pages are reported as exploratory, whatever they show.
+
+## Round B5 -- RESULT: no change, P1 features kept (results_gpt4omini/b5/selection.json)
+Grouped CV on fit (839): S0 (P1) recall@P95 0.855 / AP 0.9654; S1 (+B5a) 0.867 / 0.9642; S2 (+B5b)
+0.853 / 0.9656; S3 (both) 0.867 / 0.9628. No set is better on BOTH criteria, so by the declared rule
+S0 stays; nothing applied to dev or test. (B5a raised recall at high precision but lowered AP;
+B5b did not help.)
