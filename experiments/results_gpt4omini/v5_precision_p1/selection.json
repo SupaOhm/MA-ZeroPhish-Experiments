@@ -1,0 +1,31 @@
+{
+ "n_fit": 839,
+ "folds": "5, grouped by campaign_group",
+ "cv": {
+  "L0_logistic": {
+   "recall_at_p95": 0.8525073746312685,
+   "average_precision": 0.9524321490390923
+  },
+  "L1_logistic_fp2x": {
+   "recall_at_p95": 0.8466076696165191,
+   "average_precision": 0.9512920971014757
+  },
+  "L2_boost_d1_r100": {
+   "recall_at_p95": 0.8436578171091446,
+   "average_precision": 0.9594177167169563
+  },
+  "L2_boost_d1_r300": {
+   "recall_at_p95": 0.8259587020648967,
+   "average_precision": 0.9593150094989025
+  },
+  "L3_boost_d2_r100": {
+   "recall_at_p95": 0.855457227138643,
+   "average_precision": 0.965353991876152
+  },
+  "L3_boost_d2_r300": {
+   "recall_at_p95": 0.855457227138643,
+   "average_precision": 0.9610990888058181
+  }
+ },
+ "chosen": "L3_boost_d2_r100"
+}
