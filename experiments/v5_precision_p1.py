@@ -193,6 +193,7 @@ def apply() -> None:
     import v5_apply_exps as A
     sets = {"dev": ("runs/v5f/dev/devv4_*__ma_v4abdf.jsonl",
                     [("runs/dev_compare", a) for a in ("single_agent", "cot", "phishdebate")]
+                    + [("runs/dev_compare_vision", a) for a in ("single_agent", "cot", "phishdebate")]
                     + [("runs/minimal", a) for a in ("single_agent_minimal", "cot_minimal")]),
             "test": ("runs/v4_exp/exp5/exp5_phreshphish_test__shard*of*__base.jsonl",
                      [("runs/exp1", a) for a in ("single_agent", "cot", "phishdebate")]
@@ -221,7 +222,7 @@ def apply() -> None:
             for line in open(p, encoding="utf-8"):
                 e = json.loads(line)
                 if e["case_id"] in dec and e.get("repeat", 0) == 0:
-                    rows.append(e)
+                    rows.append(dict(e, arm=("vision__" if d.endswith("_vision") else "") + e["arm"]))
         comb = OUT / f"_{split}.jsonl"
         comb.write_text("".join(json.dumps(r) + "\n" for r in rows), encoding="utf-8")
         subprocess.run([PY, "-B", "-m", "experiments.data_eval.evaluate", "--manifest", str(L.DATA / "manifest.jsonl"),
