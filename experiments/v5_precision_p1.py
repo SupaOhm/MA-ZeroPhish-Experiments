@@ -239,5 +239,47 @@ def apply() -> None:
                   f"FPR {g(r,'forced_fpr')} F1 {g(r,'forced_f1')} PR-AUC {g(r,'pr_auc')}{x}")
 
 
+def repeats() -> None:
+    """Stability check: the frozen P1 rule on the full-system arm of the 3 independent pipeline runs
+    (Exp 4/6 'mazerophish', same 200 test pages). Nothing is fitted beyond what apply() fits."""
+    import v5_apply_exps as A
+    sel = json.loads((OUT / "selection.json").read_text(encoding="utf-8"))
+    fz = json.loads((OUT / "frozen_p1.json").read_text(encoding="utf-8"))
+    hp = json.loads((ROOT / "experiments/results_gpt4omini/v5_high_precision/threshold.json").read_text())["t"]
+    s = CANDIDATES[sel["chosen"]](*load("fit", "runs/v5f/fit/devv4_*__ma_v4abdf.jsonl")[1:])
+    pa, pb = fz["platt"]
+    cal = lambda x: sig(pa * logit(min(max(s(x), 1e-9), 1 - 1e-9)) + pb)
+    rules = {"v5_default": lambda e, c: A.score(e, "test", frozenset()) >= 0.5,
+             "v5_high_precision": lambda e, c: A.score(e, "test", frozenset()) >= hp,
+             "p1_high_precision": lambda e, c: cal(L.ma_features(e) + L.det_features(c, "test")) >= fz["threshold"]}
+    lines = []
+    for run in ("runs/v4_exp", "runs/v4_exp_rep1", "runs/v4_exp_rep2"):
+        for exp in ("exp4", "exp6"):
+            dec = {}
+            for p in glob.glob(str(ROOT / run / exp / f"{exp}_phreshphish_test__shard*of*__mazerophish.jsonl")):
+                for line in open(p, encoding="utf-8"):
+                    e = json.loads(line)
+                    if e["kind"] == "decision" and not e.get("parent_object_id"):
+                        dec[e["case_id"]] = e
+            if not dec:
+                continue
+            for name, rule in rules.items():
+                v = {c: rule(e, c) for c, e in dec.items()}
+                y = {c: L.MAN[c]["label"] == "phishing" for c in dec}
+                tp = sum(v[c] and y[c] for c in v); fp = sum(v[c] and not y[c] for c in v)
+                fn = sum(not v[c] and y[c] for c in v); neg = sum(not y[c] for c in v)
+                row = {"run": run, "exp": exp, "rule": name, "n": len(v), "precision": tp / max(1, tp + fp),
+                       "recall": tp / max(1, tp + fn), "fpr": fp / max(1, neg), "f1": 2 * tp / max(1, 2 * tp + fp + fn)}
+                lines.append(row)
+                print(f"{run:18} {exp} {name:18} n={len(v)} P {row['precision']:.3f} R {row['recall']:.3f} "
+                      f"FPR {row['fpr']:.3f} F1 {row['f1']:.3f}")
+    (OUT / "repeats.json").write_text(json.dumps(lines, indent=1), encoding="utf-8")
+    for name in rules:
+        r = [l for l in lines if l["rule"] == name]
+        print(f"MEAN {name:18} over {len(r)} runs: P {sum(l['precision'] for l in r)/len(r):.3f} "
+              f"R {sum(l['recall'] for l in r)/len(r):.3f} F1 {sum(l['f1'] for l in r)/len(r):.3f} "
+              f"(F1 range {min(l['f1'] for l in r):.3f}-{max(l['f1'] for l in r):.3f})")
+
+
 if __name__ == "__main__":
-    {"select": select, "apply": apply}[sys.argv[1]]()
+    {"select": select, "apply": apply, "repeats": repeats}[sys.argv[1]]()

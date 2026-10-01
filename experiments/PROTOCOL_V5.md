@@ -275,3 +275,26 @@ precision >= 0.95 (same rule as the high-precision point), applied unchanged to 
 200 test pages. Both are reused data (dev was used for development; these 200 test pages were
 already scored as exploratory), so these results are reported as exploratory; sealed test2 stays
 the clean confirmation. Reported whatever they show, next to the baselines.
+
+## Results: minimal-prompt baselines + precision round P1 (results_gpt4omini/v5_precision_p1/)
+P1 selection (fit, 5-fold CV grouped by campaign): L0 logistic recall@P95 0.853 / AP 0.952; L1
+(FP 2x) 0.847 / 0.951; boost d1 r100 0.844 / 0.959, r300 0.826 / 0.959; boost d2 r100 0.855 / 0.965,
+r300 0.855 / 0.961. Chosen by the declared rule: boosted depth-2 trees, 100 rounds (margin on the
+primary criterion is small, +0.002; clearer on AP). Calib: Platt, threshold 0.5915 (calib precision
+0.955, recall 0.853).
+Dev 300 (forced): P1 high-precision P 0.926 R 0.920 FPR 0.073 F1 0.923 | v5 high-precision 0.937 /
+0.893 / 0.060 / 0.915 | CoT 0.938 / 0.913 / 0.060 / 0.926 | CoT-minimal 0.951 / 0.907 / 0.047 / 0.928 |
+single 0.950 / 0.880 / 0.047 / 0.913 | single-minimal 0.958 / 0.753 / 0.033 / 0.843 | PhishDebate
+0.895 / 0.913 / 0.107 / 0.904. On dev P1 is a TIE with CoT (no significant difference).
+Test 200 (exploratory: these pages were scored before): P1 high-precision P 0.958 R 0.920 FPR 0.040
+F1 0.939 | CoT 0.953 / 0.810 / 0.040 / 0.876 (p=0.052) | CoT-minimal 0.940 / 0.790 / 0.050 / 0.859
+(p=0.009) | single 0.963 / 0.780 / 0.030 / 0.862 (p=0.019) | single-minimal 0.985 / 0.660 / 0.010 /
+0.790 (p<0.001) | PhishDebate 0.860 / 0.860 / 0.140 / 0.860 (p=0.004) | v5 default 0.868, v5
+high-precision 0.836. PR-AUC P1 0.987 vs v5 0.958.
+Stability (same frozen rule, 6 independent pipeline runs of the full system on the same 200 test
+pages, Exp 4/6 x 3 runs): P1 mean P 0.951 R 0.927 F1 0.938 (range 0.934-0.940); v5 default 0.869;
+v5 high-precision 0.827.
+Reading: nothing in P1 was tuned on dev or test. The test gain is large and stable across runs,
+but dev shows only a tie, and the 200 test pages are reused; the clean confirmation is sealed
+test2 (not run). Minimal prompts: the single agent becomes very conservative (high precision, low
+recall); CoT-minimal is about as good as the paper's CoT prompt.
