@@ -357,3 +357,21 @@ baseline is significantly better (F1 0.915-0.952; p <= 0.014). Same loss as v5 (
 decision layer learned on PhreshPhish does not transfer to TR-OP (27% of benign pages flagged).
 Caveats stated before: TR-OP pages are pre-cutoff for GPT-4o-mini (baselines may know them) and
 come from another crawler. Reported as a limitation (generalisation across datasets).
+
+## Round B1: balance the fit split (declared 2026-10-01, before building or running; user approved plan B)
+Why: fit has 339 phishing vs 500 benign because the Jul-Oct 2024 window ran out of phishing pages.
+Data: add phishing pages to `fit` from the NEXT window, 2024-11-01 .. 2025-01-31 (strictly before
+dev starts, 2025-02-01; PhreshPhish train only, which has no benign pages in that window), up to
+500 - 339 = 161 pages. Same filters, de-duplication, union-find campaign grouping, platform
+exclusion and one-page-per-group rule as build_fit_split.py; a group is blocked if it touches any
+existing manifest case (stored group keys) or any PhreshPhish test row; seeded random pick
+("20261001:b1"). Existing rows unchanged; new DATA_VERSION. Known caveat stated now: the added
+pages are all phishing from a later window than the fit benign pages (a label-time correlation);
+none of the features is a date, and CT age is relative to each page's own observation date.
+Pipeline: captures exactly as the existing fit (offline render, CT v2), v4abdf pipeline (frozen
+v4 settings, GPT-4o-mini), ledgers in runs/b1/fit_ext.
+Learner: re-run the P1 procedure unchanged on the enlarged fit (same candidates, grouped 5-fold
+CV, same selection rule), Platt + high-precision threshold on calib (precision >= 0.95).
+Adoption rule (dev, fixed now): B1 replaces P1 if its dev forced F1 at the high-precision
+threshold is higher than P1's (0.923) AND its dev precision is not lower than P1's by more than
+0.01 (0.926 - 0.01). The 200 test pages are reported as exploratory, whatever they show.
