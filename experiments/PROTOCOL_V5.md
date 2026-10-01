@@ -212,3 +212,7 @@ OpenPhish phishing from 2022-23, before the model's cutoff), (1) the multi-agent
 legitimate pages, and (2) the decision learned on PhreshPhish does not transfer (domain shift) and
 raises false alarms further. The baselines may also benefit from pre-cutoff familiarity with these
 well-known sites. This is reported as a limitation of the learned decision and of the pipeline.
+Exploratory, all 200 test pages (completes the 100-page comparison above; one v5 run = Exp 5 base,
+200 pages): v5 0.868 (R 0.82, FPR 0.07) vs CoT 0.876, single-agent 0.862, PhishDebate 0.860 (text
+baselines' Exp 1 runs); paired differences -0.008 .. +0.008, p >= 0.74 -- a tie. The first-100
+margin (+0.046) does not hold on the full test split.
