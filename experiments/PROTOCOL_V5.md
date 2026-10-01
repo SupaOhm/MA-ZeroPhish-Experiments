@@ -592,3 +592,10 @@ Thresholds: P1 0.5915, B2 0.5456, H2 0.5800.
 | H2 flags | 0.930 | 0.890 | 0.914 | 0.923 |
 Bars: (a) >= 0.929, (b) >= 0.925. H1 meets (b) but misses (a) by 0.002 (about one page); H2 misses
 both. By the declared rule B2 stays the best version. The rule is not revised after the fact.
+Descriptive note (post hoc, used for nothing): on dev-2 B2 is below P1 in all three independent
+pipeline runs (0.902 / 0.925 / 0.918 vs 0.939 / 0.940 / 0.939). In run A the two disagree on 11 pages:
+P1 right on 9 (7 phishing), B2 right on 2. On 7 of the 9 the Judge's probability was 0.0; P1 still
+flagged them from structural and code evidence, B2 did not. Likely mechanism: B2's missing-evidence
+rows (no HTML / no browser) carry no structural features but always a Judge score, so B2 leans more on
+the Judge and less on page structure, which helps when evidence is missing and costs recall on complete
+pages whose Judge score is wrong. On dev B2 is slightly ahead (0.930 vs 0.923).
