@@ -1,5 +1,15 @@
 # Proposed paper changes (draft for the team, updated 2026-10-01)
 
+**LATEST (overrides item 1 below):** the final decision step has two learned versions selected per object
+by evidence completeness (label-free): P1 (trained on complete captures) and B2 (trained also on captures
+with the page source, browser or certificate data withheld). Suggested sentence: *"The final decision
+uses one of two gradient-boosted tree models, selected per object by the completeness of the acquired
+evidence: one trained on complete captures, the other additionally on captures with withheld fields;
+both are Platt-calibrated on the calibration split with a threshold giving precision >= 0.95 there."*
+Report how H1 was chosen (PROTOCOL_V5: B2 adopted by rule, then the team choice of H1 on development data
+before test2) in the appendix. Exp M (SMS/e-mail) goes in as a capability check with its caveats.
+
+
 Where the implementation evaluated in our experiments differs from `main.md`, and suggested text.
 Numbers come from the result files named in each item (all under `experiments/results_gpt4omini/`).
 Nothing here changes a result; it makes the text match what was run. test2 has not been run, so

@@ -1,4 +1,28 @@
-# Handoff: MA-ZeroPhish experiments (updated 2026-10-01, evening)
+# Handoff: MA-ZeroPhish experiments
+
+## LATEST STATE (2026-10-01, late) -- read this first; sections below describe the P1 stage
+- **Final system = H1 (frozen for test2):** the v4abdf pipeline + a decision step with two versions,
+  chosen per page by the evidence actually obtained: **P1** (trained on complete pages) when html, dom,
+  page_content and ct are all present, **B2** (trained also on 600 missing-evidence rows) otherwise.
+  Frozen in `experiments/results_gpt4omini/final/FROZEN_H1.json`; rebuild/scoring: `experiments/score_test2.py`
+  (`--dry-run` works on the old test pages; `--test2` only after the GO). All experiments with H1:
+  `experiments/h1_eval.py` -> `results_gpt4omini/final/h1_all/`.
+- **Results with H1:** dev F1 0.923 (tie with CoT 0.926 / CoT-minimal 0.928); the 200 old test pages are
+  now "dev-2" (development data): H1 0.933 vs CoT 0.876. Exp 5: no significant loss except certificate
+  records (-0.041); FPR without HTML 0.11 (P1 alone: 0.36). Exp 2/4/6: no significant differences.
+- **How H1 was chosen (disclosed in PROTOCOL_V5):** rounds after P1: G, H, B5, B1 rejected; B2 adopted by its
+  rule; HY (H1/H2) missed its rule by 0.002; B2 then trailed P1 in all 3 runs on dev-2, and the team chose
+  H1 on development data only. test2 reports H1 (primary) with P1 and B2 (secondary).
+- **SMS / e-mail (Exp M):** capability check on pre-cutoff messages: declared rule F1 0.188, post hoc at
+  threshold 0.5 F1 0.889 (recall 0.92); baselines 0.907-0.970. `experiments/score_messages.py`.
+- **Data:** new package DATA_VERSION `545370aaf6ad14c6` (fit + 161 B1 pages; all other files identical,
+  verified). Input identity across data snapshots verified byte-level: `experiments/verify_inputs.py`,
+  `results_gpt4omini/DATA_VERSION_AUDIT.md`.
+- **Next:** run test2 once (user's GO; ~$4; credit left ~ $5), after pointing the sealed-test2 guard in
+  `dev_eval.py` at FROZEN_H1.json + a GO file. GPT-4o is not planned (credit).
+
+---
+
 
 For the teammate continuing the experiments. Branch **`role3-specialists`**. This file explains
 what was built, what was run, what the results mean, how to reproduce them, and what is still
