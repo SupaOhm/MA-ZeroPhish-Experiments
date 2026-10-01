@@ -127,8 +127,27 @@ def main() -> None:
     h1_best = all(float(met["H1_primary"]["forced_f1"]) > float(met[a]["forced_f1"]) for a in baselines)
     reading = "WIN" if (h1_best and sig and d < 0) else ("LOSS" if (sig and d > 0) else "TIE")
     print(f"best baseline S = {S}; reading (pre-declared rule): {reading}" + ("   [DRY RUN: not a result]" if args.dry_run else ""))
+    # Supplementary (appendix), declared before test2: H1's best recall at a threshold whose precision is
+    # at least each baseline's precision (from H1's own scores on the same pages).
+    pts = [(r["score"], L.MAN[r["case_id"]]["label"] == "phishing") for r in rows if r["arm"] == "H1_primary"]
+    npos = sum(y for _, y in pts)
+    matched = {}
+    print("supplementary: recall at matched precision (appendix)")
+    for a in baselines:
+        bp, br = float(met[a]["forced_precision"]), float(met[a]["forced_recall"])
+        best = None
+        for t in sorted({q for q, _ in pts}):
+            tp = sum(1 for q, y in pts if q >= t and y)
+            fp = sum(1 for q, y in pts if q >= t and not y)
+            if tp and tp / (tp + fp) >= bp and (best is None or tp / npos > best[0]):
+                best = (tp / npos, tp / (tp + fp))
+        matched[a] = {"baseline_precision": bp, "baseline_recall": br,
+                      "h1_recall": best[0] if best else None, "h1_precision": best[1] if best else None}
+        print(f"  {a:28} precision {bp:.3f} recall {br:.3f} | H1 at precision >= {bp:.3f}: "
+              + (f"recall {best[0]:.3f} (precision {best[1]:.3f})" if best else "not reachable"))
     (OUT / "reading.json").write_text(json.dumps({"S": S, "reading": reading, "holm": adj, "dry_run": args.dry_run,
-                                                  "routed_b2": routed_b2, "pages": len(dec)}, indent=1), encoding="utf-8")
+                                                  "routed_b2": routed_b2, "pages": len(dec),
+                                                  "supplementary_matched_precision": matched}, indent=1), encoding="utf-8")
 
 
 if __name__ == "__main__":

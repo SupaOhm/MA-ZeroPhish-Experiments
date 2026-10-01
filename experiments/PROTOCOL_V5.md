@@ -658,3 +658,9 @@ Reading (declared): no component "helps on conflicting evidence"; none of the di
 significant (65 cases, low power). Targeted collaboration did not improve conflicting cases; without
 collaboration the system used 41% fewer calls. Reported as is; the paper must state that the value
 of these components is not shown by detection accuracy in our evaluation.
+
+## test2 plan addition: supplementary matched-precision analysis (declared 2026-10-01, before test2)
+For each baseline arm: H1's highest recall at any threshold on its own test2 scores whose precision
+is at least that baseline's test2 precision. Reported as a SUPPLEMENTARY analysis (appendix /
+supplement, always reported there, whatever it shows); it does not change the system, the primary
+reading or the frozen threshold. Implemented in score_test2.py (also printed in the dry run).
