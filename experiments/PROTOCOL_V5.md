@@ -563,3 +563,21 @@ Team decision (2026-10-01, after Exp M): no further message runs. The paper repo
 capability check -- declared rule F1 0.188; post hoc at calibrated p >= 0.5 F1 0.889 (recall 0.92,
 FPR 0.15), labelled post hoc; Judge AUC 0.90 -- and states that single-model baselines are better on
 these pre-cutoff messages.
+
+## Round HY: combine P1 and B2 (declared 2026-10-01, before computing; no model call; POST HOC origin)
+Disclosure: this round was conceived AFTER seeing that, on the reused 200 test pages, P1 scores higher
+than B2 on complete evidence (0.939 vs 0.902) while B2 removes the missing-evidence weakness. From now
+on those 200 test pages are treated as a SECOND DEVELOPMENT SET ("dev-2"); none of their numbers is
+reported as an evaluation result. The only evaluation is the sealed test2.
+Candidates (only these two):
+- H1 routing: per page, if any of html, dom, page_content, ct is unavailable in what the system
+  actually received (acquisition failure, no certificate, or an Exp 5 withholding), use B2's decision;
+  otherwise P1's. Label-free: it reads only the system's own availability record.
+- H2 one model: B2's training rows + 4 availability flags (html, dom, page_content, ct present 0/1)
+  as extra features; same learner (boosted depth-2 trees, 100 rounds); Platt + high-precision
+  threshold on calib, as P1/B2.
+Measures: (a) complete-as-received F1 pooled over dev (300) + dev-2 (200) = 500 pages; (b) the mean F1
+over the three B2 dev missing-evidence conditions (100 pages each).
+Rule: a candidate is eligible if (a) >= max(P1, B2) on the same 500 pages AND (b) >= B2's (b) - 0.005.
+If both are eligible, the one with the higher (a); a tie (< 0.002) -> H1 (simpler). If neither is
+eligible, B2 stays. Whatever is chosen is frozen for test2.
