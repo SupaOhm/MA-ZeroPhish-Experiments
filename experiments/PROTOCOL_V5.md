@@ -257,3 +257,21 @@ partway (248 of 1,000 page-runs) and is DISCARDED UNSCORED (runs/minimal deleted
   with a final line 'CLASSIFICATION: PHISHING' or 'CLASSIFICATION: LEGITIMATE'."
 The output-format sentence is the only instruction (needed to read the answer). Same inputs, splits,
 model and reporting rule as declared above; added next to the paper's prompts, never replacing them.
+
+## Precision round P1: better ranking of the decision layer (declared 2026-10-01, before computing)
+Goal (user/professor): more precision at less recall cost than the calib threshold alone. Only the
+decision layer changes; the multi-agent pipeline, its ledgers and all features are unchanged (no
+model call). Selection uses the FIT split only (5-fold CV, folds grouped by campaign_group so a
+campaign never sits in both training and validation folds).
+Candidates (hyperparameters fixed here):
+- **L0** current v5C: L2 logistic, lambda by CV (unchanged reference).
+- **L1** L2 logistic with benign examples weighted 2x (cost-sensitive: false positive costs 2).
+- **L2/L3** gradient-boosted trees (logistic loss, learning rate 0.1, min 10 pages per leaf),
+  depth 1 (L2) or depth 2 (L3), rounds in {100, 300} chosen inside the same CV.
+Criterion on pooled out-of-fold scores: (1) recall at precision >= 0.95, (2) average precision as
+tie-break. A candidate replaces L0 only if it is better on BOTH; otherwise L0 stays.
+Then: train the chosen learner on all of fit, Platt on calib, threshold = lowest t with calib
+precision >= 0.95 (same rule as the high-precision point), applied unchanged to dev (300) and to the
+200 test pages. Both are reused data (dev was used for development; these 200 test pages were
+already scored as exploratory), so these results are reported as exploratory; sealed test2 stays
+the clean confirmation. Reported whatever they show, next to the baselines.
