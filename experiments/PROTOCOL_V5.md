@@ -626,3 +626,20 @@ Dry run (2026-10-01): score_test2.py --dry-run on dev-2 (old test pages, existin
 to end: frozen thresholds reproduced, 38 of 200 pages routed to B2, all text baseline arms found, Holm
 and the WIN / TIE / LOSS reading computed. Plumbing check only; its numbers are not results. Before the
 real run, the sealed-test2 guard in dev_eval.py must be pointed at FROZEN_H1.json plus a GO file.
+
+## Round B3: do the components help where they are designed to? (declared 2026-10-01, before running; user approved)
+Why: Exp 4/6 on ordinary pages show no effect (every arm within 0.005 F1); collaboration,
+common-cause reconciliation and an independent Judge are meant for conflicting or shared-source
+evidence, which ordinary pages rarely contain. This is a measurement round: the frozen system (H1)
+is NOT changed.
+Cases: the same 65 conflict-swap cases used in Exp 5 (8 per label x conflict group, built by
+data_eval/build_conflicts.py from test pages: content 22, structure 22, metadata 21), unchanged.
+Arms (v4 pipeline configurations exactly as in Exp 4/6): full system (cached from Exp 5, $0),
+no collaboration (Exp 4), full debate (= Exp 6 "no targeted collaboration"), no common-cause
+reconciliation (Exp 6), no independent Judge (Exp 6). Selection and gate removals are skipped: in the
+final system they are the same configuration as the full one. Estimated cost ~$1.2.
+Decision step: H1 for every arm (P1 if html, dom, page_content, ct are all present, else B2).
+Measures: forced F1, FPR, recall per arm; paired bootstrap 95% CI and McNemar vs the full system;
+model calls per case. Reading fixed now: a component "helps on conflicting evidence" if removing it
+lowers F1 by >= 0.03 with the CI excluding 0; otherwise "no measurable effect on these cases".
+Caveat stated now: 65 cases give low power; a null result is not proof of no effect.
