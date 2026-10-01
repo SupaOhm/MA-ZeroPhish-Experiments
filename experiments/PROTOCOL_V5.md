@@ -195,3 +195,20 @@ no collaboration are slightly higher (not significant). Common-cause reconciliat
 independent Judge show small, consistent benefits whose CIs just include 0. Adaptive selection
 matches running every specialist at ~20% fewer model calls. Losing the rendered page is the one
 significant evidence loss.
+
+## External check on TR-OP -- RESULT (200 pages, 100/100; label trop_ext-67d3c2386b1d04bc;
+results_gpt4omini/ext_trop/)
+Evidence: render 186/200 (14 timeouts, 13 of them benign: rendered-page availability differs by
+label, reported), CT 153 obtained / 46 no covering cert / 1 unreachable. Fix before the run: TR-OP's
+HTML was labelled `phreshphish_crawler`; relabelled `tr-op_crawler` (PhreshPhish captures verified
+byte-identical). All runs complete, 0 failures. Forced F1 (frozen v5, no refit):
+CoT+shot 0.952 | CoT 0.943 | single+shot 0.938 | single 0.931 | PhishDebate 0.929 | PhishDebate+shot
+0.915 | **v5 0.855** (P 0.783, R 0.940, **FPR 0.260**, PR-AUC 0.939). Every baseline is higher,
+significantly (differences +0.061 .. +0.097, McNemar p <= 0.009).
+Diagnostic (not declared, no model call): v4's decision rule (Judge + Platt) on the same runs gives
+F1 0.888 (R 0.95, FPR 0.19) -- also below every baseline, but above v5.
+Reading (honest): on this older, differently-sourced data (popular legitimate sites from Tranco;
+OpenPhish phishing from 2022-23, before the model's cutoff), (1) the multi-agent pipeline over-flags
+legitimate pages, and (2) the decision learned on PhreshPhish does not transfer (domain shift) and
+raises false alarms further. The baselines may also benefit from pre-cutoff familiarity with these
+well-known sites. This is reported as a limitation of the learned decision and of the pipeline.
