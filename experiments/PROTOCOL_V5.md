@@ -740,3 +740,38 @@ Reading (descriptive): every baseline loses 0.08-0.16 F1 from the older set to t
 does not. Caveats: the two sets differ in source and crawler, not only in age; our decision step was
 trained on PhreshPhish, which lowers our TR-OP score (FPR 0.24); no CI computed. A cleaner comparison
 would add a second pre-cutoff set (e.g. Mendeley 500/500) under a declared plan.
+
+## Exp 5 on test2 -- RESULT (2026-10-02; scoring only, no model call, $0; results_gpt4omini/final/exp5_test2/)
+The pipeline runs were already complete in `runs/test2/exp5` (6 conditions x 200 pages, 1200 decisions,
+0 failure rows, no missing cases). Scored with the frozen H1 by `experiments/exp5_test2_eval.py`, which
+reuses `h1_eval.ours` and `b2_eval.evaluate` unchanged: the withheld fields of each condition are hidden
+from the code features AND from H1's completeness check, exactly as Exp 5 is scored on dev-2.
+Validation that the path is the one test2 used: the `base` condition reproduces the test2 H1 row to every
+digit (P 0.874, R 0.900, FPR 0.130, F1 0.887, PR-AUC 0.957).
+
+| condition | pages routed to B2 | P | R | FPR | F1 | PR-AUC | vs base [95% CI], McNemar p |
+|---|---|---|---|---|---|---|---|
+| base | 40/200 | 0.874 | 0.900 | 0.130 | 0.887 | 0.957 | -- |
+| transient_browser_recoverable | 40/200 | 0.874 | 0.900 | 0.130 | 0.887 | 0.957 | +0.000 [+0.000, +0.000], 1.000 |
+| no_html | 200/200 | 0.845 | 0.980 | 0.180 | 0.907 | 0.962 | +0.021 [-0.021, +0.064], 0.664 |
+| no_dom | 200/200 | 0.912 | 0.930 | 0.090 | 0.921 | 0.956 | +0.034 [+0.001, +0.071], 0.092 |
+| no_network_metadata | 200/200 | 0.825 | 0.940 | 0.200 | 0.879 | 0.918 | -0.008 [-0.038, +0.022], 0.549 |
+| cum3_+html_no_browser | 200/200 | 0.895 | 0.940 | 0.110 | 0.917 | 0.970 | +0.030 [-0.014, +0.078], 0.307 |
+
+READING (the declared rule was "reported whatever it shows"):
+- **Retry recovers completely.** `transient_browser_recoverable` is identical to base on every page,
+  as on dev-2.
+- **No condition degrades detection significantly.** The only negative change is losing network metadata
+  (-0.008), whose CI crosses 0. This differs from dev-2, where losing CT was the one significant loss
+  (-0.041); on test2 that loss does not reproduce.
+- **Several conditions score ABOVE base, and this must not be read as "removing evidence helps."**
+  It is a routing effect and is reported as one: H1 sends an object to B2 when any of html, dom,
+  page_content or ct is absent, so every withholding condition moves all 200 pages to B2, while base
+  routes only 40. On test2 B2 alone scored F1 0.890 against P1's 0.887 (test2 table above), so these
+  rows mostly compare B2-on-everything with the H1 mixture, not more evidence with less. The design is
+  deliberate and label-free, but the conditions confound evidence removal with the decision model, and
+  the paper must say so. `no_dom` (+0.034) is the largest change; its bootstrap CI excludes 0 by
+  +0.001 while McNemar gives p = 0.092, so it is not significant on the agreed reading.
+- Power: 200 pages, one run per condition; the CIs are about +/-0.04 wide. A null result here is not
+  proof of no effect.
+NOT changed by this result: the frozen system, any threshold, any earlier number. test2 was not re-run.
