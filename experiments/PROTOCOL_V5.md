@@ -775,3 +775,38 @@ READING (the declared rule was "reported whatever it shows"):
 - Power: 200 pages, one run per condition; the CIs are about +/-0.04 wide. A null result here is not
   proof of no effect.
 NOT changed by this result: the frozen system, any threshold, any earlier number. test2 was not re-run.
+
+## Anchor-share encoding flaw: measured, and NOT fixed (2026-10-02; measurement only, no model call, $0)
+Raised by a teammate. Verified in the code, not just in the report: `tools.link_form_destinations`
+formats the three anchor shares with `share = (lambda k: f"{c[k]/n:.2f}") if n else (lambda k: "n/a")`,
+so a page with no anchors prints `total=0, ... external=0 (n/a)`. `v5_learn._num` matches
+`external=\d+ \(([\d.]+)\)`, which `(n/a)` fails, and falls back to its default `0.0` -- the same value a
+page WITH anchors and no external ones produces. Two different states collapse to one number, in all
+three anchor-share features and in the resources external share.
+
+"No anchors" is also a real signal, so the flaw is not harmless on its face. Measured on the stored
+captures and ledgers with the frozen H1 (nothing refit, nothing declared, no model call):
+
+| | pages with no anchors | share |
+|---|---|---|
+| fit, phishing | 117 / 500 | 23.4% |
+| fit, benign | 11 / 500 | 2.2% |
+
+The teammate's 23% / 2% is confirmed. But the pages that hit the collision are not where H1 fails:
+
+| split | no-anchor pages | H1 errors among them | H1 errors overall |
+|---|---|---|---|
+| dev (300) | 30 (10.0%) | 2 -> 6.7% | 23 -> 7.7% |
+| dev-2 (200) | 21 (10.5%) | 1 -> 4.8% | 12 -> 6.0% |
+
+READING: the encoding flaw is real and the signal behind it is real, but on both development surfaces
+the affected pages are classified slightly BETTER than average, so the whole ceiling of fix 1
+(a has_anchors indicator plus a neutral value for missing shares) is 3 pages across 500. That is far
+inside the run-to-run noise this project measures repeatedly (+/-0.03-0.04 F1 on 100-200 pages), so no
+round could show it. Other features evidently carry the same signal.
+DECISION: no round is declared. Rounds B1 and B5 have already shown that adding data or features can
+move the system the wrong way, and spending a training round plus a dev check on a 3-page ceiling is not
+a good use of the remaining credit. Recorded here so the flaw is disclosed rather than silently carried,
+and it belongs in the paper's limitations: the deterministic page features cannot distinguish "no links
+on the page" from "links, none external", a known flaw whose measured effect on these splits is nil.
+Nothing was changed: no threshold, no training set, no frozen file, no earlier number.
