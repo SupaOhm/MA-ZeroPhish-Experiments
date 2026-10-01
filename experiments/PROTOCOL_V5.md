@@ -345,3 +345,15 @@ must be weakened in the paper.
 Check 5 -- TR-OP external sample (the same 200 pages and ledgers as before; nothing re-run or
 re-collected): the frozen P1 rule applied to the v4abdf decisions, compared with the six baseline
 arms. Not added to the team page (user's decision).
+
+## Checks on the best version -- RESULTS (results_gpt4omini/p1_checks/)
+Check 6 (same trees, different inputs; F1 at the calib high-precision threshold):
+dev: MA+code 0.923 | MA only 0.896 (-0.027, p=0.169) | code only 0.765 (-0.158, p<0.001).
+test: MA+code 0.939 | MA only 0.811 (-0.127, p<0.001) | code only 0.812 (-0.127, p<0.001).
+Reading (as fixed above): code-only is significantly worse on BOTH dev and test, so the gain is not
+the learner alone; the multi-agent evidence is needed, and the combination beats either part.
+Check 5 (TR-OP, 200 pages, frozen P1): P 0.777 R 0.940 FPR 0.270 F1 0.851 PR-AUC 0.901; every
+baseline is significantly better (F1 0.915-0.952; p <= 0.014). Same loss as v5 (0.855): the
+decision layer learned on PhreshPhish does not transfer to TR-OP (27% of benign pages flagged).
+Caveats stated before: TR-OP pages are pre-cutoff for GPT-4o-mini (baselines may know them) and
+come from another crawler. Reported as a limitation (generalisation across datasets).
