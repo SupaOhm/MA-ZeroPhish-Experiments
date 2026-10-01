@@ -101,7 +101,8 @@ def build(row, data: Path, stats: Counter) -> dict:
         html = f.read()
     artifacts = [
         {"field": "url", "content": url, "instrument": "submission"},
-        {"field": "html", "content": html, "instrument": INSTR_SOURCE},
+        {"field": "html", "content": html,
+         "instrument": "tr-op_crawler" if row.source_dataset == "tr-op" else INSTR_SOURCE},
     ]
     failures = {
         "redirect_chain": "not_in_source_dataset",
