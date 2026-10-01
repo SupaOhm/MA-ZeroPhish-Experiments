@@ -236,3 +236,14 @@ precision 0.921 -> **0.961**, FPR 0.07 -> 0.03, recall 0.82 -> 0.74, F1 0.868 ->
 R 0.78; CoT P 0.953 R 0.81). Reading: the threshold restores precision to the baselines' level and
 halves false alarms, at a recall cost; at matched precision v5 catches slightly fewer phishing pages
 than CoT (not significant). Both operating points are reported.
+
+## Extra baselines: minimal prompts (declared 2026-10-01, before running; user request)
+ADDED next to (never replacing) the PhishDebate paper's baselines, which remain the main ones
+(our single-agent/CoT prompts match the paper's Fig. 9/10 word for word: 116/116 and 260/260 words).
+- **zero_shot**: system prompt "Is this webpage a phishing page? Answer with exactly one word:
+  PHISHING or LEGITIMATE."; user message = the same three inputs (URL, cleaned HTML, visible text).
+- **zero_shot_cot** (Kojima et al., NeurIPS 2022): "Is this webpage a phishing page? Let's think
+  step by step. End with a final line 'CLASSIFICATION: PHISHING' or 'CLASSIFICATION: LEGITIMATE'.";
+  same user message; the answer is read from the CLASSIFICATION line (unparseable -> insufficient,
+  counted as an error, as for every baseline).
+Text only; dev (300) and test (200); GPT-4o-mini, temperature 0; reported whatever they show.

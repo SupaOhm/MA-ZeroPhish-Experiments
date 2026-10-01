@@ -161,3 +161,9 @@ SCREENSHOT_NOTE = """
 
 A screenshot of the page is attached. It was rendered offline from the stored HTML with all
 network access blocked, so external images, styles and scripts may be missing."""
+
+
+# PROTOCOL_V5 extra baselines (minimal prompts; the paper's Fig. 9/10 prompts stay the main ones).
+ZERO_SHOT = "Is this webpage a phishing page? Answer with exactly one word: PHISHING or LEGITIMATE."
+ZERO_SHOT_COT = ("Is this webpage a phishing page? Let's think step by step. End with a final line "
+                 "'CLASSIFICATION: PHISHING' or 'CLASSIFICATION: LEGITIMATE'.")

@@ -203,4 +203,17 @@ class PhishDebate:
         return r
 
 
-ARMS = {"single_agent": SingleAgent, "cot": CoT, "phishdebate": PhishDebate}
+class ZeroShot(SingleAgent):
+    """Extra baseline (PROTOCOL_V5): the bare question, no task instructions."""
+    name = "zero_shot"
+    template, marker = prompts.ZERO_SHOT, None
+
+
+class ZeroShotCoT(SingleAgent):
+    """Extra baseline (PROTOCOL_V5): zero-shot chain of thought (Kojima et al., 2022)."""
+    name = "zero_shot_cot"
+    template, marker = prompts.ZERO_SHOT_COT, r"CLASSIFICATION"
+
+
+ARMS = {"single_agent": SingleAgent, "cot": CoT, "phishdebate": PhishDebate,
+        "zero_shot": ZeroShot, "zero_shot_cot": ZeroShotCoT}
