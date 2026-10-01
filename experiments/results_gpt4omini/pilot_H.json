@@ -1,0 +1,11 @@
+{
+ "pages": 50,
+ "page_p_returned": 0.78,
+ "page_p_auc": 0.781578947368421,
+ "content_findings_per_page_ref": 2.02,
+ "content_findings_per_page_H": 1.78,
+ "judge_auc_ref": 0.9848,
+ "judge_auc_H": 0.9624,
+ "usd_per_page_H_incl_cached": 0.004495242,
+ "go": false
+}

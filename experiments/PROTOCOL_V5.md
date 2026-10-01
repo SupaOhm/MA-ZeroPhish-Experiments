@@ -394,3 +394,12 @@ procedure unchanged (same candidates, grouped CV on fit, same selection rule) wi
 (logit page_p, missing flag); Platt + high-precision threshold on calib. Adopted only if its dev F1
 at that threshold is higher than the best of P1 and B1 and its dev precision is not lower by > 0.01.
 The 200 test pages are NOT re-run for H (dev decides; the clean test is test2).
+
+## Round H pilot -- RESULT: NO-GO, round H rejected (results_gpt4omini/pilot_H.json)
+50 dev pages, 0 failures. page_p returned on 78% of pages (on the other 11 the Content Agent had no
+evidence to read and was not called); page_p ranking AUC 0.782 (needed >= 0.90); Content Agent
+findings per page 1.78 vs 2.02 (within 25%); Judge AUC 0.962 vs 0.985 (fell by 0.023, limit 0.02).
+Why the page-level reading is weak: the Content Agent is authorised for brand_reference, screenshot
+and page_content only; it does not see the URL/domain, which is what separates a brand page from its
+imitation. (Correction to a statement made while proposing H: the specialists see the baseline's page
+view only within their own authorised fields, not the whole page.) No full run.
