@@ -1,0 +1,31 @@
+{
+ "n_fit": 1000,
+ "fit_positives": 500,
+ "cv": {
+  "L0_logistic": {
+   "recall_at_p95": 0.882,
+   "average_precision": 0.9637474570313493
+  },
+  "L1_logistic_fp2x": {
+   "recall_at_p95": 0.89,
+   "average_precision": 0.9626939782425818
+  },
+  "L2_boost_d1_r100": {
+   "recall_at_p95": 0.902,
+   "average_precision": 0.9723618789314619
+  },
+  "L2_boost_d1_r300": {
+   "recall_at_p95": 0.906,
+   "average_precision": 0.9680509805571601
+  },
+  "L3_boost_d2_r100": {
+   "recall_at_p95": 0.906,
+   "average_precision": 0.9693181655773364
+  },
+  "L3_boost_d2_r300": {
+   "recall_at_p95": 0.914,
+   "average_precision": 0.9652212833995213
+  }
+ },
+ "chosen": "L3_boost_d2_r300"
+}

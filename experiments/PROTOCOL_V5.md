@@ -477,3 +477,13 @@ moderation-refused call that cannot be replayed offline. No reported number chan
   Remaining CT availability (fit): new phishing 76%, old phishing 80%, benign 89% -- a real
   difference, present before B1.
 - New data package: DATA_VERSION 545370aaf6ad14c6. B1 pipeline ledgers: runs/b1/fit_ext.
+
+## Round B1 -- RESULT: NOT adopted, P1 stays (results_gpt4omini/b1/)
+Pipeline on the 161 new fit pages: 161/161, 0 failures, about $0.76. Grouped CV on fit (1000 =
+500/500): L0 0.882 / 0.9637; L1 0.890 / 0.9627; boost d1 r100 0.902 / 0.9724, r300 0.906 / 0.9681;
+boost d2 r100 0.906 / 0.9693, r300 0.914 / 0.9652 (recall@P95 / AP). Chosen by the rule: boost d2 r300.
+Calib threshold 0.7794 (calib precision 0.953, recall 0.813).
+Dev 300: B1 P 0.933 R 0.840 FPR 0.060 F1 0.884 vs P1 0.923 (-0.039 [-0.068, -0.013], p = 0.013).
+Fails the adoption rule (F1 must exceed 0.923). Test 200 (exploratory): B1 0.891 vs P1 0.939.
+Reading: the balanced fit raised CV recall, but the calib threshold for precision >= 0.95 moved up
+(0.59 -> 0.78) and dev recall fell. Rejected; P1 remains the best version.
