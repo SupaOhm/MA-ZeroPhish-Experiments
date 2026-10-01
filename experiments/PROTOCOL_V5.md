@@ -247,3 +247,13 @@ ADDED next to (never replacing) the PhishDebate paper's baselines, which remain 
   same user message; the answer is read from the CLASSIFICATION line (unparseable -> insufficient,
   counted as an error, as for every baseline).
 Text only; dev (300) and test (200); GPT-4o-mini, temperature 0; reported whatever they show.
+
+### Amendment (2026-10-01, before any scoring): minimal-prompt single agent and CoT
+On the user's request the extra baselines are minimal-prompt versions of the paper's two
+single-model baselines, not "zero-shot" arms. The zero_shot / zero_shot_cot run above was stopped
+partway (248 of 1,000 page-runs) and is DISCARDED UNSCORED (runs/minimal deleted). Replacements:
+- **single_agent_minimal**: "Classify this webpage as PHISHING or LEGITIMATE. Answer with one word."
+- **cot_minimal**: "Classify this webpage as PHISHING or LEGITIMATE. Think step by step, then end
+  with a final line 'CLASSIFICATION: PHISHING' or 'CLASSIFICATION: LEGITIMATE'."
+The output-format sentence is the only instruction (needed to read the answer). Same inputs, splits,
+model and reporting rule as declared above; added next to the paper's prompts, never replacing them.

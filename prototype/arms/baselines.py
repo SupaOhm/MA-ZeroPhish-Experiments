@@ -203,17 +203,17 @@ class PhishDebate:
         return r
 
 
-class ZeroShot(SingleAgent):
-    """Extra baseline (PROTOCOL_V5): the bare question, no task instructions."""
-    name = "zero_shot"
-    template, marker = prompts.ZERO_SHOT, None
+class SingleAgentMinimal(SingleAgent):
+    """Extra baseline (PROTOCOL_V5): single agent with a minimal prompt (no analysis instructions)."""
+    name = "single_agent_minimal"
+    template, marker = prompts.SINGLE_AGENT_MINIMAL, None
 
 
-class ZeroShotCoT(SingleAgent):
-    """Extra baseline (PROTOCOL_V5): zero-shot chain of thought (Kojima et al., 2022)."""
-    name = "zero_shot_cot"
-    template, marker = prompts.ZERO_SHOT_COT, r"CLASSIFICATION"
+class CoTMinimal(SingleAgent):
+    """Extra baseline (PROTOCOL_V5): CoT with a minimal prompt (no analysis instructions)."""
+    name = "cot_minimal"
+    template, marker = prompts.COT_MINIMAL, r"CLASSIFICATION"
 
 
 ARMS = {"single_agent": SingleAgent, "cot": CoT, "phishdebate": PhishDebate,
-        "zero_shot": ZeroShot, "zero_shot_cot": ZeroShotCoT}
+        "single_agent_minimal": SingleAgentMinimal, "cot_minimal": CoTMinimal}
