@@ -229,3 +229,10 @@ most recall that keeps precision >= 0.95 on calib). t is then applied unchanged 
 test (200); nothing is chosen on dev or test. Reported next to the default point (p >= 0.5), with
 the baselines' precision/recall on the same pages and paired tests. Also reported: at matched
 precision, whether v5 catches more phishing than the baselines. No model calls.
+Result (results_gpt4omini/v5_high_precision/): calib threshold t = 0.729 (calib precision 0.954,
+recall 0.833). Dev (300): precision 0.898 -> **0.937**, FPR 0.107 -> 0.060, recall 0.940 -> 0.893,
+F1 0.919 -> 0.915 (CoT P 0.938 R 0.913 F1 0.926; single P 0.950 R 0.880). Test (200, exploratory):
+precision 0.921 -> **0.961**, FPR 0.07 -> 0.03, recall 0.82 -> 0.74, F1 0.868 -> 0.836 (single P 0.963
+R 0.78; CoT P 0.953 R 0.81). Reading: the threshold restores precision to the baselines' level and
+halves false alarms, at a recall cost; at matched precision v5 catches slightly fewer phishing pages
+than CoT (not significant). Both operating points are reported.
