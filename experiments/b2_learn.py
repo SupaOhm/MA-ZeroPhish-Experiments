@@ -69,15 +69,27 @@ def metrics(pred, y):
             "recall": tp / max(1, tp + fn), "fpr": fp / max(1, neg), "n": len(y)}
 
 
-def main() -> None:
-    OUT.mkdir(parents=True, exist_ok=True)
+def training_rows(verbose: bool = False):
     _, FX, fy = rows(decisions("runs/v5f/fit/devv4_*__ma_v4abdf.jsonl"), "fit")
     AX, ay = [], []
     for k, w in WITHHELD.items():
         _, x, y = rows(decisions(f"runs/b2/fit/devv4_*__ma_v4abdf_{k}.jsonl"), "fit", frozenset(w))
-        print(f"fit augmentation {k}: {len(y)} rows")
+        if verbose:
+            print(f"fit augmentation {k}: {len(y)} rows")
         AX += x
         ay += y
+    return FX, fy, AX, ay
+
+
+def frozen_b2():
+    """The adopted B2 decision step: (calibrated score function, threshold, (Platt a, b))."""
+    FX, fy, AX, ay = training_rows()
+    return calibrated(FX + AX, fy + ay)
+
+
+def main() -> None:
+    OUT.mkdir(parents=True, exist_ok=True)
+    FX, fy, AX, ay = training_rows(verbose=True)
     models = {"p1": calibrated(FX, fy), "b2": calibrated(FX + AX, fy + ay)}
     for name, (_, t, ab) in models.items():
         print(f"{name}: Platt a={ab[0]:.3f} b={ab[1]:.3f}, calib threshold {t:.4f}")

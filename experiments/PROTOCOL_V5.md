@@ -526,3 +526,36 @@ the minimal prompts (SINGLE_AGENT_MINIMAL_MESSAGE / COT_MINIMAL_MESSAGE). PhishD
 (its agents are website-specific: HTML agent, etc.).
 Report: test 400 forced F1 / precision / recall / FPR with paired bootstrap CI and McNemar vs ours;
 also by medium (SMS, e-mail). Estimated cost ~$1.
+
+## Round B2 -- RESULT: ADOPTED (results_gpt4omini/b2/)
+Runs: 600 fit + 300 dev page-runs, 0 failures (~$2.4). Reproduction check: P1 rebuilt by the same
+script gives threshold 0.5915 and dev F1 0.923 (identical). B2: Platt a=1.044 b=1.046, threshold 0.5456.
+Dev complete (300): B2 P 0.933 R 0.927 FPR 0.067 F1 0.930 (P1 0.923) -> rule (1) met.
+Dev missing evidence (100 pages): xHTML F1 0.940 / FPR 0.06 (P1 0.870 / 0.30); xNET 0.961 / 0.06
+(P1 0.933 / 0.12); xBROWSER 0.889 / 0.10 (P1 0.847 / 0.28); mean 0.930 vs 0.883 (+0.047) -> rule (2) met.
+B2 replaces P1 as the best version.
+Exploratory re-scoring on the 200 test pages (b2_eval.py), reported as it is:
+- Exp 1 test: B2 P 0.935 R 0.870 F1 0.902 (P1 was 0.939); vs CoT 0.876 (p = 0.557), single 0.862
+  (p = 0.327), PhishDebate 0.860 (p = 0.136), CoT minimal 0.859 (p = 0.167), single minimal 0.790
+  (p = 0.007). Dev: B2 0.930 vs CoT 0.926, CoT minimal 0.928 (ties), PhishDebate 0.904.
+- Exp 5: no_html 0.917 (+0.016 vs complete), no_dom 0.910, no browser 0.899, no network 0.892
+  (-0.009); none significant; FPR without HTML 0.11 (P1: 0.36). Conflict swaps 0.806.
+- Exp 4/6 (mean of 3 runs): full system 0.913-0.915; every variant within +-0.007, none significant.
+- Exp 2: adaptive 0.912 vs fixed-all 0.902 (not significant).
+- TR-OP (not on the team page): B2 0.853 (FPR 0.29) vs baselines 0.915-0.952, still a significant loss.
+Reading: B2 was adopted by its dev rule and removes the missing-evidence weakness; on the reused
+200 test pages its complete-evidence F1 is lower than P1's (0.902 vs 0.939; P1's test result is not a
+selection criterion). We do not switch back on test numbers; test2 decides.
+
+## Exp M -- RESULT (results_gpt4omini/messages/)
+All runs complete, 0 failures. Our system's verdict by the declared rule: Judge probability, Platt on
+message dev (a=0.725, b=-0.026), threshold for dev precision >= 0.95 -> 0.9646 (dev precision 1.00,
+recall 0.08). Test 400: ours P 0.913 R 0.105 F1 0.188. Baselines: single-agent (adapted) 0.954, CoT
+(adapted) 0.934, single minimal 0.970, CoT minimal 0.907 -- all significantly better (p < 0.001).
+Diagnosis: the Judge does separate the classes (AUC 0.90 dev / 0.90 test) but its probabilities are
+coarse (mostly 0.0, 0.9 or 1.0); at 0.9 dev precision is 0.83, so the precision >= 0.95 rule, carried
+over from webpages, selects only the 1.0 scores. POST HOC (not the declared rule, labelled as such):
+calibrated p >= 0.5 gives P 0.860 R 0.920 FPR 0.150 F1 0.889 (SMS 0.876, e-mail 0.901), still below
+every baseline. Reading: on these pre-cutoff messages our pipeline reduces to one specialist (the
+SMS/Email Agent; ~90% of messages carry no URL) plus the Judge, and it loses to a single model reading
+the message. Report as a limitation; the messages are not zero-day.
