@@ -145,3 +145,19 @@ learner, its calibration or its choice):** on the same 100 test cases, the text 
 runs score CoT 0.872, single-agent 0.872, PhishDebate 0.863; one v5 copy (Exp 5 base) 0.918 (P 0.938,
 R 0.900, FPR 0.060). Paired: CoT -0.046 [-0.122, +0.023] p=0.39; single -0.046 p=0.42; PhishDebate
 -0.056 p=0.24 -- a consistent but not significant margin at n=100. Only sealed test2 can confirm.
+
+## External check on TR-OP (declared 2026-10-01, before building or running anything; user chose)
+Purpose: a clean, citable test the system never saw (the PhishDebate paper's TR-OP dataset). NOT
+zero-day: TR-OP pages (2022-11 .. 2023) predate GPT-4o-mini's cutoff, and the period/sources differ
+from PhreshPhish (a domain-shift test for the learned decision).
+- Sample: 200 TR-OP pages = the first 100 per label in the deterministic hash order used for every
+  sample, among pages WITH an observation date (needed for the retrospective CT rule; 29 undated
+  TR-OP pages, all phishing, are ineligible -- label-blind rule, stated). Own folder
+  `experiments/data_eval/data/trop_ext/` (existing TR-OP files and data packages unchanged).
+- Processing identical to PhreshPhish: offline render of the stored HTML (60 s, then a label-blind
+  120 s retry), CT v2 (crt.sh, certificates covering the host valid on/before the observation date,
+  retries), RDAP excluded, browser-error-page rule. TR-OP's own live screenshots are NOT used: the
+  system and the "+ screenshot" baselines get the offline-render screenshot, as on PhreshPhish.
+- Systems: frozen v5 (v4abdf pipeline + v5_final/FROZEN_V5.json decision, no refit, no tuning)
+  and the six baseline arms (single-agent, CoT, PhishDebate; text and + screenshot), GPT-4o-mini.
+- Reported whatever it shows, with paired CIs and McNemar. Cost ~$3.
