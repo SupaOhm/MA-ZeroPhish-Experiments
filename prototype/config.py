@@ -88,6 +88,8 @@ class Config:
     # PROTOCOL_V5 round G: specialists get a stated strength scale; Judge needs shown deception.
     specialist_strength_scale: bool = False
     judge_requires_deception: bool = False
+    # PROTOCOL_V5 round H: the Content Agent also reports its reading of the page as a whole.
+    specialist_page_assessment: bool = False
     cost_scale: float = 1000.0
     budget: CaseBudget = field(default_factory=lambda: CaseBudget(100.0, 100.0, 20.0))
     evidence_removal: frozenset[str] = frozenset()

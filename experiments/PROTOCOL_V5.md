@@ -375,3 +375,22 @@ CV, same selection rule), Platt + high-precision threshold on calib (precision >
 Adoption rule (dev, fixed now): B1 replaces P1 if its dev forced F1 at the high-precision
 threshold is higher than P1's (0.923) AND its dev precision is not lower than P1's by more than
 0.01 (0.926 - 0.01). The 200 test pages are reported as exploratory, whatever they show.
+
+## Round H: the Content Agent also reads the page as a whole (declared 2026-10-01, before running; user chose this over a new agent)
+Motivation (dev, existing ledgers, free): P1 and the paper's CoT each make 22-23 errors on the 300 dev
+pages but share only 10; P1 is wrong on 13 pages CoT gets right. Every specialist already sees the
+page (v4a); none is asked for a page-level reading. Change (variant v4abdfH = v4abdf + option; code:
+PAGE_ASSESSMENT in agents/llm.py): the Content Agent's prompt asks, in addition to its findings
+(rules unchanged), for "page_p_phishing" in [0, 1], its reading of the page as a whole. Only the
+first (independent, pre-collaboration) value is kept. It goes to the learned decision step only;
+the Judge never sees it. No new agent, no new call.
+PILOT: the same 50 dev pages as round G, run with the round-G cache (runs/llm_cache_pilotG), so the
+other agents' answers are the identical cached ones and only the Content Agent and the Judge differ.
+GO for the full run only if: (1) page_p is returned on >= 90% of pages; (2) its ranking AUC on the 50
+pages is >= 0.90; (3) the Content Agent's findings per page (fields brand_reference, screenshot,
+page_content) are within +-25% of the v4abdf re-run; (4) the Judge's AUC is not lower by > 0.02.
+FULL RUN (if GO): v4abdfH on fit (1000, incl. B1), calib and dev with the main cache; learner = the P1
+procedure unchanged (same candidates, grouped CV on fit, same selection rule) with two extra features
+(logit page_p, missing flag); Platt + high-precision threshold on calib. Adopted only if its dev F1
+at that threshold is higher than the best of P1 and B1 and its dev precision is not lower by > 0.01.
+The 200 test pages are NOT re-run for H (dev decides; the clean test is test2).

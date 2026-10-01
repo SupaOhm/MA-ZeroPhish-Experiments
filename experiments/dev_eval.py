@@ -36,7 +36,8 @@ def variants(model: str) -> dict:
                                 judge_structural_gaps=True),
             "v4abdfC": replace(v4abd, judge_shows_evidence=True, judge_consider_opposite=True),
             "v4abdfG": replace(v4abd, judge_shows_evidence=True, specialist_strength_scale=True,
-                               judge_requires_deception=True)}
+                               judge_requires_deception=True),
+            "v4abdfH": replace(v4abd, judge_shows_evidence=True, specialist_page_assessment=True)}
 
 
 def main() -> None:
