@@ -218,7 +218,8 @@ def run_grid(arms: dict, case_paths: list[Path], out_dir: Path, tag: str, args,
                          show_evidence=cfg.judge_shows_evidence, samples=cfg.judge_samples,
                          page_view=cfg.judge_page_view,
                          consider_opposite=cfg.judge_consider_opposite,
-                         requires_deception=cfg.judge_requires_deception)
+                         requires_deception=cfg.judge_requires_deception,
+                         corroboration=cfg.judge_corroboration)
         fd, scratch = tempfile.mkstemp(suffix=".jsonl")
         os.close(fd)
         t0 = time.time()

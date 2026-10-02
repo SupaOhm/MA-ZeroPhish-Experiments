@@ -1044,3 +1044,29 @@ Adoption rule: CV on fit -- recall@P95 0.855 (P1) vs 0.841 (P1+AF2), AP 0.9654 v
 0.950, Metadata 0.928, Content 0.820 (444 asked), Web Structure 0.774, mean of the agents' scores 0.954,
 Judge p_phishing 0.897. Results: experiments/results_gpt4omini/af2/result.json (experiments/af2_eval.py).
 No further variant of this round is tried: any new one would be chosen after seeing these dev numbers.
+
+## Round J: the Judge integrates ACROSS modalities (declared 2026-10-02, before running; user request)
+Diagnosis on FIT only (839 pages, existing ledgers, no model call): the Judge's p_phishing is coarse (393/839
+pages exactly 0.0; most others 0.7/0.8/0.85/0.9), so the decision step gets heavy ties (Judge AUC 0.905 vs
+0.952 for the mean of the AF2 agent scores); and it over-flags benign pages (78 FP vs 20 for the agent mean;
+in 65 of them the agent mean was right) where ~1.6 phishing observations stand against 6+ benign ones from
+other modalities. Change (Judge only; specialists byte-identical): the Judge's distinct task -- which no
+specialist can do -- is cross-modality integration: state the most plausible phishing story and benign
+story; mark per modality (url / web_structure / content / metadata, by observation field) support /
+contradict / silent for each story; corroboration by several modalities outweighs one contradicted
+observation; p_phishing with two decimals over the whole range. Still blinded (no agent identity, direction,
+strength or agent scores). Variant v4abdfJ (option judge_corroboration); the matrix is recorded in
+judge_disclosure.
+PILOT (50 pilotG dev pages, round-G cache). GO only if: (1) a well-formed matrix (4 modalities x 2 stories,
+allowed values) on >= 90% of pages and finalization errors not more than the v4abdf reference + 2;
+(2) fewer ties: the most frequent p value covers a smaller share of pages than in the reference;
+(3) Judge AUC not lower than the reference by more than 0.02.
+FULL RUN (if GO, after a balance check): v4abdfJ on fit, calib, dev, dev-2 (specialists replay from
+runs/llm_cache; only the Judge is new). Used ONLY on the P1 route (complete pages; route decided from
+availability before any model call, label-free); the B2 route keeps the frozen v4abdf Judge and B2 unchanged.
+P1-J = P1's features with the new Judge p, plus 5 matrix features (number of modalities supporting /
+contradicting the phishing story, supporting / contradicting the benign story, matrix-missing flag); same
+learner, Platt on calib, P >= 0.95 threshold on calib. ADOPTION: the BR rule -- grouped 5-fold CV on fit
+(seed "20261001:p1cv") recall@P95 AND AP both above P1, and pooled dev + dev-2 F1 above H1 with precision not
+lower by more than 0.01. If adopted: frozen as H1-J before test3; test3 runs v4abdfJ on the complete pages and
+v4abdf on the others. If not adopted, H1 stays.

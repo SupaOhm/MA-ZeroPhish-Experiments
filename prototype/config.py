@@ -94,6 +94,8 @@ class Config:
     specialist_self_score: bool = False
     # PROTOCOL_V5 round AF2: the same score in a separate call (findings call unchanged).
     specialist_separate_score: bool = False
+    # PROTOCOL_V5 round J: the Judge integrates across modalities (stories + corroboration matrix).
+    judge_corroboration: bool = False
     cost_scale: float = 1000.0
     budget: CaseBudget = field(default_factory=lambda: CaseBudget(100.0, 100.0, 20.0))
     evidence_removal: frozenset[str] = frozenset()
