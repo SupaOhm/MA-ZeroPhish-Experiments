@@ -1346,3 +1346,11 @@ under the same JL rule, frozen in a new file before test3.
 Checks after the freeze (no model call): score_test2.py --dry-run (dev-2) gives H1JL_primary F1 0.939
 (P 0.958, R 0.920, FPR 0.040), equal to round JL's dev-2 number. JL on TR-OP (normal set; development data
 since the diagnosis; descriptive): changes 1 of 200 pages (correctly), F1 0.862 -> 0.868, FPR 0.240 unchanged.
+
+## crt.sh outage during the test3 and trop_fit captures (2026-10-03; operational note)
+crt.sh answered with HTTP 502 or timed out (3/3 probes at ~00:00); so far CT is "crtsh_unreachable" for 283 of
+the 371 test3 pages queried and 51 of 74 trop_fit pages. The running chains were left to finish; afterwards
+runs/ct_resume.py re-runs the SAME enrich ct step whenever crt.sh is healthy again (it only re-queries
+crtsh_unreachable pages; obtained records are kept; rule unchanged) until <= 3% are unreachable, then rebuilds
+both capture sets with the chains' commands. Reference: test2 had CT obtained on 177/200 pages (88.5%),
+unreachable on 1. test3 is not run until its CT coverage is comparable; any remaining gap will be reported.
