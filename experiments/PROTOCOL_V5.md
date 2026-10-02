@@ -1031,3 +1031,16 @@ Metadata 47 asked); AUC URL 0.959, Web Structure 0.929, Metadata 0.938, Content 
 $0.00443 per page (+$0.0014). Cache-replay check on 3 fit + 3 dev-2 pages with runs/llm_cache: identical
 to the reference ledgers (experiments/af2_check.py). Full run started (fit 839, calib 300, dev 300, dev-2
 200; out runs/af2/<set>; dev-2 via dev_eval --dev2-collection, case lists runs/af2/cases_*.txt).
+FULL-RUN RESULT (2026-10-02): H1+AF2 NOT ADOPTED -- H1 stays the system for test3.
+Collection: fit 839, calib 300, dev 300, dev-2 200, 0 failures in the end. Replay identity vs the reference
+v4abdf ledgers: fit 839/839, calib 300/300, dev 300/300, dev-2 197/200 (3 dev-2 pages had specialist calls
+missing from runs/llm_cache, so they were called anew and their findings differ; H1 and H1+AF2 are both
+scored on the AF2 ledgers, so the comparison stays paired). One dev page (pp-c1af507e1d5b) failed when the
+moderation filter refused the screenshot in the NEW score call; the score call now applies the same
+declared PROTOCOL_V4 2d rule as the findings call (repeat without the image), and the page was re-run.
+Adoption rule: CV on fit -- recall@P95 0.855 (P1) vs 0.841 (P1+AF2), AP 0.9654 vs 0.9660 -> NOT met
+(both must rise). For information: pooled dev + dev-2 F1 0.927 (H1) vs 0.936 (H1+AF2), precision 0.939 vs
+0.940 (dev 0.923 -> 0.947, dev-2 0.933 -> 0.919). Descriptive AUC on dev + dev-2 (500 pages): URL Agent
+0.950, Metadata 0.928, Content 0.820 (444 asked), Web Structure 0.774, mean of the agents' scores 0.954,
+Judge p_phishing 0.897. Results: experiments/results_gpt4omini/af2/result.json (experiments/af2_eval.py).
+No further variant of this round is tried: any new one would be chosen after seeing these dev numbers.

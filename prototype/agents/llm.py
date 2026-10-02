@@ -312,9 +312,18 @@ class LLMSpecialists:
                 # refused above); the findings call above is unchanged.
                 self.agent_p_asked.add(agent)
                 img = image if SCREENSHOT_LINE[0] in mine else None
-                s_out = self.model.chat(SCORE_SYSTEM.format(name=name, role=role),
-                                        user.replace(VISION_RULE, ""), 50, json_mode=True,
-                                        **({"images": [img]} if img is not None else {}))
+                s_sys, s_user = SCORE_SYSTEM.format(name=name, role=role), user.replace(VISION_RULE, "")
+                try:
+                    s_out = self.model.chat(s_sys, s_user, 50, json_mode=True,
+                                            **({"images": [img]} if img is not None else {}))
+                except Exception as e:  # noqa: BLE001 -- the PROTOCOL_V4 2d refusal rule, as above
+                    if img is None or type(e).__name__ != "ImageRefused":
+                        raise
+                    self.screenshot_refused += 1
+                    s_user = s_user.replace(f"[{SCREENSHOT_LINE[0]}] {SCREENSHOT_LINE[1]}\n", "") \
+                                   .replace(f"\n[{SCREENSHOT_LINE[0]}] {SCREENSHOT_LINE[1]}", "") \
+                                   .replace(SCREENSHOT_NOTE, "")
+                    s_out = self.model.chat(s_sys, s_user, 50, json_mode=True)
                 self.calls += 1
                 self.input_tokens += s_out["input_tokens"]
                 self.output_tokens += s_out["output_tokens"]
