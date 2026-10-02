@@ -899,3 +899,21 @@ new model calls (cost) and a team decision.
 READING (descriptive): targeted collaboration opens 1.6-1.7 rounds on almost every page; 55-61% of rounds add a
 new finding, about 20-26% remove an open issue, and the H1 verdict changes on 3-6% of pages, half for the better
 and half for the worse -- which is why collaboration shows no accuracy effect. Nothing in the system changed.
+
+## Round FD: full debate re-run with the fixed code (declared 2026-10-02, before running; NOT yet approved to run)
+Why: round ESC found that full debate re-asked the Phase 2 prompt (no peer evidence), so Exp 4 "full debate" and
+Exp 6 Ablation 4 never measured a debate. The code now shows every specialist's cited lines (DebateFocus).
+What: ONE run of the full_debate arm (frozen v4 config, BASELINE_FULL_DEBATE) on the same 200 dev-2 pages as
+repeat rep1, with rep1's response cache (runs/llm_cache_rep1) so Phase 2 calls are rep1's answers (paired with
+rep1's targeted and no_collaboration arms); only debate rounds and the Judge are new calls. Same model
+(openrouter:openai/gpt-4o-mini-2024-07-18) and provider settings as rep1. One process (no concurrent writers).
+Output: runs/v4_exp_rep1_fdfix/exp4 (new; nothing existing is overwritten).
+Budget: key limit $60, usage $50.90 (checked 2026-10-02). Estimate $1.0-1.5. Pilot first: 10 pages, then the
+key usage is read again; if 200 pages would cost more than $2.5 the run stops and is reported as stopped.
+Failed calls are retried by the runner as usual, never scored; any failure is reported.
+Reported (descriptive; H1 does not change): H1 forced P / R / FPR / F1 of fixed full debate vs rep1 targeted and
+vs rep1 no_collaboration (paired bootstrap 95% CI, exact McNemar); model calls and tokens per page; round-ESC
+measures for the new arm by cache replay (escalation precision, verdict changes vs no_collaboration).
+Reading fixed now: the paper's Exp 4 / Ablation 4 full-debate rows are replaced by this run (old rows kept here,
+labelled defective). No acceptance rule: this measures an arm, it does not select a system.
+Code: experiments/exp4_collaboration/run_full_debate_fixed.py.
