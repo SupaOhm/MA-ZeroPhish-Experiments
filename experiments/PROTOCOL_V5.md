@@ -893,3 +893,19 @@ majority vote 0.934 (P 0.948, R 0.920, FPR 0.050); mean calibrated score 0.944 (
 FPR 0.030). The three runs disagree on 10 of 200 pages. The mean-score ensemble beats the single-run mean
 by +0.013 (>= 0.01), so by the declared reading it is a candidate that needs confirmation on dev with
 repeated runs (two more dev runs, ~$2.8, to be declared separately). Cost at use: 3x model calls.
+
+## Round BR: brand-reference check (declared 2026-10-02, before running; user request; balance $15.48)
+Idea from the literature (PhishLLM and KnowPhish, USENIX Security 2024; PhishAgent, AAAI 2025): decide
+whether the page presents itself as a known brand and whether its domain belongs to that brand, using
+the model's general brand-domain knowledge (no live lookup; nothing about takedown status). This fills
+the framework's brand_reference field, empty so far ("not_in_source_dataset").
+Tool (one GPT-4o-mini call per page, temperature 0, JSON mode; prompt fixed now, in experiments/brand_check.py):
+inputs = URL, HTML <title>, first 2000 characters of the visible text (page_content, else text from the
+served HTML); output = claimed_brand (or null), brand_official_domains (<= 3), page_domain,
+domain_consistent (true / false / null when no brand or unsure).
+Features (4): brand claimed; domain consistent; domain inconsistent; unknown/failed. Candidate H1+BR = H1
+with these features added to P1 (complete-evidence pages); B2 and the routing unchanged. Pages: fit 839,
+calib 300, dev 300, dev-2 200, and test2 200 for POST HOC reporting only. Estimated cost ~$1.
+Adoption rule (same as M1): (1) grouped 5-fold CV on fit: P1+BR beats P1 on BOTH recall@P95 and AP;
+(2) Platt + high-precision threshold on calib; (3) H1+BR pooled dev + dev-2 F1 > H1's (0.927) and pooled
+precision not lower by more than 0.01. An adopted version is frozen for test3; test2 only post hoc.
