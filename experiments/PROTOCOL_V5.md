@@ -884,3 +884,10 @@ READING (declared rule): JL is a CANDIDATE (pooled F1 0.927 -> 0.936, FPR unchan
 by this round: the gain is 4 pages and not significant, dev / dev-2 have been reused over many rounds, and
 test2 is used. Next, as declared: team approval; if approved, freeze JL and evaluate it once on a new clean
 set (test3). H1 stays the reported system until then.
+
+## Round JL addendum: stability over repeated runs (declared 2026-10-02, before computing; $0)
+JL changed 4 of 500 pages on one run each of dev / dev-2. Same rule, nothing refit, on the three independent
+full-system runs of the dev-2 pages that already exist (Exp 6 `mazerophish` arm in runs/v4_exp,
+runs/v4_exp_rep1, runs/v4_exp_rep2; the ledgers behind `final/h1_all/repeats.json`). Reported per run: H1 and
+JL P / R / FPR / F1, pages changed and how many of them JL gets right. Descriptive: it does not change round
+JL's reading; it is evidence for the team's decision. Code: judge_lock_eval.py --repeats.
