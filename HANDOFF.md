@@ -1,6 +1,6 @@
 # Handoff: MA-ZeroPhish experiments (updated 2026-10-01, after test2)
 
-For the teammate continuing the work. Branch **`role3-specialists`**. This file says where the work
+For the teammate continuing the work. Branch **`main`** (the only branch; all earlier branches were merged and deleted, history kept). This file says where the work
 stands, what each result means, how to reproduce it, and what is left. The complete, dated log of every
 decision and result (including every rejected attempt) is `experiments/PROTOCOL_V4.md` and
 `experiments/PROTOCOL_V5.md`. Every change was declared there BEFORE it was run.
@@ -23,6 +23,10 @@ decision and result (including every rejected attempt) is `experiments/PROTOCOL_
   Not run (credit). Rough cost $60-120.
 - **OpenRouter:** limit $40, about **$4.47 left** (checked from the key endpoint after test2). Always
   check the real balance before a paid run (GET https://openrouter.ai/api/v1/key; print only limit/usage).
+- **Repository layout:** top-level `prototype/` + `experiments/` = the final system and every experiment.
+  `paper_faithful/` = Ohm's paper-faithful pipeline (former main, PR #2), kept self-contained for reference;
+  on dev it scores F1 0.774 (Suf/Def rule, 84% coverage) / 0.794 (its Judge probability) vs H1 0.923
+  (PROTOCOL_V5, 2026-10-02). Exp 5 on test2 was scored by the teammate (PROTOCOL_V5 "Exp 5 on test2 -- RESULT").
 - **Team results page** (Claude Docs, ask Tinpat to share): "MA-ZeroPhish results: Experiments 1-6"
   (shows test2, dev, dev-2, Exp 2-6, SMS/e-mail; TR-OP deliberately not shown).
 
@@ -98,7 +102,7 @@ All metrics incl. TPR/TNR/FNR/accuracy (dev, dev-2, messages): `results_gpt4omin
 
 ## 6. Setup
 
-1. Clone, branch `role3-specialists`.
+1. Clone the repository (branch `main`).
 2. Unzip the data package so `experiments/data_eval/data/phreshphish/...` exists (DATA_VERSION 545370aaf6ad14c6).
 3. Unzip `runs_for_teammate.zip` (Google Drive) at the repo root -> `runs/`: every ledger behind the
    results plus the response caches, so re-running an existing configuration costs $0 and gives identical
