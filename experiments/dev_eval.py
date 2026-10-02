@@ -65,6 +65,9 @@ def main() -> None:
                     help="PROTOCOL_V5 external check: run the test split of a NON-PhreshPhish dataset")
     ap.add_argument("--fit-collection", action="store_true",
                     help="PROTOCOL_V5: run on the FIT split (training pages) for the learner")
+    ap.add_argument("--dev2-collection", action="store_true",
+                    help="PROTOCOL_V5 round AF2: the dev-2 pages (the old test 200, development data since "
+                         "PROTOCOL_V5) -- only with --case-list")
     ap.add_argument("--sealed-test2-final", action="store_true",
                     help="the ONE final test2 run of the frozen system (needs FROZEN.json + GO.json)")
     ap.add_argument("--sealed-test3-final", action="store_true",
@@ -73,6 +76,10 @@ def main() -> None:
     allowed = ("dev", "calib") if args.calib_collection else ("dev",)
     if args.fit_collection:
         allowed = ("fit",)
+    if args.dev2_collection:
+        if not args.case_list or args.variants != ["v4abdfAF2"]:
+            raise SystemExit("REFUSED: --dev2-collection needs --case-list and variant v4abdfAF2 (round AF2)")
+        allowed = ("test",)
     if args.external:
         if args.dataset == "phreshphish":
             raise SystemExit("REFUSED: --external is for other datasets; PhreshPhish test/test2 stay sealed")

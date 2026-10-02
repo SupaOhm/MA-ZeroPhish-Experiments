@@ -1,0 +1,38 @@
+{
+ "pages": 50,
+ "identical_judge_and_features": 50,
+ "agents": {
+  "url": {
+   "asked": 50,
+   "returned": 1.0,
+   "auc": 0.9592
+  },
+  "web_structure": {
+   "asked": 50,
+   "returned": 1.0,
+   "auc": 0.9288
+  },
+  "content": {
+   "asked": 39,
+   "returned": 1.0,
+   "auc": 0.8697368421052631
+  },
+  "metadata": {
+   "asked": 47,
+   "returned": 1.0,
+   "auc": 0.9375
+  }
+ },
+ "descriptive": {
+  "judge_auc": 0.9848,
+  "mean_agent_score_auc": 0.9632
+ },
+ "usd_per_page_ref": 0.004433586,
+ "usd_per_page_AF2": 0.005795918999999999,
+ "criteria": {
+  "judge_and_features_identical": true,
+  "returned>=0.90": true,
+  "two_agents_auc>=0.80": true
+ },
+ "go": true
+}

@@ -1025,3 +1025,9 @@ ADOPTION: the BR rule -- grouped 5-fold CV on fit (seed "20261001:p1cv"): recall
 both above P1; and pooled dev + dev-2 F1 above H1 with precision not lower by more than 0.01. If adopted:
 frozen as H1-AF2 before test3; test3 then runs v4abdfAF2 (same findings and Judge as v4abdf plus the
 scores) with the test3 plan otherwise unchanged. If not adopted, H1 stays.
+PILOT RESULT (2026-10-02, 50 pages, 0 failures): GO. Judge score and evidence features identical to v4abdf
+on 50/50 pages; score returned for 100% of asked agent calls (URL 50, Web Structure 50, Content 39,
+Metadata 47 asked); AUC URL 0.959, Web Structure 0.929, Metadata 0.938, Content 0.870. Cost $0.00580 vs
+$0.00443 per page (+$0.0014). Cache-replay check on 3 fit + 3 dev-2 pages with runs/llm_cache: identical
+to the reference ledgers (experiments/af2_check.py). Full run started (fit 839, calib 300, dev 300, dev-2
+200; out runs/af2/<set>; dev-2 via dev_eval --dev2-collection, case lists runs/af2/cases_*.txt).
