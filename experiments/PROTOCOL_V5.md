@@ -866,3 +866,16 @@ P1+M must beat P1 on BOTH recall@P95 and AP; (2) Platt + high-precision threshol
 (3) adopted only if H1+M's F1 pooled over dev + dev-2 (500 pages) exceeds H1's (0.927) AND its pooled
 precision is not lower than H1's by more than 0.01. test2 can only be reported post hoc; an adopted
 version is frozen for a new test set (test3).
+
+## Round M1 -- RESULT: NOT adopted, H1 stays (results_gpt4omini/memory_m1/result.json)
+(1) CV on fit: P1 recall@P95 0.855 / AP 0.9654 -> P1+M 0.891 / 0.9674 (criterion met).
+(2) P1+M calib threshold 0.7683 (P1: 0.5915).
+(3) | set | H1 F1 (P/R/FPR) | H1+M F1 (P/R/FPR) |
+|---|---|---|
+| dev 300 | 0.923 (0.926/0.920/0.073) | 0.943 (0.946/0.940/0.053) |
+| dev-2 200 | 0.933 (0.958/0.910/0.040) | 0.863 (0.952/0.790/0.040) |
+| pooled 500 | 0.927 (P 0.939, R 0.916) | 0.913 (P 0.948, R 0.880) |
+| test2, POST HOC only | 0.887 (0.874/0.900/0.130) | 0.853 (0.900/0.810/0.090) |
+Pooled F1 is lower, so by the declared rule M1 is not adopted. Reading: the memory helps on dev (Feb-Jul
+2025, nearer the 2024 fit pages) and hurts recall on the later pages (Sep-Dec 2025), consistent with kits
+drifting over time; it raises precision (test2 FPR 0.13 -> 0.09, post hoc) at a larger recall cost.
