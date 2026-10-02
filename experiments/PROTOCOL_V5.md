@@ -836,3 +836,11 @@ Answered pages only: Ohm F1 0.809, accuracy 0.765. Vs H1 (exact McNemar, forced)
 93, Ohm right / H1 wrong 10, p < 0.001. Cost: ~$0.0085 per page (H1 pipeline ~$0.0047).
 Reading: the paper-faithful Suf/Def decision answers 84% of pages and flags a third of legitimate pages;
 it is significantly below H1 and every baseline on dev. This matches PROTOCOL_V4 round 7 (paper Judge rule).
+
+## Round OHM-P: Ohm's pipeline deciding by its Judge's probability (declared 2026-10-02, before computing; user request; $0)
+Ohm's Judge already returns p_phishing (stored as "score" in its ledger) but the verdict is taken from the
+Suf/Def rule. Here the verdict comes from the probability instead, on the existing dev ledgers:
+(a) threshold-free ranking: ROC-AUC and PR-AUC of p on dev, next to H1 and PhishDebate on the same pages;
+(b) forced F1 at the fixed, unfitted cut p >= 0.5 (no tuning on dev). A threshold chosen on calib (as for
+H1) needs Ohm's pipeline on calib (~$2.6) and is a separate step, done only if (a) is competitive.
+Development data only; nothing here changes H1 or any reported result.
