@@ -1124,3 +1124,21 @@ homepages are short. Exploratory (P1 route only, complete pages; thresholds re-d
 | all features | 0.855 / 0.9654 | 0.926 / 0.936 / 0.917 / 0.057 | 0.882 / 0.845 / 0.922 / 0.200 |
 | without URL length, digits, host dots | 0.814 / 0.9529 | 0.899 / 0.943 / 0.859 / 0.048 | 0.908 / 0.920 / 0.896 / 0.092 |
 Nothing adopted; the frozen H1 is unchanged.
+
+## Round TD: more varied training data (declared 2026-10-02, before building or running; user chose option B)
+Why: the TR-OP diagnosis above -- the decision step learned a PhreshPhish sampling shortcut (benign URLs
+are long deep links, so "short URL -> phishing"). Fix at the root by training on more varied pages
+instead of deleting features. New training set "trop_fit": 200 benign (tranco_5000) + 200 phishing
+(openphish_5000) drawn from the TR-OP zip, BOTH labels from the same source so the source itself cannot
+become a label proxy. Excluded: every page, URL, HTML and site already in the TR-OP manifests (trop 1000,
+trop_ext 200); undated pages (the CT rule needs a date; as for trop_ext); HTML < 200 chars; exact
+duplicates. Seeded random pick ("20261002:tropfit"); own folder experiments/data_eval/data/trop_fit,
+split "fit". Processing exactly as trop_ext (offline render with the label-blind retry, CT v2, RDAP
+excluded, build_captures --trop-mode pipeline). Pipeline v4abdf on the 400 pages (~$1.8).
+Candidate H1-TD: P1 and B2 retrained with the trop_fit rows added to their training rows (each row to
+the route its evidence availability gives; same learners and settings); Platt and thresholds on calib
+exactly as before; routing unchanged.
+ADOPTION (both required): (1) PhreshPhish not worse: pooled dev + dev-2 F1 >= H1 - 0.01 and precision >=
+H1 - 0.01; (2) TR-OP (200, development data since the diagnosis) F1 >= H1 + 0.02. If adopted it is frozen
+before test3; a clean normal-set number then needs a new set (Mendeley, separate declared plan). Reported
+whatever it shows.
