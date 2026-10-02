@@ -948,3 +948,7 @@ Claim "best of all baselines" only if E1 is a WIN against all 8; E2 is reported 
 the strongest baseline is possible and will be stated).
 Cost estimate: baselines on calib ~$1.5; test3 run ~$16 (H1 ~$4.7 + 8 baselines ~$11.5). The test3 run starts
 only after a credit top-up and a balance check. test3 is used ONCE.
+test3 data source (2026-10-02, before building): the datasets-server filter API kept failing (HTTP 500 /
+502, then 8 retries without a page), so the rows come from two downloaded, never-used PhreshPhish test
+shards instead, test-001 and test-002 (Hugging Face v1.0.1; test-001: 5,236 rows, all dated 2025-09..12).
+All builder rules as declared; only the transport changed. pyarrow imports again on this machine.

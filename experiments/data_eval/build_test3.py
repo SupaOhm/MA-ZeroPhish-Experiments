@@ -82,7 +82,7 @@ def dedup(rows: list[dict], log: Counter) -> list[dict]:
     return out
 
 
-def build(out_dir: str) -> None:
+def build(out_dir: str, parquet: list[str] | None = None) -> None:
     out = Path(out_dir)
     existing = read(str(out / "manifest.jsonl"))
     if any(r.split == "test3" for r in existing):
@@ -92,9 +92,19 @@ def build(out_dir: str) -> None:
     screened = {json.loads(l)["sha256"] for l in open(SCREENED, encoding="utf-8")} if SCREENED.exists() else set()
     log: Counter = Counter()
     rows = []
-    with gzip.open(CACHE, "rt", encoding="utf-8") as f:
-        for line in f:
-            r = json.loads(line)
+
+    def source_rows():
+        if parquet:                                   # downloaded test shards (preferred)
+            import pyarrow.parquet as pq
+            for pth in parquet:
+                for r in pq.read_table(pth).to_pylist():
+                    yield r
+        else:
+            with gzip.open(CACHE, "rt", encoding="utf-8") as f:
+                for line in f:
+                    yield json.loads(line)
+    for r in source_rows():
+        if True:
             log["read"] += 1
             d = str(r["date"])[:10]
             if not (LO <= d <= HI):
@@ -151,7 +161,7 @@ def build(out_dir: str) -> None:
                 split="test3", campaign_group=r["group"], group_keys=r["group_keys"],
                 target_brand=r.get("target"), language=r.get("lang"),
                 post_cutoff=post_cutoff_flags(r["date"]), reputation_absent=None,
-                notes=[f"url={r['url']}", "source=hf-datasets-server-filter"]))
+                notes=[f"url={r['url']}", "source=" + ("parquet:" + ",".join(Path(p).name for p in parquet) if parquet else "hf-datasets-server-filter")]))
     allrows = existing + new
     allrows.sort(key=lambda m: (m.split, m.case_id))
     errs, warns = validate(allrows)
@@ -173,5 +183,6 @@ if __name__ == "__main__":
     ap = argparse.ArgumentParser()
     ap.add_argument("step", choices=["fetch", "build"])
     ap.add_argument("--out", default="experiments/data_eval/data/phreshphish")
+    ap.add_argument("--parquet", nargs="*", default=None, help="downloaded PhreshPhish test shards")
     a = ap.parse_args()
-    fetch() if a.step == "fetch" else build(a.out)
+    fetch() if a.step == "fetch" else build(a.out, a.parquet)
