@@ -741,6 +741,76 @@ does not. Caveats: the two sets differ in source and crawler, not only in age; o
 trained on PhreshPhish, which lowers our TR-OP score (FPR 0.24); no CI computed. A cleaner comparison
 would add a second pre-cutoff set (e.g. Mendeley 500/500) under a declared plan.
 
+## Exp 5 on test2 -- RESULT (2026-10-02; scoring only, no model call, $0; results_gpt4omini/final/exp5_test2/)
+The pipeline runs were already complete in `runs/test2/exp5` (6 conditions x 200 pages, 1200 decisions,
+0 failure rows, no missing cases). Scored with the frozen H1 by `experiments/exp5_test2_eval.py`, which
+reuses `h1_eval.ours` and `b2_eval.evaluate` unchanged: the withheld fields of each condition are hidden
+from the code features AND from H1's completeness check, exactly as Exp 5 is scored on dev-2.
+Validation that the path is the one test2 used: the `base` condition reproduces the test2 H1 row to every
+digit (P 0.874, R 0.900, FPR 0.130, F1 0.887, PR-AUC 0.957).
+
+| condition | pages routed to B2 | P | R | FPR | F1 | PR-AUC | vs base [95% CI], McNemar p |
+|---|---|---|---|---|---|---|---|
+| base | 40/200 | 0.874 | 0.900 | 0.130 | 0.887 | 0.957 | -- |
+| transient_browser_recoverable | 40/200 | 0.874 | 0.900 | 0.130 | 0.887 | 0.957 | +0.000 [+0.000, +0.000], 1.000 |
+| no_html | 200/200 | 0.845 | 0.980 | 0.180 | 0.907 | 0.962 | +0.021 [-0.021, +0.064], 0.664 |
+| no_dom | 200/200 | 0.912 | 0.930 | 0.090 | 0.921 | 0.956 | +0.034 [+0.001, +0.071], 0.092 |
+| no_network_metadata | 200/200 | 0.825 | 0.940 | 0.200 | 0.879 | 0.918 | -0.008 [-0.038, +0.022], 0.549 |
+| cum3_+html_no_browser | 200/200 | 0.895 | 0.940 | 0.110 | 0.917 | 0.970 | +0.030 [-0.014, +0.078], 0.307 |
+
+READING (the declared rule was "reported whatever it shows"):
+- **Retry recovers completely.** `transient_browser_recoverable` is identical to base on every page,
+  as on dev-2.
+- **No condition degrades detection significantly.** The only negative change is losing network metadata
+  (-0.008), whose CI crosses 0. This differs from dev-2, where losing CT was the one significant loss
+  (-0.041); on test2 that loss does not reproduce.
+- **Several conditions score ABOVE base, and this must not be read as "removing evidence helps."**
+  It is a routing effect and is reported as one: H1 sends an object to B2 when any of html, dom,
+  page_content or ct is absent, so every withholding condition moves all 200 pages to B2, while base
+  routes only 40. On test2 B2 alone scored F1 0.890 against P1's 0.887 (test2 table above), so these
+  rows mostly compare B2-on-everything with the H1 mixture, not more evidence with less. The design is
+  deliberate and label-free, but the conditions confound evidence removal with the decision model, and
+  the paper must say so. `no_dom` (+0.034) is the largest change; its bootstrap CI excludes 0 by
+  +0.001 while McNemar gives p = 0.092, so it is not significant on the agreed reading.
+- Power: 200 pages, one run per condition; the CIs are about +/-0.04 wide. A null result here is not
+  proof of no effect.
+NOT changed by this result: the frozen system, any threshold, any earlier number. test2 was not re-run.
+
+## Anchor-share encoding flaw: measured, and NOT fixed (2026-10-02; measurement only, no model call, $0)
+Raised by a teammate. Verified in the code, not just in the report: `tools.link_form_destinations`
+formats the three anchor shares with `share = (lambda k: f"{c[k]/n:.2f}") if n else (lambda k: "n/a")`,
+so a page with no anchors prints `total=0, ... external=0 (n/a)`. `v5_learn._num` matches
+`external=\d+ \(([\d.]+)\)`, which `(n/a)` fails, and falls back to its default `0.0` -- the same value a
+page WITH anchors and no external ones produces. Two different states collapse to one number, in all
+three anchor-share features and in the resources external share.
+
+"No anchors" is also a real signal, so the flaw is not harmless on its face. Measured on the stored
+captures and ledgers with the frozen H1 (nothing refit, nothing declared, no model call):
+
+| | pages with no anchors | share |
+|---|---|---|
+| fit, phishing | 117 / 500 | 23.4% |
+| fit, benign | 11 / 500 | 2.2% |
+
+The teammate's 23% / 2% is confirmed. But the pages that hit the collision are not where H1 fails:
+
+| split | no-anchor pages | H1 errors among them | H1 errors overall |
+|---|---|---|---|
+| dev (300) | 30 (10.0%) | 2 -> 6.7% | 23 -> 7.7% |
+| dev-2 (200) | 21 (10.5%) | 1 -> 4.8% | 12 -> 6.0% |
+
+READING: the encoding flaw is real and the signal behind it is real, but on both development surfaces
+the affected pages are classified slightly BETTER than average, so the whole ceiling of fix 1
+(a has_anchors indicator plus a neutral value for missing shares) is 3 pages across 500. That is far
+inside the run-to-run noise this project measures repeatedly (+/-0.03-0.04 F1 on 100-200 pages), so no
+round could show it. Other features evidently carry the same signal.
+DECISION: no round is declared. Rounds B1 and B5 have already shown that adding data or features can
+move the system the wrong way, and spending a training round plus a dev check on a 3-page ceiling is not
+a good use of the remaining credit. Recorded here so the flaw is disclosed rather than silently carried,
+and it belongs in the paper's limitations: the deterministic page features cannot distinguish "no links
+on the page" from "links, none external", a known flaw whose measured effect on these splits is nil.
+Nothing was changed: no threshold, no training set, no frozen file, no earlier number.
+
 ## Additional system: Ohm's model-backed pipeline (main branch, commit 298716b) on dev 300 (declared 2026-10-02, before running; user request)
 What: the paper-faithful implementation on main (prompt files, Judge deciding by the Suf/Def rule,
 corpus runner), never run with a real model before. A 5-page dev smoke run (balance checked: $18.67)

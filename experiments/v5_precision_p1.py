@@ -21,7 +21,12 @@ sys.path.insert(0, str(ROOT / "experiments"))
 import v5_learn as L  # noqa: E402
 from fit_v4_scores import fit_logistic, logit, sig  # noqa: E402
 
-PY = str(ROOT.parent / "MA_ZeroPhish_VerAJ_Ohm" / ".venv" / "Scripts" / "python.exe")
+# The data-tools venv on the machine this was developed on, falling back to the
+# interpreter already running when that path is absent (another machine, another
+# OS). `experiments.data_eval.evaluate`, the only thing launched through PY, is
+# standard-library only, so the choice of interpreter cannot change a number.
+_VENV = ROOT.parent / "MA_ZeroPhish_VerAJ_Ohm" / ".venv" / "Scripts" / "python.exe"
+PY = str(_VENV) if _VENV.exists() else sys.executable
 OUT = ROOT / "experiments" / "results_gpt4omini" / "v5_precision_p1"
 TARGET = 0.95
 LAM = 0.01          # lambda chosen for v5C on all of fit (FROZEN_V5); used for L0 and L1 alike

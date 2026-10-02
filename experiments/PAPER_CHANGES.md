@@ -82,6 +82,15 @@ Deterministic tools (brand-domain lookup from the Phishpedia list, link/form des
 obfuscation) were screened as evidence for the agents (PROTOCOL_V4 round 4) and as decision features
 (PROTOCOL_V5 round B5); neither was kept. State as a limitation of the retrospective setting.
 
+Disclose one known encoding flaw in those deterministic features: the anchor and resource "share"
+features cannot distinguish a page with no links at all from a page whose links are all internal --
+both are encoded as 0.0 (`v5_learn._num` falls back to its default when `link_form_destinations`
+prints `n/a` for an empty denominator). Having no links is itself a signal in this data (fit: 23.4% of
+phishing vs 2.2% of benign pages), so the collision is not harmless in principle. It was measured
+rather than assumed (PROTOCOL_V5, 2026-10-02): on dev the affected pages carry 2 of 23 errors and on
+dev-2 1 of 12, i.e. a lower error rate than average on both, so the flaw costs nothing measurable here
+and was deliberately not fixed.
+
 ## 7. Data
 PhreshPhish, own-domain pages only (platform-hosted excluded: a label shortcut); chronological,
 campaign-disjoint splits: fit 839 (Jul-Oct 2024; round B1 in progress adds 161 phishing pages from

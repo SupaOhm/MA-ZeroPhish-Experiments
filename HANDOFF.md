@@ -88,7 +88,8 @@ SMS/e-mail messages use the same pipeline (SMS/Email Agent + Judge) with a Judge
 | 2 | adaptive specialist selection | same F1, ~20% fewer model calls |
 | 3 | not double-counting shared evidence (code only) | pair F1 0.952, 0% double counting (others 15-48%) |
 | 4 | collaboration styles (3 runs) | 0.931-0.935, no significant difference; also none on conflict cases (B3) |
-| 5 | missing / broken evidence | retry recovers fully; only losing CT is significant (-0.041); FPR without HTML 0.11 |
+| 5 (dev-2) | missing / broken evidence | retry recovers fully; only losing CT is significant (-0.041); FPR without HTML 0.11 |
+| 5 (test2) | the same conditions on the sealed pages | retry recovers fully; no condition degrades F1 significantly; several score above base because every withholding routes all 200 pages to B2 (base routes 40) -- a routing effect, not evidence helping |
 | 6 | ablations (3 runs) | every removal within 0.003, none significant |
 | M | SMS / e-mail (pre-cutoff) | declared rule F1 0.188; post hoc 0.889; baselines 0.907-0.970 |
 | TR-OP | external dataset | loss (0.85 vs 0.92-0.95); limitation, not on the team page |
@@ -116,6 +117,7 @@ Common flags: `--model openrouter:openai/gpt-4o-mini-2024-07-18 --env <.env> --m
 |---|---|
 | rebuild H1 + score test2 | `<venv> -B experiments/score_test2.py --test2` (refuses if training ledgers or thresholds changed) |
 | all experiments with H1 | `<venv> -B experiments/h1_eval.py` |
+| Exp 5 on test2 with H1 | `python -B experiments/exp5_test2_eval.py` (scoring only, $0; `base` must reproduce the test2 H1 row) |
 | full metric table | `<venv> -B experiments/full_metrics.py` |
 | rounds | `v5_precision_p1.py select/apply`, `b1_learn.py`, `b2_learn.py`, `hybrid_eval.py`, `b5_features.py`, `pilot_G_score.py`, `pilot_H_score.py`, `b3_score.py`, `score_messages.py` |
 | pipeline runs | `experiments/dev_eval.py --variants v4abdf --split <dev/fit/calib> ...` (test2 only with `--sealed-test2-final`, which needs FROZEN_H1 + GO_TEST2) |
