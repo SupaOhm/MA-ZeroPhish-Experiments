@@ -998,7 +998,9 @@ PILOT RESULT (2026-10-02, 50 dev pages, 0 failures, ~$0.004/page): NO-GO, round 
 Per-agent score AUC: URL 0.929, Web Structure 0.918, Metadata 0.883, Content 0.845 (criterion 2 met);
 returned: URL 100%, Web Structure 100%, Metadata 94%, Content 78% (criterion 1 failed); findings per page
 8.80 vs 9.26 (stable), but the Judge's AUC fell 0.985 -> 0.926 (criterion 3 failed: asking each agent for an
-overall score changed its findings enough to hurt the Judge). Descriptive only: the mean of the agents'
-scores reaches AUC 0.94 (below the Judge's 0.985 on the reference run), i.e. no single agent's own view and
-no simple average of them matches the Judge combining all agents' evidence. Option specialist_self_score
+overall score changed its findings enough to hurt the Judge). Descriptive only (not a criterion): every
+single agent's own score is below the Judge's 0.985 on the reference run; the plain mean of the agents'
+scores (50 pages) reaches AUC 0.982 -- close to the Judge, but obtained only by changing the agents' prompt,
+which costs the Judge 0.06. [Correction: an earlier commit of this entry stated 0.94 for the mean, written
+before the number was computed; 0.982 is the computed value.] Option specialist_self_score
 stays off by default; H1 stays the system for test3. Script: experiments/pilot_AF_score.py.
