@@ -849,3 +849,20 @@ PhishDebate 0.955 / 0.945; Ohm Judge p 0.811 / 0.751. At p >= 0.5 (unfitted): F1
 FPR 0.396, coverage 100% (vs Suf/Def rule 0.774 at coverage 0.84). Ohm's probabilities are coarse (179 of
 298 pages at 0.8). By the declared condition (a) is not competitive, so no calib run is made. Reading: the
 gap is upstream of the decision rule (the evidence and the Judge's reading of it), not only the Suf/Def rule.
+
+## Round M1: case-memory features (declared 2026-10-02, before computing; user request; $0)
+Idea from the literature (MemoPhishAgent, arXiv 2602.21394: episodic memory of past cases, reported up to
++27% recall): phishing kits are reused across campaigns, so similarity to KNOWN labelled pages can help.
+Memory = the 839 fit pages and their labels only (training data); no dev/calib/test label is ever used.
+For each page, two deterministic representations (no model call): (a) words of the visible page text
+(page_content, else text from the served HTML) plus URL tokens, IDF-weighted from the fit corpus; (b) the
+HTML tag-trigram profile. Cosine similarity; the k = 10 most similar fit pages, EXCLUDING any page of the
+same campaign_group (for fit pages themselves: leave-one-campaign-out). Features per representation:
+similarity-weighted phishing share among the 10, the highest similarity to a phishing page, the highest
+similarity to a benign page (6 features; missing representation -> neutral 0.5 / 0 / 0 plus a flag).
+Candidate: H1+M = H1 with the memory features added to P1 (complete-evidence pages); B2 and the routing
+are unchanged. Selection and adoption, fixed now: (1) grouped 5-fold CV on fit (same folds as P1):
+P1+M must beat P1 on BOTH recall@P95 and AP; (2) Platt + high-precision threshold on calib as P1;
+(3) adopted only if H1+M's F1 pooled over dev + dev-2 (500 pages) exceeds H1's (0.927) AND its pooled
+precision is not lower than H1's by more than 0.01. test2 can only be reported post hoc; an adopted
+version is frozen for a new test set (test3).
