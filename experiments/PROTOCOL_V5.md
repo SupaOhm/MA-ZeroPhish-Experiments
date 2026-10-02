@@ -972,3 +972,10 @@ decision came after seeing the calib operating points above (development data). 
 forced F1 of the frozen H1 vs each of the 8 baselines (paired bootstrap CI + exact McNemar, Holm over the 8),
 with accuracy, precision, recall, FPR, FNR reported for every system. Reading: H1 "beats" baseline b if the
 F1 difference is positive with Holm p < 0.05 and CI excluding 0; "best of all baselines" only if it beats all 8.
+test3 PLAN AMENDMENT 2 (2026-10-02, user decision, BEFORE test3 is run or looked at): the two minimal-prompt
+baselines (single-agent minimal, CoT minimal) are NOT run on test3. Reason given: they are not standard
+baselines (no prior work uses them; we added them on request); the standard comparison set is the six
+baselines of the PhishDebate paper (single-agent, CoT, PhishDebate, each text-only and + screenshot).
+Disclosure: decided after seeing that CoT minimal is the strongest baseline on dev and test2 (test2 F1 0.851 vs
+H1 0.887, not significant). Their dev / dev-2 / test2 results stay reported everywhere. test3 primary family:
+H1 vs the 6 PhishDebate-paper baselines, forced F1, paired bootstrap CI + exact McNemar, Holm over 6.
