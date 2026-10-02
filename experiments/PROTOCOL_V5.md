@@ -1004,3 +1004,24 @@ scores (50 pages) reaches AUC 0.982 -- close to the Judge, but obtained only by 
 which costs the Judge 0.06. [Correction: an earlier commit of this entry stated 0.94 for the mean, written
 before the number was computed; 0.982 is the computed value.] Option specialist_self_score
 stays off by default; H1 stays the system for test3. Script: experiments/pilot_AF_score.py.
+
+## Round AF2: per-agent scores from a SEPARATE call, fused by the decision step (declared 2026-10-02, before running; user request)
+Why: in the AF pilot the agents' own scores and the reference Judge erred on different pages (descriptive,
+50 pages: Judge 2 errors, mean of agent scores 3, overlap 0), but asking for the score inside the findings
+call changed the findings and cost the Judge 0.06 AUC. AF2 keeps the findings call byte-identical to v4abdf
+(so the Judge's input and output are unchanged; cached calls replay) and asks each specialist, right after
+its first findings call, one extra question with the same evidence lines (and screenshot): "judged only
+from your evidence, how likely is phishing?" -> {"suspicion": p}. The Judge never sees it. Variant
+v4abdfAF2 (option specialist_separate_score). Unit test: findings prompt byte-identical with the option on.
+PILOT (50 pilotG dev pages, round-G cache). GO only if: (1) the Judge score and the evidence features are
+identical to the v4abdf reference on every page (any difference stops the round and is investigated);
+(2) a score is returned for >= 90% of the agent calls where it was asked; (3) at least two specialists
+reach AUC >= 0.80. The measured extra cost per page sets the full-run estimate (balance check before it).
+FULL RUN (if GO and credit allows): v4abdfAF2 on fit, calib, dev, dev-2 (findings and Judge replay from the
+existing caches). Decision step: P1's features + per agent (URL, Web Structure, Content, Metadata) the score
+and a not-asked/not-returned flag (8 features), same learner, Platt on calib, P >= 0.95 threshold on calib;
+route and B2 unchanged (B2's extra training rows come from evidence-removal runs without these scores).
+ADOPTION: the BR rule -- grouped 5-fold CV on fit (seed "20261001:p1cv"): recall@P95 AND average precision
+both above P1; and pooled dev + dev-2 F1 above H1 with precision not lower by more than 0.01. If adopted:
+frozen as H1-AF2 before test3; test3 then runs v4abdfAF2 (same findings and Judge as v4abdf plus the
+scores) with the test3 plan otherwise unchanged. If not adopted, H1 stays.

@@ -92,6 +92,8 @@ class Config:
     specialist_page_assessment: bool = False
     # PROTOCOL_V5 round AF: every specialist also reports a phishing probability from its own evidence.
     specialist_self_score: bool = False
+    # PROTOCOL_V5 round AF2: the same score in a separate call (findings call unchanged).
+    specialist_separate_score: bool = False
     cost_scale: float = 1000.0
     budget: CaseBudget = field(default_factory=lambda: CaseBudget(100.0, 100.0, 20.0))
     evidence_removal: frozenset[str] = frozenset()
