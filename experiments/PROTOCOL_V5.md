@@ -909,3 +909,19 @@ calib 300, dev 300, dev-2 200, and test2 200 for POST HOC reporting only. Estima
 Adoption rule (same as M1): (1) grouped 5-fold CV on fit: P1+BR beats P1 on BOTH recall@P95 and AP;
 (2) Platt + high-precision threshold on calib; (3) H1+BR pooled dev + dev-2 F1 > H1's (0.927) and pooled
 precision not lower by more than 0.01. An adopted version is frozen for test3; test2 only post hoc.
+
+## Round BR -- RESULT: NOT adopted, H1 stays (results_gpt4omini/brand_br/result.json)
+Tool: 1,839 calls (fit 839, calib 300, dev 300, dev-2 200, test2 200), 0 failures, 0 unparsed, ~$0.35.
+On fit the tool marks the domain INCONSISTENT with the claimed brand for 210 of 339 phishing pages (62%)
+and 100 of 500 benign pages (20%); no brand / unsure: 114 phishing, 31 benign.
+(1) CV on fit: P1 0.855 / 0.9654 -> P1+BR 0.876 / 0.9630 (recall@P95 up, AP down): criterion NOT met.
+(2) P1+BR calib threshold 0.6835.
+(3) | set | H1 F1 (P/R/FPR) | H1+BR F1 (P/R/FPR) |
+|---|---|---|
+| dev 300 | 0.923 (0.926/0.920/0.073) | 0.919 (0.932/0.907/0.067) |
+| dev-2 200 | 0.933 (0.958/0.910/0.040) | 0.943 (0.978/0.910/0.020) |
+| pooled 500 | 0.927 (P 0.939, R 0.916) | 0.928 (P 0.950, R 0.908) |
+| test2, POST HOC only | 0.887 (0.874/0.900/0.130) | 0.900 (0.900/0.900/0.100) |
+By the declared rule BR is not adopted (step 1 fails; pooled F1 +0.001). Reading: the brand check raises
+precision on the later pages (dev-2, and test2 post hoc) with recall unchanged there, but not on dev, and
+the tool also flags a fifth of benign pages as inconsistent, which limits it as a feature.
