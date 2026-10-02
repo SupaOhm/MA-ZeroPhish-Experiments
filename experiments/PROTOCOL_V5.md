@@ -981,3 +981,54 @@ new finding) and scores the highest F1 of the four arms on these pages, but the 
 and it costs 1.8x the calls of no collaboration. Exp 4 / Exp 6 Ablation 4 report this run as "full debate";
 the old rows are labelled defective. H1 and every reported result are unchanged. Ledger:
 runs/v4_exp_rep1_fdfix/ (not in Git; add it to the shared runs package).
+
+## Round JL: "a confident Judge is not overruled" (declared 2026-10-02, before computing on dev / dev-2; teammate idea; $0)
+Idea (teammate): the decision step must not flip the Judge's verdict when the Judge is confident. In H1 the
+Judge probability (`judge_score_any`) is one feature of the boosted trees, so a confident Judge can be overruled.
+Seen BEFORE this declaration (fit / calib only; no dev or dev-2 outcome looked at): the Judge probability is
+coarse (10-11 distinct values; fit 393 of 839 and calib 130 of 300 pages at 0.0; none >= 0.95 on calib).
+Judge correctness by level, calib (fit in brackets): p >= 0.9 phishing 0.975 of 40 (0.959 of 122);
+p >= 0.85 0.915 of 59 (0.908 of 185); p = 0.0 benign 0.885 of 130 (0.941 of 393).
+Rule JL (chosen on calib with H1's own precision target 0.95): the lowest Judge level whose calib precision
+is >= 0.95 is 0.9, so: Judge p >= 0.9 -> phishing; otherwise the frozen H1 verdict. No benign-side lock: no
+Judge level reaches 0.95 benign share on calib (p = 0.0: 0.885). Nothing is refit; H1 is used unchanged.
+Data: dev (300, runs/v5f/dev) and dev-2 (200, Exp 5 `base`), exactly the ledgers `h1_eval.py` scores; pooled
+500. Validation first: H1 from the same script must reproduce dev F1 0.923 and dev-2 0.933, else stop.
+Reported: P, R, FPR, F1 per set and pooled; pages whose verdict changes (H1 -> JL, with labels); exact
+McNemar vs H1 on the pooled pages. Descriptive only (not used for the decision): the two-sided variant
+(also p = 0.0 -> benign) and how often H1 overrules a confident Judge on each side.
+Acceptance (fixed now): JL is a candidate only if pooled F1 is higher than H1's AND pooled FPR is not higher.
+Even then it is NOT adopted by this round: it goes to the team for approval (step 2), and a frozen JL could
+only be evaluated on a new clean set (test3); test2 is used and is not re-run. Otherwise H1 stays.
+Code: experiments/judge_lock_eval.py.
+Round JL -- RESULT (results_gpt4omini/judge_lock/result.json; $0, no model call, nothing refit). Validation:
+H1 reproduces dev 0.923 and dev-2 0.933 (pooled 229 / 15 / 235 / 21).
+| set | H1 P / R / FPR / F1 | JL P / R / FPR / F1 | two-sided (descriptive) F1, FPR |
+|---|---|---|---|
+| dev (300) | 0.926 / 0.920 / 0.073 / 0.923 | 0.928 / 0.940 / 0.073 / 0.934 | 0.926, 0.067 |
+| dev-2 (200) | 0.958 / 0.910 / 0.040 / 0.933 | 0.958 / 0.920 / 0.040 / 0.939 | 0.880, 0.030 |
+| pooled (500) | 0.939 / 0.916 / 0.060 / 0.927 | 0.940 / 0.932 / 0.060 / 0.936 | 0.909, 0.052 |
+JL changes 4 of 500 verdicts (3 dev, 1 dev-2), all benign -> phishing on phishing pages at Judge p = 0.9; it
+breaks none. Exact McNemar vs H1: 4 vs 0, p = 0.125 (not significant). The Judge is at p >= 0.9 on 77 pages and
+H1 overruled it on 4. Two-sided (descriptive): H1 calls phishing on 16 of 225 pages at Judge p = 0.0; locking
+them to benign loses 14 caught phishing pages for 2 fewer false positives (pooled F1 0.909), as calib suggested.
+READING (declared rule): JL is a CANDIDATE (pooled F1 0.927 -> 0.936, FPR unchanged 0.060). It is NOT adopted
+by this round: the gain is 4 pages and not significant, dev / dev-2 have been reused over many rounds, and
+test2 is used. Next, as declared: team approval; if approved, freeze JL and evaluate it once on a new clean
+set (test3). H1 stays the reported system until then.
+
+## Round JL addendum: stability over repeated runs (declared 2026-10-02, before computing; $0)
+JL changed 4 of 500 pages on one run each of dev / dev-2. Same rule, nothing refit, on the three independent
+full-system runs of the dev-2 pages that already exist (Exp 6 `mazerophish` arm in runs/v4_exp,
+runs/v4_exp_rep1, runs/v4_exp_rep2; the ledgers behind `final/h1_all/repeats.json`). Reported per run: H1 and
+JL P / R / FPR / F1, pages changed and how many of them JL gets right. Descriptive: it does not change round
+JL's reading; it is evidence for the team's decision. Code: judge_lock_eval.py --repeats.
+Round JL addendum -- RESULT (results_gpt4omini/judge_lock/repeats.json). H1 reproduces repeats.json per run
+(0.9333 / 0.9347 / 0.9286).
+| dev-2 run | H1 F1 / FPR | JL F1 / FPR | pages changed (JL right) |
+|---|---|---|---|
+| runs/v4_exp | 0.933 / 0.040 | 0.939 / 0.040 | 1 (1) |
+| rep1 | 0.935 / 0.060 | 0.945 / 0.060 | 2 (2) |
+| rep2 | 0.929 / 0.050 | 0.934 / 0.050 | 1 (1) |
+Reading (descriptive): in every run JL changes 1-2 of 200 pages, always a missed phishing page the Judge
+had at p >= 0.9, and never raises FPR. Consistent with round JL; still small, and dev-2 is development data.
