@@ -1032,3 +1032,17 @@ Round JL addendum -- RESULT (results_gpt4omini/judge_lock/repeats.json). H1 repr
 | rep2 | 0.929 / 0.050 | 0.934 / 0.050 | 1 (1) |
 Reading (descriptive): in every run JL changes 1-2 of 200 pages, always a missed phishing page the Judge
 had at p >= 0.9, and never raises FPR. Consistent with round JL; still small, and dev-2 is development data.
+
+### Round JL on three dev runs (teammate goya, 2026-10-02; declared before computing; $0; documentation only)
+Evidence for the team's JL decision, on the 300 DEV pages (round JL's addendum covered dev-2). Same rule and
+functions, imported unchanged from experiments/judge_lock_eval.py (HI = 0.9, frozen H1); nothing refit, no model
+call. Runs: runs/v5f/dev (round JL's run) and two further independent runs of the same frozen v4abdf pipeline on
+the same 300 pages with fresh caches (made by goya for round B's dev confirmation; ledgers on goya's machine,
+available for the shared runs package). Validation: run 1 reproduces round JL's dev numbers (H1 0.923, JL 0.934).
+| dev run (300 pages) | H1 P / R / FPR / F1 | JL P / R / FPR / F1 | pages changed (JL right) |
+|---|---|---|---|
+| runs/v5f/dev | 0.926 / 0.920 / 0.073 / 0.923 | 0.928 / 0.940 / 0.073 / 0.934 | 3 (3) |
+| goya dev run 2 | 0.934 / 0.940 / 0.067 / 0.937 | 0.934 / 0.940 / 0.067 / 0.937 | 0 (0) |
+| goya dev run 3 | 0.928 / 0.940 / 0.073 / 0.934 | 0.929 / 0.953 / 0.073 / 0.941 | 2 (2) |
+Reading (descriptive): as on dev-2, JL changes 0-3 of 300 pages per run, every change is a phishing page the Judge
+had at p >= 0.9 that H1 missed, and FPR never rises. Small (at most 1% of pages) and consistent; development data.
