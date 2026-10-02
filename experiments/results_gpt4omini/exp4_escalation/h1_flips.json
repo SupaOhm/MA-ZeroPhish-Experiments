@@ -1,0 +1,38 @@
+{
+ "base:mazerophish": {
+  "pages": 200,
+  "flips": 8,
+  "collab_right": 4,
+  "no_collab_right": 4
+ },
+ "base:full_debate": {
+  "pages": 200,
+  "flips": 1,
+  "collab_right": 1,
+  "no_collab_right": 0
+ },
+ "rep1:mazerophish": {
+  "pages": 200,
+  "flips": 5,
+  "collab_right": 2,
+  "no_collab_right": 3
+ },
+ "rep1:full_debate": {
+  "pages": 200,
+  "flips": 0,
+  "collab_right": 0,
+  "no_collab_right": 0
+ },
+ "rep2:mazerophish": {
+  "pages": 200,
+  "flips": 12,
+  "collab_right": 6,
+  "no_collab_right": 6
+ },
+ "rep2:full_debate": {
+  "pages": 200,
+  "flips": 0,
+  "collab_right": 0,
+  "no_collab_right": 0
+ }
+}

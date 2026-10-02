@@ -869,3 +869,33 @@ at the round's start is gone, or (b) at least one new eligible finding (field, c
 (a) and (b) are also reported separately. Plus, from the stored ledgers: on how many pages the H1 verdict of
 the collaborating arm differs from no_collaboration (same run). Descriptive; no acceptance rule.
 Code: experiments/exp4_collaboration/escalation_replay.py.
+Round ESC -- RESULT (results_gpt4omini/exp4_escalation/; $0: no request missed the cache, no API call).
+Validation: repeats rep1 and rep2 reproduce every stored decision exactly (200 / 200 pages, both arms). Run 1
+(runs/v4_exp) does NOT: 95 / 200 (targeted) and 57 / 200 (full debate) pages differ from the Exp 4 ledger,
+while the replay equals the stored Exp 5 `base` / Exp 6 `mazerophish` decisions of the same run (e.g.
+pp-000f2efa7bc7: 7 calls, 14218 tokens). Cause: Exp 4, 5 and 6 of run 1 shared one cache and ran at the same
+time, so identical requests were answered twice and the later answer overwrote the earlier in the cache. Run 1
+is therefore partial by the declared rule (its numbers below are on the reproducible pages only), and HANDOFF's
+"re-running gives identical results" holds for the repeats, not for every page of run 1's Exp 4.
+| run | arm | pages | pages with a round | rounds / page | reinvocations / page | revisions accepted / rejected | escalation precision | resolved (a) | new finding (b) |
+|---|---|---|---|---|---|---|---|---|---|
+| rep1 | targeted | 200 | 194 | 1.67 | 3.02 | 532 / 72 | 0.551 | 0.204 | 0.551 |
+| rep2 | targeted | 200 | 192 | 1.64 | 2.98 | 530 / 65 | 0.561 | 0.223 | 0.558 |
+| run 1 (partial) | targeted | 105 | 99 | 1.62 | 2.97 | 272 / 40 | 0.612 | 0.259 | 0.612 |
+| rep1 | full debate | 200 | 199 | 1.00 | 3.79 | 716 / 42 | 0.000 | 0.000 | 0.000 |
+| rep2 | full debate | 200 | 197 | 0.99 | 3.75 | 712 / 38 | 0.000 | 0.000 | 0.000 |
+| run 1 (partial) | full debate | 143 | 140 | 0.98 | 3.72 | 505 / 27 | 0.000 | 0.000 | 0.000 |
+Issue identity for (a): (kind, affected fields, relevant agents); with the evidence references also part of the
+identity (stricter "same issue"), (a) is 0.62-0.65 -- the difference is issues whose cited lines changed.
+H1 verdict vs no_collaboration in the same run (stored ledgers, h1_flips.json): targeted changes 8 / 5 / 12 of
+200 pages (run 1 / rep1 / rep2), right on 4 / 2 / 6 and wrong on 4 / 3 / 6 of them; full debate changes 1 / 0 / 0.
+DEFECT FOUND (full debate is not a debate): `moderator._targets` re-invokes every agent with focus = None, and
+`agents/llm.py` then builds exactly the Phase 2 prompt (no issue, no peer lines), so each "debate" call repeats
+an earlier request byte for byte and returns the same answer. Measured on 10 rep1 pages: 39 of 88 full-debate
+requests repeat an earlier request of the same page; targeted: 0 of 83. Consequences: Exp 4 "full debate" and
+Exp 6 Ablation 4 are "no collaboration" plus repeated calls (their F1 equals no collaboration's in rep1 / rep2),
+and their call / token counts include repeats that the cache answered. Not fixed here: a real full debate needs
+new model calls (cost) and a team decision.
+READING (descriptive): targeted collaboration opens 1.6-1.7 rounds on almost every page; 55-61% of rounds add a
+new finding, about 20-26% remove an open issue, and the H1 verdict changes on 3-6% of pages, half for the better
+and half for the worse -- which is why collaboration shows no accuracy effect. Nothing in the system changed.
