@@ -76,6 +76,9 @@ separate measurement either. Exp 4 with H1 (mean of 3 runs, `final/h1_all/repeat
 0.931, fixed round 0.932, full debate 0.935, no collaboration 0.933; no significant difference; no
 collaboration uses 4.8 model calls per page vs 7.8 targeted and 8.6 full debate (run 1 ledgers). Say so plainly:
 collaboration does not change detection accuracy in our setting and costs about 3 extra calls per page.
+Full debate: the Exp 4 / Ablation 4 runs re-asked each specialist its Phase 2 prompt (no peer evidence), so
+they are not a debate (PROTOCOL_V5 round ESC). Report the fixed re-run instead (round FD, one run, 200 dev-2
+pages): F1 0.949 vs targeted 0.935 and no collaboration 0.940, not significant, 8.6 vs 7.8 vs 4.8 calls.
 
 ## 5. Specialists
 - The Content Agent also receives the page screenshot (offline render: external images and
