@@ -750,3 +750,19 @@ GPT-4o-mini via OpenRouter, data package 545370aaf6ad14c6 (unzipped), run from a
 and the baselines on dev (development data): forced view (insufficient = error) and answered-only view
 (coverage, accuracy/F1 on answered pages). Not run on test2 (already used). Purpose: inform the branch
 merge decision (keep both implementations or not); it does not change H1 or any reported result.
+
+## Additional system (Ohm's main-branch pipeline) -- RESULT on dev (results_gpt4omini/ohm_dev/result.json)
+300 dev pages run; 298 decisions; 2 calls failed twice (one reply truncated by length, one blocked by the
+provider's content filter) and are not scored (retried once with --resume, as the runner allows).
+On the same 298 pages (forced view: insufficient = error):
+| system | coverage | F1 | precision | recall | FPR | accuracy |
+|---|---|---|---|---|---|---|
+| H1 (ours, frozen) | 1.00 | 0.923 | 0.926 | 0.919 | 0.074 | 0.923 |
+| Ohm main pipeline | 0.84 | 0.774 | 0.718 | 0.839 | 0.329 | 0.644 |
+| CoT | 1.00 | 0.928 | 0.944 | 0.913 | 0.054 | 0.930 |
+| single-agent | 1.00 | 0.916 | 0.956 | 0.879 | 0.040 | 0.919 |
+| PhishDebate | 1.00 | 0.907 | 0.901 | 0.913 | 0.101 | 0.906 |
+Answered pages only: Ohm F1 0.809, accuracy 0.765. Vs H1 (exact McNemar, forced): H1 right / Ohm wrong
+93, Ohm right / H1 wrong 10, p < 0.001. Cost: ~$0.0085 per page (H1 pipeline ~$0.0047).
+Reading: the paper-faithful Suf/Def decision answers 84% of pages and flags a third of legitimate pages;
+it is significantly below H1 and every baseline on dev. This matches PROTOCOL_V4 round 7 (paper Judge rule).

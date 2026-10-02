@@ -1,0 +1,77 @@
+{
+ "H1 (ours, frozen)": {
+  "n": 298,
+  "coverage": 1.0,
+  "forced_f1": 0.9225589225589226,
+  "forced_precision": 0.9256756756756757,
+  "forced_recall": 0.9194630872483222,
+  "forced_fpr": 0.0738255033557047,
+  "forced_accuracy": 0.9228187919463087,
+  "answered_f1": 0.9225589225589226,
+  "answered_accuracy": 0.9228187919463087
+ },
+ "Ohm main pipeline": {
+  "n": 298,
+  "coverage": 0.8422818791946308,
+  "forced_f1": 0.7739938080495357,
+  "forced_precision": 0.7183908045977011,
+  "forced_recall": 0.8389261744966443,
+  "forced_fpr": 0.3288590604026846,
+  "forced_accuracy": 0.6442953020134228,
+  "answered_f1": 0.8090614886731392,
+  "answered_accuracy": 0.7649402390438247,
+  "vs_h1": {
+   "h1_only": 93,
+   "other_only": 10,
+   "p": 5.198609903817759e-18
+  }
+ },
+ "cot": {
+  "n": 298,
+  "coverage": 1.0,
+  "forced_f1": 0.9283276450511946,
+  "forced_precision": 0.9444444444444444,
+  "forced_recall": 0.912751677852349,
+  "forced_fpr": 0.053691275167785234,
+  "forced_accuracy": 0.9295302013422819,
+  "answered_f1": 0.9283276450511946,
+  "answered_accuracy": 0.9295302013422819,
+  "vs_h1": {
+   "h1_only": 11,
+   "other_only": 13,
+   "p": 0.8388197422027588
+  }
+ },
+ "single_agent": {
+  "n": 298,
+  "coverage": 1.0,
+  "forced_f1": 0.916083916083916,
+  "forced_precision": 0.9562043795620438,
+  "forced_recall": 0.8791946308724832,
+  "forced_fpr": 0.040268456375838924,
+  "forced_accuracy": 0.9194630872483222,
+  "answered_f1": 0.916083916083916,
+  "answered_accuracy": 0.9194630872483222,
+  "vs_h1": {
+   "h1_only": 15,
+   "other_only": 14,
+   "p": 1.0
+  }
+ },
+ "phishdebate": {
+  "n": 298,
+  "coverage": 1.0,
+  "forced_f1": 0.9066666666666666,
+  "forced_precision": 0.9006622516556292,
+  "forced_recall": 0.912751677852349,
+  "forced_fpr": 0.10067114093959731,
+  "forced_accuracy": 0.9060402684563759,
+  "answered_f1": 0.9066666666666666,
+  "answered_accuracy": 0.9060402684563759,
+  "vs_h1": {
+   "h1_only": 16,
+   "other_only": 11,
+   "p": 0.44206833839416504
+  }
+ }
+}
