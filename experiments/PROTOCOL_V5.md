@@ -849,3 +849,30 @@ PhishDebate 0.955 / 0.945; Ohm Judge p 0.811 / 0.751. At p >= 0.5 (unfitted): F1
 FPR 0.396, coverage 100% (vs Suf/Def rule 0.774 at coverage 0.84). Ohm's probabilities are coarse (179 of
 298 pages at 0.8). By the declared condition (a) is not competitive, so no calib run is made. Reading: the
 gap is upstream of the decision rule (the evidence and the Judge's reading of it), not only the Suf/Def rule.
+
+## Teammate goya's parallel rounds, 2026-10-01/02 -- summary record (documentation only)
+Worked in parallel from commit 33e331d, on development data only: test2 was NOT re-run, test3 and the unused
+PhreshPhish shards were NOT touched, no baseline component entered our system. Every round was declared, with
+its acceptance rule, in goya's local copy of this file BEFORE it was computed; the full declarations, scripts and
+result files stay on goya's machine and are available on request (not pushed). All numbers come from stored
+ledgers. Spend on the shared key by goya: about $5.0 in total (amounts below). Reference = frozen H1 rebuilt from
+the frozen ledgers (thresholds reproduced exactly: 0.5915027 / 0.5456374).
+
+| round | what was tried | data | outcome | spend |
+|---|---|---|---|---|
+| D | decision step: anchor shares -1 when no anchors (D1); has_anchors / has_resources flags (D1b); flags + fit-median shares (D1c); Judge gate p >= 0.5 (D2) | dev + dev-2 | not adopted. D1 / D1b identical to H1 (the 0/0/0 share pattern already identifies no-anchor pages uniquely); D1c FPR 0.056 vs 0.060 but pooled F1 0.920 vs 0.927; D2 F1 0.892 | $0 |
+| U | URL Agent also gets the parsed URL as citable lines (tool T6: host, registrable domain, subdomains, path, query, counts) | 50-page dev pilot (round G's pages and rule) | NO-GO: benign pages with a phishing/distinctive finding 0.16 -> 0.24, phishing 1.00 -> 0.88, Judge AUC 0.985 -> 0.877 | $0.11 |
+| R | decision step trained on fit + dev instead of fit | dev-2 | not adopted: F1 0.9326 vs 0.9333, AP 0.9846 vs 0.9848 | $0 |
+| C / C2 | stricter calib precision target 0.955 / 0.96 / 0.965 / 0.97 / 0.98 | dev + dev-2 | not adopted: precision rises only with a large recall loss (e.g. 0.96 -> P 0.960, R 0.856, F1 0.905) | $0 |
+| S | Judge self-consistency inside one run (v4abdfS: first answer + 4 samples at temperature 1.0, mean p) | dev + dev-2 (stage 1) | NO-GO: raw Judge AP 0.885 -> 0.881, recall at P >= 0.95 0.416 -> 0.004 (samples drift to the middle) | $0.87 |
+| F | drop the URL Agent's findings / the URL-form code features / both; average of trees + logistic | fit CV (P1's rule), dev descriptive | none selected on fit CV; on dev each raises precision but loses more recall (F1 0.898-0.908) | $0 |
+| K | credential-request features from the DOM (password input, text inputs, credential autocomplete, forms, lexicon words) | fit CV, dev descriptive | not selected on fit CV (0.853 / 0.9653 vs 0.855 / 0.9654). In these offline captures benign pages show forms more often than phishing (forms 0.76 vs 0.60) | $0 |
+| B | H1's score averaged over 3 independent pipeline runs | dev-2, dev | better than ONE run of H1 (F1 0.931 -> 0.944 on both), but the baselines ran once, so it is NOT a fair comparison with them and is not used | $2.70 |
+| Exp 5 test2 re-run | the declared Exp 5 conditions re-run independently (made before the official $0 scoring above was seen) | test2, frozen H1 | agrees with the official scoring within run-to-run noise (F1 per condition within 0.025); the official result is the entry above | $1.30 |
+
+Findings worth keeping (development data):
+- On dev, at the precision of CoT minimal (0.951) single-run H1 reaches recall 0.793 vs CoT minimal's 0.907: the
+  precision gap is in the RANKING, so no threshold or decision-step change fixes it.
+- Across 3 dev runs, 13 pages are wrong in every run (ad, portal, adult/streaming pages; phishing on older
+  domains) and 19 only in some runs (GPT-4o-mini run-to-run variation).
+- Every single-run change that raised precision lost more recall. H1 stays the system.

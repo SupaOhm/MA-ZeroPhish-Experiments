@@ -27,6 +27,10 @@ decision and result (including every rejected attempt) is `experiments/PROTOCOL_
   `paper_faithful/` = Ohm's paper-faithful pipeline (former main, PR #2), kept self-contained for reference;
   on dev it scores F1 0.774 (Suf/Def rule, 84% coverage) / 0.794 (its Judge probability) vs H1 0.923
   (PROTOCOL_V5, 2026-10-02). Exp 5 on test2 was scored by the teammate (PROTOCOL_V5 "Exp 5 on test2 -- RESULT").
+- **Teammate goya's parallel rounds (2026-10-01/02):** summary at the end of `experiments/PROTOCOL_V5.md`
+  ("summary record"). Development data only; test2 not re-run; test3 / unused shards not touched. Rounds D, U,
+  R, C/C2, S, F, K all rejected; averaging 3 runs (B) beats one run of H1 but is not a fair comparison with
+  single-run baselines and is not used. H1 stays. Scripts and full declarations on goya's machine, on request.
 - **Team results page** (Claude Docs, ask Tinpat to share): "MA-ZeroPhish results: Experiments 1-6"
   (shows test2, dev, dev-2, Exp 2-6, SMS/e-mail; TR-OP deliberately not shown).
 
