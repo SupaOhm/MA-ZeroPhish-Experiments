@@ -740,3 +740,13 @@ Reading (descriptive): every baseline loses 0.08-0.16 F1 from the older set to t
 does not. Caveats: the two sets differ in source and crawler, not only in age; our decision step was
 trained on PhreshPhish, which lowers our TR-OP score (FPR 0.24); no CI computed. A cleaner comparison
 would add a second pre-cutoff set (e.g. Mendeley 500/500) under a declared plan.
+
+## Additional system: Ohm's model-backed pipeline (main branch, commit 298716b) on dev 300 (declared 2026-10-02, before running; user request)
+What: the paper-faithful implementation on main (prompt files, Judge deciding by the Suf/Def rule,
+corpus runner), never run with a real model before. A 5-page dev smoke run (balance checked: $18.67)
+worked: 4/5 correct, 1 insufficient, ~$0.0085 per page. Now: all 300 dev pages, arm "mazerophish",
+GPT-4o-mini via OpenRouter, data package 545370aaf6ad14c6 (unzipped), run from a separate worktree
+(../ohm_main), 4 shards by case-id lists; estimated ~$2.6. Reported as an ADDITIONAL system next to H1
+and the baselines on dev (development data): forced view (insufficient = error) and answered-only view
+(coverage, accuracy/F1 on answered pages). Not run on test2 (already used). Purpose: inform the branch
+merge decision (keep both implementations or not); it does not change H1 or any reported result.
