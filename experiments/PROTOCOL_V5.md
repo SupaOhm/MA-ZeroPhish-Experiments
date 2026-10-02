@@ -879,3 +879,12 @@ version is frozen for a new test set (test3).
 Pooled F1 is lower, so by the declared rule M1 is not adopted. Reading: the memory helps on dev (Feb-Jul
 2025, nearer the 2024 fit pages) and hurts recall on the later pages (Sep-Dec 2025), consistent with kits
 drifting over time; it raises precision (test2 FPR 0.13 -> 0.09, post hoc) at a larger recall cost.
+
+## Round E1: averaging three pipeline runs (declared 2026-10-02, before computing; $0; exploratory)
+Only dev-2 has three independent runs of the full system (Exp 4 "mazerophish" arm in runs/v4_exp,
+runs/v4_exp_rep1, runs/v4_exp_rep2). Two ensembles of the frozen H1, no refitting: (a) majority vote of
+the three H1 verdicts; (b) mean of the three calibrated H1 scores against the routed H1 threshold (routing
+depends only on evidence availability, identical across runs). Compared with each single run (mean and
+range). Reading fixed now: exploratory only (dev-2 is development data; dev has a single run). If an
+ensemble beats the single-run mean by >= 0.01 F1, a confirming step would need repeated dev runs (paid),
+declared separately.
