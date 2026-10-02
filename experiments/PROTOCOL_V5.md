@@ -869,3 +869,18 @@ Acceptance (fixed now): JL is a candidate only if pooled F1 is higher than H1's 
 Even then it is NOT adopted by this round: it goes to the team for approval (step 2), and a frozen JL could
 only be evaluated on a new clean set (test3); test2 is used and is not re-run. Otherwise H1 stays.
 Code: experiments/judge_lock_eval.py.
+Round JL -- RESULT (results_gpt4omini/judge_lock/result.json; $0, no model call, nothing refit). Validation:
+H1 reproduces dev 0.923 and dev-2 0.933 (pooled 229 / 15 / 235 / 21).
+| set | H1 P / R / FPR / F1 | JL P / R / FPR / F1 | two-sided (descriptive) F1, FPR |
+|---|---|---|---|
+| dev (300) | 0.926 / 0.920 / 0.073 / 0.923 | 0.928 / 0.940 / 0.073 / 0.934 | 0.926, 0.067 |
+| dev-2 (200) | 0.958 / 0.910 / 0.040 / 0.933 | 0.958 / 0.920 / 0.040 / 0.939 | 0.880, 0.030 |
+| pooled (500) | 0.939 / 0.916 / 0.060 / 0.927 | 0.940 / 0.932 / 0.060 / 0.936 | 0.909, 0.052 |
+JL changes 4 of 500 verdicts (3 dev, 1 dev-2), all benign -> phishing on phishing pages at Judge p = 0.9; it
+breaks none. Exact McNemar vs H1: 4 vs 0, p = 0.125 (not significant). The Judge is at p >= 0.9 on 77 pages and
+H1 overruled it on 4. Two-sided (descriptive): H1 calls phishing on 16 of 225 pages at Judge p = 0.0; locking
+them to benign loses 14 caught phishing pages for 2 fewer false positives (pooled F1 0.909), as calib suggested.
+READING (declared rule): JL is a CANDIDATE (pooled F1 0.927 -> 0.936, FPR unchanged 0.060). It is NOT adopted
+by this round: the gain is 4 pages and not significant, dev / dev-2 have been reused over many rounds, and
+test2 is used. Next, as declared: team approval; if approved, freeze JL and evaluate it once on a new clean
+set (test3). H1 stays the reported system until then.
