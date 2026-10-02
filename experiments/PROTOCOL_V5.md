@@ -979,3 +979,18 @@ baselines of the PhishDebate paper (single-agent, CoT, PhishDebate, each text-on
 Disclosure: decided after seeing that CoT minimal is the strongest baseline on dev and test2 (test2 F1 0.851 vs
 H1 0.887, not significant). Their dev / dev-2 / test2 results stay reported everywhere. test3 primary family:
 H1 vs the 6 PhishDebate-paper baselines, forced F1, paired bootstrap CI + exact McNemar, Holm over 6.
+
+## Round AF: agent-level scores fused by the decision step (declared 2026-10-02, before running; user request)
+Idea (MultiPhishGuard, arXiv 2505.23803: specialist agents each give a verdict/confidence and a learned
+fusion weighs them): every specialist (URL, Web Structure, Content, Metadata) additionally returns
+"suspicion", its probability 0-1 that the object is phishing judged ONLY from its own evidence lines; the
+findings rules are unchanged; only the first (independent, pre-collaboration) value is kept; the Judge
+never sees these scores (it stays blinded to opinions). Variant v4abdfAF (option specialist_self_score).
+PILOT: the same 50 dev pages as rounds G/H, round-G cache (unchanged calls replay; ~$0.3).
+GO for a full run only if: (1) each specialist returns a score on >= 90% of the pages where it ran;
+(2) at least two specialists' scores reach ranking AUC >= 0.80 on the 50 pages; (3) specialist findings per
+page within +-25% of the v4abdf re-run and the Judge's AUC not lower by > 0.02. FULL RUN (if GO, after a
+balance check): fit, calib, dev, dev-2 with the pipeline; the per-agent scores (+ missing flags) added to the
+decision step (P1 and B2 retrained, routing unchanged); adoption by the same rule as M1/BR (CV on fit both
+criteria; pooled dev + dev-2 F1 > H1 and precision not lower by > 0.01). If adopted, the new version replaces
+H1 for test3 (test3 not yet run), with the test3 plan unchanged otherwise.
