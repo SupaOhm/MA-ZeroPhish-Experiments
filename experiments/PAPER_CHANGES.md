@@ -19,8 +19,9 @@ than every baseline." Results tables in sec. 9 below are development numbers; re
 
 Where the implementation evaluated in our experiments differs from `main.md`, and suggested text.
 Numbers come from the result files named in each item (all under `experiments/results_gpt4omini/`).
-Nothing here changes a result; it makes the text match what was run. test2 has not been run, so
-the final results table is still TODO.
+Nothing here changes a result; it makes the text match what was run. test2 has been run (see the top);
+items 3, 4 and 9 give the final system H1's numbers (`final/h1_all/`), which replace the earlier P1-only
+numbers that stood here before 2026-10-02.
 
 ## 1. Phase 4: how the final verdict is formed
 Now: the Judge's verdict follows the four rubric conditions (phishing iff Suf^P and Def^P and not
@@ -59,13 +60,22 @@ The selective (abstaining) mode can stay in the method section, but no headline 
 ## 3. Phase 1, specialist selection
 The evaluated system runs adaptive selection in Exp 2 and full dispatch elsewhere; state that the
 detection results use every ready specialist, and that Exp 2 measures adaptive selection's cost
-saving (6.2 vs 7.8 model calls per page, F1 0.944 vs 0.939, not significant).
+saving (6.2 vs 7.8 model calls per page, F1 0.933 vs 0.933 with H1, difference +0.000 [-0.029, +0.028];
+`final/h1_all/exp2_complete/`). Consequence for Exp 6: in the evaluated v4 configuration Ablation 1
+("without adaptive selection") is the SAME configuration as the full system (v4 sets selection to
+all_applicable for every arm; verified field by field), so its 0.000 difference is not a measurement.
+Report Exp 2 as the selection ablation instead.
 
 ## 4. Phase 3, collaboration gate
-In the evaluated system collaboration runs whenever an actionable issue remains; the learned gate
-froze to the same behaviour (Exp 4 v2b). Exp 4 (mean of 3 runs): targeted 0.938, full debate 0.945,
-no collaboration 0.943, no significant difference. Say so plainly: collaboration does not change
-detection accuracy in our setting.
+In the evaluated system collaboration runs whenever an actionable issue remains (gate "always").
+The learned stopping-error gate did not meet its risk target on calib in v2 / v2b (estimator Brier
+0.052 / 0.136, AUROC 0.63 / 0.65 on held-out states; `exp4_collaboration/frozen_gate__*`), so its
+frozen tau (0.05) stopped 0 calib states, i.e. it behaves like "always"; v4 then set "always" directly. Exp 6 Ablation 3 ("fixed policy")
+uses the same admission rule as "always" by design (`phases/moderator.gate_admits`), so it is not a
+separate measurement either. Exp 4 with H1 (mean of 3 runs, `final/h1_all/repeats.json`): targeted
+0.931, fixed round 0.932, full debate 0.935, no collaboration 0.933; no significant difference; no
+collaboration uses 4.8 model calls per page vs 7.8 targeted and 8.6 full debate (run 1 ledgers). Say so plainly:
+collaboration does not change detection accuracy in our setting and costs about 3 extra calls per page.
 
 ## 5. Specialists
 - The Content Agent also receives the page screenshot (offline render: external images and
@@ -93,8 +103,8 @@ and was deliberately not fixed.
 
 ## 7. Data
 PhreshPhish, own-domain pages only (platform-hosted excluded: a label shortcut); chronological,
-campaign-disjoint splits: fit 839 (Jul-Oct 2024; round B1 in progress adds 161 phishing pages from
-Nov 2024-Jan 2025 to reach 500/500), dev 300, calib 300, test 200, sealed test2 200. Offline renders
+campaign-disjoint splits: fit 839 (Jul-Oct 2024; round B1's extra 161 phishing pages from
+Nov 2024-Jan 2025 were rejected and are not used), dev 300, calib 300, test 200, sealed test2 200. Offline renders
 that land on a browser error page count as failed renders.
 
 ## 8. Baselines
@@ -109,9 +119,13 @@ Every arm uses GPT-4o-mini and the same inputs.
   (p = 0.004), minimal prompts 0.859 / 0.790. PR-AUC ours 0.969 / 0.987 vs PhishDebate 0.942 / 0.939.
   Stability: 6 independent runs on the test pages, F1 0.934-0.940.
 - Exp 2: see item 3. Exp 3 (code only): pair F1 0.952, 0% double-counted support.
-- Exp 4: see item 4. Exp 6 (mean of 3 runs): every single removal within 0.006 F1, none significant.
-- Exp 5: recovers fully from a failed browser run; without the served HTML F1 falls by 0.101
-  (FPR 0.36), without certificate records by 0.037 (both significant); conflicting evidence 0.800.
+- Exp 4: see item 4. Exp 6 with H1 (mean of 3 runs): every single removal within 0.003 F1, none
+  significant; Ablations 1 and 3 are identical to the full system in the evaluated configuration
+  (items 3 and 4), so only Ablations 2, 4 and 5 are real removals.
+- Exp 5 with H1 (dev-2, `final/h1_all/exp5/`): recovers fully from a failed browser run; only losing
+  certificate records is significant (-0.041 [-0.078, -0.008], McNemar p = 0.022); without the served
+  HTML -0.016 (FPR 0.11, not significant). On test2 no condition degrades F1 significantly (PROTOCOL_V5
+  "Exp 5 on test2 -- RESULT", routing caveat). Conflicting evidence (65 cases): 0.800.
 - Report every development round (PROTOCOL_V4 rounds 1-9; PROTOCOL_V5 v5, P1, G, H, B5, B1...),
   including the rejected ones, in an appendix or supplement.
 
