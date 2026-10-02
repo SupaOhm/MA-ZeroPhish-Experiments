@@ -876,3 +876,17 @@ Findings worth keeping (development data):
 - Across 3 dev runs, 13 pages are wrong in every run (ad, portal, adult/streaming pages; phishing on older
   domains) and 19 only in some runs (GPT-4o-mini run-to-run variation).
 - Every single-run change that raised precision lost more recall. H1 stays the system.
+
+### Exp 3 on real records (teammate goya, 2026-10-02; declared before computing; $0; documentation only)
+Addresses Exp 3 README limitation 6 ("re-run the scorer on real records"). Read the stored Exp 6 ledgers on dev-2
+(200 pages, GPT-4o-mini, three independent runs), arms "mazerophish" (full) and "ablation2_no_reconciliation";
+nothing of the team's changed. Artifact of a support unit = the field prefix of its locator (one capture per page).
+- Duplicate support is common in real runs: (units - distinct artifacts) / units in the full system's Judge
+  support lists = 53.4% / 53.7% / 53.9% (Exp 3's constructed "independent" policy: 44-48%). By the team's Exp 3
+  ground-truth rule (same artifact + capture = dependent) these are the units reconciliation discounts.
+- Reconciliation is active in real runs: about 8.5 dependency groups per page, on 199-200 of 200 pages; 0 without it.
+- No favourable effect on the Judge's conclusions: with reconciliation the Judge marks a conclusion sufficient on
+  fewer than two artifacts about 11% of the time vs about 9% without; verdicts differ on 9-12 of 200 pages
+  (consistent with Exp 6).
+- Not measurable from these ledgers: cross-artifact common-cause pairs (group types and a dependence ground truth
+  are not stored). Same-artifact units can be different facts of one page; the team's rule counts them dependent.
