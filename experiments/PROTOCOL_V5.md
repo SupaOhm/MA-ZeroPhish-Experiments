@@ -952,3 +952,9 @@ test3 data source (2026-10-02, before building): the datasets-server filter API 
 502, then 8 retries without a page), so the rows come from two downloaded, never-used PhreshPhish test
 shards instead, test-001 and test-002 (Hugging Face v1.0.1; test-001: 5,236 rows, all dated 2025-09..12).
 All builder rules as declared; only the transport changed. pyarrow imports again on this machine.
+test3 BUILT (2026-10-02): 1,000 pages, 500 phishing / 500 benign, dated 2025-09-08..2025-12-15, from
+test-001 + test-002 (10,995 rows read; 1,059 duplicates, 256 short HTML, 111 bad URLs removed; 6,102 groups,
+253 blocked for touching existing cases; candidate groups 1,198 phishing / 4,015 benign; seeded pick).
+Validation passed with no errors. Note: 999 campaign groups for 1,000 pages: one group contributed one
+phishing and one benign page (the one-per-group rule is applied per label, as in the existing builders).
+Captures (offline render, CT v2) are being built; nothing in test3 has been run or looked at.
