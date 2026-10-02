@@ -917,3 +917,26 @@ measures for the new arm by cache replay (escalation precision, verdict changes 
 Reading fixed now: the paper's Exp 4 / Ablation 4 full-debate rows are replaced by this run (old rows kept here,
 labelled defective). No acceptance rule: this measures an arm, it does not select a system.
 Code: experiments/exp4_collaboration/run_full_debate_fixed.py.
+Round FD -- RESULT (results_gpt4omini/exp4_full_debate_fixed/result.json; exp4_escalation/result_fdfix.json).
+Run: 200 / 200 pages, 0 failures, 0 HTTP 429; every decision model_id openrouter:openai/gpt-4o-mini-2024-07-18;
+956 new API calls, cost $0.6906 as reported by OpenRouter in the responses (pilot 10 pages $0.0395, then the
+other 190). Departure from the declaration, disclosed: after the pilot the cost was read from the responses'
+own `usage.cost`, not from the key endpoint (the key file is not readable from this session).
+Validation: rep1's arms score exactly their repeats.json values (targeted 0.9347, no collaboration 0.9400, old
+full debate 0.9400); a cache replay of the new run reproduces all 200 stored decisions.
+| arm (same 200 dev-2 pages, H1) | P | R | FPR | F1 | calls / page | input tokens / page |
+|---|---|---|---|---|---|---|
+| full debate, fixed | 0.959 | 0.940 | 0.040 | 0.949 | 8.60 | 28,689 |
+| targeted (rep1) | 0.939 | 0.930 | 0.060 | 0.935 | 7.83 | 24,908 |
+| no collaboration (rep1) | 0.940 | 0.940 | 0.060 | 0.940 | 4.81 | 12,616 |
+| full debate, old (rep1, defective) | 0.940 | 0.940 | 0.060 | 0.940 | 8.60 | 23,278 |
+Fixed full debate vs targeted: +0.015 [-0.018, +0.049], McNemar 7 vs 4, p = 0.549. Vs no collaboration:
++0.009 [-0.024, +0.044], 7 vs 5, p = 0.774. Neither significant (one run, 200 pages).
+Round-ESC measures of the fixed debate: 0.995 rounds and 3.79 reinvocations per page; revisions accepted 725 /
+rejected 33; escalation precision 0.749 (new finding 0.749, issue resolved 0.291) vs 0.000 for the old code and
+0.55-0.61 for targeted rounds.
+READING (descriptive, as declared): with the defect fixed, full debate now changes findings (75% of rounds add a
+new finding) and scores the highest F1 of the four arms on these pages, but the difference is not significant
+and it costs 1.8x the calls of no collaboration. Exp 4 / Exp 6 Ablation 4 report this run as "full debate";
+the old rows are labelled defective. H1 and every reported result are unchanged. Ledger:
+runs/v4_exp_rep1_fdfix/ (not in Git; add it to the shared runs package).

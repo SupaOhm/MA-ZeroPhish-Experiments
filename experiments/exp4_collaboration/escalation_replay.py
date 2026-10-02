@@ -30,7 +30,9 @@ ROOT = SR.ROOT
 MODEL = "openrouter:openai/gpt-4o-mini-2024-07-18"
 RUNS = {"base": ("runs/v4_exp/exp4", "runs/llm_cache"),
         "rep1": ("runs/v4_exp_rep1/exp4", "runs/llm_cache_rep1"),
-        "rep2": ("runs/v4_exp_rep2/exp4", "runs/llm_cache_rep2")}
+        "rep2": ("runs/v4_exp_rep2/exp4", "runs/llm_cache_rep2"),
+        # round FD: the fixed full debate, one process, rep1's cache (full_debate arm only)
+        "fdfix": ("runs/v4_exp_rep1_fdfix/exp4", "runs/llm_cache_rep1")}
 ARMS = {"mazerophish": config.MAZEROPHISH, "full_debate": config.BASELINE_FULL_DEBATE}
 CHECK = ("verdict", "model_calls", "input_tokens", "output_tokens", "judge_score_any")
 OUT = ROOT / "experiments" / "results_gpt4omini" / "exp4_escalation"
@@ -126,7 +128,7 @@ def rounds_summary(trace):
 
 def stored(ledger_dir, arm):
     out = {}
-    for f in glob.glob(str(ROOT / ledger_dir / f"exp4_phreshphish_test__shard*of*__{arm}.jsonl")):
+    for f in glob.glob(str(ROOT / ledger_dir / f"exp4_phreshphish_test*__{arm}.jsonl")):
         for l in open(f, encoding="utf-8"):
             e = json.loads(l)
             if e["kind"] == "decision" and not e.get("parent_object_id"):
@@ -202,7 +204,8 @@ def h1_flips() -> dict:
     import h1_eval as X
     import v5_learn as L
     out = {}
-    for run, (ledger_dir, _) in RUNS.items():
+    for run in ("base", "rep1", "rep2"):
+        ledger_dir = RUNS[run][0]
         ref = {c: bool(X.h1(e, "test")[1]) for c, e in stored(ledger_dir, "no_collaboration").items()}
         for arm in ARMS:
             got = {c: bool(X.h1(e, "test")[1]) for c, e in stored(ledger_dir, arm).items()}
@@ -217,7 +220,9 @@ def h1_flips() -> dict:
 
 def main() -> None:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--runs", nargs="+", default=list(RUNS))
+    ap.add_argument("--runs", nargs="+", default=["base", "rep1", "rep2"])
+    ap.add_argument("--arms", nargs="+", default=list(ARMS))
+    ap.add_argument("--out-name", default="result.json")
     ap.add_argument("--limit", type=int, default=None)
     ap.add_argument("--h1-flips-only", action="store_true")
     args = ap.parse_args()
@@ -230,7 +235,7 @@ def main() -> None:
         return
     res = {}
     for run in args.runs:
-        for arm in ARMS:
+        for arm in args.arms:
             pages, failed = replay(run, arm, args.limit)
             total = len(pages) + len(failed)
             s = summarize(pages)
@@ -243,7 +248,7 @@ def main() -> None:
             if failed:
                 print(f"   failed {len(failed)}: {dict(list(failed.items())[:5])}", flush=True)
     if args.limit is None:
-        (OUT / "result.json").write_text(json.dumps(res, indent=1, default=list), encoding="utf-8")
+        (OUT / args.out_name).write_text(json.dumps(res, indent=1, default=list), encoding="utf-8")
 
 
 if __name__ == "__main__":
