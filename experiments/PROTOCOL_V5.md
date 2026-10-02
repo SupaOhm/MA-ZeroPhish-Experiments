@@ -1093,3 +1093,20 @@ dev-2 F1 0.927 (H1) -> 0.904 (H1-J1) -> NOT met (precision 0.939 -> 0.968, recal
 0.9771 (H1-J1), recall@P95 0.896 vs 0.884 -- the ranking is unchanged; the higher precision comes from a more
 conservative calib threshold (0.764), not from better separation. Results: results_gpt4omini/j1/result.json.
 No further Judge variant is tried in this round.
+
+## Normal vs zero-day: confidence intervals (2026-10-02; descriptive, existing results, no model call)
+F1 on TR-OP (normal, 200) and test2 (zero-day, 200), frozen H1 with the test2 routing rule, baselines
+repeat 0; 95% CI of the change by independent page bootstrap of each set (2000 draws, seed "20261002:nvz";
+experiments/normal_vs_zeroday_ci.py -> results_gpt4omini/final/normal_vs_zeroday_ci.json):
+| system | normal | zero-day | change [95% CI] |
+|---|---|---|---|
+| H1 (ours) | 0.862 | 0.887 | +0.024 [-0.042, +0.092] |
+| single-agent | 0.931 | 0.813 | -0.118 [-0.195, -0.051] |
+| CoT | 0.943 | 0.828 | -0.115 [-0.184, -0.053] |
+| PhishDebate | 0.929 | 0.823 | -0.106 [-0.181, -0.041] |
+| single-agent + screenshot | 0.938 | 0.777 | -0.161 [-0.243, -0.087] |
+| CoT + screenshot | 0.952 | 0.831 | -0.121 [-0.190, -0.061] |
+| PhishDebate + screenshot | 0.915 | 0.838 | -0.077 [-0.150, -0.009] |
+Reading: H1's change is not distinguishable from zero; every baseline's drop is (CI excludes 0). Caveats
+unchanged: the sets differ in source and crawler as well as age; H1 is the lowest on the normal set (FPR
+0.24 on Tranco benign pages; its decision step was trained on PhreshPhish).
