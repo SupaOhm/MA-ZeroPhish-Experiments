@@ -67,8 +67,8 @@ agent/session configuration, credentials or live corpus is included.
 
 ## Agent start here
 
-[AGENTS.md](AGENTS.md) defines the reading order, repository-only work boundary,
-implementation rules and checks for coding agents. [CLAUDE.md](CLAUDE.md) is Claude's
+[AGENTS.md](../AGENTS.md) defines the reading order, repository-only work boundary,
+implementation rules and checks for coding agents. [CLAUDE.md](../CLAUDE.md) is Claude's
 entry point to those same instructions. Agents should read their assigned handoff
 and the local paper's evaluation/framework sections before changing code.
 
@@ -143,30 +143,30 @@ python3 -B -m experiments.runner.run_corpus \
 
 | Paper experiment | Brief |
 |---|---|
-| 1 — Detection performance | [EXP-012](experiments/handoffs/experiment-1-detection.md) |
-| 2 — Acquisition and selection | [EXP-013](experiments/handoffs/experiment-2-selection.md) |
-| 3 — Provenance reconciliation | [EXP-014](experiments/handoffs/experiment-3-reconciliation.md) |
-| 4 — Uncertainty-driven collaboration | [EXP-015](experiments/handoffs/experiment-4-collaboration.md) |
-| 5 — Missing and conflicting evidence | [EXP-016](experiments/handoffs/experiment-5-robustness.md) |
-| 6 — Ablations | [EXP-017](experiments/handoffs/experiment-6-ablations.md) |
+| 1 — Detection performance | [EXP-012](../experiments/handoffs/experiment-1-detection.md) |
+| 2 — Acquisition and selection | [EXP-013](../experiments/handoffs/experiment-2-selection.md) |
+| 3 — Provenance reconciliation | [EXP-014](../experiments/handoffs/experiment-3-reconciliation.md) |
+| 4 — Uncertainty-driven collaboration | [EXP-015](../experiments/handoffs/experiment-4-collaboration.md) |
+| 5 — Missing and conflicting evidence | [EXP-016](../experiments/handoffs/experiment-5-robustness.md) |
+| 6 — Ablations | [EXP-017](../experiments/handoffs/experiment-6-ablations.md) |
 
 Each coworker extends one shared framework. Put experiment-specific preparation,
 condition matrices and reports in the suggested experiment directories; do not copy
 phases into six separate programs. Coordinate model adapters, capture schema, logging
 and scoring changes before merging. Read [prototype status](prototype/README.md) and
-[the implementation handoff](docs/implementation-handoff.md) before starting.
+[the implementation handoff](../docs/implementation-handoff.md) before starting.
 
 ## Specification and remaining work
 
-The complete [main-paper source](docs/paper/main.tex), all sections and its figure
-are included as a reference snapshot. Start with the [paper reading guide](docs/paper/README.md),
-[framework](docs/paper/sections/03-framework.tex) and
-[evaluation](docs/paper/sections/04-evaluation.tex). LaTeX compilation is not verified. The readable [system model](docs/system-model.md)
+The complete [main-paper source](../docs/paper/main.tex), all sections and its figure
+are included as a reference snapshot. Start with the [paper reading guide](../docs/paper/README.md),
+[framework](../docs/paper/sections/03-framework.tex) and
+[evaluation](../docs/paper/sections/04-evaluation.tex). LaTeX compilation is not verified. The readable [system model](../docs/system-model.md)
 is a dated translation, not a statement that every described feature is implemented.
 The paper's Overleaf version is the upstream authority; agents use this local
 snapshot and must not fetch or sync external versions without a user request. See
-[contract precedence](docs/contract-authority.md) and
-[protocol questions](docs/protocol-open-items.md).
+[contract precedence](../docs/contract-authority.md) and
+[protocol questions](../docs/protocol-open-items.md).
 
 Real specialist/Judge adapters, trained/calibrated stopping-error estimation, the
 single-agent baseline, real corpus integration and complete evaluation tooling remain

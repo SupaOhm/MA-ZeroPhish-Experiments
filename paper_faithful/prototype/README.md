@@ -32,7 +32,7 @@ validation to newly dispatched specialists and excludes unready targets before
 spending budget. Capture `c8-flagship-no-data` exercises a ready specialist whose
 required evidence is missing under the main configuration. Revisions preserve
 that `no_data` status until required evidence is available. See the
-[implementation handoff](../docs/implementation-handoff.md)
+[implementation handoff](../../docs/implementation-handoff.md)
 for before/after traces and verification. Stages 6 and 7 remain pending.
 
 ## Experiment handoffs
@@ -43,12 +43,12 @@ metrics, acceptance checks and shared integration dependencies.
 
 | Paper experiment | Implementation brief |
 |---|---|
-| 1 — Zero-day detection | [EXP-012](../experiments/handoffs/experiment-1-detection.md) |
-| 2 — Adaptive acquisition and selection | [EXP-013](../experiments/handoffs/experiment-2-selection.md) |
-| 3 — Provenance reconciliation | [EXP-014](../experiments/handoffs/experiment-3-reconciliation.md) |
-| 4 — Uncertainty-driven collaboration | [EXP-015](../experiments/handoffs/experiment-4-collaboration.md) |
-| 5 — Missing and conflicting evidence | [EXP-016](../experiments/handoffs/experiment-5-robustness.md) |
-| 6 — Ablations | [EXP-017](../experiments/handoffs/experiment-6-ablations.md) |
+| 1 — Zero-day detection | [EXP-012](../../experiments/handoffs/experiment-1-detection.md) |
+| 2 — Adaptive acquisition and selection | [EXP-013](../../experiments/handoffs/experiment-2-selection.md) |
+| 3 — Provenance reconciliation | [EXP-014](../../experiments/handoffs/experiment-3-reconciliation.md) |
+| 4 — Uncertainty-driven collaboration | [EXP-015](../../experiments/handoffs/experiment-4-collaboration.md) |
+| 5 — Missing and conflicting evidence | [EXP-016](../../experiments/handoffs/experiment-5-robustness.md) |
+| 6 — Ablations | [EXP-017](../../experiments/handoffs/experiment-6-ablations.md) |
 
 ## Why an arm is a config and never a code path
 

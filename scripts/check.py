@@ -31,7 +31,16 @@ for tex in paper.rglob("*.tex"):
 for path in ROOT.rglob("*.md"):
     if any(part in {".git", ".venv", "runs", "data"} for part in path.relative_to(ROOT).parts):
         continue
-    for target in re.findall(r"\]\(([^)\n]+)\)", path.read_text()):
+    # Code (fenced blocks, incl. indented ones, and inline spans) is not Markdown:
+    # `reasoners[agent](envelope)` is not a link.
+    lines, fenced = [], False
+    for line in path.read_text().splitlines():
+        if line.lstrip().startswith("```"):
+            fenced = not fenced
+        elif not fenced:
+            lines.append(line)
+    text = re.sub(r"`[^`\n]*`", "", "\n".join(lines))
+    for target in re.findall(r"\]\(([^)\n]+)\)", text):
         if target.startswith("#") or re.match(r"^[a-zA-Z]+:", target):
             continue
         destination = (path.parent / unquote(target.split("#")[0])).resolve()
