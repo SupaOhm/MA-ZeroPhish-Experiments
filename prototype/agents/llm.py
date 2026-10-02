@@ -265,9 +265,17 @@ class LLMSpecialists:
                              for r in focus.evidence_refs if r in ref_lines]
                 else:
                     shown = [f"[{r}] {ref_lines[r]}" for r in focus.evidence_refs if r in ref_lines]
-                user += ("\n\nYou are re-invoked about an open issue: "
-                         f"{focus.kind.value} on fields {sorted(focus.affected_fields)}.\n"
-                         "Evidence cited for this issue (lines, not opinions):\n"
+                # A full-debate focus answers no single issue (`kind` None): it shows every
+                # specialist's cited lines. The issue wording below is unchanged byte for byte,
+                # so targeted rounds still hit the stored response caches.
+                header = (("\n\nYou are re-invoked in a full debate round: every specialist's "
+                           f"findings on fields {sorted(focus.affected_fields)} are open.\n"
+                           "Evidence cited by all specialists (lines, not opinions):\n")
+                          if focus.kind is None else
+                          ("\n\nYou are re-invoked about an open issue: "
+                           f"{focus.kind.value} on fields {sorted(focus.affected_fields)}.\n"
+                           "Evidence cited for this issue (lines, not opinions):\n"))
+                user += (header
                          + ("\n".join(shown) or "(no line-level evidence)")
                          + "\nReconsider your findings. Keep, revise or add findings about YOUR "
                            "evidence; cite only your own line ids.")

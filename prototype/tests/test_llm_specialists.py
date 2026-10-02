@@ -229,6 +229,19 @@ class GroundingTests(unittest.TestCase):
         self.assertIn("[html:L0] form 0:", user.split("Evidence cited")[1])
         self.assertNotIn("nope:L9", user)
 
+    def test_full_debate_focus_is_not_the_phase2_prompt(self):
+        from phases.moderator import DebateFocus
+
+        model = Scripted()
+        _, reason, env = self.reasoner("content", model, "c6")
+        reason(env)
+        reason(env, focus=DebateFocus(("html:L0",), frozenset({"html"})))
+        phase2, debate = model.prompts[-2][1], model.prompts[-1][1]
+        self.assertNotEqual(phase2, debate)
+        self.assertTrue(debate.startswith(phase2))
+        self.assertIn("re-invoked in a full debate round", debate)
+        self.assertIn("[html:L0] form 0:", debate.split("Evidence cited by all specialists")[1])
+
 
 class RunCaseTests(unittest.TestCase):
     def test_run_case_with_llm_specialists_validates_and_counts_tokens(self):

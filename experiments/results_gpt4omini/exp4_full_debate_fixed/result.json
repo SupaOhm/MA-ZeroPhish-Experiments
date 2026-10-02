@@ -1,0 +1,57 @@
+{
+ "pages": 200,
+ "arms": {
+  "full_debate_fixed": {
+   "precision": 0.9591836734693877,
+   "recall": 0.94,
+   "fpr": 0.04,
+   "f1": 0.9494949494949495,
+   "calls_per_page": 8.6,
+   "input_tokens_per_page": 28688.915
+  },
+  "targeted_rep1": {
+   "precision": 0.9393939393939394,
+   "recall": 0.93,
+   "fpr": 0.06,
+   "f1": 0.9346733668341709,
+   "calls_per_page": 7.83,
+   "input_tokens_per_page": 24907.945
+  },
+  "no_collaboration_rep1": {
+   "precision": 0.94,
+   "recall": 0.94,
+   "fpr": 0.06,
+   "f1": 0.94,
+   "calls_per_page": 4.81,
+   "input_tokens_per_page": 12615.71
+  },
+  "full_debate_old_rep1": {
+   "precision": 0.94,
+   "recall": 0.94,
+   "fpr": 0.06,
+   "f1": 0.94,
+   "calls_per_page": 8.6,
+   "input_tokens_per_page": 23277.65
+  }
+ },
+ "vs_targeted_rep1": {
+  "diff": 0.014821582660778598,
+  "ci": [
+   -0.018181818181818188,
+   0.04920792079207914
+  ],
+  "fixed_only_right": 7,
+  "ref_only_right": 4,
+  "mcnemar_p": 0.548828125
+ },
+ "vs_no_collaboration_rep1": {
+  "diff": 0.009494949494949556,
+  "ci": [
+   -0.023545966228893045,
+   0.0444954027296981
+  ],
+  "fixed_only_right": 7,
+  "ref_only_right": 5,
+  "mcnemar_p": 0.7744140625
+ }
+}

@@ -1,0 +1,323 @@
+{
+ "rule": "judge_p >= 0.9 -> phishing, else frozen H1",
+ "sets": {
+  "dev": {
+   "h1": {
+    "n": 300,
+    "tp": 138,
+    "fp": 11,
+    "tn": 139,
+    "fn": 12,
+    "precision": 0.9261744966442953,
+    "recall": 0.92,
+    "fpr": 0.07333333333333333,
+    "f1": 0.9230769230769231
+   },
+   "jl": {
+    "n": 300,
+    "tp": 141,
+    "fp": 11,
+    "tn": 139,
+    "fn": 9,
+    "precision": 0.9276315789473685,
+    "recall": 0.94,
+    "fpr": 0.07333333333333333,
+    "f1": 0.9337748344370861
+   },
+   "jl_two_sided": {
+    "n": 300,
+    "tp": 138,
+    "fp": 10,
+    "tn": 140,
+    "fn": 12,
+    "precision": 0.9324324324324325,
+    "recall": 0.92,
+    "fpr": 0.06666666666666667,
+    "f1": 0.9261744966442953
+   }
+  },
+  "dev-2": {
+   "h1": {
+    "n": 200,
+    "tp": 91,
+    "fp": 4,
+    "tn": 96,
+    "fn": 9,
+    "precision": 0.9578947368421052,
+    "recall": 0.91,
+    "fpr": 0.04,
+    "f1": 0.9333333333333333
+   },
+   "jl": {
+    "n": 200,
+    "tp": 92,
+    "fp": 4,
+    "tn": 96,
+    "fn": 8,
+    "precision": 0.9583333333333334,
+    "recall": 0.92,
+    "fpr": 0.04,
+    "f1": 0.9387755102040817
+   },
+   "jl_two_sided": {
+    "n": 200,
+    "tp": 81,
+    "fp": 3,
+    "tn": 97,
+    "fn": 19,
+    "precision": 0.9642857142857143,
+    "recall": 0.81,
+    "fpr": 0.03,
+    "f1": 0.8804347826086957
+   }
+  },
+  "pooled": {
+   "h1": {
+    "n": 500,
+    "tp": 229,
+    "fp": 15,
+    "tn": 235,
+    "fn": 21,
+    "precision": 0.9385245901639344,
+    "recall": 0.916,
+    "fpr": 0.06,
+    "f1": 0.9271255060728745
+   },
+   "jl": {
+    "n": 500,
+    "tp": 233,
+    "fp": 15,
+    "tn": 235,
+    "fn": 17,
+    "precision": 0.9395161290322581,
+    "recall": 0.932,
+    "fpr": 0.06,
+    "f1": 0.9357429718875502
+   },
+   "jl_two_sided": {
+    "n": 500,
+    "tp": 219,
+    "fp": 13,
+    "tn": 237,
+    "fn": 31,
+    "precision": 0.9439655172413793,
+    "recall": 0.876,
+    "fpr": 0.052,
+    "f1": 0.9087136929460581
+   }
+  }
+ },
+ "mcnemar_pooled_h1_vs_jl": {
+  "a_only_right": 0,
+  "b_only_right": 4,
+  "p_exact": 0.125
+ },
+ "mcnemar_pooled_h1_vs_two_sided": {
+  "a_only_right": 14,
+  "b_only_right": 6,
+  "p_exact": 0.11531829833984375
+ },
+ "overrules": {
+  "judge_hi_h1_benign": 4,
+  "judge_hi_pages": 77,
+  "judge_lo_h1_phishing": 16,
+  "judge_lo_pages": 225
+ },
+ "changed_jl": [
+  {
+   "set": "dev",
+   "case_id": "pp-1e80060ea2f4",
+   "y": true,
+   "judge_p": 0.9,
+   "h1": false,
+   "jl": true
+  },
+  {
+   "set": "dev",
+   "case_id": "pp-99e4e98c53ec",
+   "y": true,
+   "judge_p": 0.9,
+   "h1": false,
+   "jl": true
+  },
+  {
+   "set": "dev",
+   "case_id": "pp-f6a662ef8afc",
+   "y": true,
+   "judge_p": 0.9,
+   "h1": false,
+   "jl": true
+  },
+  {
+   "set": "dev-2",
+   "case_id": "pp-a60202f374f8",
+   "y": true,
+   "judge_p": 0.9,
+   "h1": false,
+   "jl": true
+  }
+ ],
+ "changed_two_sided": [
+  {
+   "set": "dev",
+   "case_id": "pp-1e80060ea2f4",
+   "y": true,
+   "judge_p": 0.9,
+   "h1": false,
+   "jl_two_sided": true
+  },
+  {
+   "set": "dev",
+   "case_id": "pp-3e6920567496",
+   "y": true,
+   "judge_p": 0.0,
+   "h1": true,
+   "jl_two_sided": false
+  },
+  {
+   "set": "dev",
+   "case_id": "pp-6de90296fd16",
+   "y": false,
+   "judge_p": 0.0,
+   "h1": true,
+   "jl_two_sided": false
+  },
+  {
+   "set": "dev",
+   "case_id": "pp-99e4e98c53ec",
+   "y": true,
+   "judge_p": 0.9,
+   "h1": false,
+   "jl_two_sided": true
+  },
+  {
+   "set": "dev",
+   "case_id": "pp-e63b36908d13",
+   "y": true,
+   "judge_p": 0.0,
+   "h1": true,
+   "jl_two_sided": false
+  },
+  {
+   "set": "dev",
+   "case_id": "pp-ec67927d0275",
+   "y": true,
+   "judge_p": 0.0,
+   "h1": true,
+   "jl_two_sided": false
+  },
+  {
+   "set": "dev",
+   "case_id": "pp-f6a662ef8afc",
+   "y": true,
+   "judge_p": 0.9,
+   "h1": false,
+   "jl_two_sided": true
+  },
+  {
+   "set": "dev-2",
+   "case_id": "pp-097384aed86c",
+   "y": true,
+   "judge_p": 0.0,
+   "h1": true,
+   "jl_two_sided": false
+  },
+  {
+   "set": "dev-2",
+   "case_id": "pp-2b7237c72722",
+   "y": true,
+   "judge_p": 0.0,
+   "h1": true,
+   "jl_two_sided": false
+  },
+  {
+   "set": "dev-2",
+   "case_id": "pp-5f28bea58918",
+   "y": true,
+   "judge_p": 0.0,
+   "h1": true,
+   "jl_two_sided": false
+  },
+  {
+   "set": "dev-2",
+   "case_id": "pp-74a1b6cfb17e",
+   "y": true,
+   "judge_p": 0.0,
+   "h1": true,
+   "jl_two_sided": false
+  },
+  {
+   "set": "dev-2",
+   "case_id": "pp-76d58e68a54b",
+   "y": true,
+   "judge_p": 0.0,
+   "h1": true,
+   "jl_two_sided": false
+  },
+  {
+   "set": "dev-2",
+   "case_id": "pp-a60202f374f8",
+   "y": true,
+   "judge_p": 0.9,
+   "h1": false,
+   "jl_two_sided": true
+  },
+  {
+   "set": "dev-2",
+   "case_id": "pp-aa7b24ed2d7a",
+   "y": true,
+   "judge_p": 0.0,
+   "h1": true,
+   "jl_two_sided": false
+  },
+  {
+   "set": "dev-2",
+   "case_id": "pp-ab03c30bacc4",
+   "y": true,
+   "judge_p": 0.0,
+   "h1": true,
+   "jl_two_sided": false
+  },
+  {
+   "set": "dev-2",
+   "case_id": "pp-cc9054e14b92",
+   "y": true,
+   "judge_p": 0.0,
+   "h1": true,
+   "jl_two_sided": false
+  },
+  {
+   "set": "dev-2",
+   "case_id": "pp-da1f76d52fe6",
+   "y": true,
+   "judge_p": 0.0,
+   "h1": true,
+   "jl_two_sided": false
+  },
+  {
+   "set": "dev-2",
+   "case_id": "pp-e07a6fc5fbab",
+   "y": true,
+   "judge_p": 0.0,
+   "h1": true,
+   "jl_two_sided": false
+  },
+  {
+   "set": "dev-2",
+   "case_id": "pp-e696d75cdd8b",
+   "y": false,
+   "judge_p": 0.0,
+   "h1": true,
+   "jl_two_sided": false
+  },
+  {
+   "set": "dev-2",
+   "case_id": "pp-f70abc0d130a",
+   "y": true,
+   "judge_p": 0.0,
+   "h1": true,
+   "jl_two_sided": false
+  }
+ ],
+ "candidate": true
+}
