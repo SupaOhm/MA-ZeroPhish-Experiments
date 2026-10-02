@@ -124,8 +124,13 @@ Every arm uses GPT-4o-mini and the same inputs.
   (items 3 and 4), so only Ablations 2, 4 and 5 are real removals.
 - Exp 5 with H1 (dev-2, `final/h1_all/exp5/`): recovers fully from a failed browser run; only losing
   certificate records is significant (-0.041 [-0.078, -0.008], McNemar p = 0.022); without the served
-  HTML -0.016 (FPR 0.11, not significant). On test2 no condition degrades F1 significantly (PROTOCOL_V5
-  "Exp 5 on test2 -- RESULT", routing caveat). Conflicting evidence (65 cases): 0.800.
+  HTML -0.016 (FPR 0.11, not significant). H1 routes every withholding condition to B2 but only some base
+  pages, so these differences mix evidence loss with a change of decision model. With ONE decision model
+  for every condition (B2 everywhere, `b2/exp5/`, computed in round B2) no condition differs significantly
+  from base: no network metadata -0.009 [-0.044, +0.028], no HTML +0.016, no DOM +0.008. Report both and
+  say the H1 loss without certificate records is mostly the routing. On test2 no condition degrades F1
+  significantly (PROTOCOL_V5 "Exp 5 on test2 -- RESULT", same routing caveat). Conflicting evidence (65
+  cases): 0.800.
 - Report every development round (PROTOCOL_V4 rounds 1-9; PROTOCOL_V5 v5, P1, G, H, B5, B1...),
   including the rejected ones, in an appendix or supplement.
 
