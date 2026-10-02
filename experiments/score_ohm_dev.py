@@ -17,7 +17,7 @@ import h1_eval as HE  # noqa: E402
 import hybrid_eval as H  # noqa: E402
 import v5_learn as L  # noqa: E402
 
-OHM = ROOT.parent / "ohm_main" / "runs"
+OHM = ROOT / "runs" / "ohm_paper_faithful"
 T = "openrouter_openai_gpt-4o-mini-2024-07-18"
 
 
