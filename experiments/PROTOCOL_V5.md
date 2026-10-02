@@ -1084,3 +1084,12 @@ modal p share 0.26 vs 0.46; Judge AUC 0.968 vs 0.985 (within 0.02); $0.00459 vs 
 Full run started: v4abdfJ1 on fit, calib, dev, dev-2 (out runs/j1/<set>, cache runs/llm_cache). For dev-2,
 H1 is scored on the AF2 dev-2 ledger, whose findings equal those J1 replays (the 3 pages that were called
 anew in AF2 are now cached), so H1 and H1-J1 stay paired.
+FULL-RUN RESULT J1 (2026-10-02): H1-J1 NOT ADOPTED -- H1 stays the system for test3.
+Collection: fit 839, calib 300, dev 300, dev-2 200, 0 failures; specialist findings identical to the
+reference on every page (only the Judge changed); matrix missing on 0 fit pages.
+Adoption rule: CV on fit -- recall@P95 0.855 -> 0.873 and AP 0.9654 -> 0.9684 (criterion met); pooled dev +
+dev-2 F1 0.927 (H1) -> 0.904 (H1-J1) -> NOT met (precision 0.939 -> 0.968, recall 0.916 -> 0.848; dev F1
+0.923 -> 0.890, dev-2 0.933 -> 0.926). Descriptive, threshold-free on the same 500 pages: AP 0.9773 (H1) vs
+0.9771 (H1-J1), recall@P95 0.896 vs 0.884 -- the ranking is unchanged; the higher precision comes from a more
+conservative calib threshold (0.764), not from better separation. Results: results_gpt4omini/j1/result.json.
+No further Judge variant is tried in this round.
