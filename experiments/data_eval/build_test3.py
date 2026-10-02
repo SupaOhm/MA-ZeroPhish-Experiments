@@ -53,15 +53,13 @@ def fetch(stride: int = 150, length: int = 50) -> None:
                 d = None
             time.sleep(min(120, 10 * 2 ** attempt))
         if not d or "rows" not in d:
-            print(f"
-skip offset {off} after retries", flush=True)
+            print(f"skip offset {off} after retries", flush=True)
             off += stride
             continue
         total = d["num_rows_total"]
         with gzip.open(CACHE, "at", encoding="utf-8") as out:
             for r in d["rows"]:
-                out.write(json.dumps(r["row"], ensure_ascii=False) + "
-")
+                out.write(json.dumps(r["row"], ensure_ascii=False) + "\n")
         done.add(off)
         side.write_text(json.dumps(sorted(done)))
         print(f"offset {off}/{total} rows +{len(d['rows'])}", flush=True)
