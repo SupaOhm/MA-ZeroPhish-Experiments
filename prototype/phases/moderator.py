@@ -14,7 +14,7 @@ no code path that produces one.
 """
 
 from collections import defaultdict
-from dataclasses import replace
+from dataclasses import dataclass, replace
 
 import fields
 from contract.evidence import EvidenceEnvelope
@@ -24,7 +24,27 @@ from contract.record import FindingRecord
 from contract.vocabulary import Direction, SourceAvailability, Status
 
 
+@dataclass(frozen=True, slots=True)
+class DebateFocus:
+    """What a full-debate round puts in front of a re-invoked specialist: every
+    eligible locator of the object, not one issue.
+
+    Full debate used to pass `focus=None`, which is also what a Phase 2 call
+    passes, so a real specialist received its Phase 2 prompt byte for byte and,
+    at temperature 0 and behind the response cache, returned its Phase 2 answer:
+    the "debate" never showed anyone a peer's evidence (PROTOCOL_V5 round ESC:
+    39 of 88 full-debate requests on 10 pages repeated an earlier request).
+    `kind` is None because no single issue is being answered.
+    """
+
+    evidence_refs: tuple[str, ...]
+    affected_fields: frozenset[str] = frozenset()
+    kind: None = None
+
+
 def _issue_kind(issue) -> str | None:
+    if isinstance(issue, DebateFocus):
+        return "full_debate"
     return issue.kind.value if issue is not None else None
 
 
@@ -367,11 +387,12 @@ def _targets(issues, attempted, k, collaboration, applicable, current):
         # `z_{i,g} <= a_{i,g}`. Full debate addresses everything rather than one
         # issue, so it carries every eligible locator and no single focus.
         every = tuple(sorted(h.locator for r in current for h in r.items))
+        debate = DebateFocus(every, frozenset(h.declared_field for r in current for h in r.items))
         for agent in fields.AGENTS:
             if agent not in attempted and agent in applicable:
                 targets.append(agent)
                 cites[agent] = every
-                focus_of[agent] = None
+                focus_of[agent] = debate
         return targets, cites, focus_of
 
     if collaboration != "targeted":
