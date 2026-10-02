@@ -65,6 +65,8 @@ def main() -> None:
                     help="PROTOCOL_V5: run on the FIT split (training pages) for the learner")
     ap.add_argument("--sealed-test2-final", action="store_true",
                     help="the ONE final test2 run of the frozen system (needs FROZEN.json + GO.json)")
+    ap.add_argument("--sealed-test3-final", action="store_true",
+                    help="the ONE test3 run of the frozen H1 (needs FROZEN_H1.json + GO_TEST3.json)")
     args = ap.parse_args()
     allowed = ("dev", "calib") if args.calib_collection else ("dev",)
     if args.fit_collection:
@@ -84,6 +86,17 @@ def main() -> None:
             raise SystemExit(f"REFUSED: GO {g.get('decision')!r} for {g.get('system')!r}; the test2 pipeline "
                              f"variant must be v4abdf, got {args.variants}")
         allowed = ("test2",)
+    if args.sealed_test3_final:
+        # PROTOCOL_V5 test3 plan: the same frozen H1, run once on test3 after the team's GO.
+        final = ROOT / "experiments" / "results_gpt4omini" / "final"
+        frozen, go = final / "FROZEN_H1.json", final / "GO_TEST3.json"
+        if not (frozen.exists() and go.exists()):
+            raise SystemExit("REFUSED: test3 needs FROZEN_H1.json and GO_TEST3.json (PROTOCOL_V5)")
+        g = json.loads(go.read_text(encoding="utf-8"))
+        if g.get("decision") != "go" or g.get("system") != "H1" or args.variants != ["v4abdf"]:
+            raise SystemExit(f"REFUSED: GO {g.get('decision')!r} for {g.get('system')!r}; the test3 pipeline "
+                             f"variant must be v4abdf, got {args.variants}")
+        allowed = ("test3",)
     if args.split not in allowed:
         raise SystemExit("REFUSED: development runs are on dev (calib only with --calib-collection; "
                          "test2 only with --sealed-test2-final after a GO) -- PROTOCOL_V4")

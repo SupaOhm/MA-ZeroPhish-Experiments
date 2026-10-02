@@ -65,13 +65,17 @@ def main() -> None:
     g = ap.add_mutually_exclusive_group(required=True)
     g.add_argument("--dry-run", action="store_true")
     g.add_argument("--test2", action="store_true")
+    g.add_argument("--test3", action="store_true", help="test3 plan: the 6 PhishDebate-paper baselines, Holm over 6")
     args = ap.parse_args()
     if args.dry_run:
         split, ours_pat, out = "test", "runs/v4_exp/exp5/exp5_phreshphish_test__shard*of*__base.jsonl", "dryrun_dev2"
         base_dirs = [("runs/exp1", ""), ("runs/minimal", "")]
-    else:
+    elif args.test2:
         split, ours_pat, out = "test2", "runs/test2/ma/devv4_phreshphish_test2__*__ma_v4abdf.jsonl", "test2"
         base_dirs = [("runs/test2", ""), ("runs/test2/vision", "vision__")]
+    else:
+        split, ours_pat, out = "test3", "runs/test3/ma/devv4_phreshphish_test3__*__ma_v4abdf.jsonl", "test3"
+        base_dirs = [("runs/test3", ""), ("runs/test3/vision", "vision__")]
     OUT = ROOT / "experiments" / "results_gpt4omini" / "final" / out
     OUT.mkdir(parents=True, exist_ok=True)
     p1, b2 = frozen_steps()
@@ -95,7 +99,7 @@ def main() -> None:
                  dict(base, arm="B2_secondary", score=q2, verdict="phishing" if q2 >= b2[1] else "benign")]
     n_base = {}
     for d, pre in base_dirs:
-        for arm in BASE_ARMS:
+        for arm in (BASE_ARMS[:3] if args.test3 else BASE_ARMS):
             for p in glob.glob(str(ROOT / d / f"{arm}__{MODEL_TAG}__phreshphish_{split}.jsonl")):
                 for line in open(p, encoding="utf-8"):
                     e = json.loads(line)
@@ -127,6 +131,10 @@ def main() -> None:
     h1_best = all(float(met["H1_primary"]["forced_f1"]) > float(met[a]["forced_f1"]) for a in baselines)
     reading = "WIN" if (h1_best and sig and d < 0) else ("LOSS" if (sig and d > 0) else "TIE")
     print(f"best baseline S = {S}; reading (pre-declared rule): {reading}" + ("   [DRY RUN: not a result]" if args.dry_run else ""))
+    if args.test3:      # test3 plan amendment: no matched-precision endpoint
+        (OUT / "reading.json").write_text(json.dumps({"S": S, "reading": reading, "holm": adj, "pages": len(dec),
+                                                      "routed_b2": routed_b2}, indent=1), encoding="utf-8")
+        return
     # Supplementary (appendix), declared before test2: H1's best recall at a threshold whose precision is
     # at least each baseline's precision (from H1's own scores on the same pages).
     pts = [(r["score"], L.MAN[r["case_id"]]["label"] == "phishing") for r in rows if r["arm"] == "H1_primary"]
