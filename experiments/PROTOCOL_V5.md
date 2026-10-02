@@ -849,3 +849,23 @@ PhishDebate 0.955 / 0.945; Ohm Judge p 0.811 / 0.751. At p >= 0.5 (unfitted): F1
 FPR 0.396, coverage 100% (vs Suf/Def rule 0.774 at coverage 0.84). Ohm's probabilities are coarse (179 of
 298 pages at 0.8). By the declared condition (a) is not competitive, so no calib run is made. Reading: the
 gap is upstream of the decision rule (the evidence and the Judge's reading of it), not only the Suf/Def rule.
+
+## Round JL: "a confident Judge is not overruled" (declared 2026-10-02, before computing on dev / dev-2; teammate idea; $0)
+Idea (teammate): the decision step must not flip the Judge's verdict when the Judge is confident. In H1 the
+Judge probability (`judge_score_any`) is one feature of the boosted trees, so a confident Judge can be overruled.
+Seen BEFORE this declaration (fit / calib only; no dev or dev-2 outcome looked at): the Judge probability is
+coarse (10-11 distinct values; fit 393 of 839 and calib 130 of 300 pages at 0.0; none >= 0.95 on calib).
+Judge correctness by level, calib (fit in brackets): p >= 0.9 phishing 0.975 of 40 (0.959 of 122);
+p >= 0.85 0.915 of 59 (0.908 of 185); p = 0.0 benign 0.885 of 130 (0.941 of 393).
+Rule JL (chosen on calib with H1's own precision target 0.95): the lowest Judge level whose calib precision
+is >= 0.95 is 0.9, so: Judge p >= 0.9 -> phishing; otherwise the frozen H1 verdict. No benign-side lock: no
+Judge level reaches 0.95 benign share on calib (p = 0.0: 0.885). Nothing is refit; H1 is used unchanged.
+Data: dev (300, runs/v5f/dev) and dev-2 (200, Exp 5 `base`), exactly the ledgers `h1_eval.py` scores; pooled
+500. Validation first: H1 from the same script must reproduce dev F1 0.923 and dev-2 0.933, else stop.
+Reported: P, R, FPR, F1 per set and pooled; pages whose verdict changes (H1 -> JL, with labels); exact
+McNemar vs H1 on the pooled pages. Descriptive only (not used for the decision): the two-sided variant
+(also p = 0.0 -> benign) and how often H1 overrules a confident Judge on each side.
+Acceptance (fixed now): JL is a candidate only if pooled F1 is higher than H1's AND pooled FPR is not higher.
+Even then it is NOT adopted by this round: it goes to the team for approval (step 2), and a frozen JL could
+only be evaluated on a new clean set (test3); test2 is used and is not re-run. Otherwise H1 stays.
+Code: experiments/judge_lock_eval.py.
