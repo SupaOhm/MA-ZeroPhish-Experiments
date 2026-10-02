@@ -1110,3 +1110,17 @@ experiments/normal_vs_zeroday_ci.py -> results_gpt4omini/final/normal_vs_zeroday
 Reading: H1's change is not distinguishable from zero; every baseline's drop is (CI excludes 0). Caveats
 unchanged: the sets differ in source and crawler as well as age; H1 is the lowest on the normal set (FPR
 0.24 on Tranco benign pages; its decision step was trained on PhreshPhish).
+
+## TR-OP false positives: diagnosis and an exploratory check (2026-10-02; no model call; user question)
+From this point TR-OP is DEVELOPMENT data (its errors were inspected to design a change); a clean
+normal-set number would need a new set (e.g. Mendeley) under a declared plan.
+Diagnosis: H1 flags 24/100 TR-OP benign pages; on 12 of them the Judge said benign (p <= 0.2), so the code
+features pushed them over. URL shape is the main shift: log URL length fit benign 4.02 / fit phishing 3.70 /
+TR-OP benign 3.03; URL digits 2.20 / 4.88 / 0.03. PhreshPhish benign URLs are long deep links, so the
+decision step learned "short URL -> phishing" (opposite to the usual literature direction); Tranco
+homepages are short. Exploratory (P1 route only, complete pages; thresholds re-derived on calib):
+| P1 | CV fit recall@P95 / AP | dev + dev-2 complete (401) F1 / P / R / FPR | TR-OP complete (142) F1 / P / R / FPR |
+|---|---|---|---|
+| all features | 0.855 / 0.9654 | 0.926 / 0.936 / 0.917 / 0.057 | 0.882 / 0.845 / 0.922 / 0.200 |
+| without URL length, digits, host dots | 0.814 / 0.9529 | 0.899 / 0.943 / 0.859 / 0.048 | 0.908 / 0.920 / 0.896 / 0.092 |
+Nothing adopted; the frozen H1 is unchanged.
