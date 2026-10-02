@@ -925,3 +925,26 @@ and 100 of 500 benign pages (20%); no brand / unsure: 114 phishing, 31 benign.
 By the declared rule BR is not adopted (step 1 fails; pooled F1 +0.001). Reading: the brand check raises
 precision on the later pages (dev-2, and test2 post hoc) with recall unchanged there, but not on dev, and
 the tool also flags a fifth of benign pages as inconsistent, which limits it as a feature.
+
+## test3 PLAN: is H1 better than EVERY baseline? (declared 2026-10-02, before building or running anything; user request)
+Goal (professor): show the multi-agent system beats every baseline, on new zero-day pages.
+System: H1 exactly as frozen (results_gpt4omini/final/FROZEN_H1.json), one pipeline run; nothing re-fitted.
+Baselines (8, GPT-4o-mini, paper prompts word for word plus the declared minimal prompts): single-agent,
+CoT, PhishDebate, each text-only and + screenshot; single-agent minimal; CoT minimal. One run each.
+Data: 1,000 new PhreshPhish pages (500 phishing / 500 benign), from the 73 shards never downloaded,
+observed in the test period (2025-09-08 .. 2025-12-15, as test/test2), own-domain only, same filters,
+de-duplication and union-find campaign grouping as the existing builders, one page per group, every group
+touching ANY existing manifest case blocked; seeded random pick ("20261002:test3"). Captures exactly as
+test2 (offline render, CT v2). No page is looked at before scoring except by the automatic builder.
+Matched-precision operating points, fixed BEFORE test3 is touched: every baseline arm is run on calib (300);
+for baseline b, t_b = the lowest threshold on H1's calibrated calib scores whose calib precision is >= b's
+calib precision. H1's score = the calibrated probability of the routed decision step (P1 or B2).
+PRIMARY ENDPOINTS on test3 (Holm correction over the 8 baselines within each endpoint):
+ (E1) recall at matched precision: H1 at t_b vs baseline b; WIN vs b if H1's recall is higher with exact
+      McNemar on the phishing pages (Holm p < 0.05) AND H1's test3 precision at t_b is not lower than b's
+      test3 precision by more than 0.02.
+ (E2) forced F1 at the frozen H1 operating point vs each baseline, paired bootstrap CI + McNemar (as test2).
+Claim "best of all baselines" only if E1 is a WIN against all 8; E2 is reported whatever it shows (a tie with
+the strongest baseline is possible and will be stated).
+Cost estimate: baselines on calib ~$1.5; test3 run ~$16 (H1 ~$4.7 + 8 baselines ~$11.5). The test3 run starts
+only after a credit top-up and a balance check. test3 is used ONCE.
