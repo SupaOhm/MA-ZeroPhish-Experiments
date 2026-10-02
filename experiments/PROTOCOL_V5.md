@@ -886,7 +886,7 @@ is therefore partial by the declared rule (its numbers below are on the reproduc
 | rep2 | full debate | 200 | 197 | 0.99 | 3.75 | 712 / 38 | 0.000 | 0.000 | 0.000 |
 | run 1 (partial) | full debate | 143 | 140 | 0.98 | 3.72 | 505 / 27 | 0.000 | 0.000 | 0.000 |
 Issue identity for (a): (kind, affected fields, relevant agents); with the evidence references also part of the
-identity (stricter "same issue"), (a) is 0.62-0.65 -- the difference is issues whose cited lines changed.
+identity (stricter "same issue"), (a) is 0.59-0.65 -- the difference is issues whose cited lines changed.
 H1 verdict vs no_collaboration in the same run (stored ledgers, h1_flips.json): targeted changes 8 / 5 / 12 of
 200 pages (run 1 / rep1 / rep2), right on 4 / 2 / 6 and wrong on 4 / 3 / 6 of them; full debate changes 1 / 0 / 0.
 DEFECT FOUND (full debate is not a debate): `moderator._targets` re-invokes every agent with focus = None, and
