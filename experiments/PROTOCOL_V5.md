@@ -888,3 +888,8 @@ depends only on evidence availability, identical across runs). Compared with eac
 range). Reading fixed now: exploratory only (dev-2 is development data; dev has a single run). If an
 ensemble beats the single-run mean by >= 0.01 F1, a confirming step would need repeated dev runs (paid),
 declared separately.
+Round E1 -- RESULT (dev-2, 200 pages, exploratory): single runs F1 0.929 / 0.935 / 0.929 (mean 0.931);
+majority vote 0.934 (P 0.948, R 0.920, FPR 0.050); mean calibrated score 0.944 (P 0.968, R 0.920,
+FPR 0.030). The three runs disagree on 10 of 200 pages. The mean-score ensemble beats the single-run mean
+by +0.013 (>= 0.01), so by the declared reading it is a candidate that needs confirmation on dev with
+repeated runs (two more dev runs, ~$2.8, to be declared separately). Cost at use: 3x model calls.
