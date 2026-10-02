@@ -1070,3 +1070,12 @@ learner, Platt on calib, P >= 0.95 threshold on calib. ADOPTION: the BR rule -- 
 (seed "20261001:p1cv") recall@P95 AND AP both above P1, and pooled dev + dev-2 F1 above H1 with precision not
 lower by more than 0.01. If adopted: frozen as H1-J before test3; test3 runs v4abdfJ on the complete pages and
 v4abdf on the others. If not adopted, H1 stays.
+PILOT RESULT J (2026-10-02, 50 pages, 0 failures): NO-GO. Matrix well-formed on 68% (16 answers omitted
+"stories"/"modalities" entirely; criterion 1 failed); finalization errors 0 vs 0; modal p share 0.38 vs 0.46
+(criterion 2 met, but only 5 distinct p values: 0.05/0.15/0.25/0.75/0.85 -- the model shifted its buckets);
+Judge AUC 0.992 vs 0.985 (criterion 3 met); $0.00454 vs $0.00443 per page.
+AMENDMENT J1 (declared 2026-10-02, after the J pilot, before J1 is run): criterion 1 failed for a format
+reason (the keys were requested in a note AFTER the JSON template). J1 = the same task with the two keys
+written into the JSON answer template itself (variant v4abdfJ1, judge_corroboration=2); everything else,
+including the pilot criteria and the full-run / adoption rules above, unchanged. ONE amendment only: if J1
+fails the pilot, round J stops. Disclosure: the J1 pilot reuses the same 50 dev pages as the J pilot.

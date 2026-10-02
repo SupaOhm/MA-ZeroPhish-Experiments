@@ -111,6 +111,18 @@ and give p_phishing with two decimals over the whole range from 0 to 1 (for exam
 0.93): higher when the phishing story is corroborated by more modalities and the benign story
 contradicted."""
 
+# Round J1 (amendment after the J pilot: 16/50 answers omitted the matrix): the same task, with the
+# two keys written into the JSON answer template itself instead of an instruction after it.
+CORROBORATION_NOTE_J1 = CORROBORATION_NOTE.split("\nAdd to your JSON answer")[0] + """
+Fill "stories" and "modalities" in the JSON answer for EVERY submission (all four modalities, both
+stories; use "silent" where a modality has nothing), and give p_phishing with two decimals over the
+whole range from 0 to 1: higher when the phishing story is corroborated by more modalities and the
+benign story contradicted."""
+TEMPLATE_J1 = (' "stories": {"phishing": "one sentence", "benign": "one sentence"},\n'
+               ' "modalities": {"url": {"phishing": "supports|contradicts|silent", "benign": "supports|contradicts|silent"},\n'
+               '   "web_structure": {"phishing": "...", "benign": "..."}, "content": {"phishing": "...", "benign": "..."},\n'
+               '   "metadata": {"phishing": "...", "benign": "..."}},\n')
+
 # v4 6a: the Judge also receives the page itself (the same view the baselines read).
 PAGE_NOTE = """
 
@@ -278,7 +290,7 @@ class LLMJudge:
                  task_definition: bool = False, show_evidence: bool = False,
                  samples: int = 1, sample_temperature: float = 1.0,
                  page_view: tuple[int, int] | None = None, consider_opposite: bool = False,
-                 requires_deception: bool = False, corroboration: bool = False):
+                 requires_deception: bool = False, corroboration: int = 0):
         """`structural_gaps` (v2, Config.judge_structural_gaps): tell the Judge which gaps are
         structural. False = v1: rubric and payload byte-identical to the frozen v1 runs."""
         self.model, self.repair_attempts, self.max_tokens = model, repair_attempts, max_tokens
@@ -304,7 +316,11 @@ class LLMJudge:
         if requires_deception:                  # PROTOCOL_V5 round G
             self.rubric = self.rubric + DECEPTION_NOTE
         self.corroboration = corroboration
-        if corroboration:                       # PROTOCOL_V5 round J
+        if corroboration == 2:                  # PROTOCOL_V5 round J1
+            self.rubric = self.rubric.replace(' "p_phishing": number between 0 and 1,',
+                                              TEMPLATE_J1 + ' "p_phishing": number between 0 and 1,', 1)
+            self.rubric = self.rubric + CORROBORATION_NOTE_J1
+        elif corroboration:                     # PROTOCOL_V5 round J
             self.rubric = self.rubric + CORROBORATION_NOTE
         if task_definition:                     # v4 2e: the paper's definition, stated first
             from task_definition import TASK_DEFINITION
