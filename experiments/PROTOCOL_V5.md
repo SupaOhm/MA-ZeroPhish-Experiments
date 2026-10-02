@@ -849,3 +849,23 @@ PhishDebate 0.955 / 0.945; Ohm Judge p 0.811 / 0.751. At p >= 0.5 (unfitted): F1
 FPR 0.396, coverage 100% (vs Suf/Def rule 0.774 at coverage 0.84). Ohm's probabilities are coarse (179 of
 298 pages at 0.8). By the declared condition (a) is not competitive, so no calib run is made. Reading: the
 gap is upstream of the decision rule (the evidence and the Judge's reading of it), not only the Suf/Def rule.
+
+## Round ESC: Exp 4's unmeasured secondary measures by cache replay (declared 2026-10-02, before computing; $0)
+Why: the paper's Exp 4 promises collaboration rounds, specialist reinvocations and escalation precision
+("the proportion of initiated rounds that resolve an identified issue or yield new eligible evidence"). They
+were never measured: the ledgers store only per-page totals. Exp 4 / Exp 6 show no accuracy effect; these
+measures say what the rounds actually do. Measurement only: nothing in the system changes.
+Method: replay the stored Exp 4 runs (runs/v4_exp, cache runs/llm_cache; repeats runs/v4_exp_rep1 / _rep2 with
+llm_cache_rep1 / _rep2) for the arms that collaborate (mazerophish = targeted, full_debate), same frozen v4
+configs and captures, with the HTTP layer replaced by a function that raises: a request not in the cache stops
+that page instead of calling the API (no spend, no new model output). Rounds are observed by wrapping the
+Moderator's own gate and target functions; the Judge is not called extra.
+Validation (fixed now): a page counts only if the replayed decision equals the stored one on verdict,
+model_calls, input_tokens, output_tokens and judge_score_any. Pages that miss the cache or differ are listed
+and excluded; if more than 5% of a run's pages fail, that run is reported as partial.
+Measures per arm and run: pages with >= 1 opened round; rounds per page; reinvocations per page; revisions
+accepted / rejected; escalation precision = share of opened rounds after which (a) at least one issue present
+at the round's start is gone, or (b) at least one new eligible finding (field, cited line, direction) exists.
+(a) and (b) are also reported separately. Plus, from the stored ledgers: on how many pages the H1 verdict of
+the collaborating arm differs from no_collaboration (same run). Descriptive; no acceptance rule.
+Code: experiments/exp4_collaboration/escalation_replay.py.
