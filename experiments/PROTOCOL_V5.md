@@ -844,3 +844,8 @@ Suf/Def rule. Here the verdict comes from the probability instead, on the existi
 (b) forced F1 at the fixed, unfitted cut p >= 0.5 (no tuning on dev). A threshold chosen on calib (as for
 H1) needs Ohm's pipeline on calib (~$2.6) and is a separate step, done only if (a) is competitive.
 Development data only; nothing here changes H1 or any reported result.
+Round OHM-P -- RESULT (dev, 298 pages, all with a score): ranking ROC-AUC / PR-AUC: H1 0.976 / 0.974;
+PhishDebate 0.955 / 0.945; Ohm Judge p 0.811 / 0.751. At p >= 0.5 (unfitted): F1 0.794, P 0.699, R 0.919,
+FPR 0.396, coverage 100% (vs Suf/Def rule 0.774 at coverage 0.84). Ohm's probabilities are coarse (179 of
+298 pages at 0.8). By the declared condition (a) is not competitive, so no calib run is made. Reading: the
+gap is upstream of the decision rule (the evidence and the Judge's reading of it), not only the Suf/Def rule.
