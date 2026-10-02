@@ -1,0 +1,18 @@
+{
+ "system": "H1+JL = frozen H1 + round JL",
+ "base": {
+  "file": "experiments/results_gpt4omini/final/FROZEN_H1.json",
+  "sha256": "83c4c98d84f064aaeb4cbb1a7f1caf42ffaa869172a319bf1958056b3921f15f"
+ },
+ "judge_lock_threshold": 0.9,
+ "rule": "if the Judge's judge_score_any >= 0.9 -> phishing; otherwise the frozen H1 verdict (P1/B2 routing unchanged)",
+ "threshold_chosen_on": "calib only: lowest Judge level with calib precision >= 0.95 (H1's own target); declared before dev",
+ "evidence": [
+  "PROTOCOL_V5 round JL (dev + dev-2 pooled F1 0.927 -> 0.936, FPR 0.060 unchanged, 4/500 pages, p = 0.125)",
+  "round JL addendum (3 dev-2 runs: JL >= H1 in all)",
+  "PR #6 goya: 3 dev runs, +0 to +3 pages, never worse"
+ ],
+ "approved": "Tinpat (team decision), 2026-10-02, before test3; test2 not scored with JL",
+ "scoring": "experiments/score_test2.py (arm H1JL_primary; a locked page scores 1.0); H1_primary kept as a secondary row",
+ "note": "If round TD is adopted, its decision steps replace P1/B2 under the same JL rule (a new freeze file)."
+}

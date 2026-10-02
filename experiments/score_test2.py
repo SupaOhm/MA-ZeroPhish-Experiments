@@ -26,6 +26,7 @@ import v5_learn as L  # noqa: E402
 import v5_precision_p1 as P  # noqa: E402
 
 FZ_PATH = ROOT / "experiments" / "results_gpt4omini" / "final" / "FROZEN_H1.json"
+JL_PATH = ROOT / "experiments" / "results_gpt4omini" / "final" / "FROZEN_H1JL.json"
 MODEL_TAG = "openrouter_openai_gpt-4o-mini-2024-07-18"
 BASE_ARMS = ("single_agent", "cot", "phishdebate", "single_agent_minimal", "cot_minimal")
 
@@ -49,6 +50,11 @@ def frozen_steps():
     if abs(p1[1] - fz["P1"]["threshold"]) > 1e-9 or abs(b2[1] - fz["B2"]["threshold"]) > 1e-9:
         raise SystemExit("REFUSED: rebuilt thresholds differ from FROZEN_H1.json")
     return p1, b2
+
+
+def jl_threshold() -> float:
+    """PROTOCOL_V5 round JL, adopted: Judge p >= this -> phishing, else H1 (FROZEN_H1JL.json)."""
+    return float(json.loads(JL_PATH.read_text(encoding="utf-8"))["judge_lock_threshold"])
 
 
 def holm(pvals: dict) -> dict:
@@ -79,6 +85,8 @@ def main() -> None:
     OUT = ROOT / "experiments" / "results_gpt4omini" / "final" / out
     OUT.mkdir(parents=True, exist_ok=True)
     p1, b2 = frozen_steps()
+    hi = jl_threshold()
+    ref = "H1JL_primary"
     dec = H.decisions(ours_pat)
     if not dec:
         raise SystemExit(f"no ledgers for our system at {ours_pat}")
@@ -94,7 +102,12 @@ def main() -> None:
         use_b2 = not all(av.values())
         routed_b2 += use_b2
         qh, th = (q2, b2[1]) if use_b2 else (q1, p1[1])
-        rows += [dict(base, arm="H1_primary", score=qh, verdict="phishing" if qh >= th else "benign"),
+        # JL: a confident Judge is not overruled; a locked page scores 1.0 (the rule decides phishing).
+        jp = e.get("judge_score_any")
+        locked = jp is not None and jp >= hi
+        rows += [dict(base, arm=ref, score=1.0 if locked else qh,
+                      verdict="phishing" if (locked or qh >= th) else "benign"),
+                 dict(base, arm="H1_primary", score=qh, verdict="phishing" if qh >= th else "benign"),
                  dict(base, arm="P1_secondary", score=q1, verdict="phishing" if q1 >= p1[1] else "benign"),
                  dict(base, arm="B2_secondary", score=q2, verdict="phishing" if q2 >= b2[1] else "benign")]
     n_base = {}
@@ -110,17 +123,20 @@ def main() -> None:
     comb = OUT / "_rows.jsonl"
     comb.write_text("".join(json.dumps(r) + "\n" for r in rows), encoding="utf-8")
     subprocess.run([P.PY, "-B", "-m", "experiments.data_eval.evaluate", "--manifest", str(L.DATA / "manifest.jsonl"),
-                    "--split", split, "--ledgers", str(comb), "--reference", "H1_primary", "--out", str(OUT)],
+                    "--split", split, "--ledgers", str(comb), "--reference", ref if (args.test3 or args.dry_run) else "H1_primary",
+                    "--out", str(OUT)],
                    cwd=ROOT, check=True, capture_output=True)
     comb.unlink()
     met = {r["arm"]: r for r in csv.DictReader(open(OUT / "metrics.csv")) if r["subset"] == "all"}
     cmp_ = {r["arm"]: r for r in csv.DictReader(open(OUT / "comparisons.csv"))}
-    baselines = [a for a in met if a not in ("H1_primary", "P1_secondary", "B2_secondary")]
+    ours = ("H1JL_primary", "H1_primary", "P1_secondary", "B2_secondary")
+    baselines = [a for a in met if a not in ours]
+    top = ref if (args.test3 or args.dry_run) else "H1_primary"
     adj = holm({a: float(cmp_[a]["mcnemar_p_value"]) for a in baselines})
     g = lambda r, k: f"{float(r[k]):.3f}" if r.get(k) else "  -  "
     for a in sorted(met, key=lambda a: -float(met[a]["forced_f1"])):
         r, c = met[a], cmp_.get(a)
-        x = (f" | baseline minus H1 {float(c['forced_f1_delta']):+.3f} [{float(c['forced_f1_ci_low']):+.3f},"
+        x = (f" | baseline minus {top[:4]} {float(c['forced_f1_delta']):+.3f} [{float(c['forced_f1_ci_low']):+.3f},"
              f"{float(c['forced_f1_ci_high']):+.3f}] p={float(c['mcnemar_p_value']):.3f}"
              + (f" Holm p={adj[a]:.3f}" if a in adj else "")) if c else ""
         print(f"  {a:28} P {g(r,'forced_precision')} R {g(r,'forced_recall')} FPR {g(r,'forced_fpr')} "
@@ -128,12 +144,13 @@ def main() -> None:
     S = max(baselines, key=lambda a: float(met[a]["forced_f1"]))
     d, lo, hi = (float(cmp_[S][k]) for k in ("forced_f1_delta", "forced_f1_ci_low", "forced_f1_ci_high"))
     sig = adj[S] < 0.05 and (hi < 0 or lo > 0)
-    h1_best = all(float(met["H1_primary"]["forced_f1"]) > float(met[a]["forced_f1"]) for a in baselines)
+    h1_best = all(float(met[top]["forced_f1"]) > float(met[a]["forced_f1"]) for a in baselines)
     reading = "WIN" if (h1_best and sig and d < 0) else ("LOSS" if (sig and d > 0) else "TIE")
     print(f"best baseline S = {S}; reading (pre-declared rule): {reading}" + ("   [DRY RUN: not a result]" if args.dry_run else ""))
     if args.test3:      # test3 plan amendment: no matched-precision endpoint
-        (OUT / "reading.json").write_text(json.dumps({"S": S, "reading": reading, "holm": adj, "pages": len(dec),
-                                                      "routed_b2": routed_b2}, indent=1), encoding="utf-8")
+        (OUT / "reading.json").write_text(json.dumps({"system": top, "S": S, "reading": reading, "holm": adj,
+                                                      "pages": len(dec), "routed_b2": routed_b2,
+                                                      "jl_threshold": hi}, indent=1), encoding="utf-8")
         return
     # Supplementary (appendix), declared before test2: H1's best recall at a threshold whose precision is
     # at least each baseline's precision (from H1's own scores on the same pages).

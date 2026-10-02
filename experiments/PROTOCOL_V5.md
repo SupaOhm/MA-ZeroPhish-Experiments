@@ -1333,3 +1333,16 @@ TD wording correction (2026-10-02, before any trop_fit capture or model call exi
 P1 on ALL fit rows and B2 on all fit rows + the 600 missing-evidence rows (score_test2.frozen_steps). The
 trop_fit rows are therefore added the same way -- to P1's and to B2's training rows -- not "to the route
 their availability gives" as written above. Everything else unchanged.
+
+## Round JL ADOPTED (team decision, 2026-10-02, before test3)
+Tinpat approved round JL for the final system: H1+JL = the frozen H1 plus "Judge p >= 0.9 -> phishing,
+otherwise H1" (threshold from calib, as declared in round JL). Frozen in
+results_gpt4omini/final/FROZEN_H1JL.json (with the SHA-256 of FROZEN_H1.json). test3 plan, updated
+accordingly: the primary system is H1JL_primary (score_test2.py --test3; a locked page scores 1.0 for
+PR-AUC), H1_primary is reported next to it as a secondary row; baselines, endpoints, Holm and the
+reading rule are unchanged; the pipeline run is still v4abdf (JL needs no model call); GO_TEST3.json may
+name "H1" or "H1+JL". test2 is not re-scored for the claim. If round TD is adopted, its P1/B2 replace H1's
+under the same JL rule, frozen in a new file before test3.
+Checks after the freeze (no model call): score_test2.py --dry-run (dev-2) gives H1JL_primary F1 0.939
+(P 0.958, R 0.920, FPR 0.040), equal to round JL's dev-2 number. JL on TR-OP (normal set; development data
+since the diagnosis; descriptive): changes 1 of 200 pages (correctly), F1 0.862 -> 0.868, FPR 0.240 unchanged.

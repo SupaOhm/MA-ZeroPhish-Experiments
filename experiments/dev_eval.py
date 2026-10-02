@@ -104,7 +104,7 @@ def main() -> None:
         if not (frozen.exists() and go.exists()):
             raise SystemExit("REFUSED: test3 needs FROZEN_H1.json and GO_TEST3.json (PROTOCOL_V5)")
         g = json.loads(go.read_text(encoding="utf-8"))
-        if g.get("decision") != "go" or g.get("system") != "H1" or args.variants != ["v4abdf"]:
+        if g.get("decision") != "go" or g.get("system") not in ("H1", "H1+JL") or args.variants != ["v4abdf"]:
             raise SystemExit(f"REFUSED: GO {g.get('decision')!r} for {g.get('system')!r}; the test3 pipeline "
                              f"variant must be v4abdf, got {args.variants}")
         allowed = ("test3",)
