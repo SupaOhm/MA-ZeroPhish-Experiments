@@ -891,3 +891,12 @@ full-system runs of the dev-2 pages that already exist (Exp 6 `mazerophish` arm 
 runs/v4_exp_rep1, runs/v4_exp_rep2; the ledgers behind `final/h1_all/repeats.json`). Reported per run: H1 and
 JL P / R / FPR / F1, pages changed and how many of them JL gets right. Descriptive: it does not change round
 JL's reading; it is evidence for the team's decision. Code: judge_lock_eval.py --repeats.
+Round JL addendum -- RESULT (results_gpt4omini/judge_lock/repeats.json). H1 reproduces repeats.json per run
+(0.9333 / 0.9347 / 0.9286).
+| dev-2 run | H1 F1 / FPR | JL F1 / FPR | pages changed (JL right) |
+|---|---|---|---|
+| runs/v4_exp | 0.933 / 0.040 | 0.939 / 0.040 | 1 (1) |
+| rep1 | 0.935 / 0.060 | 0.945 / 0.060 | 2 (2) |
+| rep2 | 0.929 / 0.050 | 0.934 / 0.050 | 1 (1) |
+Reading (descriptive): in every run JL changes 1-2 of 200 pages, always a missed phishing page the Judge
+had at p >= 0.9, and never raises FPR. Consistent with round JL; still small, and dev-2 is development data.

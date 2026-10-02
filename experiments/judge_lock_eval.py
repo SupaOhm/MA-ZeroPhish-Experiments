@@ -41,8 +41,35 @@ def mcnemar(rows, a, b):
     return {"a_only_right": a_only, "b_only_right": b_only, "p_exact": p}
 
 
+REPEATS = ("runs/v4_exp", "runs/v4_exp_rep1", "runs/v4_exp_rep2")
+
+
+def repeats() -> None:
+    """Addendum: the same rule on the three Exp 6 full-system runs of the dev-2 pages."""
+    res = {}
+    for run in REPEATS:
+        dec = E.decisions(f"{run}/exp6/exp6_phreshphish_test__shard*of*__mazerophish.jsonl")["mazerophish"]
+        rows = []
+        for c, e in sorted(dec.items()):
+            p = e.get("judge_score_any")
+            h1 = bool(X.h1(e, "test")[1])
+            rows.append({"case_id": c, "y": L.MAN[c]["label"] == "phishing", "judge_p": p, "h1": h1,
+                         "jl": True if (p is not None and p >= HI) else h1})
+        changed = [r for r in rows if r["jl"] != r["h1"]]
+        res[run] = {"h1": metrics(rows, "h1"), "jl": metrics(rows, "jl"), "changed": len(changed),
+                    "jl_right_on_changed": sum(r["jl"] == r["y"] for r in changed),
+                    "changed_cases": [r["case_id"] for r in changed]}
+        h, j = res[run]["h1"], res[run]["jl"]
+        print(f"{run:18} H1 F1 {h['f1']:.4f} FPR {h['fpr']:.3f} | JL F1 {j['f1']:.4f} FPR {j['fpr']:.3f} | "
+              f"changed {len(changed)}, JL right on {res[run]['jl_right_on_changed']}")
+    (OUT / "repeats.json").write_text(json.dumps(res, indent=1), encoding="utf-8")
+
+
 def main() -> None:
     OUT.mkdir(parents=True, exist_ok=True)
+    if "--repeats" in sys.argv:
+        repeats()
+        return
     rows = []
     for name, (pat, arm, capdir) in SETS.items():
         for c, e in sorted(E.decisions(pat)[arm].items()):
