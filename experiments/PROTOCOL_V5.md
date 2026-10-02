@@ -966,3 +966,9 @@ single + screenshot 0.965/0.727 -> H1 0.969/0.827; CoT + screenshot 0.944/0.787 
 PhishDebate + screenshot 0.906/0.840 -> H1 0.907/0.907.
 Observation (calib, development data): at the very high precision of the two minimal-prompt baselines
 (0.983-0.989) H1's recall on calib is far lower than theirs; at the other six operating points it is higher.
+test3 PLAN AMENDMENT (2026-10-02, user decision, BEFORE test3 is run or looked at): the matched-precision
+endpoint (E1) is DROPPED; the frozen thresholds file is kept for the record and not used. Disclosure: the
+decision came after seeing the calib operating points above (development data). Remaining PRIMARY endpoint:
+forced F1 of the frozen H1 vs each of the 8 baselines (paired bootstrap CI + exact McNemar, Holm over the 8),
+with accuracy, precision, recall, FPR, FNR reported for every system. Reading: H1 "beats" baseline b if the
+F1 difference is positive with Holm p < 0.05 and CI excluding 0; "best of all baselines" only if it beats all 8.
