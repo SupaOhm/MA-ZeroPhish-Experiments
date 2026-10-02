@@ -1142,3 +1142,7 @@ ADOPTION (both required): (1) PhreshPhish not worse: pooled dev + dev-2 F1 >= H1
 H1 - 0.01; (2) TR-OP (200, development data since the diagnosis) F1 >= H1 + 0.02. If adopted it is frozen
 before test3; a clean normal-set number then needs a new set (Mendeley, separate declared plan). Reported
 whatever it shows.
+TD wording correction (2026-10-02, before any trop_fit capture or model call exists): the frozen H1 trains
+P1 on ALL fit rows and B2 on all fit rows + the 600 missing-evidence rows (score_test2.frozen_steps). The
+trop_fit rows are therefore added the same way -- to P1's and to B2's training rows -- not "to the route
+their availability gives" as written above. Everything else unchanged.
