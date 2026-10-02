@@ -958,3 +958,11 @@ test-001 + test-002 (10,995 rows read; 1,059 duplicates, 256 short HTML, 111 bad
 Validation passed with no errors. Note: 999 campaign groups for 1,000 pages: one group contributed one
 phishing and one benign page (the one-per-group rule is applied per label, as in the existing builders).
 Captures (offline render, CT v2) are being built; nothing in test3 has been run or looked at.
+test3 matched-precision operating points FROZEN (2026-10-02; calib only; results_gpt4omini/final/test3_matched_thresholds.json).
+All 8 baselines run on calib (300 each, 0 failures). Calib precision / recall and H1 at t_b:
+single 0.974/0.753 -> H1 0.976/0.827; CoT 0.975/0.793 -> H1 0.976/0.827; PhishDebate 0.897/0.813 -> H1 0.897/0.933;
+single minimal 0.989/0.587 -> H1 1.000/0.187; CoT minimal 0.983/0.787 -> H1 0.988/0.533;
+single + screenshot 0.965/0.727 -> H1 0.969/0.827; CoT + screenshot 0.944/0.787 -> H1 0.949/0.867;
+PhishDebate + screenshot 0.906/0.840 -> H1 0.907/0.907.
+Observation (calib, development data): at the very high precision of the two minimal-prompt baselines
+(0.983-0.989) H1's recall on calib is far lower than theirs; at the other six operating points it is higher.
