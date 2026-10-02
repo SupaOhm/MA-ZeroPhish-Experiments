@@ -1079,3 +1079,8 @@ reason (the keys were requested in a note AFTER the JSON template). J1 = the sam
 written into the JSON answer template itself (variant v4abdfJ1, judge_corroboration=2); everything else,
 including the pilot criteria and the full-run / adoption rules above, unchanged. ONE amendment only: if J1
 fails the pilot, round J stops. Disclosure: the J1 pilot reuses the same 50 dev pages as the J pilot.
+PILOT RESULT J1 (2026-10-02, 50 pages, 0 failures): GO. Matrix well-formed 100%; finalization errors 0 vs 0;
+modal p share 0.26 vs 0.46; Judge AUC 0.968 vs 0.985 (within 0.02); $0.00459 vs $0.00443 per page.
+Full run started: v4abdfJ1 on fit, calib, dev, dev-2 (out runs/j1/<set>, cache runs/llm_cache). For dev-2,
+H1 is scored on the AF2 dev-2 ledger, whose findings equal those J1 replays (the 3 pages that were called
+anew in AF2 are now cached), so H1 and H1-J1 stay paired.

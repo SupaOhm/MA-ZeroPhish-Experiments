@@ -79,8 +79,8 @@ def main() -> None:
     if args.fit_collection:
         allowed = ("fit",)
     if args.dev2_collection:
-        if not args.case_list or args.variants != ["v4abdfAF2"]:
-            raise SystemExit("REFUSED: --dev2-collection needs --case-list and variant v4abdfAF2 (round AF2)")
+        if not args.case_list or args.variants not in (["v4abdfAF2"], ["v4abdfJ1"]):
+            raise SystemExit("REFUSED: --dev2-collection needs --case-list and variant v4abdfAF2 or v4abdfJ1")
         allowed = ("test",)
     if args.external:
         if args.dataset == "phreshphish":

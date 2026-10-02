@@ -26,7 +26,7 @@ def modal_share(dec):
 
 
 def main() -> None:
-    ref, new = G.load("v4abdf"), G.load("v4abdfJ")
+    ref, new = G.load("v4abdf"), G.load(sys.argv[1] if len(sys.argv) > 1 else "v4abdfJ")
     common = sorted(set(ref) & set(new))
     ref, new = {c: ref[c] for c in common}, {c: new[c] for c in common}
     y = {c: G.MAN[c] == "phishing" for c in common}
@@ -49,7 +49,7 @@ def main() -> None:
     res["criteria"] = {"matrix_and_validity": c1, "fewer_ties": c2, "auc_not_lower": c3}
     res["go"] = c1 and c2 and c3
     print(json.dumps(res, indent=1))
-    (ROOT / "experiments/results_gpt4omini/pilot_J.json").write_text(json.dumps(res, indent=1), encoding="utf-8")
+    (ROOT / f"experiments/results_gpt4omini/pilot_{(sys.argv[1] if len(sys.argv) > 1 else 'v4abdfJ')[6:]}.json").write_text(json.dumps(res, indent=1), encoding="utf-8")
 
 
 if __name__ == "__main__":
