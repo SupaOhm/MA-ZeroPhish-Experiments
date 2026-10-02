@@ -95,10 +95,10 @@ SMS/e-mail messages use the same pipeline (SMS/Email Agent + Judge) with a Judge
 | 1 dev / dev-2 | same, development data | 0.923 (tie) / 0.933 (highest) |
 | 2 | adaptive specialist selection | same F1, ~20% fewer model calls |
 | 3 | not double-counting shared evidence (code only) | pair F1 0.952, 0% double counting (others 15-48%) |
-| 4 | collaboration styles (3 runs) | 0.931-0.935, no significant difference; also none on conflict cases (B3) |
+| 4 | collaboration styles (3 runs) | 0.931-0.935, no significant difference; also none on conflict cases (B3). Round ESC (cache replay, $0): targeted rounds add a new finding 55-61% of the time and change the H1 verdict on 3-6% of pages, half right / half wrong. **Full debate was not a debate** (re-asked the Phase 2 prompt). Fixed and re-run once (round FD, rep1 pages, $0.69): F1 0.949 vs targeted 0.935 / no collaboration 0.940, not significant |
 | 5 (dev-2) | missing / broken evidence | retry recovers fully; only losing CT is significant (-0.041); FPR without HTML 0.11 |
 | 5 (test2) | the same conditions on the sealed pages | retry recovers fully; no condition degrades F1 significantly; several score above base because every withholding routes all 200 pages to B2 (base routes 40) -- a routing effect, not evidence helping |
-| 6 | ablations (3 runs) | every removal within 0.003, none significant |
+| 6 | ablations (3 runs) | every removal within 0.003, none significant; Ablations 1 (selection) and 3 (fixed gate) are the same configuration as the full system, Ablation 4 = the full-debate defect above -- only 2 and 5 are real removals |
 | M | SMS / e-mail (pre-cutoff) | declared rule F1 0.188; post hoc 0.889; baselines 0.907-0.970 |
 | TR-OP | external dataset | loss (0.85 vs 0.92-0.95); limitation, not on the team page |
 
@@ -110,7 +110,9 @@ All metrics incl. TPR/TNR/FNR/accuracy (dev, dev-2, messages): `results_gpt4omin
 2. Unzip the data package so `experiments/data_eval/data/phreshphish/...` exists (DATA_VERSION 545370aaf6ad14c6).
 3. Unzip `runs_for_teammate.zip` (Google Drive) at the repo root -> `runs/`: every ledger behind the
    results plus the response caches, so re-running an existing configuration costs $0 and gives identical
-   results. It contains real phishing content: never put it in a public repo, never open pages in a browser.
+   results -- except run 1's Exp 4 (`runs/v4_exp/exp4`): Exp 4/5/6 shared the cache concurrently and
+   overwrote each other's answers, so about half of its pages replay to the Exp 5/6 answers instead
+   (PROTOCOL_V5 round ESC). The repeats (`v4_exp_rep1/2`) replay exactly. It contains real phishing content: never put it in a public repo, never open pages in a browser.
 4. Your own `.env` outside the repo: `OPENROUTER_API_KEY=...`; pass `--env <path>`. Never commit it.
 5. Python 3.13 for the prototype; the venv at `..\MA_ZeroPhish_VerAJ_Ohm\.venv` for data tools and
    scoring (requests, bs4, pyarrow, tldextract 5.3.2).
@@ -142,6 +144,10 @@ Common flags: `--model openrouter:openai/gpt-4o-mini-2024-07-18 --env <.env> --m
    then test2 for every arm.
 3. **A new clean test set (test3)** from unused PhreshPhish shards, if the method is changed again.
    Declare first; use it once.
+4. **Full debate re-run done once** (round FD, ledger `runs/v4_exp_rep1_fdfix/`, add it to the shared runs
+   package). Optional: the same for rep2 (~$0.7) to report a 2-run mean. Key usage after FD: about $51.6 of $60.
+5. **Round JL** (branch `judge-lock`): "a confident Judge (p >= 0.9) is not overruled" is a candidate on
+   dev / dev-2 (+0.009 pooled F1, FPR unchanged, better in all 3 dev-2 runs); needs team approval and test3.
 
 ## 9. Rules we followed (please keep them)
 

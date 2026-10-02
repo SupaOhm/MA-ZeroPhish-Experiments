@@ -416,6 +416,24 @@ class TargetBuilding(unittest.TestCase):
         )
         self.assertEqual(set(targets), {"url", "metadata"})
 
+    def test_full_debate_shows_every_locator_not_a_phase2_prompt(self):
+        # focus=None is what Phase 2 passes; a debate re-invocation with it repeated
+        # the Phase 2 request byte for byte (PROTOCOL_V5 round ESC).
+        from phases.moderator import DebateFocus, _issue_kind, _targets
+
+        _, _, records = phase1and2("c1", config.MAZEROPHISH)
+        applicable = {r.agent for r in records if r.status is not Status.SKIPPED}
+        targets, cites, focus_of = _targets(
+            IssueSets(), frozenset(), 2, "full_debate", applicable, tuple(records)
+        )
+        every = tuple(sorted(h.locator for r in records for h in r.items))
+        self.assertTrue(every)
+        for agent in targets:
+            self.assertIsInstance(focus_of[agent], DebateFocus)
+            self.assertEqual(focus_of[agent].evidence_refs, every)
+            self.assertEqual(cites[agent], every)
+            self.assertEqual(_issue_kind(focus_of[agent]), "full_debate")
+
     def test_each_target_is_told_which_issue_it_answers(self):
         from phases.moderator import _targets
 

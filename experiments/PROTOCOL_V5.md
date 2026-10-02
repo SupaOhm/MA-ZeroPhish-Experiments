@@ -890,3 +890,94 @@ nothing of the team's changed. Artifact of a support unit = the field prefix of 
   (consistent with Exp 6).
 - Not measurable from these ledgers: cross-artifact common-cause pairs (group types and a dependence ground truth
   are not stored). Same-artifact units can be different facts of one page; the team's rule counts them dependent.
+
+## Round ESC: Exp 4's unmeasured secondary measures by cache replay (declared 2026-10-02, before computing; $0)
+Why: the paper's Exp 4 promises collaboration rounds, specialist reinvocations and escalation precision
+("the proportion of initiated rounds that resolve an identified issue or yield new eligible evidence"). They
+were never measured: the ledgers store only per-page totals. Exp 4 / Exp 6 show no accuracy effect; these
+measures say what the rounds actually do. Measurement only: nothing in the system changes.
+Method: replay the stored Exp 4 runs (runs/v4_exp, cache runs/llm_cache; repeats runs/v4_exp_rep1 / _rep2 with
+llm_cache_rep1 / _rep2) for the arms that collaborate (mazerophish = targeted, full_debate), same frozen v4
+configs and captures, with the HTTP layer replaced by a function that raises: a request not in the cache stops
+that page instead of calling the API (no spend, no new model output). Rounds are observed by wrapping the
+Moderator's own gate and target functions; the Judge is not called extra.
+Validation (fixed now): a page counts only if the replayed decision equals the stored one on verdict,
+model_calls, input_tokens, output_tokens and judge_score_any. Pages that miss the cache or differ are listed
+and excluded; if more than 5% of a run's pages fail, that run is reported as partial.
+Measures per arm and run: pages with >= 1 opened round; rounds per page; reinvocations per page; revisions
+accepted / rejected; escalation precision = share of opened rounds after which (a) at least one issue present
+at the round's start is gone, or (b) at least one new eligible finding (field, cited line, direction) exists.
+(a) and (b) are also reported separately. Plus, from the stored ledgers: on how many pages the H1 verdict of
+the collaborating arm differs from no_collaboration (same run). Descriptive; no acceptance rule.
+Code: experiments/exp4_collaboration/escalation_replay.py.
+Round ESC -- RESULT (results_gpt4omini/exp4_escalation/; $0: no request missed the cache, no API call).
+Validation: repeats rep1 and rep2 reproduce every stored decision exactly (200 / 200 pages, both arms). Run 1
+(runs/v4_exp) does NOT: 95 / 200 (targeted) and 57 / 200 (full debate) pages differ from the Exp 4 ledger,
+while the replay equals the stored Exp 5 `base` / Exp 6 `mazerophish` decisions of the same run (e.g.
+pp-000f2efa7bc7: 7 calls, 14218 tokens). Cause: Exp 4, 5 and 6 of run 1 shared one cache and ran at the same
+time, so identical requests were answered twice and the later answer overwrote the earlier in the cache. Run 1
+is therefore partial by the declared rule (its numbers below are on the reproducible pages only), and HANDOFF's
+"re-running gives identical results" holds for the repeats, not for every page of run 1's Exp 4.
+| run | arm | pages | pages with a round | rounds / page | reinvocations / page | revisions accepted / rejected | escalation precision | resolved (a) | new finding (b) |
+|---|---|---|---|---|---|---|---|---|---|
+| rep1 | targeted | 200 | 194 | 1.67 | 3.02 | 532 / 72 | 0.551 | 0.204 | 0.551 |
+| rep2 | targeted | 200 | 192 | 1.64 | 2.98 | 530 / 65 | 0.561 | 0.223 | 0.558 |
+| run 1 (partial) | targeted | 105 | 99 | 1.62 | 2.97 | 272 / 40 | 0.612 | 0.259 | 0.612 |
+| rep1 | full debate | 200 | 199 | 1.00 | 3.79 | 716 / 42 | 0.000 | 0.000 | 0.000 |
+| rep2 | full debate | 200 | 197 | 0.99 | 3.75 | 712 / 38 | 0.000 | 0.000 | 0.000 |
+| run 1 (partial) | full debate | 143 | 140 | 0.98 | 3.72 | 505 / 27 | 0.000 | 0.000 | 0.000 |
+Issue identity for (a): (kind, affected fields, relevant agents); with the evidence references also part of the
+identity (stricter "same issue"), (a) is 0.59-0.65 -- the difference is issues whose cited lines changed.
+H1 verdict vs no_collaboration in the same run (stored ledgers, h1_flips.json): targeted changes 8 / 5 / 12 of
+200 pages (run 1 / rep1 / rep2), right on 4 / 2 / 6 and wrong on 4 / 3 / 6 of them; full debate changes 1 / 0 / 0.
+DEFECT FOUND (full debate is not a debate): `moderator._targets` re-invokes every agent with focus = None, and
+`agents/llm.py` then builds exactly the Phase 2 prompt (no issue, no peer lines), so each "debate" call repeats
+an earlier request byte for byte and returns the same answer. Measured on 10 rep1 pages: 39 of 88 full-debate
+requests repeat an earlier request of the same page; targeted: 0 of 83. Consequences: Exp 4 "full debate" and
+Exp 6 Ablation 4 are "no collaboration" plus repeated calls (their F1 equals no collaboration's in rep1 / rep2),
+and their call / token counts include repeats that the cache answered. Not fixed here: a real full debate needs
+new model calls (cost) and a team decision.
+READING (descriptive): targeted collaboration opens 1.6-1.7 rounds on almost every page; 55-61% of rounds add a
+new finding, about 20-26% remove an open issue, and the H1 verdict changes on 3-6% of pages, half for the better
+and half for the worse -- which is why collaboration shows no accuracy effect. Nothing in the system changed.
+
+## Round FD: full debate re-run with the fixed code (declared 2026-10-02, before running; NOT yet approved to run)
+Why: round ESC found that full debate re-asked the Phase 2 prompt (no peer evidence), so Exp 4 "full debate" and
+Exp 6 Ablation 4 never measured a debate. The code now shows every specialist's cited lines (DebateFocus).
+What: ONE run of the full_debate arm (frozen v4 config, BASELINE_FULL_DEBATE) on the same 200 dev-2 pages as
+repeat rep1, with rep1's response cache (runs/llm_cache_rep1) so Phase 2 calls are rep1's answers (paired with
+rep1's targeted and no_collaboration arms); only debate rounds and the Judge are new calls. Same model
+(openrouter:openai/gpt-4o-mini-2024-07-18) and provider settings as rep1. One process (no concurrent writers).
+Output: runs/v4_exp_rep1_fdfix/exp4 (new; nothing existing is overwritten).
+Budget: key limit $60, usage $50.90 (checked 2026-10-02). Estimate $1.0-1.5. Pilot first: 10 pages, then the
+key usage is read again; if 200 pages would cost more than $2.5 the run stops and is reported as stopped.
+Failed calls are retried by the runner as usual, never scored; any failure is reported.
+Reported (descriptive; H1 does not change): H1 forced P / R / FPR / F1 of fixed full debate vs rep1 targeted and
+vs rep1 no_collaboration (paired bootstrap 95% CI, exact McNemar); model calls and tokens per page; round-ESC
+measures for the new arm by cache replay (escalation precision, verdict changes vs no_collaboration).
+Reading fixed now: the paper's Exp 4 / Ablation 4 full-debate rows are replaced by this run (old rows kept here,
+labelled defective). No acceptance rule: this measures an arm, it does not select a system.
+Code: experiments/exp4_collaboration/run_full_debate_fixed.py.
+Round FD -- RESULT (results_gpt4omini/exp4_full_debate_fixed/result.json; exp4_escalation/result_fdfix.json).
+Run: 200 / 200 pages, 0 failures, 0 HTTP 429; every decision model_id openrouter:openai/gpt-4o-mini-2024-07-18;
+956 new API calls, cost $0.6906 as reported by OpenRouter in the responses (pilot 10 pages $0.0395, then the
+other 190). Departure from the declaration, disclosed: after the pilot the cost was read from the responses'
+own `usage.cost`, not from the key endpoint (the key file is not readable from this session).
+Validation: rep1's arms score exactly their repeats.json values (targeted 0.9347, no collaboration 0.9400, old
+full debate 0.9400); a cache replay of the new run reproduces all 200 stored decisions.
+| arm (same 200 dev-2 pages, H1) | P | R | FPR | F1 | calls / page | input tokens / page |
+|---|---|---|---|---|---|---|
+| full debate, fixed | 0.959 | 0.940 | 0.040 | 0.949 | 8.60 | 28,689 |
+| targeted (rep1) | 0.939 | 0.930 | 0.060 | 0.935 | 7.83 | 24,908 |
+| no collaboration (rep1) | 0.940 | 0.940 | 0.060 | 0.940 | 4.81 | 12,616 |
+| full debate, old (rep1, defective) | 0.940 | 0.940 | 0.060 | 0.940 | 8.60 | 23,278 |
+Fixed full debate vs targeted: +0.015 [-0.018, +0.049], McNemar 7 vs 4, p = 0.549. Vs no collaboration:
++0.009 [-0.024, +0.044], 7 vs 5, p = 0.774. Neither significant (one run, 200 pages).
+Round-ESC measures of the fixed debate: 0.995 rounds and 3.79 reinvocations per page; revisions accepted 725 /
+rejected 33; escalation precision 0.749 (new finding 0.749, issue resolved 0.291) vs 0.000 for the old code and
+0.55-0.61 for targeted rounds.
+READING (descriptive, as declared): with the defect fixed, full debate now changes findings (75% of rounds add a
+new finding) and scores the highest F1 of the four arms on these pages, but the difference is not significant
+and it costs 1.8x the calls of no collaboration. Exp 4 / Exp 6 Ablation 4 report this run as "full debate";
+the old rows are labelled defective. H1 and every reported result are unchanged. Ledger:
+runs/v4_exp_rep1_fdfix/ (not in Git; add it to the shared runs package).
