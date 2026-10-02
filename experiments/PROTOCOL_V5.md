@@ -994,3 +994,11 @@ balance check): fit, calib, dev, dev-2 with the pipeline; the per-agent scores (
 decision step (P1 and B2 retrained, routing unchanged); adoption by the same rule as M1/BR (CV on fit both
 criteria; pooled dev + dev-2 F1 > H1 and precision not lower by > 0.01). If adopted, the new version replaces
 H1 for test3 (test3 not yet run), with the test3 plan unchanged otherwise.
+PILOT RESULT (2026-10-02, 50 dev pages, 0 failures, ~$0.004/page): NO-GO, round AF stops (no full run).
+Per-agent score AUC: URL 0.929, Web Structure 0.918, Metadata 0.883, Content 0.845 (criterion 2 met);
+returned: URL 100%, Web Structure 100%, Metadata 94%, Content 78% (criterion 1 failed); findings per page
+8.80 vs 9.26 (stable), but the Judge's AUC fell 0.985 -> 0.926 (criterion 3 failed: asking each agent for an
+overall score changed its findings enough to hurt the Judge). Descriptive only: the mean of the agents'
+scores reaches AUC 0.94 (below the Judge's 0.985 on the reference run), i.e. no single agent's own view and
+no simple average of them matches the Judge combining all agents' evidence. Option specialist_self_score
+stays off by default; H1 stays the system for test3. Script: experiments/pilot_AF_score.py.

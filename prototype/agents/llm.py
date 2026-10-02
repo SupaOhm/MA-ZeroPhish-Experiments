@@ -69,6 +69,15 @@ In addition to the findings, give your assessment of the page as a whole: how li
 this page is phishing, judged from everything you can see (screenshot, page text, markup). Add it
 to the JSON object as "page_p_phishing": a number between 0 and 1. The rules for findings above
 are unchanged."""
+# PROTOCOL_V5 round AF: every specialist also gives a phishing probability judged from its OWN
+# evidence only (agent-level scores, MultiPhishGuard style). Used by the learned decision step only;
+# the Judge never sees it.
+SELF_SCORE = """
+
+In addition to the findings, give your own assessment: how likely it is that this submission is
+phishing, judged ONLY from YOUR evidence lines above (not from what other agents might see). Add it
+to the JSON object as "suspicion": a number between 0 and 1. The rules for findings above are
+unchanged."""
 VISION_RULE = ("\nA finding about the attached screenshot cites line screenshot:V0 and quotes "
                "the visible text or element it refers to (max 80 characters).")
 
@@ -146,7 +155,8 @@ class LLMSpecialists:
                  baseline_view: tuple[int, int] | None = None, expand_on_focus: bool = False,
                  vision_root=None, task_definition: bool = False,
                  peer_lines_uncitable: bool = False, tools: tuple = (), brand_tools=None,
-                 strength_scale: bool = False, page_assessment: bool = False):
+                 strength_scale: bool = False, page_assessment: bool = False,
+                 self_score: bool = False):
         """max_lines / max_chars: evidence limits per field (None = v1 defaults 40 x 200;
         v3 = 80 x 300, PROTOCOL_V3)."""
         self.model, self.max_findings, self.max_tokens = model, max_findings, max_tokens
@@ -163,6 +173,8 @@ class LLMSpecialists:
         self.strength_scale = strength_scale     # PROTOCOL_V5 round G
         self.page_assessment = page_assessment   # PROTOCOL_V5 round H
         self.content_page_p = None               # first (independent) Content Agent reading
+        self.self_score = self_score             # PROTOCOL_V5 round AF
+        self.agent_p = {}                        # first (independent) reading per agent
         self.peer_lines_uncitable = peer_lines_uncitable   # v4 3a
         # v4 round 4: deterministic tools (agents/tools.py) -> citable `<field>:F<n>` lines.
         # T2 -> html (Web Structure); T1 -> page_content (Content); T5 -> url (URL).
@@ -255,6 +267,11 @@ class LLMSpecialists:
                                         PAGE_ASSESSMENT + "\n\nAnswer with JSON only:", 1)
                 system = system.replace('"strength": "..."}]}',
                                         '"strength": "..."}], "page_p_phishing": <number from 0 to 1>}', 1)
+            if self.self_score:
+                system = system.replace("\n\nAnswer with JSON only:",
+                                        SELF_SCORE + "\n\nAnswer with JSON only:", 1)
+                system = system.replace('"strength": "..."}]}',
+                                        '"strength": "..."}], "suspicion": <number from 0 to 1>}', 1)
             if self.task_definition:
                 from task_definition import TASK_DEFINITION
                 system = TASK_DEFINITION + system
@@ -282,6 +299,13 @@ class LLMSpecialists:
                     p = float(d.get("page_p_phishing"))
                     if 0.0 <= p <= 1.0:
                         self.content_page_p = p
+                except (TypeError, ValueError):
+                    pass
+            if self.self_score and focus is None and d is not None and agent not in self.agent_p:
+                try:
+                    p = float(d.get("suspicion"))
+                    if 0.0 <= p <= 1.0:
+                        self.agent_p[agent] = p
                 except (TypeError, ValueError):
                     pass
             if d is None or not isinstance(d.get("findings"), list):
@@ -350,4 +374,5 @@ class LLMSpecialists:
                 "visual_findings": self.visual_findings,
                 "screenshot_refused": self.screenshot_refused,
                 "content_page_p": self.content_page_p,
+                "agent_p": dict(self.agent_p),
                 "ungrounded_rate": (self.dropped_bad_line + self.dropped_bad_quote) / n if n else None}

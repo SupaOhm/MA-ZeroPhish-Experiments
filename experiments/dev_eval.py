@@ -38,6 +38,7 @@ def variants(model: str) -> dict:
             "v4abdfG": replace(v4abd, judge_shows_evidence=True, specialist_strength_scale=True,
                                judge_requires_deception=True),
             "v4abdfH": replace(v4abd, judge_shows_evidence=True, specialist_page_assessment=True),
+            "v4abdfAF": replace(v4abd, judge_shows_evidence=True, specialist_self_score=True),
             # PROTOCOL_V5 round B2: the v4abdf pipeline with evidence withheld exactly as in Exp 5.
             **{f"v4abdf_x{k}": replace(v4abd, judge_shows_evidence=True, evidence_removal=frozenset(w))
                for k, w in _b2_withheld().items()}}

@@ -90,6 +90,8 @@ class Config:
     judge_requires_deception: bool = False
     # PROTOCOL_V5 round H: the Content Agent also reports its reading of the page as a whole.
     specialist_page_assessment: bool = False
+    # PROTOCOL_V5 round AF: every specialist also reports a phishing probability from its own evidence.
+    specialist_self_score: bool = False
     cost_scale: float = 1000.0
     budget: CaseBudget = field(default_factory=lambda: CaseBudget(100.0, 100.0, 20.0))
     evidence_removal: frozenset[str] = frozenset()

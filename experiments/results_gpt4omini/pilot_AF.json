@@ -1,0 +1,36 @@
+{
+ "pages": 50,
+ "agents": {
+  "url": {
+   "ran": 50,
+   "returned": 1.0,
+   "auc": 0.9288
+  },
+  "web_structure": {
+   "ran": 50,
+   "returned": 1.0,
+   "auc": 0.9184
+  },
+  "content": {
+   "ran": 50,
+   "returned": 0.78,
+   "auc": 0.8447368421052631
+  },
+  "metadata": {
+   "ran": 50,
+   "returned": 0.94,
+   "auc": 0.8831521739130435
+  }
+ },
+ "findings_per_page_ref": 9.26,
+ "findings_per_page_AF": 8.8,
+ "judge_auc_ref": 0.9848,
+ "judge_auc_AF": 0.9264,
+ "usd_per_page_AF_incl_cached": 0.004393569,
+ "criteria": {
+  "returned>=0.90": false,
+  "two_agents_auc>=0.80": true,
+  "findings_and_judge_stable": false
+ },
+ "go": false
+}
