@@ -1,0 +1,47 @@
+{
+  "case_id": "c6-forces-collaboration",
+  "submission_type": "message",
+  "payload": "Please confirm your delivery address: http://track.example-carrier.test/confirm",
+  "label": "phishing",
+  "inapplicable": [],
+  "artifacts": [
+    {"field": "message_body", "content": "Please confirm your delivery address: http://track.example-carrier.test/confirm", "instrument": "submission"},
+    {"field": "url", "content": "http://track.example-carrier.test/confirm", "instrument": "link_processor"},
+    {"field": "redirect_chain", "content": "no redirect", "instrument": "headless_browser"},
+    {"field": "html", "content": "<form action=\"http://collect.example.test/confirm\">", "instrument": "headless_browser"},
+    {"field": "dom", "content": "<form action=\"http://collect.example.test/confirm\">", "instrument": "headless_browser"},
+    {"field": "page_resources", "content": "css and images served from the carrier's own origin", "instrument": "resource_fetcher"},
+    {"field": "page_content", "content": "Confirm your delivery address to avoid a return to sender", "instrument": "headless_browser"},
+    {"field": "screenshot", "content": "[render: delivery confirmation form, carrier mark]", "instrument": "headless_browser"},
+    {"field": "brand_reference", "content": "matches carrier mark on file", "instrument": "brand_reference_lookup"},
+    {"field": "dns", "content": "A 203.0.113.61", "instrument": "dns_client"},
+    {"field": "registration", "content": "created 5 days ago", "instrument": "registration_client"},
+    {"field": "tls", "content": "DV, issued 5 days ago", "instrument": "tls_client"},
+    {"field": "ct", "content": "1 log entry, 5 days ago", "instrument": "ct_client"},
+    {"field": "hosting", "content": "shared hosting, AS64513", "instrument": "hosting_client"}
+  ],
+  "failures": {},
+  "findings": {
+    "message": [
+      {"observation": "requests address confirmation via an embedded link", "field": "message_body", "direction": "phishing", "strength": "marginal"}
+    ],
+    "url": [
+      {"observation": "registrable domain unrelated to the declared carrier", "field": "url", "direction": "phishing", "strength": "consistent"}
+    ],
+    "web_structure": [
+      {"observation": "form posts cross-domain", "field": "html", "direction": "phishing", "strength": "distinctive"}
+    ],
+    "content": [
+      {"observation": "presentation matches the declared brand's own template", "field": "screenshot", "direction": "benign", "strength": "distinctive"}
+    ],
+    "metadata": [
+      {"observation": "domain registered five days before observation", "field": "registration", "direction": "phishing", "strength": "consistent"}
+    ]
+  },
+  "revisions": {
+    "content": [
+      {"observation": "presentation matches the declared brand's own template", "field": "screenshot", "direction": "benign", "strength": "distinctive"},
+      {"observation": "rendered text requests credential entry despite the matching template", "field": "page_content", "direction": "phishing", "strength": "consistent"}
+    ]
+  }
+}

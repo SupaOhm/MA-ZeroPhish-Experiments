@@ -1,0 +1,55 @@
+{
+ "status": "PROPOSAL ONLY - not frozen, not used by any runner",
+ "tau": 0.05,
+ "risk_target_met": false,
+ "calib_table": [
+  {
+   "tau": 0.05,
+   "stopped_states": 0,
+   "stop_rate": 0.0,
+   "error_rate_when_stopping": null
+  },
+  {
+   "tau": 0.1,
+   "stopped_states": 0,
+   "stop_rate": 0.0,
+   "error_rate_when_stopping": null
+  },
+  {
+   "tau": 0.15,
+   "stopped_states": 0,
+   "stop_rate": 0.0,
+   "error_rate_when_stopping": null
+  },
+  {
+   "tau": 0.2,
+   "stopped_states": 0,
+   "stop_rate": 0.0,
+   "error_rate_when_stopping": null
+  },
+  {
+   "tau": 0.25,
+   "stopped_states": 0,
+   "stop_rate": 0.0,
+   "error_rate_when_stopping": null
+  },
+  {
+   "tau": 0.3,
+   "stopped_states": 0,
+   "stop_rate": 0.0,
+   "error_rate_when_stopping": null
+  },
+  {
+   "tau": 0.4,
+   "stopped_states": 0,
+   "stop_rate": 0.0,
+   "error_rate_when_stopping": null
+  },
+  {
+   "tau": 0.5,
+   "stopped_states": 0,
+   "stop_rate": 0.0,
+   "error_rate_when_stopping": null
+  }
+ ]
+}

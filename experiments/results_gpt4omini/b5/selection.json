@@ -1,0 +1,30 @@
+{
+ "learner": "L3_boost_d2_r100",
+ "cv": {
+  "S0_p1": {
+   "recall_at_p95": 0.855457227138643,
+   "average_precision": 0.965353991876152,
+   "n_features": 60,
+   "n_fit": 839
+  },
+  "S1_b5a": {
+   "recall_at_p95": 0.8672566371681416,
+   "average_precision": 0.9642494061127116,
+   "n_features": 76,
+   "n_fit": 839
+  },
+  "S2_b5b": {
+   "recall_at_p95": 0.8525073746312685,
+   "average_precision": 0.9656046033687626,
+   "n_features": 65,
+   "n_fit": 839
+  },
+  "S3_both": {
+   "recall_at_p95": 0.8672566371681416,
+   "average_precision": 0.9628210743348614,
+   "n_features": 81,
+   "n_fit": 839
+  }
+ },
+ "chosen": "S0_p1"
+}

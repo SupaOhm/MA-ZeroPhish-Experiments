@@ -1,0 +1,50 @@
+{
+ "system": "MA-ZeroPhish final = v4abdf pipeline + decision step H1",
+ "routing": "if any of html, dom, page_content, ct is unavailable in the received evidence -> B2 decision, else P1 decision (label-free)",
+ "pipeline": "experiments/results_gpt4omini/v4_final/FROZEN.json (variant v4abdf)",
+ "P1": {
+  "learner": "L3_boost_d2_r100",
+  "training": "839 complete fit pages (runs/v5f/fit)",
+  "threshold": 0.5915027060020187,
+  "calibration": "Platt on calib (runs/v5f/calib), high-precision threshold (calib precision >= 0.95)"
+ },
+ "B2": {
+  "learner": "L3_boost_d2_r100",
+  "training": "839 complete fit pages + 600 missing-evidence rows (runs/b2/fit, Exp 5 conditions)",
+  "threshold": 0.5456373853840397,
+  "calibration": "as P1"
+ },
+ "rebuild": "experiments/hybrid_eval.py (deterministic; thresholds reproduce exactly)",
+ "code_commit": "5ab93b18399370cead99a2a6a14595ff704211f8",
+ "training_ledgers_sha256": {
+  "runs/b2/fit/devv4_phreshphish_fit__shard0of4__ma_v4abdf_xBROWSER.jsonl": "df26a0874c974851baed760bf036dac8fbeb90f0aa88bb3b4fc64a9fff422aa2",
+  "runs/b2/fit/devv4_phreshphish_fit__shard0of4__ma_v4abdf_xHTML.jsonl": "dabd1f053433e03a771d5f258415611f1da1d976d5a8289d620f12e90cde10e2",
+  "runs/b2/fit/devv4_phreshphish_fit__shard0of4__ma_v4abdf_xNET.jsonl": "3c9f71799222c7a39039c125b4c45e148c53e6d564753a4a08651f24eec886d4",
+  "runs/b2/fit/devv4_phreshphish_fit__shard1of4__ma_v4abdf_xBROWSER.jsonl": "19473955c7aa2f57a9cd408ae7912513353e8ea86295177379ff43981b9b54a6",
+  "runs/b2/fit/devv4_phreshphish_fit__shard1of4__ma_v4abdf_xHTML.jsonl": "18f68da6caaf23dfd441e4d73d4c1bae1d99d7c9adef1c0807f779a0462fbfee",
+  "runs/b2/fit/devv4_phreshphish_fit__shard1of4__ma_v4abdf_xNET.jsonl": "5c02c8ed4df6e2321f3a74893042c12c21a28d29a8fb43d2c899472c800a448a",
+  "runs/b2/fit/devv4_phreshphish_fit__shard2of4__ma_v4abdf_xBROWSER.jsonl": "1c43486876dd9fabd6ed656a6c26891cc6b7231d9e371ac07065c798ffb9369e",
+  "runs/b2/fit/devv4_phreshphish_fit__shard2of4__ma_v4abdf_xHTML.jsonl": "85634c520439fedb8a8c84e5720176a4c184c2598157a9bc25937943e752ece8",
+  "runs/b2/fit/devv4_phreshphish_fit__shard2of4__ma_v4abdf_xNET.jsonl": "358343f71e1294a1292bf010a6259060bce02c6385ab369c45f617d187ef9c67",
+  "runs/b2/fit/devv4_phreshphish_fit__shard3of4__ma_v4abdf_xBROWSER.jsonl": "c81ae884f6c9d5845a940c29dcf4ebb41c453a3c0485b2bce562ed7779017c09",
+  "runs/b2/fit/devv4_phreshphish_fit__shard3of4__ma_v4abdf_xHTML.jsonl": "48f7d598a4180338f8ec24bea8a898214990c97c388334efe3e2999ccb1a00b3",
+  "runs/b2/fit/devv4_phreshphish_fit__shard3of4__ma_v4abdf_xNET.jsonl": "846f612d4093d43845a56f3b3c023ad011be0fa654cf271db15acc69a406e23e",
+  "runs/v5f/calib/devv4_phreshphish_calib__shard0of3__ma_v4abdf.jsonl": "9354636e558ab8be4e6a2393598ee6b33d06c6bcf79622d039e4dcb00d2a6bb7",
+  "runs/v5f/calib/devv4_phreshphish_calib__shard1of3__ma_v4abdf.jsonl": "f04f85bd8f20072013e01a4df5d71445008937484f1549f5257ba95ded11ec07",
+  "runs/v5f/calib/devv4_phreshphish_calib__shard2of3__ma_v4abdf.jsonl": "db15ef5eea7a0e5553acfbf59340da55d0e23ba3c1aa4456a2e2788e9823b282",
+  "runs/v5f/fit/devv4_phreshphish_fit__shard0of8__ma_v4abdf.jsonl": "e9dc0b5da8c3768a7fa97020371f61d936d4b96be0d9c9ad33ce59044b286f59",
+  "runs/v5f/fit/devv4_phreshphish_fit__shard1of8__ma_v4abdf.jsonl": "42dc2ae4d768a91369c1122c1729ffd4db965ef8d31312bac9a018694a0b6919",
+  "runs/v5f/fit/devv4_phreshphish_fit__shard2of8__ma_v4abdf.jsonl": "0a81de6f15b166fe724b26e3b67f84170dc8531f755f12ba28b2709526e056dc",
+  "runs/v5f/fit/devv4_phreshphish_fit__shard3of8__ma_v4abdf.jsonl": "7140b50e4534d0c8f9796069681d2b618b525b1bfda89fd29a66bde3f131eeef",
+  "runs/v5f/fit/devv4_phreshphish_fit__shard4of8__ma_v4abdf.jsonl": "21029ffecd6c87eb1bf260111f40cf1782f12cd05bc7c8e4bd6f2534b0a0fe22",
+  "runs/v5f/fit/devv4_phreshphish_fit__shard5of8__ma_v4abdf.jsonl": "af54d37f13783601851767b700f4b51681413c99fd8a7beb1aadcf20962e9f68",
+  "runs/v5f/fit/devv4_phreshphish_fit__shard6of8__ma_v4abdf.jsonl": "ae67ce1b8643470f7074d7fe605b0a465a49d7826acb160acb9578fb6ac6304c",
+  "runs/v5f/fit/devv4_phreshphish_fit__shard7of8__ma_v4abdf.jsonl": "e601e2de8a3a1c9a8c1a4b8b80c9cead13aecef6e101b2552a9ca32db7349767"
+ },
+ "model": "openrouter:openai/gpt-4o-mini-2024-07-18",
+ "frozen_at": "2026-10-01",
+ "secondary_reported_on_test2": [
+  "P1",
+  "B2"
+ ]
+}

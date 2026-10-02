@@ -41,7 +41,15 @@ AGENT_REQUIRED = {
     "web_structure": frozenset({"html", "dom"}),
     "content": frozenset({"page_content", "screenshot"}),
     "message": frozenset({"message_body"}),
-    "metadata": frozenset({"dns", "registration", "tls", "hosting"}),
+    # CT added (2026-09-29, approved by the advisor). Stated precisely: Table 1 lists
+    # CT under this agent's ADDITIONAL ACQUISITION, and its analytical responsibility
+    # as "DNS, registration, TLS, and hosting-record structure" -- CT is not named
+    # there. CT records are certificates (TLS-record evidence), and the operating
+    # constraint on this agent concerns certificate issuer and validity, so CT is
+    # treated as analysable required evidence; Table 1 must be updated to match.
+    # Without it the agent was `no_data` on every retrospective case (only CT is
+    # observable after the fact).
+    "metadata": frozenset({"dns", "registration", "tls", "ct", "hosting"}),
 }
 
 # `U_g` -- each agent's declared acquisition tools, from the table's

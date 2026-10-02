@@ -27,8 +27,13 @@ def normalize(
     outcomes = []
     provenance = []
 
+    reasons: dict[str, str] = {}
     for fetch in fetches:
         availability[fetch.field] = fetch.availability
+        if fetch.availability is SourceAvailability.APPLICABLE_UNAVAILABLE:
+            reasons[fetch.field] = fetch.failure_reason or "unknown"
+        else:
+            reasons.pop(fetch.field, None)      # a later attempt obtained it
         if fetch.availability is SourceAvailability.OBTAINED:
             normalized[fetch.field] = fetch.content
             outcomes.append(InstrumentOutcome(fetch.instrument, True, None, 1.0))
@@ -57,4 +62,5 @@ def normalize(
         instrument_outcomes=tuple(outcomes),
         provenance=tuple(provenance),
         parent_object_id=parent_object_id,
+        unavailable_reasons=reasons,
     )

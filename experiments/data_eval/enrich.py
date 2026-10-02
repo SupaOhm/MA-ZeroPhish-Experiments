@@ -131,37 +131,79 @@ def _url(r) -> str:
     return next(n[4:] for n in r.notes if n.startswith("url="))
 
 
+def ct_names_covering(host: str) -> tuple[str, str | None]:
+    """The two certificate names that can cover `host` (RFC 6125 / browser rules): the
+    exact name, and a wildcard over its parent (`*.parent`, one label only). No wildcard
+    for a host with fewer than three labels -- its parent would be a TLD."""
+    labels = host.lower().rstrip(".").split(".")
+    return host.lower().rstrip("."), ("*." + ".".join(labels[1:]) if len(labels) >= 3 else None)
+
+
+def cert_covers(cert: dict, host: str) -> str | None:
+    """'exact' / 'wildcard' if a SAN/CN name of `cert` covers `host`, else None."""
+    exact, wild = ct_names_covering(host)
+    names = {n.strip().lower() for n in (cert.get("name_value") or "").split()} | {
+        (cert.get("common_name") or "").strip().lower()}
+    if exact in names:
+        return "exact"
+    if wild and wild in names:
+        return "wildcard"
+    return None
+
+
 def ct(rows, data: Path, args) -> None:
+    """CT v2: certificates that COVER the submitted host (exact name, or a wildcard over
+    its parent), valid on or before the observation date. v1 fell back to the
+    registrable domain's certificates when the host had none, which reported a shared
+    platform's history (e.g. webflow.io) as the host's; and its `first` cert was taken
+    after truncating to 50. v1 records are kept as ct_v1.json for audit."""
     for n, r in enumerate(rows, 1):
         d = data / "evidence" / r.case_id
-        if (d / "ct.json").exists() and not args.force:
+        out = d / "ct.json"
+        old = _load_json(out)
+        # Done unless crt.sh was unreachable: a transport failure is not evidence and is
+        # retried on the next pass (never kept as the case's CT outcome).
+        if (old and old.get("rule") == "covering_v2" and not args.force
+                and old.get("failure_reason") != "crtsh_unreachable"):
             continue
+        if old and not (d / "ct_v1.json").exists():
+            _save(d, "ct_v1.json", old)
         host = host_of(_url(r))
+        exact, wild = ct_names_covering(host)
         rec = {"captured_at": now(), "instrument": "crt.sh-json", "host": host,
-               "observed_at": r.observed_at, "time_basis": "not_before"}
-        queried, rows_ = host, _crtsh(host)
-        if rows_ == [] and registrable(host) != host:
-            queried = registrable(host)
-            rows_ = _crtsh(queried)
-        if rows_ is None:
+               "observed_at": r.observed_at, "time_basis": "not_before", "rule": "covering_v2",
+               "queried": [exact] + ([wild] if wild else [])}
+        results = [_crtsh(q) for q in rec["queried"]]
+        if any(x is None for x in results):
             rec.update(status="unavailable", failure_reason="crtsh_unreachable")
         else:
             cutoff, uniq = r.observed_at + "T23:59:59", {}
-            for c in rows_:
+            for c in (c for res in results for c in res):
                 nb = c.get("not_before") or ""
-                if nb and nb <= cutoff:
-                    uniq.setdefault(c.get("serial_number") or c.get("id"), c)
+                kind = cert_covers(c, host)
+                if kind and nb and nb <= cutoff:
+                    uniq.setdefault(c.get("serial_number") or c.get("id"), dict(c, covers=kind))
             before = sorted(uniq.values(), key=lambda c: c["not_before"])
             rec.update(status="obtained" if before else "unavailable",
-                       failure_reason=None if before else "no_cert_valid_before_observation",
-                       queried=queried, n_before=len(before),
+                       failure_reason=None if before else "no_covering_cert_valid_before_observation",
+                       n_before=len(before),
+                       n_exact=sum(1 for c in before if c["covers"] == "exact"),
+                       n_wildcard=sum(1 for c in before if c["covers"] == "wildcard"),
+                       first_not_before=before[0]["not_before"] if before else None,
                        certs_before=[{k: c.get(k) for k in ("serial_number", "issuer_name",
-                                      "common_name", "name_value", "not_before", "not_after")}
-                                     for c in before[-50:]])
+                                      "common_name", "name_value", "not_before", "not_after",
+                                      "covers")} for c in before[-50:]])
         _save(d, "ct.json", rec)
         print(f"\rct {n}/{len(rows)}", end="", flush=True)
         time.sleep(args.pause)
     print("\nct done")
+
+
+def _load_json(p: Path):
+    try:
+        return json.loads(p.read_text(encoding="utf-8")) if p.exists() else None
+    except (OSError, ValueError):
+        return None
 
 
 def rdap(rows, data: Path, args) -> None:
@@ -207,14 +249,18 @@ def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("step", choices=["render", "ct", "rdap"])
     ap.add_argument("--data", required=True)
-    ap.add_argument("--split", choices=["dev", "calib", "test", "all"], default="test")
+    ap.add_argument("--split", choices=["fit", "dev", "calib", "test", "test2", "all"], default="test")
     ap.add_argument("--force", action="store_true")
     ap.add_argument("--retry", action="store_true", help="render: redo failed renders")
     ap.add_argument("--timeout", type=int, default=60)
     ap.add_argument("--pause", type=float, default=3.0)
+    ap.add_argument("--manifest", default="manifest.jsonl",
+                    help="manifest file inside --data (e.g. manifest_v2_with_platform.jsonl)")
+    ap.add_argument("--shard", default="0/1", help="k/n: every n-th row from k (parallel runs)")
     args = ap.parse_args()
     data = Path(args.data)
-    rows = [r for r in read(str(data / "manifest.jsonl")) if args.split in ("all", r.split)]
+    k, n = (int(x) for x in args.shard.split("/"))
+    rows = [r for r in read(str(data / args.manifest)) if args.split in ("all", r.split)][k::n]
     {"render": render, "ct": ct, "rdap": rdap}[args.step](rows, data, args)
 
 

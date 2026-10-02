@@ -18,10 +18,19 @@ from dataclasses import replace
 
 import fields
 from contract.evidence import EvidenceEnvelope
-from contract.issues import Issue, IssueKind, IssueSets, RevisionRequest
+from contract.issues import Issue, IssueKind, IssueSets
 from contract.judge import DependencyGroup
 from contract.record import FindingRecord
 from contract.vocabulary import Direction, SourceAvailability, Status
+
+
+def _issue_kind(issue) -> str | None:
+    return issue.kind.value if issue is not None else None
+
+
+def _line(locator: str) -> str:
+    """The cited line of a locator: `url:L0.1` (second finding on url:L0) -> `url:L0`."""
+    return locator.split(".", 1)[0]
 
 
 def _valid_items(records):
@@ -60,12 +69,22 @@ def _refs_from_other_agents(records, exclude: str) -> tuple[str, ...]:
 
 
 def dependency_groups(
-    records: tuple[FindingRecord, ...], mode: str = "provenance"
+    records: tuple[FindingRecord, ...], mode: str = "provenance", envelope=None,
+    lineage: dict | None = None,
 ) -> tuple[DependencyGroup, ...]:
+    """`envelope` (optional) enables demonstrated common-cause edges in provenance
+    mode (phases/common_cause.py): they are checked against artifact CONTENT, so
+    without the envelope none is inferred.
+    `lineage` (optional, {new_locator: peer refs shown}) comes from `collaborate`
+    and adds borrowed-observation edges: one two-member group per (original,
+    borrowed) pair, original FIRST, so discounting keeps the original and drops
+    the borrowed copy ("borrowed observations retain their original provenance and
+    cannot provide independent corroboration")."""
     if mode == "independent":
         return ()
 
     buckets = defaultdict(list)
+    semantic_items: list[tuple[str, str]] = []
     for record in records:
         if record.status is not Status.RAN:
             continue
@@ -95,9 +114,48 @@ def dependency_groups(
                      item.provenance.capture_id)
                 ].append(ref)
             elif mode == "semantic":
-                buckets[("semantic_similarity", item.observation)].append(ref)
+                semantic_items.append((ref, item.observation))
             else:
                 raise ValueError(f"unknown reconciliation mode: {mode!r}")
+
+    if mode == "provenance" and envelope is not None:
+        from phases.common_cause import links
+        ran_items = [it for r in records if r.status is Status.RAN for it in r.items]
+        parent = {}
+
+        def find(x):
+            parent.setdefault(x, x)
+            while parent[x] != x:
+                parent[x] = parent[parent[x]]
+                x = parent[x]
+            return x
+
+        for a, b in links(ran_items, envelope.normalized):
+            parent[find(b)] = find(a)
+        comps: dict[str, list[str]] = {}
+        for ref in parent:
+            comps.setdefault(find(ref), []).append(ref)
+        for n, comp in enumerate(sorted(sorted(c) for c in comps.values() if len(c) >= 2)):
+            buckets[("common_cause", n)] = comp
+
+    if mode == "provenance" and lineage:
+        current_refs = {it.locator for r in records if r.status is Status.RAN for it in r.items}
+        n = 0
+        for borrowed, shown in sorted(lineage.items()):
+            if borrowed not in current_refs:
+                continue          # superseded since; nothing to discount
+            for original in sorted(shown):
+                if original in current_refs and original != borrowed:
+                    buckets[("borrowed_observation", n)] = [original, borrowed]
+                    n += 1
+
+    if mode == "semantic":
+        # The explicit, frozen similarity method (phases/semantic.py), replacing
+        # exact-text equality: paraphrases can now group, which is the point of
+        # the arm -- measuring what similarity-based grouping over-merges.
+        from phases import semantic
+        for n, comp in enumerate(semantic.groups(semantic_items)):
+            buckets[("semantic_similarity", n)] = comp
 
     return tuple(
         DependencyGroup(edge_type=key[0], observation_refs=tuple(refs))
@@ -336,31 +394,6 @@ def _targets(issues, attempted, k, collaboration, applicable, current):
     return targets, cites, focus_of
 
 
-def revision_request(agent, current, issue, cited_refs, collaboration) -> RevisionRequest:
-    """`Q_{i,g}^{(r)}` for one target. His Phase 3 Step 4.
-
-    `own_items` are the agent's current findings, unless its record is
-    `not_dispatched` (an initial dispatch has none) or `error` ("invalid findings
-    do not enter subsequent reasoning"). `cited` are **other** agents' `ran`
-    items -- the agent's own are already in `own_items`: in a targeted round those
-    whose locator the issue cites, in full debate all of them.
-    """
-    record = next(r for r in current if r.agent == agent)
-    initial = record.status is Status.NOT_DISPATCHED
-    own = () if initial or record.status is Status.ERROR else tuple(record.items)
-    refs = set(cited_refs)
-    cited = tuple(
-        h
-        for r in current
-        if r.status is Status.RAN and r.agent != agent
-        for h in r.items
-        if collaboration == "full_debate" or h.locator in refs
-    )
-    return RevisionRequest(
-        issue=issue, mode=collaboration, initial=initial, own_items=own, cited=cited
-    )
-
-
 def actionable(issues: IssueSets, attempted: frozenset[str]) -> tuple[Issue, ...]:
     """An issue is actionable only when a named specialist has a route not yet tried.
 
@@ -477,7 +510,10 @@ def revision_accepted(candidate: FindingRecord, cited_refs, envelope) -> bool:
 def collaborate(
     records, envelope, reasoners, ledger, tau: float, r_max_coll: int, k: int,
     gate: str = "calibrated", collaboration: str = "targeted",
-    return_revisions: bool = False,
+    return_revisions: bool = False, estimator=None, state_hook=None,
+    reconciliation: str = "provenance", lineage_sink: dict | None = None,
+    dispatch_sink: list | None = None, costs: dict | None = None,
+    unreadable: frozenset[str] = frozenset(),
 ) -> tuple[FindingRecord, ...]:
     """Steps 4-5 -- targeted re-invocation under the gate, then termination.
 
@@ -496,7 +532,18 @@ def collaborate(
 
     for round_index in range(r_max_coll):
         issues = moderate(tuple(current), envelope)
-        p_hat = stopping_error(tuple(current), issues, envelope)
+        # `estimator` (a trained phases.estimator.LogisticEstimator) replaces the
+        # placeholder; `state_hook` records intermediate states for training it.
+        if estimator is not None:
+            # The arm's reconciliation policy now reaches the gate: features are
+            # computed over the SAME dependency groups the Judge will see.
+            p_hat = estimator(tuple(current), issues, envelope,
+                              solicited=len(accepted_revisions), mode=reconciliation,
+                              lineage=lineage_sink)
+        else:
+            p_hat = stopping_error(tuple(current), issues, envelope)
+        if state_hook is not None:
+            state_hook(round_index, tuple(current), issues, len(accepted_revisions), p_hat)
 
         if not gate_admits(
             gate, p_hat, issues, round_index, tau, r_max_coll, ledger,
@@ -526,16 +573,23 @@ def collaborate(
         for agent in (targets if collaboration == "full_debate" else targets[:k]):
             if agent in attempted:
                 continue
+            before = next((r.status for r in current if r.agent == agent), None)
+            # A FIRST dispatch of an initially unselected specialist costs what its
+            # initial dispatch would have (c_{i,g}); a revision costs one unit.
+            cost = ((costs or {}).get(agent, ATTEMPT_COST)
+                    if before is Status.NOT_DISPATCHED else ATTEMPT_COST)
             reservation = ledger.reserve(
-                BudgetPool.COLL, ATTEMPT_COST, f"round{round_index}:{agent}"
+                BudgetPool.COLL, cost, f"round{round_index}:{agent}"
             )
             if reservation is None:
+                if dispatch_sink is not None and before is Status.NOT_DISPATCHED:
+                    dispatch_sink.append({"agent": agent, "round": round_index,
+                                          "issue": _issue_kind(focus_of.get(agent)),
+                                          "before": before.value, "after": before.value,
+                                          "charged": 0.0, "outcome": "budget_refused"})
                 break
-            request = revision_request(
-                agent, current, focus_of.get(agent), cites.get(agent, ()), collaboration
-            )
-            items = reasoners[agent](envelope, request)
-            ledger.charge(reservation, ATTEMPT_COST)
+            items = reasoners[agent](envelope, focus_of.get(agent))
+            ledger.charge(reservation, cost)
             attempted.add(agent)
             for n, record in enumerate(current):
                 if record.agent != agent:
@@ -544,7 +598,13 @@ def collaborate(
                     # Phase 3 Step 5: newly dispatched specialists undergo
                     # initial validation, not ValidRev. No predecessor/citation
                     # requirement, and no locators marked as accepted revisions.
-                    current[n], _ = initial_record(agent, items, envelope)
+                    current[n], _ = initial_record(agent, items, envelope, unreadable)
+                    if dispatch_sink is not None:
+                        dispatch_sink.append({"agent": agent, "round": round_index,
+                                              "issue": _issue_kind(focus_of.get(agent)),
+                                              "before": record.status.value,
+                                              "after": current[n].status.value,
+                                              "charged": cost, "outcome": "dispatched"})
                     break
                 # Rebuilt whole, from the record it supersedes. Copying the old
                 # verdict and basis left `v` not following from `H`, the
@@ -554,7 +614,7 @@ def collaborate(
                 # A revision cannot manufacture availability: a specialist
                 # still missing required evidence remains no_data even if an
                 # auxiliary artifact supplies directional items.
-                status = analysis_status(agent, envelope)
+                status = analysis_status(agent, envelope, unreadable)
                 candidate = replace(
                     record,
                     status=status,
@@ -582,6 +642,19 @@ def collaborate(
                 if not revision_accepted(candidate, cites.get(agent, ()), envelope):
                     break
                 accepted_revisions.update(h.locator for h in items)
+                if lineage_sink is not None:
+                    # Borrowed-observation lineage, from the actual request: an
+                    # observation the agent did NOT hold before this accepted
+                    # revision was made after it was shown these peer refs.
+                    # "New" = a (field, cited line) the agent did not hold before: a
+                    # model re-wording its finding on the SAME line is a revision, not
+                    # an observation borrowed from what it was shown.
+                    before = {(h.declared_field, _line(h.locator)) for h in record.items}
+                    shown = tuple(r for r in cites.get(agent, ()) if not
+                                  r.startswith(tuple(f"{f}:" for f in fields.AGENT_FIELDS[agent])))
+                    for h in items:
+                        if (h.declared_field, _line(h.locator)) not in before and shown:
+                            lineage_sink[h.locator] = shown
                 current[n] = candidate
                 break
     if return_revisions:

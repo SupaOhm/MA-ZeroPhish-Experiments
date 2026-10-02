@@ -1,0 +1,3 @@
+arm,reference,repeat,n_paired,forced_f1_delta,forced_f1_ci_low,forced_f1_ci_high,forced_accuracy_delta,forced_accuracy_ci_low,forced_accuracy_ci_high,f1_delta,f1_ci_low,f1_ci_high,coverage_delta,coverage_ci_low,coverage_ci_high,mcnemar_a_only,mcnemar_b_only,mcnemar_p_value
+complete__literal_eq10,complete__fixed_all,0,100,-0.357247200129849,-0.4534804625500718,-0.245684745465697,-0.22999999999999998,-0.31,-0.15,0.1320754716981133,0.04761904761904767,0.23529411764705876,-0.3,-0.39,-0.21,0,23,2.384185791015625e-07
+complete__mazerophish,complete__fixed_all,0,100,-0.2808953341740227,-0.3907888736890105,-0.15689628362618563,-0.18,-0.27,-0.09000000000000001,-0.1536388140161724,-0.49300699300699297,0.07777777777777772,-0.21,-0.31,-0.11000000000000001,3,21,0.0002771615982055664

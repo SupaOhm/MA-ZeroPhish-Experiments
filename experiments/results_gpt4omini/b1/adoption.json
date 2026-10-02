@@ -1,0 +1,7 @@
+{
+ "dev_f1": 0.8842105263157894,
+ "dev_precision": 0.9333333333333333,
+ "rule_f1_gt": 0.923,
+ "rule_precision_ge": 0.916,
+ "adopted": false
+}

@@ -41,6 +41,7 @@ class EligibleObservation:
     locator: str
     provenance: Provenance
     revision_accepted: bool = False
+    evidence_text: str | None = None     # the cited evidence line itself (v4 2f)
 
 
 @dataclass(frozen=True, slots=True)
@@ -78,6 +79,7 @@ class CoverageReport:
     applicable: frozenset[str] = field(default_factory=frozenset)
     analyzed: frozenset[str] = field(default_factory=frozenset)
     availability: dict[str, SourceAvailability] = field(default_factory=dict)
+    unavailable_reasons: dict[str, str] = field(default_factory=dict)
 
 
 @dataclass(frozen=True, slots=True)

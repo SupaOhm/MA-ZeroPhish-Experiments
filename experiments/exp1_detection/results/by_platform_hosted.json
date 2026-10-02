@@ -1,0 +1,56 @@
+{
+ "cot/platform_hosted": {
+  "n": 22,
+  "n_phishing": 22,
+  "n_benign": 0,
+  "recall": 0.9545454545454546,
+  "precision": 1.0,
+  "fpr": null,
+  "forced_accuracy": 0.9545454545454546
+ },
+ "cot/own_domain": {
+  "n": 178,
+  "n_phishing": 78,
+  "n_benign": 100,
+  "recall": 0.8717948717948718,
+  "precision": 0.9855072463768116,
+  "fpr": 0.01,
+  "forced_accuracy": 0.9382022471910112
+ },
+ "phishdebate/platform_hosted": {
+  "n": 22,
+  "n_phishing": 22,
+  "n_benign": 0,
+  "recall": 0.7727272727272727,
+  "precision": 1.0,
+  "fpr": null,
+  "forced_accuracy": 0.7727272727272727
+ },
+ "phishdebate/own_domain": {
+  "n": 178,
+  "n_phishing": 78,
+  "n_benign": 100,
+  "recall": 0.8333333333333334,
+  "precision": 0.9558823529411765,
+  "fpr": 0.03,
+  "forced_accuracy": 0.9101123595505618
+ },
+ "single_agent/platform_hosted": {
+  "n": 22,
+  "n_phishing": 22,
+  "n_benign": 0,
+  "recall": 0.9090909090909091,
+  "precision": 1.0,
+  "fpr": null,
+  "forced_accuracy": 0.9090909090909091
+ },
+ "single_agent/own_domain": {
+  "n": 178,
+  "n_phishing": 78,
+  "n_benign": 100,
+  "recall": 0.8717948717948718,
+  "precision": 0.9714285714285714,
+  "fpr": 0.02,
+  "forced_accuracy": 0.9325842696629213
+ }
+}

@@ -15,3 +15,59 @@ each row states the strongest evidence actually found.
 ## Note on PhreshPhish
 PhreshPhish is the only corpus observed after every candidate model's knowledge cutoff, so
 it carries the zero-day claim; its prior IEEE use is PhishLite (IEEE SVCC 2026).
+
+## Threats to validity found in the data (report in every experiment)
+
+**Platform hosting is tied to the label in PhreshPhish.** "Platform-hosted" = the URL's
+host sits under a Public Suffix List *private* suffix (tldextract 5.3.2 bundled
+snapshot; e.g. webflow.io, vercel.app, pages.dev, github.io). Measured on the URL alone:
+
+| split | phishing platform-hosted | benign platform-hosted |
+|---|---|---|
+| dev | 54/150 (36.0%) | 0/150 (0.0%) |
+| calib | 29/150 (19.3%) | 2/150 (1.3%) |
+| test | 22/100 (22.0%) | 0/100 (0.0%) |
+
+- This is a property of the corpus (its benign sample has almost no user-hosted
+  platform sites), not of our processing. Any method that sees the URL -- MA-ZeroPhish's
+  URL Agent and all three Experiment 1 baselines -- can exploit it, so comparisons
+  between arms remain like-for-like, but absolute scores may be optimistic relative to a
+  deployment where legitimate platform-hosted sites are common.
+- **The test split has no benign platform-hosted case**, so in that stratum only recall
+  (and the phishing-side error) can be measured; false-positive rate on platform-hosted
+  benign sites is **not measurable** with this test set.
+- Report detection results **stratified by platform_hosted** alongside the pooled numbers.
+- **Action taken (2026-09-29, same dataset, new sample-selection rule):** the dataset is
+  unchanged (PhreshPhish); the selection now EXCLUDES platform-hosted pages from every
+  split (`build_phreshphish.py --exclude-platform --keep-manifest ... --cutoff 2025-07-06`).
+  Every own-domain case already selected was kept; only the dropped cases were replaced,
+  drawn uniformly from the remaining own-domain candidates of the same split window with
+  their own seed (replacements: dev 54 phishing; calib 29 phishing + 2 benign; test 22
+  phishing; every split stays balanced per class; the validator reports no errors). Main results are therefore on own-domain websites; the
+  107 platform-hosted phishing pages (`captures_platform_supplementary/`) are reported
+  separately as a recall-only study. The table above describes the earlier selection
+  (`manifest_v2_with_platform.jsonl`); the replaced ids are in
+  `platform_exclusion_changes.json`.
+- PSL coverage is incomplete (e.g. weebly.com and edgeone.app are not listed and count
+  as own-domain); the definition is kept as published rather than patched by hand.
+
+**CT evidence v1 artifact (fixed in v2).** CT v1 fell back to the registrable domain's
+certificates when the host had none, which gave shared platforms' certificate history to
+phishing subdomains (dev 68 / calib 23 / test 5 cases, all phishing). CT v2 keeps only
+certificates covering the host (exact name or one-label wildcard) and states
+`cert_scope` / `platform_hosted` explicitly. v1 records remain as `ct_v1.json`.
+
+**Offline render of a page that navigates away (found 2026-09-30, fixed in the next
+package).** A page that redirects on load (meta refresh / script) is rendered offline, so the
+browser lands on its own error interstitial (blocked http -> `ERR_PROXY_CONNECTION_FAILED`;
+relative or local path -> `ERR_FILE_NOT_FOUND`), and that interstitial was stored as the
+page's `dom` / `page_content` / `screenshot`. Found while testing screenshot input on dev.
+Rendered cases affected: calib 2 (benign), dev 1 (benign), **test 1 (phishing,
+pp-788086eb634b) -- present in every result reported on test under DATA_VERSIONs b348 /
+d014**, test2 3 (phishing). Fix (label-blind rule in `build_captures.offline_error_page`):
+visible text with a Chromium `ERR_*` code AND the interstitial wording -> render failed,
+reason `offline_navigation_error` (the redirect itself stays visible in the served HTML).
+
+**No retrospective redirect chain.** The source dataset has no redirect information and a
+re-crawl today would observe post-takedown behaviour (future information); the
+`host_mismatch` trigger's URL-vs-redirect case therefore never fires on PhreshPhish.

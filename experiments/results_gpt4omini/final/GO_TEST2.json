@@ -1,0 +1,21 @@
+{
+ "decision": "go",
+ "system": "H1",
+ "date": "2026-10-01",
+ "by": "user (team decision)",
+ "frozen": "experiments/results_gpt4omini/final/FROZEN_H1.json",
+ "code_commit_before_run": "d30752c7132e02727b20385168bf0809f4c9e8ca",
+ "model": "openrouter:openai/gpt-4o-mini-2024-07-18",
+ "data_version": "545370aaf6ad14c6",
+ "arms": [
+  "H1 (pipeline v4abdf, 1 run)",
+  "single_agent",
+  "cot",
+  "phishdebate",
+  "+ screenshot versions of the three",
+  "single_agent_minimal",
+  "cot_minimal"
+ ],
+ "analysis": "PROTOCOL_V5: DRAFT test2 plan + 'test2 analysis plan, updated' + 'supplementary matched-precision analysis'",
+ "scoring": "python experiments/score_test2.py --test2"
+}

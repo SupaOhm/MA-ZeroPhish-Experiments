@@ -39,6 +39,19 @@ def host_of(url: str) -> str:
         return ""
 
 
+# Shared hosting platforms for EVIDENCE (CT cert_scope): the Public Suffix List's
+# PRIVATE section, bundled with tldextract (no network, versioned) -- an external,
+# label-free registry. SHARED_PLATFORMS above is only for campaign grouping.
+_extract_private = tldextract.TLDExtract(suffix_list_urls=(), include_psl_private_domains=True)
+PSL_SOURCE = f"tldextract {tldextract.__version__} bundled PSL (private section)"
+
+
+def platform_suffix(host: str) -> str | None:
+    """The PSL private suffix `host` sits under (e.g. 'webflow.io'), or None."""
+    e = _extract_private(host)
+    return e.suffix if getattr(e, "is_private", False) and e.suffix else None
+
+
 def registrable(host: str) -> str:
     e = _extract(host)
     return f"{e.domain}.{e.suffix}" if e.domain and e.suffix else host

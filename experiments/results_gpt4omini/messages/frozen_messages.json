@@ -1,0 +1,12 @@
+{
+ "platt": [
+  0.724838321445442,
+  -0.025621974785760896
+ ],
+ "threshold": 0.9646032539381655,
+ "dev_precision": 1.0,
+ "dev_recall": 0.08,
+ "dev_n": 200,
+ "dev_no_score": 0,
+ "no_score_rule": "phishing (v4 forced convention)"
+}

@@ -1,0 +1,89 @@
+{
+ "cost_scale": 998.6,
+ "mu": 0.5,
+ "trigger_weights": {
+  "shared_entity": 1.0,
+  "host_mismatch": 1.0,
+  "cross_origin": 1.0,
+  "populated_vs_empty": 1.0
+ },
+ "fitted_on": "phreshphish/dev complete (1162 ready specialist-object pairs)",
+ "per_agent_mean_est_tokens_dev": {
+  "content": 976.7,
+  "metadata": 774.9,
+  "url": 679.2,
+  "web_structure": 1555.9
+ },
+ "dev_mu_sensitivity": {
+  "0.1": {
+   "adaptive": {
+    "mean_specialists_dispatched_per_object": 1.003,
+    "mean_trigger_coverage": 1.0,
+    "mean_trigger_coverage_all_fields": 0.0391,
+    "mean_initial_est_tokens_per_case": 674.766
+   },
+   "adaptive_all_fields": {
+    "mean_specialists_dispatched_per_object": 2.04,
+    "mean_trigger_coverage": 1.0,
+    "mean_trigger_coverage_all_fields": 1.0,
+    "mean_initial_est_tokens_per_case": 2173.6657
+   }
+  },
+  "0.25": {
+   "adaptive": {
+    "mean_specialists_dispatched_per_object": 1.003,
+    "mean_trigger_coverage": 1.0,
+    "mean_trigger_coverage_all_fields": 0.0391,
+    "mean_initial_est_tokens_per_case": 674.766
+   },
+   "adaptive_all_fields": {
+    "mean_specialists_dispatched_per_object": 2.04,
+    "mean_trigger_coverage": 1.0,
+    "mean_trigger_coverage_all_fields": 1.0,
+    "mean_initial_est_tokens_per_case": 2173.6657
+   }
+  },
+  "0.5": {
+   "adaptive": {
+    "mean_specialists_dispatched_per_object": 1.003,
+    "mean_trigger_coverage": 1.0,
+    "mean_trigger_coverage_all_fields": 0.0391,
+    "mean_initial_est_tokens_per_case": 674.766
+   },
+   "adaptive_all_fields": {
+    "mean_specialists_dispatched_per_object": 2.04,
+    "mean_trigger_coverage": 1.0,
+    "mean_trigger_coverage_all_fields": 1.0,
+    "mean_initial_est_tokens_per_case": 2173.6657
+   }
+  },
+  "1.0": {
+   "adaptive": {
+    "mean_specialists_dispatched_per_object": 1.003,
+    "mean_trigger_coverage": 1.0,
+    "mean_trigger_coverage_all_fields": 0.0391,
+    "mean_initial_est_tokens_per_case": 674.766
+   },
+   "adaptive_all_fields": {
+    "mean_specialists_dispatched_per_object": 1.627,
+    "mean_trigger_coverage": 1.0,
+    "mean_trigger_coverage_all_fields": 0.7135,
+    "mean_initial_est_tokens_per_case": 1559.4607
+   }
+  },
+  "2.0": {
+   "adaptive": {
+    "mean_specialists_dispatched_per_object": 1.0,
+    "mean_trigger_coverage": 0.9987,
+    "mean_trigger_coverage_all_fields": 0.0365,
+    "mean_initial_est_tokens_per_case": 672.501
+   },
+   "adaptive_all_fields": {
+    "mean_specialists_dispatched_per_object": 1.13,
+    "mean_trigger_coverage": 0.9974,
+    "mean_trigger_coverage_all_fields": 0.1826,
+    "mean_initial_est_tokens_per_case": 805.048
+   }
+  }
+ }
+}

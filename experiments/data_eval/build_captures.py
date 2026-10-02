@@ -18,14 +18,27 @@ from __future__ import annotations
 import argparse
 import gzip
 import json
+import re
 from collections import Counter
 from pathlib import Path
 
+from .fingerprint import PSL_SOURCE, host_of, platform_suffix
 from .manifest import read
 
 INSTR_SOURCE = "phreshphish_crawler"          # the dataset's own capture of served HTML
 RDAP_POLICY = "exclude"                        # exclude | include  (see build())
 NOT_RETRO = "not_retrospectively_observable"   # live-only records for a 2025 sample
+# A page that navigates away on load (meta refresh / script) is rendered offline, so the
+# browser lands on its own error interstitial (blocked http -> ERR_PROXY_CONNECTION_FAILED,
+# relative/local path -> ERR_FILE_NOT_FOUND). That text and screenshot are the environment's,
+# not the submission's: such a render counts as failed (label-blind; declared 2026-09-30).
+_NET_ERROR = re.compile(r"\bERR_[A-Z_]{4,}\b")
+_INTERSTITIAL = ("It may have been moved, edited, or deleted",
+                 "something wrong with the proxy server")
+
+
+def offline_error_page(visible_text: str) -> bool:
+    return bool(_NET_ERROR.search(visible_text)) and any(k in visible_text for k in _INTERSTITIAL)
 
 
 def _load(p: Path) -> dict | None:
@@ -37,13 +50,41 @@ def _days(a: str, b: str) -> int:
     return (date.fromisoformat(b[:10]) - date.fromisoformat(a[:10])).days
 
 
+def cert_scope(c: dict) -> tuple[str, str | None]:
+    """(scope, platform suffix). scope: `host` -- some covering cert names the host
+    exactly; `platform_wildcard` -- only wildcard certs, and the wildcard is the
+    platform's own (`*.<PSL private suffix>`); `own_wildcard` -- only wildcard certs
+    over a parent that is not a PSL private suffix."""
+    plat = platform_suffix(c["host"])
+    if c["n_exact"]:
+        return "host", plat
+    parent = c["host"].split(".", 1)[1] if "." in c["host"] else ""
+    return ("platform_wildcard" if plat and parent == plat else "own_wildcard"), plat
+
+
 def ct_text(c: dict, observed: str) -> str:
+    """CT v2 (enrich.ct): certificates covering the submitted host only. The first two
+    keys are fixed for extractors: cert_scope=host|platform_wildcard|own_wildcard and
+    platform_hosted=true|false (Public Suffix List private section)."""
+    scope, plat = cert_scope(c)
     last = c["certs_before"][-1]
-    first = c["certs_before"][0]["not_before"]
+    first = c["first_not_before"]
     names = " ".join((last.get("name_value") or "").split())[:300]
-    return (f"queried_name={c['queried']}; certs_valid_on_or_before_observation={c['n_before']}; "
-            f"first_cert_valid_from={first[:10]} ({_days(first, observed)} days before observation); "
-            f"latest_cert_issuer={last.get('issuer_name')}; latest_not_before={last['not_before'][:10]}; "
+    # Each ";"-separated piece becomes one evidence line for the Metadata Agent, so every
+    # piece must be self-explanatory: a bare "platform_hosted=false" was read by GPT-4o-mini
+    # as "not hosted on a legitimate service" (calib, 2026-09-30). Keys stay fixed
+    # (cert_scope=..., platform_hosted=...) for extractors; the meaning follows in brackets.
+    scope_txt = {"host": "a certificate names this exact host",
+                 "platform_wildcard": "only the hosting platform's own wildcard certificate covers this host",
+                 "own_wildcard": "only a wildcard certificate of the host's parent domain covers this host"}[scope]
+    plat_txt = (f"true (host is on the shared hosting platform {plat})" if plat
+                else "false (host is its own registered domain, not a shared hosting platform)")
+    return (f"cert_scope={scope} ({scope_txt}); platform_hosted={plat_txt}; "
+            f"host={c['host']}; certs_covering_host_valid_on_or_before_observation={c['n_before']} "
+            f"(exact_name={c['n_exact']}, wildcard={c['n_wildcard']}); "
+            f"first_covering_cert_valid_from={first[:10]} ({_days(first, observed)} days before observation); "
+            f"latest_cert_covers={last.get('covers')}; latest_cert_issuer={last.get('issuer_name')}; "
+            f"latest_not_before={last['not_before'][:10]}; "
             f"latest_not_after={(last.get('not_after') or '')[:10]}; latest_names={names}")
 
 
@@ -60,14 +101,21 @@ def build(row, data: Path, stats: Counter) -> dict:
         html = f.read()
     artifacts = [
         {"field": "url", "content": url, "instrument": "submission"},
-        {"field": "html", "content": html, "instrument": INSTR_SOURCE},
+        {"field": "html", "content": html,
+         "instrument": "tr-op_crawler" if row.source_dataset == "tr-op" else INSTR_SOURCE},
     ]
     failures = {
         "redirect_chain": "not_in_source_dataset",
         "page_resources": "not_in_source_dataset",
+        # PhreshPhish holds no runtime brand-reference material for any case; recorded
+        # explicitly (was missing, so replay reported the generic "not_captured").
+        "brand_reference": "not_in_source_dataset",
         "dns": NOT_RETRO, "tls": NOT_RETRO, "hosting": NOT_RETRO,
     }
     render, ct, rdap = _load(ev / "render.json"), _load(ev / "ct.json"), _load(ev / "rdap.json")
+    if render and render["status"] == "obtained" and offline_error_page(render.get("visible_text", "")):
+        render = dict(render, status="failed", failure_reason="offline_navigation_error")
+        stats[f"render_offline_navigation_error:{row.label}"] += 1
     if render and render["status"] == "obtained":
         artifacts += [
             {"field": "dom", "content": (ev / "rendered_dom.html").read_text(encoding="utf-8"),
@@ -82,11 +130,15 @@ def build(row, data: Path, stats: Counter) -> dict:
         reason = render["failure_reason"] if render else "not_collected"
         for f in ("dom", "page_content", "screenshot"):
             failures[f] = reason
+    plat = "platform" if platform_suffix(host_of(url)) else "own_domain"
     if ct and ct["status"] == "obtained":
         artifacts.append({"field": "ct", "content": ct_text(ct, row.observed_at),
                           "instrument": ct["instrument"]})
+        stats[f"ct_by_platform:{plat}:{cert_scope(ct)[0]}:{row.label}"] += 1
     else:
         failures["ct"] = ct["failure_reason"] if ct else "not_collected"
+        stats[f"ct_by_platform:{plat}:unavailable:{row.label}"] += 1
+    stats[f"hosting_kind:{plat}:{row.label}"] += 1
     if RDAP_POLICY == "exclude":
         # RDAP is looked up today; a 404 mostly means the domain was taken down or
         # expired AFTER observation, which is future information that correlates
@@ -109,10 +161,14 @@ def build(row, data: Path, stats: Counter) -> dict:
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--data", required=True)
-    ap.add_argument("--split", choices=["dev", "calib", "test", "all"], default="all")
+    ap.add_argument("--split", choices=["fit", "dev", "calib", "test", "test2", "all"], default="all")
     ap.add_argument("--rdap", choices=["exclude", "include"], default="exclude",
                     help="exclude (default): retrospective RDAP availability leaks future "
                          "takedowns; include: keep RDAP where obtained")
+    ap.add_argument("--trop-mode", choices=["source", "pipeline"], default="source",
+                    help="TR-OP rows: 'source' = the dataset's own artifacts (default); 'pipeline' = "
+                         "the same processing as PhreshPhish (offline render + CT evidence; "
+                         "PROTOCOL_V5 external check)")
     args = ap.parse_args()
     global RDAP_POLICY
     RDAP_POLICY = args.rdap
@@ -124,7 +180,7 @@ def main() -> None:
             continue
         out = data / "captures" / row.split / f"{row.case_id}.json"
         out.parent.mkdir(parents=True, exist_ok=True)
-        if row.source_dataset == "tr-op":
+        if row.source_dataset == "tr-op" and args.trop_mode == "source":
             from .build_trop import build_capture as build_trop_capture
             cap = build_trop_capture(row, data)
             for a in cap["artifacts"]:
@@ -148,6 +204,16 @@ def main() -> None:
             print(f"  WARNING: '{f}' availability differs by label "
                   f"(phishing {rate['phishing']:.0%} vs benign {rate['benign']:.0%}); "
                   f"missingness can leak the label")
+    # Evaluation-side check (requested by role 3): is platform hosting itself, or the
+    # CT cert scope, tied to the label? A strong tie is a potential URL/CT shortcut
+    # that must be reported, not hidden. Labels never reach the runtime from here.
+    report["_ct_by_platform"] = {
+        "platform_definition": PSL_SOURCE,
+        "hosting_kind_by_label": {k.split(":", 1)[1]: v for k, v in sorted(stats.items())
+                                  if k.startswith("hosting_kind:")},
+        "ct_scope_by_platform_and_label": {k.split(":", 1)[1]: v for k, v in sorted(stats.items())
+                                           if k.startswith("ct_by_platform:")},
+    }
     (data / f"coverage_by_label_{args.split}.json").write_text(json.dumps(report, indent=1),
                                                               encoding="utf-8")
 

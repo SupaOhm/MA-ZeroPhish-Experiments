@@ -242,8 +242,10 @@ class ARejectedRecordIsActedOnAndSurvives(unittest.TestCase):
         # the envelope holds -- `brand_reference` was never obtained. So the
         # `affected_fields` assertion below can fail: naming the whole modality
         # instead of what is in hand is a different set.
+        # Fixed all-applicable arm (same gate and targeted collaboration as
+        # MA-ZeroPhish): its peers must have run for there to be peer locators.
         rogue = "content"
-        log, events = self._arm(config.MAZEROPHISH, "c1", rogue)
+        log, events = self._arm(config.BASELINE_FIXED_ALL, "c1", rogue)
         self.assertEqual([e["agent"] for e in self._rejections(events)], [rogue])
 
         reinvocations = [
@@ -272,9 +274,10 @@ class ARejectedRecordIsActedOnAndSurvives(unittest.TestCase):
         # c4 carries a `no_data` and a `not_dispatched` record, whose issues cite
         # *other* agents' items -- the one place a rejected record's findings can
         # reach a specialist as the evidence it must address.
-        # `metadata` here: on c4 the optimized selection does not dispatch
-        # `content` at all, so it could not submit a record to reject.
-        log, events = self._arm(config.MAZEROPHISH, "c4", "metadata")
+        # `metadata` here, under the fixed all-applicable arm: on c4 `content` is
+        # not ready, so it could not submit a record to reject, and MA-ZeroPhish's
+        # selection dispatches URL alone.
+        log, events = self._arm(config.BASELINE_FIXED_ALL, "c4", "metadata")
         self.assertEqual([e["agent"] for e in self._rejections(events)], ["metadata"])
         handed = [entry[1] for entry in log if entry[1] is not None]
         self.assertTrue(handed, "no specialist was re-invoked with a focus")

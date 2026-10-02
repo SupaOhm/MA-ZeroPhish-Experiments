@@ -1,0 +1,6 @@
+arm,reference,repeat,n_paired,forced_f1_delta,forced_f1_ci_low,forced_f1_ci_high,forced_accuracy_delta,forced_accuracy_ci_low,forced_accuracy_ci_high,f1_delta,f1_ci_low,f1_ci_high,coverage_delta,coverage_ci_low,coverage_ci_high,mcnemar_a_only,mcnemar_b_only,mcnemar_p_value
+ablation1_no_selection,mazerophish,0,200,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0,0,1.0
+ablation2_no_reconciliation,mazerophish,0,200,0.010256410256410331,0.0,0.027379553466509998,0.009999999999999898,0.0,0.025000000000000022,0.010256410256410331,0.0,0.027379553466509998,0.0,0.0,0.0,2,0,0.5
+ablation3_no_calibrated_gate,mazerophish,0,200,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0,0,1.0
+ablation4_no_targeted_collaboration,mazerophish,0,200,0.0006768189509305245,-0.031078224101479868,0.03259497919183796,0.0,-0.029999999999999916,0.029999999999999916,0.0006768189509305245,-0.031078224101479868,0.03259497919183796,0.0,0.0,0.0,5,5,1.0
+ablation5_no_independent_adjudication,mazerophish,0,200,0.004810996563573755,0.0,0.015873015873015928,0.004999999999999893,0.0,0.015000000000000013,0.004810996563573755,0.0,0.015873015873015928,0.0,0.0,0.0,1,0,1.0

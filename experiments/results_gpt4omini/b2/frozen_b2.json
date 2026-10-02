@@ -1,0 +1,9 @@
+{
+ "learner": "L3_boost_d2_r100",
+ "platt": [
+  1.0435926979903387,
+  1.0464597705518375
+ ],
+ "threshold": 0.5456373853840397,
+ "training": "839 complete fit pages + 600 missing-evidence rows"
+}

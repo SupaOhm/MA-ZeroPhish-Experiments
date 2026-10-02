@@ -1,0 +1,23 @@
+{
+ "v4abdf_rerun": {
+  "n": 50,
+  "A_benign_with_phish_distinctive": 0.16,
+  "B_phishing_with_phish_distinctive": 1.0,
+  "C_judge_auc": 0.9848,
+  "no_judge_score": 0,
+  "mean_judge_p_benign": 0.04,
+  "mean_judge_p_phishing": 0.792,
+  "usd_per_page": 0.004433586
+ },
+ "v4abdfG": {
+  "n": 50,
+  "A_benign_with_phish_distinctive": 0.04,
+  "B_phishing_with_phish_distinctive": 0.56,
+  "C_judge_auc": 0.9752,
+  "no_judge_score": 0,
+  "mean_judge_p_benign": 0.012,
+  "mean_judge_p_phishing": 0.65,
+  "usd_per_page": 0.004143189
+ },
+ "go": false
+}

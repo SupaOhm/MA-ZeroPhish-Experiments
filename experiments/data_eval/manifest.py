@@ -15,7 +15,7 @@ import sys
 from collections import Counter, defaultdict
 from dataclasses import asdict, dataclass, field
 
-SPLITS = ("dev", "calib", "test")
+SPLITS = ("fit", "dev", "calib", "test", "test2")   # fit = training pages before dev (PROTOCOL_V5); test2 = sealed parallel sample of the test period
 LABELS = ("phishing", "benign")
 STRATA = ("webpage", "url", "sms", "email", "multi_url_message")
 
@@ -100,8 +100,12 @@ def validate(rows: list[ManifestRow]) -> tuple[list[str], list[str]]:
     warnings += [f"{src}: {n} undated rows; chronology not checkable for them"
                  for src, n in sorted(undated.items())]
     for src, sp in by_src.items():
-        order = [s for s in SPLITS if sp.get(s)]
-        for a, b in zip(order, order[1:]):
+        # test2 is drawn from the SAME period as test (parallel, not later): it must only
+        # follow calib, so it is checked as its own chain dev <= calib <= test2.
+        chains = [[s for s in ("fit", "dev", "calib", "test") if sp.get(s)],
+                  [s for s in ("fit", "dev", "calib", "test2") if sp.get(s)] if sp.get("test2") else []]
+        pairs = {(a, b) for order in chains for a, b in zip(order, order[1:])}
+        for a, b in sorted(pairs):
             if max(sp[a]) > min(sp[b]):
                 n_bad = sum(d < max(sp[a]) for d in sp[b])
                 warnings.append(f"{src}: {n_bad} {b} samples dated before the latest {a} "

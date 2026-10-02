@@ -37,8 +37,17 @@ def phase1and2(case_prefix, cfg=None):
         frozenset({"headless_browser"}), 100.0, 2,
     )
     ledger = BudgetLedger(CaseBudget(100, 100, 100))
+    # `withhold` from the config, as `run.py` does. Without it the helper
+    # silently ignored `Config.evidence_removal`, so no phase-level test could
+    # reach an arm's withholding behaviour at all. Every existing caller passes
+    # `None` or a config with an empty removal set, so this changes nothing they
+    # observe; it is what lets a test reconstruct a starved specialist from a
+    # shipped capture instead of needing a new fixture.
+    withhold = cfg.evidence_removal if cfg is not None else frozenset()
     envelope = normalize(
-        "o1", cap.case_id, acquire(plan, Replay(cap), ledger), None, cap.inapplicable
+        "o1", cap.case_id,
+        acquire(plan, Replay(cap, withhold=withhold), ledger),
+        None, cap.inapplicable,
     )
     dispatched = select(envelope, plan, cfg)
     records = run_phase2(envelope, plan, dispatched, make_reasoners(cap), ledger)
@@ -119,14 +128,32 @@ class Reconciliation(unittest.TestCase):
 
     def test_agreement_alone_does_not_create_a_group(self):
         # His rule, stated outright: semantic similarity is not dependency.
-        # c1's observations are all textually distinct, so semantic mode finds
-        # nothing while provenance mode finds real edges. Both halves asserted,
-        # so this cannot pass by both being empty.
+        # The framework's policy (provenance) finds real edges and never merges
+        # observations merely because they read alike. The `semantic` arm is the
+        # Experiment 3 strawman: since it became a real similarity method
+        # (phases/semantic.py, threshold fitted on Exp 3 dev cases) it DOES merge
+        # textually different observations that provenance keeps apart -- the
+        # over-merging the experiment measures. (Previously this half asserted
+        # `semantic == ()`, which only held while "semantic" meant exact-text
+        # equality.) Both halves asserted, so neither can pass vacuously.
         _, _, records = phase1and2("c1")
         provenance = dependency_groups(records, mode="provenance")
         semantic = dependency_groups(records, mode="semantic")
         self.assertTrue(provenance)
-        self.assertEqual(semantic, ())
+        prov_pairs = {frozenset((a, b)) for g in provenance
+                      for i, a in enumerate(g.observation_refs) for b in g.observation_refs[i + 1:]}
+        sem_pairs = {frozenset((a, b)) for g in semantic
+                     for i, a in enumerate(g.observation_refs) for b in g.observation_refs[i + 1:]}
+        self.assertTrue(sem_pairs - prov_pairs,
+                        "the semantic strawman should merge something provenance keeps apart")
+
+    def test_semantic_arm_groups_paraphrases_not_only_identical_text(self):
+        from phases.semantic import THRESHOLD, similarity
+        a = "the login form posts the password to collect-42.example"
+        b = "a credential form submits to collect-42.example"
+        self.assertNotEqual(a, b)
+        self.assertGreaterEqual(similarity(a, b), THRESHOLD)
+        self.assertLess(similarity(a, "domain registered 3 days before observation"), THRESHOLD)
 
 
 class Issues(unittest.TestCase):
@@ -286,8 +313,19 @@ class TheFlagshipArmAtPhaseLevel(unittest.TestCase):
     no phase-level test ever ran MA-ZeroPhish's own selection setting."""
 
     def test_the_sms_email_agent_is_dispatched_on_a_message(self):
+        # On the message's own object (the classifier gives it message_body only)
+        # the SMS/Email Agent is the one ready specialist, so the minimum-dispatch
+        # floor selects it under MA-ZeroPhish; selection never deletes the modality.
         for case in ("c2", "c6"):
-            _, _, records = phase1and2(case, config.MAZEROPHISH)
+            cap = next(c for c in load_captures(CAPTURE_DIR) if c.case_id.startswith(case))
+            plan = AcquisitionPlan("o1", frozenset({"message_body"}),
+                                   frozenset({"headless_browser"}), 100.0, 2)
+            ledger = BudgetLedger(CaseBudget(100, 100, 100))
+            envelope = normalize("o1", cap.case_id, acquire(plan, Replay(cap), ledger),
+                                 None, cap.inapplicable)
+            dispatched = select(envelope, plan, config.MAZEROPHISH)
+            self.assertEqual(dispatched, frozenset({"message"}), case)
+            records = run_phase2(envelope, plan, dispatched, make_reasoners(cap), ledger)
             message = next(r for r in records if r.agent == "message")
             self.assertIs(message.status, Status.RAN, case)
 

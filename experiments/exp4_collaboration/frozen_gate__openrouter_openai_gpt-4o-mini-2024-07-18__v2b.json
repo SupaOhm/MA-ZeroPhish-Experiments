@@ -1,0 +1,76 @@
+{
+ "model_id": "openrouter:openai/gpt-4o-mini-2024-07-18",
+ "system_version": "v2b",
+ "estimator": "experiments/exp4_collaboration/estimator__openrouter_openai_gpt-4o-mini-2024-07-18__v2b.json",
+ "tau": 0.05,
+ "epsilon": 0.1,
+ "tau_grid": [
+  0.05,
+  0.1,
+  0.15,
+  0.2,
+  0.25,
+  0.3,
+  0.4,
+  0.5
+ ],
+ "risk_target_met": false,
+ "rule": "largest tau with held-out calib error among stopped states <= epsilon",
+ "calib_table": [
+  {
+   "tau": 0.05,
+   "stopped_states": 0,
+   "stop_rate": 0.0,
+   "error_rate_when_stopping": null
+  },
+  {
+   "tau": 0.1,
+   "stopped_states": 0,
+   "stop_rate": 0.0,
+   "error_rate_when_stopping": null
+  },
+  {
+   "tau": 0.15,
+   "stopped_states": 0,
+   "stop_rate": 0.0,
+   "error_rate_when_stopping": null
+  },
+  {
+   "tau": 0.2,
+   "stopped_states": 0,
+   "stop_rate": 0.0,
+   "error_rate_when_stopping": null
+  },
+  {
+   "tau": 0.25,
+   "stopped_states": 0,
+   "stop_rate": 0.0,
+   "error_rate_when_stopping": null
+  },
+  {
+   "tau": 0.3,
+   "stopped_states": 0,
+   "stop_rate": 0.0,
+   "error_rate_when_stopping": null
+  },
+  {
+   "tau": 0.4,
+   "stopped_states": 0,
+   "stop_rate": 0.0,
+   "error_rate_when_stopping": null
+  },
+  {
+   "tau": 0.5,
+   "stopped_states": 0,
+   "stop_rate": 0.0,
+   "error_rate_when_stopping": null
+  }
+ ],
+ "estimator_report": {
+  "brier_eval": 0.13599914879727018,
+  "auroc_eval": 0.6524444444444445,
+  "eval_states": 180,
+  "train_states": 420,
+  "abstention_rate": 0.8033333333333333
+ }
+}

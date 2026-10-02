@@ -34,7 +34,6 @@ from contract.submission import AcquisitionPlan
 from contract.vocabulary import Band, Direction, SourceAvailability, Status
 from phases.acquire import ATTEMPT_COST, BudgetLedger
 from phases.band import compute_band
-from phases.grounding import resolves
 from phases.select import applicable_agents
 
 
@@ -76,6 +75,8 @@ def run_phase2(
     reasoners: dict,
     ledger: BudgetLedger,
     return_rejections: bool = False,
+    costs: dict | None = None,
+    unreadable: frozenset[str] = frozenset(),
 ) -> tuple[FindingRecord, ...]:
     """His Phase 2 over the five specialists.
 
@@ -88,6 +89,10 @@ def run_phase2(
     to would re-validate as clean and an auditor re-running `validate` would be
     told nothing failed. The reason is therefore handed out from the point of
     rejection rather than reconstructed.
+
+    `costs` ({agent: c_{i,g}}, Config.agent_costs) is what each dispatch reserves
+    and is charged from the AGENT pool -- the same number selection budgeted with.
+    Default: ATTEMPT_COST per dispatch.
     """
     applicable = applicable_agents(plan)
     records = []
@@ -105,16 +110,17 @@ def run_phase2(
             )
             continue
 
-        reservation = ledger.reserve(BudgetPool.AGENT, ATTEMPT_COST, f"run:{agent}")
+        cost = (costs or {}).get(agent, ATTEMPT_COST)
+        reservation = ledger.reserve(BudgetPool.AGENT, cost, f"run:{agent}")
         if reservation is None:
             records.append(
                 FindingRecord(envelope.object_id, agent, Status.NOT_DISPATCHED, None)
             )
             continue
         items = reasoners[agent](envelope)
-        ledger.charge(reservation, ATTEMPT_COST)
+        ledger.charge(reservation, cost)
 
-        record, validity = initial_record(agent, items, envelope)
+        record, validity = initial_record(agent, items, envelope, unreadable)
         if not validity.is_valid:
             rejections.append((record, validity))
         records.append(record)
@@ -123,16 +129,24 @@ def run_phase2(
     return tuple(records)
 
 
-def analysis_status(agent, envelope: EvidenceEnvelope) -> Status:
-    """The same required-evidence rule for initial and revised analyses."""
+def analysis_status(agent, envelope: EvidenceEnvelope,
+                    unreadable: frozenset[str] = frozenset()) -> Status:
+    """The same required-evidence rule for initial and revised analyses.
+
+    `unreadable`: fields obtained but not readable by the specialist implementation
+    (the text-only model adapter cannot read `screenshot`). Required evidence the
+    specialist could not read does not make its analysis `ran` -- otherwise a
+    screenshot-only Content Agent would count as analysed coverage while having
+    read nothing."""
     return (
         Status.RAN
-        if fields.AGENT_REQUIRED[agent] & set(envelope.normalized)
+        if fields.AGENT_REQUIRED[agent] & (set(envelope.normalized) - unreadable)
         else Status.NO_DATA
     )
 
 
-def initial_record(agent, items, envelope: EvidenceEnvelope):
+def initial_record(agent, items, envelope: EvidenceEnvelope,
+                   unreadable: frozenset[str] = frozenset()):
     """Build and validate a first analysis, in Phase 2 or a later dispatch.
 
     Readiness requires any authorized field; `ran` requires an obtained required
@@ -143,8 +157,8 @@ def initial_record(agent, items, envelope: EvidenceEnvelope):
     Return the original validity alongside an auditable error record on failure:
     clearing its verdict must not erase the reason it was rejected.
     """
-    obtained = set(envelope.normalized)
-    status = analysis_status(agent, envelope)
+    obtained = set(envelope.normalized) - unreadable
+    status = analysis_status(agent, envelope, unreadable)
     record = FindingRecord(
         object_id=envelope.object_id,
         agent=agent,
@@ -220,9 +234,7 @@ def validate(record: FindingRecord, envelope: EvidenceEnvelope) -> RecordValidit
         tool_valid=all(
             a.tool in fields.AGENT_TOOLS[record.agent] for a in record.acquisition_log
         ),
-        # A span locator must name text that exists in the obtained artifact
-        # (phases/grounding.py); a fixture locator keeps the obtained-field rule.
-        locators_resolve=all(resolves(h, envelope) for h in record.items),
+        locators_resolve=all(h.declared_field in obtained for h in record.items),
     )
 
 

@@ -1,0 +1,31 @@
+{
+  "case_id": "c4-acquisition-failed",
+  "submission_type": "url",
+  "payload": "http://update-billing.secure-payments.example.test/pay",
+  "label": "phishing",
+  "inapplicable": ["message_body"],
+  "artifacts": [
+    {"field": "url", "content": "http://update-billing.secure-payments.example.test/pay", "instrument": "submission"},
+    {"field": "redirect_chain", "content": "302 -> http://update-billing.secure-payments.example.test/pay", "instrument": "headless_browser"},
+    {"field": "dns", "content": "A 203.0.113.44", "instrument": "dns_client"},
+    {"field": "registration", "content": "created 1 day ago", "instrument": "registration_client"},
+    {"field": "tls", "content": "DV, issued 1 day ago", "instrument": "tls_client"},
+    {"field": "ct", "content": "1 log entry, 1 day ago", "instrument": "ct_client"},
+    {"field": "hosting", "content": "shared hosting, AS64511", "instrument": "hosting_client"},
+    {"field": "page_resources", "content": "3 referenced resources fetched", "instrument": "headless_browser"}
+  ],
+  "failures": {
+    "html": "connection_reset",
+    "dom": "connection_reset",
+    "screenshot": "render_timeout"
+  },
+  "findings": {
+    "url": [
+      {"observation": "brand token in a subdomain of an unrelated registrable domain", "field": "url", "direction": "phishing", "strength": "distinctive"}
+    ],
+    "metadata": [
+      {"observation": "domain registered one day before observation", "field": "registration", "direction": "phishing", "strength": "distinctive"}
+    ]
+  },
+  "revisions": {}
+}

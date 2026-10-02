@@ -1,0 +1,2 @@
+arm,reference,repeat,n_paired,forced_f1_delta,forced_f1_ci_low,forced_f1_ci_high,forced_accuracy_delta,forced_accuracy_ci_low,forced_accuracy_ci_high,f1_delta,f1_ci_low,f1_ci_high,coverage_delta,coverage_ci_low,coverage_ci_high,mcnemar_a_only,mcnemar_b_only,mcnemar_p_value
+b1,p1,0,200,-0.04747116237799476,-0.09087706939063067,-0.009068322981366395,-0.039999999999999925,-0.07999999999999996,-0.0050000000000000044,-0.04747116237799476,-0.09087706939063067,-0.009068322981366395,0.0,0.0,0.0,3,11,0.057373046875

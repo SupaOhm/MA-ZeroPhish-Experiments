@@ -27,10 +27,6 @@ from phases.moderator import dependency_groups
 # point the same way. Two, so that a lone observation cannot decide a case.
 MIN_SUPPORTING_FIELDS = 2
 
-# The coverage criterion inside `Suf_c`. It was an inline 0.5 in `adjudicate`;
-# named so the model-backed path applies the same rubric.
-COVERAGE_MIN = 0.5
-
 
 @dataclass(frozen=True, slots=True)
 class UnblindedObservation(EligibleObservation):
@@ -60,6 +56,7 @@ def _coverage(records, envelope) -> CoverageReport:
         applicable=frozenset(applicable),
         analyzed=frozenset(analyzed),
         availability=dict(envelope.availability),
+        unavailable_reasons=dict(getattr(envelope, "unavailable_reasons", {}) or {}),
     )
 
 
@@ -97,6 +94,7 @@ def project_for_judge(
     judge_input: str = "blinded",
     reconciliation: str = "provenance",
     revised: frozenset[str] = frozenset(),
+    lineage: dict | None = None,
 ) -> JudgeContext:
     observations = []
     for record, item in _eligible(records):
@@ -108,6 +106,7 @@ def project_for_judge(
                     locator=item.locator,
                     provenance=item.provenance,
                     revision_accepted=item.locator in revised,
+                    evidence_text=item.evidence_text,
                 )
             )
         elif judge_input == "sees_verdicts":
@@ -126,7 +125,8 @@ def project_for_judge(
 
     return JudgeContext(
         observations=tuple(observations),
-        dependencies=dependency_groups(records, mode=reconciliation),
+        dependencies=dependency_groups(records, mode=reconciliation, envelope=envelope,
+                                      lineage=lineage),
         coverage=_coverage(records, envelope),
         issues=tuple(
             JudgeVisibleIssue(i.kind, i.object_id, i.affected_fields)
@@ -141,7 +141,7 @@ def project_for_judge(
 # claim", and only observations "linked to the same demonstrated underlying
 # cause are discounted as independent corroboration". So a shared-acquisition
 # edge is recorded and reported, and does not reduce support.
-DISCOUNTABLE_EDGES = frozenset({"shared_artifact"})
+DISCOUNTABLE_EDGES = frozenset({"shared_artifact", "common_cause", "borrowed_observation"})
 
 
 def _discounted_fields(context: JudgeContext) -> set[str]:
@@ -190,7 +190,7 @@ def adjudicate(
     # minimum evidence and coverage criterion; `Def_c` requires the conclusion to
     # survive common-cause discounting and material contradictions.
     enough = len(supporting_fields) >= MIN_SUPPORTING_FIELDS
-    covered = coverage_fraction(context.coverage) >= COVERAGE_MIN
+    covered = coverage_fraction(context.coverage) >= 0.5
     contested = any(i.kind is IssueKind.CONFLICT for i in context.issues)
 
     # **Neither condition is establishable, and both are False by construction.**
@@ -246,74 +246,6 @@ def adjudicate(
             f"discounting; coverage {coverage_fraction(context.coverage):.2f}; {cause}"
         ),
         cited_provenance=tuple(o.provenance for o in context.observations),
-        coverage=context.coverage,
-        unresolved_issues=context.issues,
-    )
-    return decision, AuditFeedback(object_id=object_id, notes=cause)
-
-
-@dataclass(frozen=True, slots=True)
-class ConclusionAssessment:
-    """A model Judge's `Suf_c` and `Def_c` for one conclusion, with what it cites."""
-
-    sufficient: bool
-    defensible: bool
-    cited: tuple[str, ...]
-
-
-def invalid_citations(context: JudgeContext, *assessments) -> tuple[str, ...]:
-    """eq:decision-validity `CitationValid`: cited locators naming no eligible observation."""
-    eligible = {o.locator for o in context.observations}
-    return tuple(sorted({ref for a in assessments for ref in a.cited if ref not in eligible}))
-
-
-def conclusion_holds(context: JudgeContext, assessment: ConclusionAssessment) -> bool:
-    """`Gamma_c`: the Judge's `Suf_c` and `Def_c`, bounded by the fixed rubric.
-
-    The model says whether the conclusion is sufficient and defensible; the
-    rubric -- at least `MIN_SUPPORTING_FIELDS` distinct fields among its cited
-    observations after common-cause discounting, and the coverage criterion --
-    is applied here, so a model cannot make a conclusion hold on less.
-    """
-    if not (assessment.sufficient and assessment.defensible):
-        return False
-    by_locator = {o.locator: o for o in context.observations}
-    discounted = _discounted_fields(context)
-    supporting = {
-        by_locator[ref].declared_field
-        for ref in assessment.cited
-        if ref in by_locator and ref not in discounted
-    }
-    return (
-        len(supporting) >= MIN_SUPPORTING_FIELDS
-        and coverage_fraction(context.coverage) >= COVERAGE_MIN
-    )
-
-
-def decide(
-    context: JudgeContext,
-    object_id: str,
-    phishing: ConclusionAssessment,
-    benign: ConclusionAssessment,
-    explanation: str,
-) -> tuple[DecisionRecord, AuditFeedback]:
-    """eq:judge-decision over a model Judge's assessments, with his two causes."""
-    gamma_p = conclusion_holds(context, phishing)
-    gamma_b = conclusion_holds(context, benign)
-    if gamma_p and not gamma_b:
-        verdict, cause, cited = Verdict.PHISHING, "decided", phishing.cited
-    elif gamma_b and not gamma_p:
-        verdict, cause, cited = Verdict.BENIGN, "decided", benign.cited
-    else:
-        verdict = Verdict.INSUFFICIENT
-        cause = "contested" if gamma_p else "insufficient_support"
-        cited = tuple(sorted(set(phishing.cited) | set(benign.cited)))
-    by_locator = {o.locator: o for o in context.observations}
-    decision = DecisionRecord(
-        object_id=object_id,
-        verdict=verdict,
-        explanation=explanation,
-        cited_provenance=tuple(by_locator[r].provenance for r in cited if r in by_locator),
         coverage=context.coverage,
         unresolved_issues=context.issues,
     )

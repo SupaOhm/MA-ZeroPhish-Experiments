@@ -1,0 +1,15 @@
+{
+ "reading": {
+  "ablation2_no_reconciliation": "no measurable effect",
+  "ablation5_no_independent_adjudication": "no measurable effect",
+  "full_debate": "no measurable effect",
+  "no_collaboration": "no measurable effect"
+ },
+ "calls_per_case": {
+  "ablation2_no_reconciliation": 8.338461538461539,
+  "ablation5_no_independent_adjudication": 8.338461538461539,
+  "full_debate": 8.784615384615385,
+  "mazerophish": 8.338461538461539,
+  "no_collaboration": 4.892307692307693
+ }
+}

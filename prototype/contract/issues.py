@@ -8,8 +8,6 @@ specialists not yet dispatched.
 from dataclasses import dataclass, field
 from enum import Enum
 
-from .evidence import EvidenceItem
-
 
 class IssueKind(Enum):
     CONFLICT = "conf"
@@ -47,48 +45,3 @@ class IssueSets:
 
     def all(self) -> tuple[Issue, ...]:
         return self.conflict + self.basis + self.coverage + self.selection
-
-
-@dataclass(frozen=True, slots=True)
-class RevisionRequest:
-    """`Q_{i,g}^{(r)}` -- what one collaboration re-invocation hands a specialist.
-    His eq:collaboration-request, Phase 3 Step 4.
-
-    `issue` is the issue being answered, or None in a full-debate round, which
-    addresses everything rather than one issue. `initial` marks an agent whose
-    record was `not_dispatched`: it submits an initial record, not a revision.
-    `own_items` are the agent's current findings (empty if initial). `cited` are
-    the other agents' valid items the round puts under discussion -- observation,
-    field, locator and provenance travel with them; a consumer must not show a
-    peer's direction or strength, which his text withholds from the exchange.
-
-    The read-only properties below expose the issue's own fields so a caller that
-    inspects the request as the issue it answers keeps working. They derive
-    nothing.
-    """
-
-    issue: Issue | None
-    mode: str
-    initial: bool = False
-    own_items: tuple[EvidenceItem, ...] = ()
-    cited: tuple[EvidenceItem, ...] = ()
-
-    @property
-    def kind(self):
-        return self.issue.kind if self.issue is not None else None
-
-    @property
-    def object_id(self):
-        return self.issue.object_id if self.issue is not None else None
-
-    @property
-    def affected_fields(self) -> frozenset[str]:
-        return self.issue.affected_fields if self.issue is not None else frozenset()
-
-    @property
-    def relevant_agents(self) -> frozenset[str]:
-        return self.issue.relevant_agents if self.issue is not None else frozenset()
-
-    @property
-    def evidence_refs(self) -> tuple[str, ...]:
-        return self.issue.evidence_refs if self.issue is not None else ()
