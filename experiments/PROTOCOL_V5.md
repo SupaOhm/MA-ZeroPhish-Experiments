@@ -1484,3 +1484,7 @@ precision >= 0.95 threshold on v4abdfFD runs of calib (300); routing unchanged. 
 existing caches. Selectable now: C0, C2, C2-R, by the declared rule (F1 >= C0 + 0.01 and precision >= C0 - 0.01;
 highest F1 among eligible; tie within 0.005 -> fewer calls). C3 stays descriptive. No further candidate is
 added to D3. If C2-R is chosen, test3 runs v4abdfFD scored with P1-R/B2-R.
+Runs started (2026-10-04 00:0x; balance $25.14 after a top-up): C2-R training runs (v4abdfFD on fit 839, calib
+300, B2's 200 fit pages x 3 withheld conditions; runs/d3/fd_*); a chain that, once dev-3's captures are done,
+runs C0 then C2 on dev-3 (run r1, fresh cache runs/llm_cache_d3r1), each only after a balance check.
+Scorer with the declared rule: experiments/d3_eval.py.
