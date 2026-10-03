@@ -1460,3 +1460,10 @@ C2 on test2 -- SUPPLEMENTARY RESULT (results_gpt4omini/final/test2_c2_supplement
 | best baseline (PhishDebate + screenshot) | 0.838 | 0.845 | 0.879 | 0.800 | 0.110 | 0.918 | -- |
 C2 vs H1: +0.020 F1 [-0.008, +0.050], McNemar 7 vs 3, p = 0.344 (not significant). Same direction as round FD on
 dev-2 (+0.015). As declared, this does not enter round D3's selection (dev-3 only).
+D3 amendment 3 (2026-10-03, before any dev-3 row was built): the API fetch is too slow (~1 min per 50 rows), so
+dev-3 is built as first declared -- from the parquet shards test-001/002 -- with pyarrow under WSL (Ubuntu,
+Python 3.14), the Windows policy still blocking the Windows build. Same library versions as the Windows venv
+(pyarrow 25.0.1, tldextract 5.3.2 with its bundled PSL, beautifulsoup4 4.15.0, lxml 6.1.3). Fingerprint check on
+200 existing test3 pages: 199 identical; 1 differs in text_key only (HTML parser build). Safeguard: after the
+build, dev-3's fingerprints are recomputed on Windows and must share no site / skeleton / text key with any
+other split; the manifest is re-written on Windows (CRLF, same format). The API cache is not used.
