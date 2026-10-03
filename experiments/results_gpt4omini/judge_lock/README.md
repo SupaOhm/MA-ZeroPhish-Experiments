@@ -56,6 +56,8 @@ phishing in the manifest.
 | p = 0.0 → benign | 130 | 0.885 | 15 |
 
 0.9 is the lowest level with calib precision ≥ 0.95. No benign level reaches 0.95, so there is no benign lock.
+**On calib itself JL changes 2 pages, 1 right and 1 wrong** (F1 0.909 → 0.910, FPR 0.040 → 0.047). That is the one
+benign calib page at p ≥ 0.9. "FPR unchanged" holds on dev and dev-2, not on calib.
 The Judge's probability takes only a few values, and no calib page reaches 0.95.
 
 ## Is it cheating?
