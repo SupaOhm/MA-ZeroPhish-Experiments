@@ -1423,3 +1423,17 @@ forced risk; also H1+JL with the band (JL-locked pages are answered).
 (ii) coverage under each evidence-withholding condition (no_html, no_dom, no_network_metadata, cum3) is lower than
 under base -- the system abstains more when evidence is missing. Reported whatever it shows.
 Code: experiments/selective_risk.py.
+Round SR -- RESULT (results_gpt4omini/selective_risk/result.json; $0). H1 with the calib-fixed band:
+| set : condition | coverage | selective risk | forced risk | FPR (answered) |
+|---|---|---|---|---|
+| dev-2 : base | 0.895 | 0.028 | 0.065 | 0.000 |
+| dev-2 : no_html / no_dom / no_network / cum3 | 0.855 / 0.875 / 0.870 / 0.845 | 0.064 / 0.046 / 0.069 / 0.059 | 0.085 / 0.090 / 0.110 / 0.105 | 0.098 / 0.045 / 0.099 / 0.075 |
+| dev-2 : conflict swaps (65) | 0.785 | 0.137 | 0.200 | 0.231 |
+| test2 : base | 0.875 | 0.069 | 0.115 | 0.071 |
+| test2 : no_html / no_dom / no_network / cum3 | 0.865 / 0.885 / 0.850 / 0.865 | 0.064 / 0.056 / 0.088 / 0.046 | 0.100 / 0.080 / 0.130 / 0.085 | 0.115 / 0.078 / 0.148 / 0.061 |
+(transient_browser_recoverable equals base on both sets.) Forced risk reproduces the known Exp 5 accuracy.
+READING by the declared rule: NOT "good". (i) holds everywhere: abstaining on the ~10-15% of pages nearest the
+threshold cuts the error rate by roughly 30-60% in every condition, on dev-2 and on the zero-day test2. (ii) holds on
+dev-2 (all four withholding conditions abstain more than base) but not on test2: no_dom answers 0.885 vs base 0.875
+(the other three abstain more). So the band gives a usable selective-risk operating point, but the claim "the
+system abstains more when evidence is missing" is not supported on test2. Nothing in the frozen system changes.
