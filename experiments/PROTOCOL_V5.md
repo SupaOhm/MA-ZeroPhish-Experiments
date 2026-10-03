@@ -1069,3 +1069,27 @@ bootstrap CI and exact McNemar on the pooled pages; calls and tokens per page.
 Acceptance (fixed now): H1-FD is a candidate only if pooled F1 is higher than H1's AND pooled FPR is not higher.
 A candidate is NOT adopted here: team decision, then freeze, then test3 once. Otherwise targeted collaboration
 stays. Code: experiments/exp4_collaboration/run_full_debate_dev.py.
+Round FDS -- NOT RUN (2026-10-03): the team lead decided to stop changing the detection system for Exp 1
+("enough for Exp 1; work on the other experiments"). No call was made; nothing spent. The declaration stays
+as a record.
+
+## Round AUD: the paper's promised secondary measures for Exp 2, 5 and 6 on the final system (declared 2026-10-03, before computing; $0)
+Why: Section IV promises measures that were reported only for the superseded v1 system
+(RESULTS_GPT4OMINI.md, 2026-09-30) or never: Exp 5's citation / disclosure audit, Exp 6's unsupported citations
+and decision changes, Exp 2's recovery of initially unselected specialists. Read from the stored v4 ledgers
+(the same ones behind final/h1_all); no model call; nothing in the system changes. Descriptive; no acceptance rule.
+Exp 5 (runs/v4_exp/exp5: 6 conditions x 200 dev-2 pages + 65 conflict swaps), per condition:
+ (a) citations eligible: every locator the Judge cites or lists as support is in the decision's eligible set;
+ (b) coverage gaps disclosed: every coverage gap is in the Judge's coverage limitations;
+ (c) open issues disclosed: the Judge's unresolved-issue list has one entry per unresolved issue;
+ (d) withheld evidence never used: no eligible or cited locator comes from a withheld field, and each withheld
+     field is a coverage gap;
+ (e) the Judge's own rubric abstention rate (verdict insufficient) next to H1's forced verdicts.
+Exp 6 (runs/v4_exp, _rep1, _rep2; exp6 arms), per arm and run: unsupported citations = findings dropped by the
+grounding check (bad line or quote) / findings returned; H1 verdict changes vs the full system (count, right /
+wrong); calls per page. Where the run's cache replays exactly (rep1, rep2), revisions accepted / rejected per arm by
+cache replay (round ESC's method, network disabled); pages that do not reproduce are excluded and counted.
+Exp 2 (runs/v4_exp/exp2: complete and matched-agent-2 conditions; adaptive, literal, fixed-all), per arm:
+specialists dispatched initially per page; share of initially unselected but ready specialists dispatched later
+by the Moderator; dispatch shortfalls; calls per page.
+Code: experiments/audit_secondary.py.
