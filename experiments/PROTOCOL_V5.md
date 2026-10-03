@@ -1406,3 +1406,27 @@ H1+JL F1 0.874 / FPR 0.160 (McNemar H1 vs H1+JL 3 vs 0, p = 0.25). H1+JL is stil
 (+4 pages) and test2 (-3 pages) JL's effect is within noise; its benefit is not established. The frozen
 choice (H1+JL primary, H1 secondary on test3) stands unless the team decides otherwise BEFORE test3; any such
 change will be recorded with this post hoc result as its stated reason.
+
+## Round D3: improvement on a FRESH development set (declared 2026-10-03, before building or running anything; user request, budget no longer limiting)
+Why: dev and dev-2 have been reused for 16+ rounds and JL showed the winner's curse (dev +4 pages, test2 -3).
+Any further choice is made on a new, untouched development set, dev-3, and only then frozen for test3.
+DATA -- dev-3: 500 PhreshPhish pages (250 phishing / 250 benign) from the test period (2025-09-08 .. 2025-12-15,
+the same shards test-001/002 as test3), built by the test3 builder with split "dev3" and seed "20261003:dev3":
+same filters, de-duplication, union-find campaign grouping, own-domain only, one page per group, every group
+touching ANY existing manifest case (test3 included) blocked. Captures exactly as test3 (offline render, CT v2).
+CANDIDATES (pipeline v4abdf, H1 decision unchanged -- nothing refit):
+ C0 = H1, one run (reference);
+ C1 = H1, mean of 3 independent runs (fresh caches r1/r2/r3; the three calibrated H1 scores averaged and compared
+      with the routed H1 threshold, exactly as round E1);
+ C2 = fixed full debate (round FD code), one run (r1 cache);
+ C3 = fixed full debate, mean of 3 runs (r1/r2/r3).
+SELECTION (fixed now): a candidate is eligible if its dev-3 F1 >= C0's + 0.01 AND its precision >= C0's - 0.01;
+the eligible candidate with the highest F1 is chosen (tie within 0.005: the one with fewer model calls per
+page); no eligible candidate -> C0 (H1). Paired bootstrap CIs and McNemar reported for information.
+JL: not part of the selection; reported as a secondary rule on top of the chosen candidate.
+AFTERWARDS: the chosen configuration is frozen (new freeze file) before test3. test3 primary = the chosen
+configuration (without JL; JL a secondary row). If a mean-of-3 candidate is chosen, every baseline is also
+run 3 times on test3 and combined the same way (majority of the three verdicts; PhishDebate's score = mean of
+its three Judge confidences), so the comparison stays at equal repeats; the single-run rows are reported too.
+Not in this round: more training data (CT capture time); a GPT-4o replication (a separate study, all arms).
+Cost estimate: dev-3 ~$12 (3 x H1 + 3 x full debate on 500 pages); test3 afterwards up to ~$50 with x3 baselines.
