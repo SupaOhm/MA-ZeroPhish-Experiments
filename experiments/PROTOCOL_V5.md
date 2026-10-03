@@ -1435,3 +1435,9 @@ Control policy ("DLL load failed ... blocked this file"), so dev-3 rows come fro
 datasets-server filter API over the PhreshPhish test split in the same window (build_test3.py fetch mode:
 deterministic spread of pages, cached), not from the parquet shards. Everything else unchanged; every group
 touching an existing manifest case (test3 included) is still blocked.
+D3 amendment 2 (2026-10-03, user decision, before any dev-3 row was read or any model call): the mean-of-3
+candidates are no longer selectable, so test3 stays one run per system for every arm (no x3 baselines).
+Selectable: C0 (H1, one run) and C2 (fixed full debate, one run), by the declared rule (F1 >= C0 + 0.01 and
+precision >= C0 - 0.01; else C0). C1 is dropped. C3 (full debate, mean of 3 runs: r1 = C2's run, r2/r3 with
+fresh caches) is run for information only (does averaging help full debate; run-to-run spread) and cannot be
+chosen. Estimated dev-3 cost ~$8.
