@@ -1364,3 +1364,17 @@ from TD's training rows; pages with CT obtained or with a definite "no covering 
 Kept: 360 (188 benign, 172 phishing; list frozen in runs/tropfit/cases_td.txt). Balance checked: $7.41;
 pipeline v4abdf on the 360 pages (~$1.6). Everything else in round TD (training, calibration, adoption rule)
 unchanged.
+Round TD -- RESULT (2026-10-03; pipeline on 360 trop_fit pages, 0 failures; results_gpt4omini/td/result.json):
+NOT ADOPTED -- H1 (+JL) stays. Retrained thresholds: P1-TD 0.827 (H1 0.592), B2-TD 0.697 (H1 0.546).
+| set | H1 F1 / P / R / FPR | H1-TD F1 / P / R / FPR |
+|---|---|---|
+| dev (300) | 0.923 / 0.926 / 0.920 / 0.073 | 0.875 / 0.939 / 0.820 / 0.053 |
+| dev-2 (200) | 0.933 / 0.958 / 0.910 / 0.040 | 0.844 / 1.000 / 0.730 / 0.000 |
+| pooled (500) | 0.927 / 0.939 / 0.916 / 0.060 | 0.863 / 0.961 / 0.784 / 0.032 |
+| TR-OP (200, development data) | 0.862 / 0.797 / 0.940 / 0.240 | 0.929 / 0.939 / 0.920 / 0.060 |
+Criterion (1) PhreshPhish not worse: FAILED (pooled F1 -0.064); criterion (2) TR-OP +0.02: met (+0.067).
+Descriptive, threshold-free: AP PhreshPhish 0.977 -> 0.963, recall@P95 0.896 -> 0.836; AP TR-OP 0.898 ->
+0.981, recall@P95 0.020 -> 0.870. Reading: a real trade-off in the ranking, not only a threshold shift -- the
+TR-OP-source training pages fix TR-OP's false positives but cost PhreshPhish recall. Caveat: trop_fit comes
+from the same source and crawler as TR-OP, so part of the TR-OP gain is in-distribution. No further variant
+(e.g. weighting or fewer rows) is tried: it would be chosen after seeing these numbers.
