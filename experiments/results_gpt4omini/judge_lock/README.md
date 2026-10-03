@@ -4,6 +4,11 @@ Rule: **Judge p ≥ 0.9 → phishing; otherwise the frozen H1 decides.** The 0.9
 H1's own precision target (≥ 0.95). Nothing is refit, no model call, $0. Full record: `experiments/PROTOCOL_V5.md`,
 "Round JL" and "Round JL addendum". Numbers below are copied from `result.json` and `repeats.json` in this folder.
 
+**Update 2026-10-03:** the team adopted JL (PROTOCOL_V5 "Round JL ADOPTED"). Afterwards Tinpat scored it post hoc on
+test2: **JL changes 3 of 200 zero-day pages and gets all 3 wrong** (F1 0.887 → 0.874, FPR 0.130 → 0.160;
+`final/test2_jl_posthoc.json`). Counting dev, dev-2, calib and test2 together, JL is right on 5 changed pages and
+wrong on 4, so its effect is within noise.
+
 **Reading (declared rule): candidate, not adopted.** Pooled F1 rises and FPR does not, so it passes the
 declared bar. But it changes 4 of 500 pages and is not significant. If the team approves it, freeze JL and
 evaluate it once on test3. Until then H1 stays.
