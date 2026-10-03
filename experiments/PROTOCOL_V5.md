@@ -1032,3 +1032,24 @@ Round JL addendum -- RESULT (results_gpt4omini/judge_lock/repeats.json). H1 repr
 | rep2 | 0.929 / 0.050 | 0.934 / 0.050 | 1 (1) |
 Reading (descriptive): in every run JL changes 1-2 of 200 pages, always a missed phishing page the Judge
 had at p >= 0.9, and never raises FPR. Consistent with round JL; still small, and dev-2 is development data.
+
+## Screening on fit / calib only, after round JL (2026-10-03; no dev or dev-2 outcome computed; $0)
+Teammate request: find more rules like JL. To avoid tuning on dev, candidates were screened on calib (fit shown
+as in-sample context) and only a candidate that helps on calib would be declared for dev / dev-2. None did, so
+nothing below was computed on dev or dev-2. H1 on calib: F1 0.909, FPR 0.040 (130 TP, 6 FP, 20 FN).
+Calib errors: 10 of the 20 FN have no phishing finding at all and Judge p = 0.0 (the specialists found
+nothing; no decision rule can recover them); most other FN have Judge p 0.5-0.9 with H1 below its threshold.
+| candidate (calib) | covers | flips H1 on | right / wrong | calib F1 / FPR |
+|---|---|---|---|---|
+| BL: Judge p = 0 and no phishing finding -> benign | 119 | 5 | 1 / 4 | worse |
+| BL3: Judge p <= 0.2 and top phishing strength 0 -> benign | 122 | 5 | 1 / 4 | worse |
+| JV: Judge verdict phishing and p >= 0.85 -> phishing | 59 | 4 | 1 / 3 | worse |
+| SE: distinctive phishing finding, >= 2 fields, no opposition -> phishing | 26 | 0 | - | same |
+| band: within d of H1's threshold, decide by Judge p (d 0.05/0.10/0.15 x p 0.8/0.85) | - | - | - | 0.897-0.912 / 0.033-0.040 |
+| AV: mean of P1 and B2 scores, threshold calib precision >= 0.95 (0.5662) | all | - | - | 0.905 / 0.040 |
+Reading: no candidate clearly beats H1 on calib; the best band setting (+0.003, one FP fewer) is within noise
+and was the best of six settings, so it is not declared. Not taken to dev.
+Disclosure for round JL: on calib itself JL changes 2 pages, 1 right and 1 wrong (calib F1 0.909 -> 0.910,
+FPR 0.040 -> 0.047). This is the one calib page with Judge p >= 0.9 that is benign (stated in JL's declaration);
+"FPR unchanged" in round JL holds on dev / dev-2, not on calib.
+Next real gains need better evidence (the specialists), i.e. new model calls; see the next round.
