@@ -1406,3 +1406,20 @@ H1+JL F1 0.874 / FPR 0.160 (McNemar H1 vs H1+JL 3 vs 0, p = 0.25). H1+JL is stil
 (+4 pages) and test2 (-3 pages) JL's effect is within noise; its benefit is not established. The frozen
 choice (H1+JL primary, H1 secondary on test3) stands unless the team decides otherwise BEFORE test3; any such
 change will be recorded with this post hoc result as its stated reason.
+
+## Round SR: abstaining when the evidence is inadequate (Exp 5's selective risk / coverage) (declared 2026-10-03, before computing on dev-2 or test2; $0)
+Why: Exp 5 promises substantive-verdict coverage and selective risk and asks whether the system "can abstain
+when evidence is inadequate". H1 forces a verdict on every page; the Judge's own rubric abstains on ~85%, too
+often to be useful. This round adds an abstention band to the frozen H1 score; nothing is refit.
+Rule (fixed on calib only): abstain when |q - t| < 0.2061, where q is H1's calibrated score of the routed step
+(P1 or B2) and t its threshold; 0.2061 gives 90% coverage on calib (calib risk 0.087 forced -> 0.056 selective;
+95% / 80% targets would give 0.1213 / 0.3285). The withheld fields are hidden from the features and from H1's
+routing exactly as in Exp 5 scoring.
+Data: Exp 5 ledgers on dev-2 (runs/v4_exp/exp5, 6 conditions x 200 + 65 conflict swaps) and, supplementary, on
+the zero-day test2 (runs/test2/exp5, 6 x 200; detection there was already scored -- this adds abstention only).
+Measures per condition: coverage, selective risk (error rate on answered pages), FPR and recall on answered pages,
+forced risk; also H1+JL with the band (JL-locked pages are answered).
+"Good" (fixed now, both must hold on dev-2 AND on test2): (i) selective risk is below forced risk in every condition;
+(ii) coverage under each evidence-withholding condition (no_html, no_dom, no_network_metadata, cum3) is lower than
+under base -- the system abstains more when evidence is missing. Reported whatever it shows.
+Code: experiments/selective_risk.py.
