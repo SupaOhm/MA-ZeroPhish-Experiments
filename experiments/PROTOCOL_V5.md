@@ -1354,3 +1354,13 @@ runs/ct_resume.py re-runs the SAME enrich ct step whenever crt.sh is healthy aga
 crtsh_unreachable pages; obtained records are kept; rule unchanged) until <= 3% are unreachable, then rebuilds
 both capture sets with the chains' commands. Reference: test2 had CT obtained on 177/200 pages (88.5%),
 unreachable on 1. test3 is not run until its CT coverage is comparable; any remaining gap will be reported.
+
+## Round TD amendment: crt.sh outage (declared 2026-10-03 20:20, after the captures and before any model call or result)
+crt.sh has been mostly down for ~20 h (502/503/timeouts). After the chain's CT passes, 40 of the 400 trop_fit
+pages are still "crtsh_unreachable" -- unevenly by label (28 phishing, 12 benign), so training on them as
+"no CT" could teach "missing CT -> phishing", the kind of shortcut round TD exists to remove. Amendment
+(label-blind acquisition rule): trop_fit pages whose CT lookup never got an answer from crt.sh are excluded
+from TD's training rows; pages with CT obtained or with a definite "no covering certificate" answer are kept.
+Kept: 360 (188 benign, 172 phishing; list frozen in runs/tropfit/cases_td.txt). Balance checked: $7.41;
+pipeline v4abdf on the 360 pages (~$1.6). Everything else in round TD (training, calibration, adoption rule)
+unchanged.
