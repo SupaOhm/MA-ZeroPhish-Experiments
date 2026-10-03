@@ -97,9 +97,15 @@ def build(out_dir: str, parquet: list[str] | None = None, split: str = "test3", 
     def source_rows():
         if parquet:                                   # downloaded test shards (preferred)
             import pyarrow.parquet as pq
+            # Streamed in batches (round D3: the whole shards with their HTML do not fit in 7 GB);
+            # each row carries its location so the HTML of a picked page is re-read at the end.
             for pth in parquet:
-                for r in pq.read_table(pth).to_pylist():
-                    yield r
+                i = 0
+                for batch in pq.ParquetFile(pth).iter_batches(batch_size=256):
+                    for r in batch.to_pylist():
+                        r["_loc"] = (pth, i)
+                        i += 1
+                        yield r
         else:
             with gzip.open(CACHE, "rt", encoding="utf-8") as f:
                 for line in f:
@@ -120,6 +126,8 @@ def build(out_dir: str, parquet: list[str] | None = None, split: str = "test3", 
             r["date"], r["source_split"] = d, "test"
             r["label"] = "phishing" if r["label"] == "phish" else "benign"
             r["fp"] = fingerprints(r["url"], r["html"])
+            if "_loc" in r:                            # keep memory small; HTML re-read for picked pages
+                del r["html"]
             rows.append(r)
     rows = dedup(rows, log)
     uf = UnionFind()
@@ -152,6 +160,19 @@ def build(out_dir: str, parquet: list[str] | None = None, split: str = "test3", 
         cands.sort(key=lambda r: r["sha256"])
         pick = random.Random(f"{seed}:{label}").sample(cands, min(len(cands), n_per_label))
         log[f"{label}:candidate_groups"], log[f"{label}:picked"] = len(cands), len(pick)
+        need = {r["_loc"]: r for r in pick if "_loc" in r}
+        if need:                                       # re-read the picked pages' HTML (streamed)
+            import pyarrow.parquet as pq
+            for pth in parquet:
+                i = 0
+                for batch in pq.ParquetFile(pth).iter_batches(batch_size=256, columns=["sha256", "html"]):
+                    for x in batch.to_pylist():
+                        r = need.get((pth, i))
+                        if r is not None:
+                            if x["sha256"] != r["sha256"]:
+                                raise SystemExit(f"REFUSED: row {pth}#{i} moved")
+                            r["html"] = x["html"]
+                        i += 1
         for r in pick:
             cid = "pp-" + r["sha256"][:12]
             with gzip.open(out / "html" / f"{cid}.html.gz", "wt", encoding="utf-8") as f:

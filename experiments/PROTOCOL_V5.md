@@ -1467,3 +1467,10 @@ Python 3.14), the Windows policy still blocking the Windows build. Same library 
 200 existing test3 pages: 199 identical; 1 differs in text_key only (HTML parser build). Safeguard: after the
 build, dev-3's fingerprints are recomputed on Windows and must share no site / skeleton / text key with any
 other split; the manifest is re-written on Windows (CRLF, same format). The API cache is not used.
+dev-3 BUILT (2026-10-03, WSL, builder streamed in batches after a first attempt ran out of WSL memory; selection
+logic unchanged): read 10,995 rows; groups 6,102, blocked 1,252 (every group touching an existing case, test3
+included); candidate groups phishing 697 / benign 3,513; picked 250 / 250 (seed "20261003:dev3"), dates
+2025-09-08..2025-12-15. Windows re-check: the 3,000 existing rows are byte-identical in content; recomputed on
+Windows, no dev-3 site / skeleton / text key and no campaign group appears in any other split (3 dev-3 pages have
+a different text key under WSL vs Windows; neither version clashes); validate: 0 errors; manifest re-written
+on Windows (CRLF). Captures next, exactly as test3 (render 60 s + 120 s retry, CT v2 with retries, RDAP excluded).
