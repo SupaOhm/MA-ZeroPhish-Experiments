@@ -1388,3 +1388,6 @@ TR-OP (whose errors were inspected). Caveat: same source and crawler as TR-OP; t
 28 phishing / 12 benign pages. Scored: H1+JL (primary) and H1, from the existing v4abdf ledgers
 (runs/tropfit), no refit. The six baselines are not yet run on these pages (estimated ~$4 for 360 pages x 6
 arms); without them N2 gives our system's normal-set level only, to compare with its zero-day level.
+N2 -- RESULT (results_gpt4omini/td/n2_h1jl.json): H1+JL F1 0.833, accuracy 0.814, P 0.729, R 0.971, FPR 0.330
+(n = 360); H1 identical (JL changes no page here). The normal-set weakness seen on TR-OP (FPR 0.24) is
+confirmed and larger on N2: false positives on Tranco benign pages; recall stays high.
