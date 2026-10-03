@@ -128,7 +128,7 @@ def rounds_summary(trace):
 
 def stored(ledger_dir, arm):
     out = {}
-    for f in glob.glob(str(ROOT / ledger_dir / f"exp4_phreshphish_test*__{arm}.jsonl")):
+    for f in glob.glob(str(ROOT / ledger_dir / f"exp[46]_phreshphish_test*__{arm}.jsonl")):
         for l in open(f, encoding="utf-8"):
             e = json.loads(l)
             if e["kind"] == "decision" and not e.get("parent_object_id"):

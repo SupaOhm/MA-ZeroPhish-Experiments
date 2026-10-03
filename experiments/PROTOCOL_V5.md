@@ -1093,3 +1093,38 @@ Exp 2 (runs/v4_exp/exp2: complete and matched-agent-2 conditions; adaptive, lite
 specialists dispatched initially per page; share of initially unselected but ready specialists dispatched later
 by the Moderator; dispatch shortfalls; calls per page.
 Code: experiments/audit_secondary.py.
+Round AUD -- RESULT (results_gpt4omini/audit_secondary/result.json; $0, no API call).
+Exp 5, 1,265 Judge decisions (6 conditions x 200 + 65 conflict swaps):
+- (a) citations eligible: 1,265 / 1,265 (every cited or support locator is in the eligible set).
+- (d) withheld evidence never used: 0 of 800 withholding decisions use a locator from a withheld field; the withheld
+  fields are a coverage gap in 800 / 800, and appear in the Judge's own coverage limitations in 791 / 800.
+- (b), (c): the declared definitions were stricter than the Judge's contract, which asks only for "unavailable fields
+  that matter" and "issue ids that remain material" (phases/judge_llm.py); found after computing, reported both ways.
+  Contract level: a coverage limitation whenever there is a gap 1,265 / 1,265; an issue list whenever there are open
+  issues 1,211 / 1,211. As declared (everything listed): gap fields listed 10,495 / 10,782 (97.3%; the omitted ones
+  are mostly redirect_chain and page_resources), all gaps listed in 1,104 / 1,265 decisions; open issues listed
+  2,709 / 2,800 (96.8%), all listed in 1,149 / 1,211.
+- (e) the Judge's own rubric abstains (insufficient) on 165-182 of 200 pages per condition and 62 / 65 conflict
+  swaps; H1 gives a forced verdict on every page, as reported in Exp 5.
+Exp 6, three runs (H1 verdict changes vs the full system on 200 dev-2 pages; right / wrong):
+| arm | run 1 | rep1 | rep2 | unsupported citations | calls / page |
+|---|---|---|---|---|---|
+| ablation 1 (= full config) | 0 | 0 | 0 | same as full | same |
+| ablation 2 no reconciliation | 2 (2 / 0) | 0 | 1 (0 / 1) | same as full | same |
+| ablation 3 (= full admission rule) | 0 | 0 | 0 | same as full | same |
+| ablation 4 full debate (old, defective code) | 10 (5 / 5) | 5 (3 / 2) | 12 (6 / 6) | 8.5-9.0% | 8.56-8.60 |
+| ablation 5 Judge sees verdicts | 1 (1 / 0) | 0 | 1 (0 / 1) | same as full | same |
+| full system | - | - | - | 17.2-18.6% | 7.79-7.83 |
+Unsupported citations = findings dropped by the grounding check (bad line id or quote) / findings returned; the old
+full debate's lower rate comes from its repeated identical Phase 2 answers. Revision-validation failures by cache
+replay (rep1 / rep2, all 200 pages reproduced): full system 72 / 65 rejected of 604 / 595 revisions; ablations 2
+and 5 are identical (they change only what the Judge sees, not the rounds).
+Exp 2, complete evidence (run 1, H1 F1 in final/h1_all/exp2_*): adaptive selection dispatches 1.95 specialists
+first (fixed-all 3.81, literal 1.0); every initially unselected but ready specialist was later dispatched by the
+Moderator (372 / 372 adaptive; 561 / 561 literal), so selection saves calls (6.2 vs 7.8 per page) without losing
+any modality. Budget-2 condition: adaptive 1.33 first, 497 / 497 recovered, 5.7 calls; fixed-all hits 198 dispatch
+shortfalls (budget) and recovers through 363 later dispatches, 6.3 calls.
+READING (descriptive): the evidence-integrity properties the paper claims hold on the final system (eligible-only
+citations, withheld evidence never used and disclosed); disclosure is near-complete rather than complete at the
+field level, by the Judge's "material" contract. Removing reconciliation or Judge blinding changes 0-2 verdicts of
+200; Exp 2's adaptive selection recovers every omitted modality.
