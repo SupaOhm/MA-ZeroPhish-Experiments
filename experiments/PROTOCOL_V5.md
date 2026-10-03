@@ -1033,6 +1033,380 @@ Round JL addendum -- RESULT (results_gpt4omini/judge_lock/repeats.json). H1 repr
 Reading (descriptive): in every run JL changes 1-2 of 200 pages, always a missed phishing page the Judge
 had at p >= 0.9, and never raises FPR. Consistent with round JL; still small, and dev-2 is development data.
 
+## Merge note (2026-10-02): the entries below were written in parallel on Tinpat's local main and are
+placed after the teammates' entries above (PRs #3-#5) when the two lines of work were merged; each entry
+keeps its own declaration time. Nothing in either set was edited.
+
+## Round M1: case-memory features (declared 2026-10-02, before computing; user request; $0)
+Idea from the literature (MemoPhishAgent, arXiv 2602.21394: episodic memory of past cases, reported up to
++27% recall): phishing kits are reused across campaigns, so similarity to KNOWN labelled pages can help.
+Memory = the 839 fit pages and their labels only (training data); no dev/calib/test label is ever used.
+For each page, two deterministic representations (no model call): (a) words of the visible page text
+(page_content, else text from the served HTML) plus URL tokens, IDF-weighted from the fit corpus; (b) the
+HTML tag-trigram profile. Cosine similarity; the k = 10 most similar fit pages, EXCLUDING any page of the
+same campaign_group (for fit pages themselves: leave-one-campaign-out). Features per representation:
+similarity-weighted phishing share among the 10, the highest similarity to a phishing page, the highest
+similarity to a benign page (6 features; missing representation -> neutral 0.5 / 0 / 0 plus a flag).
+Candidate: H1+M = H1 with the memory features added to P1 (complete-evidence pages); B2 and the routing
+are unchanged. Selection and adoption, fixed now: (1) grouped 5-fold CV on fit (same folds as P1):
+P1+M must beat P1 on BOTH recall@P95 and AP; (2) Platt + high-precision threshold on calib as P1;
+(3) adopted only if H1+M's F1 pooled over dev + dev-2 (500 pages) exceeds H1's (0.927) AND its pooled
+precision is not lower than H1's by more than 0.01. test2 can only be reported post hoc; an adopted
+version is frozen for a new test set (test3).
+
+## Round M1 -- RESULT: NOT adopted, H1 stays (results_gpt4omini/memory_m1/result.json)
+(1) CV on fit: P1 recall@P95 0.855 / AP 0.9654 -> P1+M 0.891 / 0.9674 (criterion met).
+(2) P1+M calib threshold 0.7683 (P1: 0.5915).
+(3) | set | H1 F1 (P/R/FPR) | H1+M F1 (P/R/FPR) |
+|---|---|---|
+| dev 300 | 0.923 (0.926/0.920/0.073) | 0.943 (0.946/0.940/0.053) |
+| dev-2 200 | 0.933 (0.958/0.910/0.040) | 0.863 (0.952/0.790/0.040) |
+| pooled 500 | 0.927 (P 0.939, R 0.916) | 0.913 (P 0.948, R 0.880) |
+| test2, POST HOC only | 0.887 (0.874/0.900/0.130) | 0.853 (0.900/0.810/0.090) |
+Pooled F1 is lower, so by the declared rule M1 is not adopted. Reading: the memory helps on dev (Feb-Jul
+2025, nearer the 2024 fit pages) and hurts recall on the later pages (Sep-Dec 2025), consistent with kits
+drifting over time; it raises precision (test2 FPR 0.13 -> 0.09, post hoc) at a larger recall cost.
+
+## Round E1: averaging three pipeline runs (declared 2026-10-02, before computing; $0; exploratory)
+Only dev-2 has three independent runs of the full system (Exp 4 "mazerophish" arm in runs/v4_exp,
+runs/v4_exp_rep1, runs/v4_exp_rep2). Two ensembles of the frozen H1, no refitting: (a) majority vote of
+the three H1 verdicts; (b) mean of the three calibrated H1 scores against the routed H1 threshold (routing
+depends only on evidence availability, identical across runs). Compared with each single run (mean and
+range). Reading fixed now: exploratory only (dev-2 is development data; dev has a single run). If an
+ensemble beats the single-run mean by >= 0.01 F1, a confirming step would need repeated dev runs (paid),
+declared separately.
+Round E1 -- RESULT (dev-2, 200 pages, exploratory): single runs F1 0.929 / 0.935 / 0.929 (mean 0.931);
+majority vote 0.934 (P 0.948, R 0.920, FPR 0.050); mean calibrated score 0.944 (P 0.968, R 0.920,
+FPR 0.030). The three runs disagree on 10 of 200 pages. The mean-score ensemble beats the single-run mean
+by +0.013 (>= 0.01), so by the declared reading it is a candidate that needs confirmation on dev with
+repeated runs (two more dev runs, ~$2.8, to be declared separately). Cost at use: 3x model calls.
+
+## Round BR: brand-reference check (declared 2026-10-02, before running; user request; balance $15.48)
+Idea from the literature (PhishLLM and KnowPhish, USENIX Security 2024; PhishAgent, AAAI 2025): decide
+whether the page presents itself as a known brand and whether its domain belongs to that brand, using
+the model's general brand-domain knowledge (no live lookup; nothing about takedown status). This fills
+the framework's brand_reference field, empty so far ("not_in_source_dataset").
+Tool (one GPT-4o-mini call per page, temperature 0, JSON mode; prompt fixed now, in experiments/brand_check.py):
+inputs = URL, HTML <title>, first 2000 characters of the visible text (page_content, else text from the
+served HTML); output = claimed_brand (or null), brand_official_domains (<= 3), page_domain,
+domain_consistent (true / false / null when no brand or unsure).
+Features (4): brand claimed; domain consistent; domain inconsistent; unknown/failed. Candidate H1+BR = H1
+with these features added to P1 (complete-evidence pages); B2 and the routing unchanged. Pages: fit 839,
+calib 300, dev 300, dev-2 200, and test2 200 for POST HOC reporting only. Estimated cost ~$1.
+Adoption rule (same as M1): (1) grouped 5-fold CV on fit: P1+BR beats P1 on BOTH recall@P95 and AP;
+(2) Platt + high-precision threshold on calib; (3) H1+BR pooled dev + dev-2 F1 > H1's (0.927) and pooled
+precision not lower by more than 0.01. An adopted version is frozen for test3; test2 only post hoc.
+
+## Round BR -- RESULT: NOT adopted, H1 stays (results_gpt4omini/brand_br/result.json)
+Tool: 1,839 calls (fit 839, calib 300, dev 300, dev-2 200, test2 200), 0 failures, 0 unparsed, ~$0.35.
+On fit the tool marks the domain INCONSISTENT with the claimed brand for 210 of 339 phishing pages (62%)
+and 100 of 500 benign pages (20%); no brand / unsure: 114 phishing, 31 benign.
+(1) CV on fit: P1 0.855 / 0.9654 -> P1+BR 0.876 / 0.9630 (recall@P95 up, AP down): criterion NOT met.
+(2) P1+BR calib threshold 0.6835.
+(3) | set | H1 F1 (P/R/FPR) | H1+BR F1 (P/R/FPR) |
+|---|---|---|
+| dev 300 | 0.923 (0.926/0.920/0.073) | 0.919 (0.932/0.907/0.067) |
+| dev-2 200 | 0.933 (0.958/0.910/0.040) | 0.943 (0.978/0.910/0.020) |
+| pooled 500 | 0.927 (P 0.939, R 0.916) | 0.928 (P 0.950, R 0.908) |
+| test2, POST HOC only | 0.887 (0.874/0.900/0.130) | 0.900 (0.900/0.900/0.100) |
+By the declared rule BR is not adopted (step 1 fails; pooled F1 +0.001). Reading: the brand check raises
+precision on the later pages (dev-2, and test2 post hoc) with recall unchanged there, but not on dev, and
+the tool also flags a fifth of benign pages as inconsistent, which limits it as a feature.
+
+## test3 PLAN: is H1 better than EVERY baseline? (declared 2026-10-02, before building or running anything; user request)
+Goal (professor): show the multi-agent system beats every baseline, on new zero-day pages.
+System: H1 exactly as frozen (results_gpt4omini/final/FROZEN_H1.json), one pipeline run; nothing re-fitted.
+Baselines (8, GPT-4o-mini, paper prompts word for word plus the declared minimal prompts): single-agent,
+CoT, PhishDebate, each text-only and + screenshot; single-agent minimal; CoT minimal. One run each.
+Data: 1,000 new PhreshPhish pages (500 phishing / 500 benign), from the 73 shards never downloaded,
+observed in the test period (2025-09-08 .. 2025-12-15, as test/test2), own-domain only, same filters,
+de-duplication and union-find campaign grouping as the existing builders, one page per group, every group
+touching ANY existing manifest case blocked; seeded random pick ("20261002:test3"). Captures exactly as
+test2 (offline render, CT v2). No page is looked at before scoring except by the automatic builder.
+Matched-precision operating points, fixed BEFORE test3 is touched: every baseline arm is run on calib (300);
+for baseline b, t_b = the lowest threshold on H1's calibrated calib scores whose calib precision is >= b's
+calib precision. H1's score = the calibrated probability of the routed decision step (P1 or B2).
+PRIMARY ENDPOINTS on test3 (Holm correction over the 8 baselines within each endpoint):
+ (E1) recall at matched precision: H1 at t_b vs baseline b; WIN vs b if H1's recall is higher with exact
+      McNemar on the phishing pages (Holm p < 0.05) AND H1's test3 precision at t_b is not lower than b's
+      test3 precision by more than 0.02.
+ (E2) forced F1 at the frozen H1 operating point vs each baseline, paired bootstrap CI + McNemar (as test2).
+Claim "best of all baselines" only if E1 is a WIN against all 8; E2 is reported whatever it shows (a tie with
+the strongest baseline is possible and will be stated).
+Cost estimate: baselines on calib ~$1.5; test3 run ~$16 (H1 ~$4.7 + 8 baselines ~$11.5). The test3 run starts
+only after a credit top-up and a balance check. test3 is used ONCE.
+test3 data source (2026-10-02, before building): the datasets-server filter API kept failing (HTTP 500 /
+502, then 8 retries without a page), so the rows come from two downloaded, never-used PhreshPhish test
+shards instead, test-001 and test-002 (Hugging Face v1.0.1; test-001: 5,236 rows, all dated 2025-09..12).
+All builder rules as declared; only the transport changed. pyarrow imports again on this machine.
+test3 BUILT (2026-10-02): 1,000 pages, 500 phishing / 500 benign, dated 2025-09-08..2025-12-15, from
+test-001 + test-002 (10,995 rows read; 1,059 duplicates, 256 short HTML, 111 bad URLs removed; 6,102 groups,
+253 blocked for touching existing cases; candidate groups 1,198 phishing / 4,015 benign; seeded pick).
+Validation passed with no errors. Note: 999 campaign groups for 1,000 pages: one group contributed one
+phishing and one benign page (the one-per-group rule is applied per label, as in the existing builders).
+Captures (offline render, CT v2) are being built; nothing in test3 has been run or looked at.
+test3 matched-precision operating points FROZEN (2026-10-02; calib only; results_gpt4omini/final/test3_matched_thresholds.json).
+All 8 baselines run on calib (300 each, 0 failures). Calib precision / recall and H1 at t_b:
+single 0.974/0.753 -> H1 0.976/0.827; CoT 0.975/0.793 -> H1 0.976/0.827; PhishDebate 0.897/0.813 -> H1 0.897/0.933;
+single minimal 0.989/0.587 -> H1 1.000/0.187; CoT minimal 0.983/0.787 -> H1 0.988/0.533;
+single + screenshot 0.965/0.727 -> H1 0.969/0.827; CoT + screenshot 0.944/0.787 -> H1 0.949/0.867;
+PhishDebate + screenshot 0.906/0.840 -> H1 0.907/0.907.
+Observation (calib, development data): at the very high precision of the two minimal-prompt baselines
+(0.983-0.989) H1's recall on calib is far lower than theirs; at the other six operating points it is higher.
+test3 PLAN AMENDMENT (2026-10-02, user decision, BEFORE test3 is run or looked at): the matched-precision
+endpoint (E1) is DROPPED; the frozen thresholds file is kept for the record and not used. Disclosure: the
+decision came after seeing the calib operating points above (development data). Remaining PRIMARY endpoint:
+forced F1 of the frozen H1 vs each of the 8 baselines (paired bootstrap CI + exact McNemar, Holm over the 8),
+with accuracy, precision, recall, FPR, FNR reported for every system. Reading: H1 "beats" baseline b if the
+F1 difference is positive with Holm p < 0.05 and CI excluding 0; "best of all baselines" only if it beats all 8.
+test3 PLAN AMENDMENT 2 (2026-10-02, user decision, BEFORE test3 is run or looked at): the two minimal-prompt
+baselines (single-agent minimal, CoT minimal) are NOT run on test3. Reason given: they are not standard
+baselines (no prior work uses them; we added them on request); the standard comparison set is the six
+baselines of the PhishDebate paper (single-agent, CoT, PhishDebate, each text-only and + screenshot).
+Disclosure: decided after seeing that CoT minimal is the strongest baseline on dev and test2 (test2 F1 0.851 vs
+H1 0.887, not significant). Their dev / dev-2 / test2 results stay reported everywhere. test3 primary family:
+H1 vs the 6 PhishDebate-paper baselines, forced F1, paired bootstrap CI + exact McNemar, Holm over 6.
+
+## Round AF: agent-level scores fused by the decision step (declared 2026-10-02, before running; user request)
+Idea (MultiPhishGuard, arXiv 2505.23803: specialist agents each give a verdict/confidence and a learned
+fusion weighs them): every specialist (URL, Web Structure, Content, Metadata) additionally returns
+"suspicion", its probability 0-1 that the object is phishing judged ONLY from its own evidence lines; the
+findings rules are unchanged; only the first (independent, pre-collaboration) value is kept; the Judge
+never sees these scores (it stays blinded to opinions). Variant v4abdfAF (option specialist_self_score).
+PILOT: the same 50 dev pages as rounds G/H, round-G cache (unchanged calls replay; ~$0.3).
+GO for a full run only if: (1) each specialist returns a score on >= 90% of the pages where it ran;
+(2) at least two specialists' scores reach ranking AUC >= 0.80 on the 50 pages; (3) specialist findings per
+page within +-25% of the v4abdf re-run and the Judge's AUC not lower by > 0.02. FULL RUN (if GO, after a
+balance check): fit, calib, dev, dev-2 with the pipeline; the per-agent scores (+ missing flags) added to the
+decision step (P1 and B2 retrained, routing unchanged); adoption by the same rule as M1/BR (CV on fit both
+criteria; pooled dev + dev-2 F1 > H1 and precision not lower by > 0.01). If adopted, the new version replaces
+H1 for test3 (test3 not yet run), with the test3 plan unchanged otherwise.
+PILOT RESULT (2026-10-02, 50 dev pages, 0 failures, ~$0.004/page): NO-GO, round AF stops (no full run).
+Per-agent score AUC: URL 0.929, Web Structure 0.918, Metadata 0.883, Content 0.845 (criterion 2 met);
+returned: URL 100%, Web Structure 100%, Metadata 94%, Content 78% (criterion 1 failed); findings per page
+8.80 vs 9.26 (stable), but the Judge's AUC fell 0.985 -> 0.926 (criterion 3 failed: asking each agent for an
+overall score changed its findings enough to hurt the Judge). Descriptive only (not a criterion): every
+single agent's own score is below the Judge's 0.985 on the reference run; the plain mean of the agents'
+scores (50 pages) reaches AUC 0.982 -- close to the Judge, but obtained only by changing the agents' prompt,
+which costs the Judge 0.06. [Correction: an earlier commit of this entry stated 0.94 for the mean, written
+before the number was computed; 0.982 is the computed value.] Option specialist_self_score
+stays off by default; H1 stays the system for test3. Script: experiments/pilot_AF_score.py.
+
+## Round AF2: per-agent scores from a SEPARATE call, fused by the decision step (declared 2026-10-02, before running; user request)
+Why: in the AF pilot the agents' own scores and the reference Judge erred on different pages (descriptive,
+50 pages: Judge 2 errors, mean of agent scores 3, overlap 0), but asking for the score inside the findings
+call changed the findings and cost the Judge 0.06 AUC. AF2 keeps the findings call byte-identical to v4abdf
+(so the Judge's input and output are unchanged; cached calls replay) and asks each specialist, right after
+its first findings call, one extra question with the same evidence lines (and screenshot): "judged only
+from your evidence, how likely is phishing?" -> {"suspicion": p}. The Judge never sees it. Variant
+v4abdfAF2 (option specialist_separate_score). Unit test: findings prompt byte-identical with the option on.
+PILOT (50 pilotG dev pages, round-G cache). GO only if: (1) the Judge score and the evidence features are
+identical to the v4abdf reference on every page (any difference stops the round and is investigated);
+(2) a score is returned for >= 90% of the agent calls where it was asked; (3) at least two specialists
+reach AUC >= 0.80. The measured extra cost per page sets the full-run estimate (balance check before it).
+FULL RUN (if GO and credit allows): v4abdfAF2 on fit, calib, dev, dev-2 (findings and Judge replay from the
+existing caches). Decision step: P1's features + per agent (URL, Web Structure, Content, Metadata) the score
+and a not-asked/not-returned flag (8 features), same learner, Platt on calib, P >= 0.95 threshold on calib;
+route and B2 unchanged (B2's extra training rows come from evidence-removal runs without these scores).
+ADOPTION: the BR rule -- grouped 5-fold CV on fit (seed "20261001:p1cv"): recall@P95 AND average precision
+both above P1; and pooled dev + dev-2 F1 above H1 with precision not lower by more than 0.01. If adopted:
+frozen as H1-AF2 before test3; test3 then runs v4abdfAF2 (same findings and Judge as v4abdf plus the
+scores) with the test3 plan otherwise unchanged. If not adopted, H1 stays.
+PILOT RESULT (2026-10-02, 50 pages, 0 failures): GO. Judge score and evidence features identical to v4abdf
+on 50/50 pages; score returned for 100% of asked agent calls (URL 50, Web Structure 50, Content 39,
+Metadata 47 asked); AUC URL 0.959, Web Structure 0.929, Metadata 0.938, Content 0.870. Cost $0.00580 vs
+$0.00443 per page (+$0.0014). Cache-replay check on 3 fit + 3 dev-2 pages with runs/llm_cache: identical
+to the reference ledgers (experiments/af2_check.py). Full run started (fit 839, calib 300, dev 300, dev-2
+200; out runs/af2/<set>; dev-2 via dev_eval --dev2-collection, case lists runs/af2/cases_*.txt).
+FULL-RUN RESULT (2026-10-02): H1+AF2 NOT ADOPTED -- H1 stays the system for test3.
+Collection: fit 839, calib 300, dev 300, dev-2 200, 0 failures in the end. Replay identity vs the reference
+v4abdf ledgers: fit 839/839, calib 300/300, dev 300/300, dev-2 197/200 (3 dev-2 pages had specialist calls
+missing from runs/llm_cache, so they were called anew and their findings differ; H1 and H1+AF2 are both
+scored on the AF2 ledgers, so the comparison stays paired). One dev page (pp-c1af507e1d5b) failed when the
+moderation filter refused the screenshot in the NEW score call; the score call now applies the same
+declared PROTOCOL_V4 2d rule as the findings call (repeat without the image), and the page was re-run.
+Adoption rule: CV on fit -- recall@P95 0.855 (P1) vs 0.841 (P1+AF2), AP 0.9654 vs 0.9660 -> NOT met
+(both must rise). For information: pooled dev + dev-2 F1 0.927 (H1) vs 0.936 (H1+AF2), precision 0.939 vs
+0.940 (dev 0.923 -> 0.947, dev-2 0.933 -> 0.919). Descriptive AUC on dev + dev-2 (500 pages): URL Agent
+0.950, Metadata 0.928, Content 0.820 (444 asked), Web Structure 0.774, mean of the agents' scores 0.954,
+Judge p_phishing 0.897. Results: experiments/results_gpt4omini/af2/result.json (experiments/af2_eval.py).
+No further variant of this round is tried: any new one would be chosen after seeing these dev numbers.
+
+## Round J: the Judge integrates ACROSS modalities (declared 2026-10-02, before running; user request)
+Diagnosis on FIT only (839 pages, existing ledgers, no model call): the Judge's p_phishing is coarse (393/839
+pages exactly 0.0; most others 0.7/0.8/0.85/0.9), so the decision step gets heavy ties (Judge AUC 0.905 vs
+0.952 for the mean of the AF2 agent scores); and it over-flags benign pages (78 FP vs 20 for the agent mean;
+in 65 of them the agent mean was right) where ~1.6 phishing observations stand against 6+ benign ones from
+other modalities. Change (Judge only; specialists byte-identical): the Judge's distinct task -- which no
+specialist can do -- is cross-modality integration: state the most plausible phishing story and benign
+story; mark per modality (url / web_structure / content / metadata, by observation field) support /
+contradict / silent for each story; corroboration by several modalities outweighs one contradicted
+observation; p_phishing with two decimals over the whole range. Still blinded (no agent identity, direction,
+strength or agent scores). Variant v4abdfJ (option judge_corroboration); the matrix is recorded in
+judge_disclosure.
+PILOT (50 pilotG dev pages, round-G cache). GO only if: (1) a well-formed matrix (4 modalities x 2 stories,
+allowed values) on >= 90% of pages and finalization errors not more than the v4abdf reference + 2;
+(2) fewer ties: the most frequent p value covers a smaller share of pages than in the reference;
+(3) Judge AUC not lower than the reference by more than 0.02.
+FULL RUN (if GO, after a balance check): v4abdfJ on fit, calib, dev, dev-2 (specialists replay from
+runs/llm_cache; only the Judge is new). Used ONLY on the P1 route (complete pages; route decided from
+availability before any model call, label-free); the B2 route keeps the frozen v4abdf Judge and B2 unchanged.
+P1-J = P1's features with the new Judge p, plus 5 matrix features (number of modalities supporting /
+contradicting the phishing story, supporting / contradicting the benign story, matrix-missing flag); same
+learner, Platt on calib, P >= 0.95 threshold on calib. ADOPTION: the BR rule -- grouped 5-fold CV on fit
+(seed "20261001:p1cv") recall@P95 AND AP both above P1, and pooled dev + dev-2 F1 above H1 with precision not
+lower by more than 0.01. If adopted: frozen as H1-J before test3; test3 runs v4abdfJ on the complete pages and
+v4abdf on the others. If not adopted, H1 stays.
+PILOT RESULT J (2026-10-02, 50 pages, 0 failures): NO-GO. Matrix well-formed on 68% (16 answers omitted
+"stories"/"modalities" entirely; criterion 1 failed); finalization errors 0 vs 0; modal p share 0.38 vs 0.46
+(criterion 2 met, but only 5 distinct p values: 0.05/0.15/0.25/0.75/0.85 -- the model shifted its buckets);
+Judge AUC 0.992 vs 0.985 (criterion 3 met); $0.00454 vs $0.00443 per page.
+AMENDMENT J1 (declared 2026-10-02, after the J pilot, before J1 is run): criterion 1 failed for a format
+reason (the keys were requested in a note AFTER the JSON template). J1 = the same task with the two keys
+written into the JSON answer template itself (variant v4abdfJ1, judge_corroboration=2); everything else,
+including the pilot criteria and the full-run / adoption rules above, unchanged. ONE amendment only: if J1
+fails the pilot, round J stops. Disclosure: the J1 pilot reuses the same 50 dev pages as the J pilot.
+PILOT RESULT J1 (2026-10-02, 50 pages, 0 failures): GO. Matrix well-formed 100%; finalization errors 0 vs 0;
+modal p share 0.26 vs 0.46; Judge AUC 0.968 vs 0.985 (within 0.02); $0.00459 vs $0.00443 per page.
+Full run started: v4abdfJ1 on fit, calib, dev, dev-2 (out runs/j1/<set>, cache runs/llm_cache). For dev-2,
+H1 is scored on the AF2 dev-2 ledger, whose findings equal those J1 replays (the 3 pages that were called
+anew in AF2 are now cached), so H1 and H1-J1 stay paired.
+FULL-RUN RESULT J1 (2026-10-02): H1-J1 NOT ADOPTED -- H1 stays the system for test3.
+Collection: fit 839, calib 300, dev 300, dev-2 200, 0 failures; specialist findings identical to the
+reference on every page (only the Judge changed); matrix missing on 0 fit pages.
+Adoption rule: CV on fit -- recall@P95 0.855 -> 0.873 and AP 0.9654 -> 0.9684 (criterion met); pooled dev +
+dev-2 F1 0.927 (H1) -> 0.904 (H1-J1) -> NOT met (precision 0.939 -> 0.968, recall 0.916 -> 0.848; dev F1
+0.923 -> 0.890, dev-2 0.933 -> 0.926). Descriptive, threshold-free on the same 500 pages: AP 0.9773 (H1) vs
+0.9771 (H1-J1), recall@P95 0.896 vs 0.884 -- the ranking is unchanged; the higher precision comes from a more
+conservative calib threshold (0.764), not from better separation. Results: results_gpt4omini/j1/result.json.
+No further Judge variant is tried in this round.
+
+## Normal vs zero-day: confidence intervals (2026-10-02; descriptive, existing results, no model call)
+F1 on TR-OP (normal, 200) and test2 (zero-day, 200), frozen H1 with the test2 routing rule, baselines
+repeat 0; 95% CI of the change by independent page bootstrap of each set (2000 draws, seed "20261002:nvz";
+experiments/normal_vs_zeroday_ci.py -> results_gpt4omini/final/normal_vs_zeroday_ci.json):
+| system | normal | zero-day | change [95% CI] |
+|---|---|---|---|
+| H1 (ours) | 0.862 | 0.887 | +0.024 [-0.042, +0.092] |
+| single-agent | 0.931 | 0.813 | -0.118 [-0.195, -0.051] |
+| CoT | 0.943 | 0.828 | -0.115 [-0.184, -0.053] |
+| PhishDebate | 0.929 | 0.823 | -0.106 [-0.181, -0.041] |
+| single-agent + screenshot | 0.938 | 0.777 | -0.161 [-0.243, -0.087] |
+| CoT + screenshot | 0.952 | 0.831 | -0.121 [-0.190, -0.061] |
+| PhishDebate + screenshot | 0.915 | 0.838 | -0.077 [-0.150, -0.009] |
+Reading: H1's change is not distinguishable from zero; every baseline's drop is (CI excludes 0). Caveats
+unchanged: the sets differ in source and crawler as well as age; H1 is the lowest on the normal set (FPR
+0.24 on Tranco benign pages; its decision step was trained on PhreshPhish).
+
+## TR-OP false positives: diagnosis and an exploratory check (2026-10-02; no model call; user question)
+From this point TR-OP is DEVELOPMENT data (its errors were inspected to design a change); a clean
+normal-set number would need a new set (e.g. Mendeley) under a declared plan.
+Diagnosis: H1 flags 24/100 TR-OP benign pages; on 12 of them the Judge said benign (p <= 0.2), so the code
+features pushed them over. URL shape is the main shift: log URL length fit benign 4.02 / fit phishing 3.70 /
+TR-OP benign 3.03; URL digits 2.20 / 4.88 / 0.03. PhreshPhish benign URLs are long deep links, so the
+decision step learned "short URL -> phishing" (opposite to the usual literature direction); Tranco
+homepages are short. Exploratory (P1 route only, complete pages; thresholds re-derived on calib):
+| P1 | CV fit recall@P95 / AP | dev + dev-2 complete (401) F1 / P / R / FPR | TR-OP complete (142) F1 / P / R / FPR |
+|---|---|---|---|
+| all features | 0.855 / 0.9654 | 0.926 / 0.936 / 0.917 / 0.057 | 0.882 / 0.845 / 0.922 / 0.200 |
+| without URL length, digits, host dots | 0.814 / 0.9529 | 0.899 / 0.943 / 0.859 / 0.048 | 0.908 / 0.920 / 0.896 / 0.092 |
+Nothing adopted; the frozen H1 is unchanged.
+
+## Round TD: more varied training data (declared 2026-10-02, before building or running; user chose option B)
+Why: the TR-OP diagnosis above -- the decision step learned a PhreshPhish sampling shortcut (benign URLs
+are long deep links, so "short URL -> phishing"). Fix at the root by training on more varied pages
+instead of deleting features. New training set "trop_fit": 200 benign (tranco_5000) + 200 phishing
+(openphish_5000) drawn from the TR-OP zip, BOTH labels from the same source so the source itself cannot
+become a label proxy. Excluded: every page, URL, HTML and site already in the TR-OP manifests (trop 1000,
+trop_ext 200); undated pages (the CT rule needs a date; as for trop_ext); HTML < 200 chars; exact
+duplicates. Seeded random pick ("20261002:tropfit"); own folder experiments/data_eval/data/trop_fit,
+split "fit". Processing exactly as trop_ext (offline render with the label-blind retry, CT v2, RDAP
+excluded, build_captures --trop-mode pipeline). Pipeline v4abdf on the 400 pages (~$1.8).
+Candidate H1-TD: P1 and B2 retrained with the trop_fit rows added to their training rows (each row to
+the route its evidence availability gives; same learners and settings); Platt and thresholds on calib
+exactly as before; routing unchanged.
+ADOPTION (both required): (1) PhreshPhish not worse: pooled dev + dev-2 F1 >= H1 - 0.01 and precision >=
+H1 - 0.01; (2) TR-OP (200, development data since the diagnosis) F1 >= H1 + 0.02. If adopted it is frozen
+before test3; a clean normal-set number then needs a new set (Mendeley, separate declared plan). Reported
+whatever it shows.
+TD wording correction (2026-10-02, before any trop_fit capture or model call exists): the frozen H1 trains
+P1 on ALL fit rows and B2 on all fit rows + the 600 missing-evidence rows (score_test2.frozen_steps). The
+trop_fit rows are therefore added the same way -- to P1's and to B2's training rows -- not "to the route
+their availability gives" as written above. Everything else unchanged.
+
+## Round JL ADOPTED (team decision, 2026-10-02, before test3)
+Tinpat approved round JL for the final system: H1+JL = the frozen H1 plus "Judge p >= 0.9 -> phishing,
+otherwise H1" (threshold from calib, as declared in round JL). Frozen in
+results_gpt4omini/final/FROZEN_H1JL.json (with the SHA-256 of FROZEN_H1.json). test3 plan, updated
+accordingly: the primary system is H1JL_primary (score_test2.py --test3; a locked page scores 1.0 for
+PR-AUC), H1_primary is reported next to it as a secondary row; baselines, endpoints, Holm and the
+reading rule are unchanged; the pipeline run is still v4abdf (JL needs no model call); GO_TEST3.json may
+name "H1" or "H1+JL". test2 is not re-scored for the claim. If round TD is adopted, its P1/B2 replace H1's
+under the same JL rule, frozen in a new file before test3.
+Checks after the freeze (no model call): score_test2.py --dry-run (dev-2) gives H1JL_primary F1 0.939
+(P 0.958, R 0.920, FPR 0.040), equal to round JL's dev-2 number. JL on TR-OP (normal set; development data
+since the diagnosis; descriptive): changes 1 of 200 pages (correctly), F1 0.862 -> 0.868, FPR 0.240 unchanged.
+
+## crt.sh outage during the test3 and trop_fit captures (2026-10-03; operational note)
+crt.sh answered with HTTP 502 or timed out (3/3 probes at ~00:00); so far CT is "crtsh_unreachable" for 283 of
+the 371 test3 pages queried and 51 of 74 trop_fit pages. The running chains were left to finish; afterwards
+runs/ct_resume.py re-runs the SAME enrich ct step whenever crt.sh is healthy again (it only re-queries
+crtsh_unreachable pages; obtained records are kept; rule unchanged) until <= 3% are unreachable, then rebuilds
+both capture sets with the chains' commands. Reference: test2 had CT obtained on 177/200 pages (88.5%),
+unreachable on 1. test3 is not run until its CT coverage is comparable; any remaining gap will be reported.
+
+## Round TD amendment: crt.sh outage (declared 2026-10-03 20:20, after the captures and before any model call or result)
+crt.sh has been mostly down for ~20 h (502/503/timeouts). After the chain's CT passes, 40 of the 400 trop_fit
+pages are still "crtsh_unreachable" -- unevenly by label (28 phishing, 12 benign), so training on them as
+"no CT" could teach "missing CT -> phishing", the kind of shortcut round TD exists to remove. Amendment
+(label-blind acquisition rule): trop_fit pages whose CT lookup never got an answer from crt.sh are excluded
+from TD's training rows; pages with CT obtained or with a definite "no covering certificate" answer are kept.
+Kept: 360 (188 benign, 172 phishing; list frozen in runs/tropfit/cases_td.txt). Balance checked: $7.41;
+pipeline v4abdf on the 360 pages (~$1.6). Everything else in round TD (training, calibration, adoption rule)
+unchanged.
+Round TD -- RESULT (2026-10-03; pipeline on 360 trop_fit pages, 0 failures; results_gpt4omini/td/result.json):
+NOT ADOPTED -- H1 (+JL) stays. Retrained thresholds: P1-TD 0.827 (H1 0.592), B2-TD 0.697 (H1 0.546).
+| set | H1 F1 / P / R / FPR | H1-TD F1 / P / R / FPR |
+|---|---|---|
+| dev (300) | 0.923 / 0.926 / 0.920 / 0.073 | 0.875 / 0.939 / 0.820 / 0.053 |
+| dev-2 (200) | 0.933 / 0.958 / 0.910 / 0.040 | 0.844 / 1.000 / 0.730 / 0.000 |
+| pooled (500) | 0.927 / 0.939 / 0.916 / 0.060 | 0.863 / 0.961 / 0.784 / 0.032 |
+| TR-OP (200, development data) | 0.862 / 0.797 / 0.940 / 0.240 | 0.929 / 0.939 / 0.920 / 0.060 |
+Criterion (1) PhreshPhish not worse: FAILED (pooled F1 -0.064); criterion (2) TR-OP +0.02: met (+0.067).
+Descriptive, threshold-free: AP PhreshPhish 0.977 -> 0.963, recall@P95 0.896 -> 0.836; AP TR-OP 0.898 ->
+0.981, recall@P95 0.020 -> 0.870. Reading: a real trade-off in the ranking, not only a threshold shift -- the
+TR-OP-source training pages fix TR-OP's false positives but cost PhreshPhish recall. Caveat: trop_fit comes
+from the same source and crawler as TR-OP, so part of the TR-OP gain is in-distribution. No further variant
+(e.g. weighting or fewer rows) is tried: it would be chosen after seeing these numbers.
+
+## Normal set N2: the frozen H1+JL on the trop_fit pages (declared 2026-10-03, before computing; user request)
+Round TD was not adopted, so its 360 trop_fit pages (TR-OP source, Tranco benign + OpenPhish phishing,
+2022-11..2023-12, pre-cutoff; 188 benign / 172 phishing after the label-blind CT-outage exclusion) were never
+used to train, calibrate or choose anything in the frozen system (H1 unchanged since its freeze; JL frozen
+with a calib-only threshold). They are therefore a second normal (pre-cutoff) set for H1+JL, cleaner than
+TR-OP (whose errors were inspected). Caveat: same source and crawler as TR-OP; the CT-outage exclusion removed
+28 phishing / 12 benign pages. Scored: H1+JL (primary) and H1, from the existing v4abdf ledgers
+(runs/tropfit), no refit. The six baselines are not yet run on these pages (estimated ~$4 for 360 pages x 6
+arms); without them N2 gives our system's normal-set level only, to compare with its zero-day level.
+N2 -- RESULT (results_gpt4omini/td/n2_h1jl.json): H1+JL F1 0.833, accuracy 0.814, P 0.729, R 0.971, FPR 0.330
+(n = 360); H1 identical (JL changes no page here). The normal-set weakness seen on TR-OP (FPR 0.24) is
+confirmed and larger on N2: false positives on Tranco benign pages; recall stays high.
+
+## JL on test2 -- POST HOC (declared 2026-10-03, before computing; user request; $0)
+JL was frozen (FROZEN_H1JL.json, threshold from calib) before anyone scored test2 with it, but test2 had already
+been used for H1 and its outcomes were known to the team when JL was proposed, so this is post hoc and
+supplementary: it is NOT the evidence for JL (test3 is). Computed from the existing test2 ledgers with the frozen
+rule: H1+JL and H1 vs the six paper baselines (F1, accuracy, P, R, FPR; exact McNemar vs H1+JL; Holm over 6),
+written to results_gpt4omini/final/test2_jl_posthoc.json; the original test2 result files are not touched.
+Reported whatever it shows.
+JL on test2 -- POST HOC RESULT (results_gpt4omini/final/test2_jl_posthoc.json): JL changes 3 of 200 pages and
+gets all 3 wrong (benign pages with Judge p >= 0.9 turned into false positives): H1 F1 0.887 / FPR 0.130 ->
+H1+JL F1 0.874 / FPR 0.160 (McNemar H1 vs H1+JL 3 vs 0, p = 0.25). H1+JL is still above every baseline on F1
+(best baseline PhishDebate + screenshot 0.838), none significant after Holm. Reading: across dev + dev-2
+(+4 pages) and test2 (-3 pages) JL's effect is within noise; its benefit is not established. The frozen
+choice (H1+JL primary, H1 secondary on test3) stands unless the team decides otherwise BEFORE test3; any such
+change will be recorded with this post hoc result as its stated reason.
+
 ## Screening on fit / calib only, after round JL (2026-10-03; no dev or dev-2 outcome computed; $0)
 Teammate request: find more rules like JL. To avoid tuning on dev, candidates were screened on calib (fit shown
 as in-sample context) and only a candidate that helps on calib would be declared for dev / dev-2. None did, so

@@ -161,7 +161,7 @@ def build(row, data: Path, stats: Counter) -> dict:
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--data", required=True)
-    ap.add_argument("--split", choices=["fit", "dev", "calib", "test", "test2", "all"], default="all")
+    ap.add_argument("--split", choices=["fit", "dev", "calib", "test", "test2", "test3", "all"], default="all")
     ap.add_argument("--rdap", choices=["exclude", "include"], default="exclude",
                     help="exclude (default): retrospective RDAP availability leaks future "
                          "takedowns; include: keep RDAP where obtained")

@@ -209,14 +209,17 @@ def run_grid(arms: dict, case_paths: list[Path], out_dir: Path, tag: str, args,
                                      peer_lines_uncitable=cfg.specialist_peer_lines_uncitable,
                                      tools=cfg.specialist_tools, brand_tools=brand_tools(cfg),
                                      strength_scale=cfg.specialist_strength_scale,
-                                     page_assessment=cfg.specialist_page_assessment)
+                                     page_assessment=cfg.specialist_page_assessment,
+                                     self_score=cfg.specialist_self_score,
+                                     separate_score=cfg.specialist_separate_score)
         judge = LLMJudge(model, structural_gaps=cfg.judge_structural_gaps,
                          decision_mode=cfg.judge_mode, platt_ab=cfg.judge_platt,
                          band_w=cfg.judge_band_w, task_definition=cfg.task_definition,
                          show_evidence=cfg.judge_shows_evidence, samples=cfg.judge_samples,
                          page_view=cfg.judge_page_view,
                          consider_opposite=cfg.judge_consider_opposite,
-                         requires_deception=cfg.judge_requires_deception)
+                         requires_deception=cfg.judge_requires_deception,
+                         corroboration=cfg.judge_corroboration)
         fd, scratch = tempfile.mkstemp(suffix=".jsonl")
         os.close(fd)
         t0 = time.time()

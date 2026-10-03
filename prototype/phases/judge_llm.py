@@ -83,6 +83,46 @@ actions: an impersonated identity or a false pretext. Give p_phishing above 0.5 
 observations, with their evidence lines, show such deception; a page that is merely unusual,
 low-quality or of a particular site category, without it, is not phishing."""
 
+# PROTOCOL_V5 round J: the Judge's own task -- integration ACROSS modalities (no specialist sees more
+# than its own): two competing stories, a support/contradict/silent matrix per modality, and a
+# finer p_phishing. The matrix is recorded in the disclosure for the learned decision step.
+MODALITIES = {"url": ("url", "redirect_chain"), "web_structure": ("html", "dom", "page_resources"),
+              "content": ("page_content", "screenshot", "brand_reference"),
+              "metadata": ("dns", "registration", "tls", "ct", "hosting")}
+CORROBORATION_NOTE = """
+
+Your distinct task as Judge is to integrate ACROSS modalities, which no specialist can do (each
+sees only its own). The modalities, by observation field, are: url (url, redirect_chain);
+web_structure (html, dom, page_resources); content (page_content, screenshot, brand_reference);
+metadata (dns, registration, tls, ct, hosting).
+1. State the most plausible PHISHING story for this object (who or what is impersonated or which
+   false pretext is used, and what is sought) and the most plausible BENIGN story (which legitimate
+   site, service or purpose this is), one sentence each.
+2. For each modality, mark whether its observations support, contradict, or are silent on each
+   story ("silent" also when the modality has no observations). A modality supports a story only
+   if its observations, with their evidence lines, fit that story better than the other one.
+3. A story corroborated by several independent modalities outweighs a single observation that
+   other modalities contradict.
+Add to your JSON answer, before p_phishing:
+"stories": {"phishing": "...", "benign": "..."},
+"modalities": {"url": {"phishing": "supports|contradicts|silent", "benign": "supports|contradicts|silent"},
+ "web_structure": {...}, "content": {...}, "metadata": {...}},
+and give p_phishing with two decimals over the whole range from 0 to 1 (for example 0.07, 0.42,
+0.93): higher when the phishing story is corroborated by more modalities and the benign story
+contradicted."""
+
+# Round J1 (amendment after the J pilot: 16/50 answers omitted the matrix): the same task, with the
+# two keys written into the JSON answer template itself instead of an instruction after it.
+CORROBORATION_NOTE_J1 = CORROBORATION_NOTE.split("\nAdd to your JSON answer")[0] + """
+Fill "stories" and "modalities" in the JSON answer for EVERY submission (all four modalities, both
+stories; use "silent" where a modality has nothing), and give p_phishing with two decimals over the
+whole range from 0 to 1: higher when the phishing story is corroborated by more modalities and the
+benign story contradicted."""
+TEMPLATE_J1 = (' "stories": {"phishing": "one sentence", "benign": "one sentence"},\n'
+               ' "modalities": {"url": {"phishing": "supports|contradicts|silent", "benign": "supports|contradicts|silent"},\n'
+               '   "web_structure": {"phishing": "...", "benign": "..."}, "content": {"phishing": "...", "benign": "..."},\n'
+               '   "metadata": {"phishing": "...", "benign": "..."}},\n')
+
 # v4 6a: the Judge also receives the page itself (the same view the baselines read).
 PAGE_NOTE = """
 
@@ -250,7 +290,7 @@ class LLMJudge:
                  task_definition: bool = False, show_evidence: bool = False,
                  samples: int = 1, sample_temperature: float = 1.0,
                  page_view: tuple[int, int] | None = None, consider_opposite: bool = False,
-                 requires_deception: bool = False):
+                 requires_deception: bool = False, corroboration: int = 0):
         """`structural_gaps` (v2, Config.judge_structural_gaps): tell the Judge which gaps are
         structural. False = v1: rubric and payload byte-identical to the frozen v1 runs."""
         self.model, self.repair_attempts, self.max_tokens = model, repair_attempts, max_tokens
@@ -275,6 +315,13 @@ class LLMJudge:
             self.rubric = self.rubric + EVIDENCE_NOTE
         if requires_deception:                  # PROTOCOL_V5 round G
             self.rubric = self.rubric + DECEPTION_NOTE
+        self.corroboration = corroboration
+        if corroboration == 2:                  # PROTOCOL_V5 round J1
+            self.rubric = self.rubric.replace(' "p_phishing": number between 0 and 1,',
+                                              TEMPLATE_J1 + ' "p_phishing": number between 0 and 1,', 1)
+            self.rubric = self.rubric + CORROBORATION_NOTE_J1
+        elif corroboration:                     # PROTOCOL_V5 round J
+            self.rubric = self.rubric + CORROBORATION_NOTE
         if task_definition:                     # v4 2e: the paper's definition, stated first
             from task_definition import TASK_DEFINITION
             self.rubric = TASK_DEFINITION + self.rubric
@@ -288,6 +335,8 @@ class LLMJudge:
         self.last_disclosure = {k: d.get(k) for k in (
             "cited", "phishing_support", "benign_support", "coverage_limitations",
             "unresolved_issues", "suf_phishing", "def_phishing", "suf_benign", "def_benign")}
+        if self.corroboration:
+            self.last_disclosure.update(stories=d.get("stories"), modalities=d.get("modalities"))
         p = self.last_score_any
         if p is None:
             verdict, cause, self.last_score = Verdict.INSUFFICIENT, "no_score", None
@@ -365,6 +414,8 @@ class LLMJudge:
             if isinstance(d, dict) and self.last_score_any is not None:
                 d = dict(d, p_phishing=self.last_score_any)
         if errs:
+            if self.corroboration and isinstance(d, dict):     # round J: kept for the decision step
+                self.last_disclosure = {"stories": d.get("stories"), "modalities": d.get("modalities")}
             decision = DecisionRecord(object_id=object_id, verdict=Verdict.INSUFFICIENT,
                                       explanation="finalization_error: " + "; ".join(errs)[:500],
                                       coverage=context.coverage,
