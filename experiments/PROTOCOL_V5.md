@@ -1391,3 +1391,11 @@ arms); without them N2 gives our system's normal-set level only, to compare with
 N2 -- RESULT (results_gpt4omini/td/n2_h1jl.json): H1+JL F1 0.833, accuracy 0.814, P 0.729, R 0.971, FPR 0.330
 (n = 360); H1 identical (JL changes no page here). The normal-set weakness seen on TR-OP (FPR 0.24) is
 confirmed and larger on N2: false positives on Tranco benign pages; recall stays high.
+
+## JL on test2 -- POST HOC (declared 2026-10-03, before computing; user request; $0)
+JL was frozen (FROZEN_H1JL.json, threshold from calib) before anyone scored test2 with it, but test2 had already
+been used for H1 and its outcomes were known to the team when JL was proposed, so this is post hoc and
+supplementary: it is NOT the evidence for JL (test3 is). Computed from the existing test2 ledgers with the frozen
+rule: H1+JL and H1 vs the six paper baselines (F1, accuracy, P, R, FPR; exact McNemar vs H1+JL; Holm over 6),
+written to results_gpt4omini/final/test2_jl_posthoc.json; the original test2 result files are not touched.
+Reported whatever it shows.
