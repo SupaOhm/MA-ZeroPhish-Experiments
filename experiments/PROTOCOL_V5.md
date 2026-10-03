@@ -1502,3 +1502,13 @@ READING (descriptive): the evidence-integrity properties the paper claims hold o
 citations, withheld evidence never used and disclosed); disclosure is near-complete rather than complete at the
 field level, by the Judge's "material" contract. Removing reconciliation or Judge blinding changes 0-2 verdicts of
 200; Exp 2's adaptive selection recovers every omitted modality.
+
+## Round AUD2: Exp 5 integrity audit on the zero-day test2 ledgers (declared 2026-10-03, before computing; $0)
+Teammate lead's direction: stop changing the detection system; strengthen the other experiments. Round AUD's
+Exp 5 audit used dev-2 (development data). The same measures, unchanged code (audit_secondary.exp5), on the
+existing test2 Exp 5 ledgers (runs/test2/exp5: 6 conditions x 200 zero-day pages; Tinpat's run, scored for
+detection in "Exp 5 on test2 -- RESULT"). This measures properties of the frozen system's outputs (citations,
+use and disclosure of withheld evidence); it selects or changes nothing, and no detection number is recomputed.
+Measures: (a) citations eligible; (b) gaps -- contract level and all listed; (c) open issues -- contract level and
+all listed; (d) withheld evidence never used, a coverage gap, and in the Judge's own limitations; (e) the Judge's
+rubric abstention rate. Reported whatever it shows. Code: experiments/audit_secondary.py --test2.
