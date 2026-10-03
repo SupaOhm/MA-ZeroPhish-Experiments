@@ -1474,3 +1474,13 @@ included); candidate groups phishing 697 / benign 3,513; picked 250 / 250 (seed 
 Windows, no dev-3 site / skeleton / text key and no campaign group appears in any other split (3 dev-3 pages have
 a different text key under WSL vs Windows; neither version clashes); validate: 0 errors; manifest re-written
 on Windows (CRLF). Captures next, exactly as test3 (render 60 s + 120 s retry, CT v2 with retries, RDAP excluded).
+D3 amendment 4 (2026-10-03, user decision; dev-3 captures running, no dev-3 model call or result exists):
+candidate C2-R added -- the fixed full debate with its decision step RETRAINED on full-debate data, because H1's
+decision step was trained on targeted-pipeline features and full debate changes the findings it reads.
+C2-R = pipeline v4abdfFD; P1-R = H1's learner (same learner, settings, features) trained on v4abdfFD runs of the
+839 fit pages; B2-R = the same learner on those rows + v4abdfFD runs of the 600 evidence-withheld fit rows
+(the same 200 fit pages x no_html / no_network_metadata / cum3_+html_no_browser as B2); Platt and the
+precision >= 0.95 threshold on v4abdfFD runs of calib (300); routing unchanged. All runs replay Phase 2 from the
+existing caches. Selectable now: C0, C2, C2-R, by the declared rule (F1 >= C0 + 0.01 and precision >= C0 - 0.01;
+highest F1 among eligible; tie within 0.005 -> fewer calls). C3 stays descriptive. No further candidate is
+added to D3. If C2-R is chosen, test3 runs v4abdfFD scored with P1-R/B2-R.
