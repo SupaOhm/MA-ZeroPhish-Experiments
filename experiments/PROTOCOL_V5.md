@@ -1378,3 +1378,13 @@ Descriptive, threshold-free: AP PhreshPhish 0.977 -> 0.963, recall@P95 0.896 -> 
 TR-OP-source training pages fix TR-OP's false positives but cost PhreshPhish recall. Caveat: trop_fit comes
 from the same source and crawler as TR-OP, so part of the TR-OP gain is in-distribution. No further variant
 (e.g. weighting or fewer rows) is tried: it would be chosen after seeing these numbers.
+
+## Normal set N2: the frozen H1+JL on the trop_fit pages (declared 2026-10-03, before computing; user request)
+Round TD was not adopted, so its 360 trop_fit pages (TR-OP source, Tranco benign + OpenPhish phishing,
+2022-11..2023-12, pre-cutoff; 188 benign / 172 phishing after the label-blind CT-outage exclusion) were never
+used to train, calibrate or choose anything in the frozen system (H1 unchanged since its freeze; JL frozen
+with a calib-only threshold). They are therefore a second normal (pre-cutoff) set for H1+JL, cleaner than
+TR-OP (whose errors were inspected). Caveat: same source and crawler as TR-OP; the CT-outage exclusion removed
+28 phishing / 12 benign pages. Scored: H1+JL (primary) and H1, from the existing v4abdf ledgers
+(runs/tropfit), no refit. The six baselines are not yet run on these pages (estimated ~$4 for 360 pages x 6
+arms); without them N2 gives our system's normal-set level only, to compare with its zero-day level.
