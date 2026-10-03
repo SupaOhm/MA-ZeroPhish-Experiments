@@ -1446,3 +1446,17 @@ page computed from the tokens at GPT-4o-mini list price ($0.15 / M input, $0.60 
 arms of one run share a response cache and run case by case, so the first arm of each page pays the Phase 2 calls
 and later arms replay them (e.g. no collaboration shows a 3 s median against 25 s for targeted) -- the stored
 latencies measure run order, not the arms. Descriptive. Code: experiments/cost_per_arm.py.
+Round CL -- RESULT (results_gpt4omini/cost_per_arm/result.json; $0). Per page, 200 dev-2 pages, list-price dollars:
+| arm | calls | input / output tokens | $ / page |
+|---|---|---|---|
+| Exp 2 complete: fixed-all / adaptive (ours) / literal | 7.81 / 6.21 / 5.38 | 25.1k / 20.9k / 17.3k in | 0.0049 / 0.0040 / 0.0033 |
+| Exp 2 budget 2: fixed-all / adaptive / literal | 6.33 / 5.73 / 5.38 | 20.3k / 18.5k / 17.3k in | 0.0039 / 0.0035 / 0.0033 |
+| Exp 4 (3 runs): no collaboration | 4.81 | 12.6k / 1.1k | 0.0026 |
+| Exp 4 (3 runs): targeted (= fixed round) | 7.79-7.84 | 24.6-25.2k / 1.85-1.89k | 0.0048-0.0049 |
+| Exp 4 full debate, old defective code (3 runs) | 8.56-8.60 | 23.1-23.3k / 1.95-1.97k | 0.0046-0.0047 |
+| Exp 4 full debate, fixed (round FD, 1 run) | 8.60 | 28.7k / 2.1k | 0.0056 |
+| Exp 6 ablations 2 / 5 (3 runs) | 7.79-7.83 | within 1.2% of full | 0.0048-0.0049 |
+Reading (descriptive): adaptive selection cuts cost per page by 18% (0.0049 -> 0.0040) at the same H1 F1 (Exp 2);
+targeted collaboration nearly doubles the cost of no collaboration (0.0026 -> 0.0049) with no accuracy gain; the fixed
+full debate costs 14% more than targeted. These are the costs of a live run of each arm; actual spend was lower because
+arms replayed shared answers from the cache.
