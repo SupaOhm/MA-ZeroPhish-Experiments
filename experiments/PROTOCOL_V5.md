@@ -1437,3 +1437,12 @@ threshold cuts the error rate by 25-57% in every condition, on dev-2 and on the 
 dev-2 (all four withholding conditions abstain more than base) but not on test2: no_dom answers 0.885 vs base 0.875
 (the other three abstain more). So the band gives a usable selective-risk operating point, but the claim "the
 system abstains more when evidence is missing" is not supported on test2. Nothing in the frozen system changes.
+
+## Round CL: tokens and cost per page for Exp 2 / 4 / 6 (declared 2026-10-03, before computing; $0)
+Section IV asks for model calls, tokens, latency and cost per arm. From the stored ledgers (Exp 2 run 1; Exp 4 and
+Exp 6 runs 1, rep1, rep2; round FD's fixed full debate): calls, input and output tokens per page, and dollar cost per
+page computed from the tokens at GPT-4o-mini list price ($0.15 / M input, $0.60 / M output). The ledger field
+`monetary_cost` is the framework's internal budget unit, not dollars, so it is not used. Latency is NOT reported:
+arms of one run share a response cache and run case by case, so the first arm of each page pays the Phase 2 calls
+and later arms replay them (e.g. no collaboration shows a 3 s median against 25 s for targeted) -- the stored
+latencies measure run order, not the arms. Descriptive. Code: experiments/cost_per_arm.py.
