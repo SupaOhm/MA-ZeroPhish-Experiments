@@ -1399,3 +1399,10 @@ supplementary: it is NOT the evidence for JL (test3 is). Computed from the exist
 rule: H1+JL and H1 vs the six paper baselines (F1, accuracy, P, R, FPR; exact McNemar vs H1+JL; Holm over 6),
 written to results_gpt4omini/final/test2_jl_posthoc.json; the original test2 result files are not touched.
 Reported whatever it shows.
+JL on test2 -- POST HOC RESULT (results_gpt4omini/final/test2_jl_posthoc.json): JL changes 3 of 200 pages and
+gets all 3 wrong (benign pages with Judge p >= 0.9 turned into false positives): H1 F1 0.887 / FPR 0.130 ->
+H1+JL F1 0.874 / FPR 0.160 (McNemar H1 vs H1+JL 3 vs 0, p = 0.25). H1+JL is still above every baseline on F1
+(best baseline PhishDebate + screenshot 0.838), none significant after Holm. Reading: across dev + dev-2
+(+4 pages) and test2 (-3 pages) JL's effect is within noise; its benefit is not established. The frozen
+choice (H1+JL primary, H1 secondary on test3) stands unless the team decides otherwise BEFORE test3; any such
+change will be recorded with this post hoc result as its stated reason.

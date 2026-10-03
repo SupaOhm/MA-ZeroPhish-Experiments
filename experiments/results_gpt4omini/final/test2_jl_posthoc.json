@@ -1,0 +1,100 @@
+{
+ "metrics": {
+  "H1": {
+   "f1": 0.8866995073891626,
+   "acc": 0.885,
+   "precision": 0.8737864077669902,
+   "recall": 0.9,
+   "fpr": 0.13
+  },
+  "H1+JL": {
+   "f1": 0.8737864077669902,
+   "acc": 0.87,
+   "precision": 0.8490566037735849,
+   "recall": 0.9,
+   "fpr": 0.16
+  },
+  "single_agent": {
+   "f1": 0.8131868131868132,
+   "acc": 0.83,
+   "precision": 0.9024390243902439,
+   "recall": 0.74,
+   "fpr": 0.08
+  },
+  "cot": {
+   "f1": 0.8279569892473119,
+   "acc": 0.84,
+   "precision": 0.8953488372093024,
+   "recall": 0.77,
+   "fpr": 0.09
+  },
+  "phishdebate": {
+   "f1": 0.8229166666666666,
+   "acc": 0.83,
+   "precision": 0.8586956521739131,
+   "recall": 0.79,
+   "fpr": 0.13
+  },
+  "vision__single_agent": {
+   "f1": 0.7771428571428571,
+   "acc": 0.805,
+   "precision": 0.9066666666666666,
+   "recall": 0.68,
+   "fpr": 0.07
+  },
+  "vision__cot": {
+   "f1": 0.8306010928961749,
+   "acc": 0.845,
+   "precision": 0.9156626506024096,
+   "recall": 0.76,
+   "fpr": 0.07
+  },
+  "vision__phishdebate": {
+   "f1": 0.837696335078534,
+   "acc": 0.845,
+   "precision": 0.8791208791208791,
+   "recall": 0.8,
+   "fpr": 0.11
+  }
+ },
+ "mcnemar_vs_H1JL": {
+  "single_agent": {
+   "jl_only_right": 22,
+   "base_only_right": 14,
+   "p": 0.2429849540349096,
+   "holm": 0.9719398161396384
+  },
+  "cot": {
+   "jl_only_right": 21,
+   "base_only_right": 15,
+   "p": 0.40503224614076316,
+   "holm": 1
+  },
+  "phishdebate": {
+   "jl_only_right": 18,
+   "base_only_right": 10,
+   "p": 0.1849333420395851,
+   "holm": 0.9246667101979256
+  },
+  "vision__single_agent": {
+   "jl_only_right": 27,
+   "base_only_right": 14,
+   "p": 0.05958388801809633,
+   "holm": 0.357503328108578
+  },
+  "vision__cot": {
+   "jl_only_right": 23,
+   "base_only_right": 18,
+   "p": 0.5327092552361137,
+   "holm": 1
+  },
+  "vision__phishdebate": {
+   "jl_only_right": 19,
+   "base_only_right": 14,
+   "p": 0.48685024166479707,
+   "holm": 1
+  }
+ },
+ "changed_pages": 3,
+ "posthoc": true
+}
