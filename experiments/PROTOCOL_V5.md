@@ -1441,3 +1441,14 @@ Selectable: C0 (H1, one run) and C2 (fixed full debate, one run), by the declare
 precision >= C0 - 0.01; else C0). C1 is dropped. C3 (full debate, mean of 3 runs: r1 = C2's run, r2/r3 with
 fresh caches) is run for information only (does averaging help full debate; run-to-run spread) and cannot be
 chosen. Estimated dev-3 cost ~$8.
+
+## C2 (fixed full debate) on test2 -- SUPPLEMENTARY (declared 2026-10-03, before running; user request; balance $5.83)
+One run of v4abdfFD on the 200 test2 pages with the test2 response cache (Phase 2 answers replay; only debate
+rounds and the Judge are new calls; ~$0.7), scored with the frozen H1 decision step unchanged, next to H1 and the
+six baselines. It does NOT enter round D3's selection, which stays on dev-3 by the declared rule (C0 vs C2);
+test2 has been used and this is supplementary, reported whatever it shows. Guard: dev_eval.py
+--test2-supplementary allows only variant v4abdfFD on test2. Check first: H1 (v4abdf) must replay from the same
+cache with identical decisions on a few pages.
+Run note: the first replay check used runs/test2/cache and missed (3 pages called anew, ~$0.01; the test2 MA run
+had used the default runs/llm_cache); with runs/llm_cache the replay matched the test2 ledger on 3/3 pages, and
+C2 runs with that cache (out runs/test2_fd/run). Scorer: experiments/c2_test2_eval.py.

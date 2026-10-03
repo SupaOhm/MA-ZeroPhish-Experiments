@@ -69,6 +69,8 @@ def main() -> None:
                     help="PROTOCOL_V5 external check: run the test split of a NON-PhreshPhish dataset")
     ap.add_argument("--fit-collection", action="store_true",
                     help="PROTOCOL_V5: run on the FIT split (training pages) for the learner")
+    ap.add_argument("--test2-supplementary", action="store_true",
+                    help="PROTOCOL_V5: C2 (v4abdfFD) on test2 as a supplementary run (or v4abdf for the replay check)")
     ap.add_argument("--dev3", action="store_true",
                     help="PROTOCOL_V5 round D3: development runs on the fresh dev3 split")
     ap.add_argument("--dev2-collection", action="store_true",
@@ -82,6 +84,10 @@ def main() -> None:
     allowed = ("dev", "calib") if args.calib_collection else ("dev",)
     if args.fit_collection:
         allowed = ("fit",)
+    if args.test2_supplementary:
+        if args.variants not in (["v4abdfFD"], ["v4abdf"]):
+            raise SystemExit("REFUSED: --test2-supplementary allows only v4abdfFD (or v4abdf for the replay check)")
+        allowed = ("test2",)
     if args.dev3:
         allowed = ("dev3",)
     if args.dev2_collection:
