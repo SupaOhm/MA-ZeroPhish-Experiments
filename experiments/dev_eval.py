@@ -40,6 +40,8 @@ def variants(model: str) -> dict:
             "v4abdfH": replace(v4abd, judge_shows_evidence=True, specialist_page_assessment=True),
             "v4abdfAF": replace(v4abd, judge_shows_evidence=True, specialist_self_score=True),
             "v4abdfAF2": replace(v4abd, judge_shows_evidence=True, specialist_separate_score=True),
+            # PROTOCOL_V5 round D3: the fixed full debate (round FD code) on the v4abdf pipeline.
+            "v4abdfFD": replace(v4abd, judge_shows_evidence=True, collaboration="full_debate"),
             "v4abdfJ": replace(v4abd, judge_shows_evidence=True, judge_corroboration=1),
             "v4abdfJ1": replace(v4abd, judge_shows_evidence=True, judge_corroboration=2),
             # PROTOCOL_V5 round B2: the v4abdf pipeline with evidence withheld exactly as in Exp 5.
