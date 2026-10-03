@@ -2,11 +2,11 @@
  "S": "cot",
  "reading": "TIE",
  "holm": {
-  "single_agent_minimal": 0.0009756279177963734,
-  "phishdebate": 0.042695362120866776,
-  "cot_minimal": 0.04389989376068115,
-  "single_agent": 0.07139627635478973,
-  "cot": 0.08715855330228806
+  "single_agent_minimal": 0.0003309384919703007,
+  "phishdebate": 0.020891517400741577,
+  "cot_minimal": 0.020891517400741577,
+  "single_agent": 0.0383145809173584,
+  "cot": 0.052238985896110535
  },
  "dry_run": true,
  "routed_b2": 38,
