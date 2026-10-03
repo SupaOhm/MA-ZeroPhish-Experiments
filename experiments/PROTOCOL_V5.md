@@ -1053,3 +1053,19 @@ Disclosure for round JL: on calib itself JL changes 2 pages, 1 right and 1 wrong
 FPR 0.040 -> 0.047). This is the one calib page with Judge p >= 0.9 that is benign (stated in JL's declaration);
 "FPR unchanged" in round JL holds on dev / dev-2, not on calib.
 Next real gains need better evidence (the specialists), i.e. new model calls; see the next round.
+
+## Round FDS: full debate as the system's collaboration mode (declared 2026-10-03, before running; needs approval to spend)
+Why: the screening above shows decision rules on existing outputs are exhausted; round FD found the fixed full
+debate scored highest on dev-2 (0.949 vs targeted 0.935, one run, not significant). This round asks whether the
+system should collaborate by full debate instead of targeted rounds, with the decision step unchanged.
+Candidate "H1-FD": pipeline v4abdf with collaboration = full_debate (fixed code), decision = frozen H1 (nothing
+refit). Reference: H1 on the targeted pipeline, same pages, same Phase 2 answers.
+Data: dev 300 (NEW paid run; Phase 2 replays from runs/llm_cache -- checked: 20 / 20 dev pages replay the
+stored v5f decisions exactly -- so only debate rounds and the Judge are new calls) and dev-2 200 (round FD's run,
+paired with rep1). Pooled 500. One process, output runs/v5f_fd/dev (new), estimate ~$1.05 (round FD: $0.69 for
+200 pages); stop if the cost reported by the responses passes $2.0.
+Reported: P / R / FPR / F1 per set and pooled for H1-FD and H1 (and both with JL on top, descriptive); paired
+bootstrap CI and exact McNemar on the pooled pages; calls and tokens per page.
+Acceptance (fixed now): H1-FD is a candidate only if pooled F1 is higher than H1's AND pooled FPR is not higher.
+A candidate is NOT adopted here: team decision, then freeze, then test3 once. Otherwise targeted collaboration
+stays. Code: experiments/exp4_collaboration/run_full_debate_dev.py.
