@@ -1452,3 +1452,11 @@ cache with identical decisions on a few pages.
 Run note: the first replay check used runs/test2/cache and missed (3 pages called anew, ~$0.01; the test2 MA run
 had used the default runs/llm_cache); with runs/llm_cache the replay matched the test2 ledger on 3/3 pages, and
 C2 runs with that cache (out runs/test2_fd/run). Scorer: experiments/c2_test2_eval.py.
+C2 on test2 -- SUPPLEMENTARY RESULT (results_gpt4omini/final/test2_c2_supplementary.json; 200/200 pages, 0 failures):
+| system | F1 | accuracy | P | R | FPR | PR-AUC | calls / page |
+|---|---|---|---|---|---|---|---|
+| C2 fixed full debate | 0.906 | 0.905 | 0.893 | 0.920 | 0.110 | 0.954 | 8.54 |
+| H1 (targeted) | 0.887 | 0.885 | 0.874 | 0.900 | 0.130 | 0.957 | 7.73 |
+| best baseline (PhishDebate + screenshot) | 0.838 | 0.845 | 0.879 | 0.800 | 0.110 | 0.918 | -- |
+C2 vs H1: +0.020 F1 [-0.008, +0.050], McNemar 7 vs 3, p = 0.344 (not significant). Same direction as round FD on
+dev-2 (+0.015). As declared, this does not enter round D3's selection (dev-3 only).

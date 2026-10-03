@@ -1,0 +1,77 @@
+{
+ "metrics": {
+  "H1": {
+   "f1": 0.8866995073891626,
+   "accuracy": 0.885,
+   "precision": 0.8737864077669902,
+   "recall": 0.9,
+   "fpr": 0.13,
+   "pr_auc": 0.9570375951725927,
+   "model_calls_per_page": 7.73
+  },
+  "C2 full debate": {
+   "f1": 0.9064039408866995,
+   "accuracy": 0.905,
+   "precision": 0.8932038834951457,
+   "recall": 0.92,
+   "fpr": 0.11,
+   "pr_auc": 0.954229787376103,
+   "model_calls_per_page": 8.54
+  },
+  "single_agent": {
+   "f1": 0.8131868131868132,
+   "accuracy": 0.83,
+   "precision": 0.9024390243902439,
+   "recall": 0.74,
+   "fpr": 0.08
+  },
+  "cot": {
+   "f1": 0.8279569892473119,
+   "accuracy": 0.84,
+   "precision": 0.8953488372093024,
+   "recall": 0.77,
+   "fpr": 0.09
+  },
+  "phishdebate": {
+   "f1": 0.8229166666666666,
+   "accuracy": 0.83,
+   "precision": 0.8586956521739131,
+   "recall": 0.79,
+   "fpr": 0.13
+  },
+  "vision__single_agent": {
+   "f1": 0.7771428571428571,
+   "accuracy": 0.805,
+   "precision": 0.9066666666666666,
+   "recall": 0.68,
+   "fpr": 0.07
+  },
+  "vision__cot": {
+   "f1": 0.8306010928961749,
+   "accuracy": 0.845,
+   "precision": 0.9156626506024096,
+   "recall": 0.76,
+   "fpr": 0.07
+  },
+  "vision__phishdebate": {
+   "f1": 0.837696335078534,
+   "accuracy": 0.845,
+   "precision": 0.8791208791208791,
+   "recall": 0.8,
+   "fpr": 0.11
+  }
+ },
+ "c2_vs_h1": {
+  "f1_delta": 0.019704433497536922,
+  "ci95": [
+   -0.008223201174743067,
+   0.04977222439151374
+  ],
+  "mcnemar": [
+   7,
+   3,
+   0.34375
+  ]
+ },
+ "supplementary": true
+}
