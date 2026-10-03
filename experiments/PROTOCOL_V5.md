@@ -1512,3 +1512,12 @@ use and disclosure of withheld evidence); it selects or changes nothing, and no 
 Measures: (a) citations eligible; (b) gaps -- contract level and all listed; (c) open issues -- contract level and
 all listed; (d) withheld evidence never used, a coverage gap, and in the Judge's own limitations; (e) the Judge's
 rubric abstention rate. Reported whatever it shows. Code: experiments/audit_secondary.py --test2.
+Round AUD2 -- RESULT (results_gpt4omini/audit_secondary/result_test2.json; $0, no API call, no detection number).
+1,200 Judge decisions on zero-day test2 pages (6 conditions x 200):
+- (a) citations eligible: 1,200 / 1,200.
+- (d) withheld evidence never used: 0 of 800 withholding decisions use a withheld field; withheld fields are a
+  coverage gap 800 / 800 and appear in the Judge's own coverage limitations 787 / 800.
+- (b), (c) contract level: a coverage limitation whenever there is a gap 1,200 / 1,200; an issue list whenever there
+  are open issues 1,157 / 1,157. All listed: gap fields 10,034 / 10,362 (96.8%), open issues 2,670 / 2,723 (98.1%).
+- (e) the Judge's rubric abstains on 168-177 of 200 pages per condition (1,039 / 1,200); H1 decides every page.
+READING: the integrity properties measured on dev-2 (round AUD) hold on the zero-day pages too, at the same rates.

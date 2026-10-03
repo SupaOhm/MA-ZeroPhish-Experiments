@@ -26,9 +26,13 @@ def field(locator: str) -> str:
     return locator.split(":", 1)[0]
 
 
-def exp5() -> dict:
-    arms = E.decisions("runs/v4_exp/exp5/exp5_phreshphish_test__shard*of*__*.jsonl")
-    arms.update(E.decisions("runs/v4_exp/exp5/exp5_phreshphish_test_conflict__shard*of*__*.jsonl"))
+def exp5(test2: bool = False) -> dict:
+    """`test2`: round AUD2, the zero-day test2 ledgers; no detection number is computed there."""
+    if test2:
+        arms = E.decisions("runs/test2/exp5/exp5_phreshphish_test2__shard*of*__*.jsonl")
+    else:
+        arms = E.decisions("runs/v4_exp/exp5/exp5_phreshphish_test__shard*of*__*.jsonl")
+        arms.update(E.decisions("runs/v4_exp/exp5/exp5_phreshphish_test_conflict__shard*of*__*.jsonl"))
     out = {}
     for arm, dec in sorted(arms.items()):
         withheld = set(CONDITIONS[arm][0])
@@ -63,7 +67,7 @@ def exp5() -> dict:
                 c["withheld_all_gaps"] += withheld <= gaps
                 c["withheld_all_in_judge_limitations"] += withheld <= lim
             c["judge_insufficient"] += e["verdict"] == "insufficient"
-            if arm != "conflict_swaps":
+            if arm != "conflict_swaps" and not test2:
                 c["h1_phishing"] += bool(X.h1(e, "test", frozenset(withheld))[1])
         out[arm] = dict(c)
     return out
@@ -144,6 +148,11 @@ def exp2() -> dict:
 
 def main() -> None:
     OUT.mkdir(parents=True, exist_ok=True)
+    if "--test2" in sys.argv:
+        res = exp5(test2=True)
+        (OUT / "result_test2.json").write_text(json.dumps(res, indent=1), encoding="utf-8")
+        print(json.dumps(res, indent=1))
+        return
     res = {"exp5": exp5(), "exp6": exp6(), "exp2": exp2()}
     res["exp6_revisions"] = exp6_revisions()
     (OUT / "result.json").write_text(json.dumps(res, indent=1), encoding="utf-8")

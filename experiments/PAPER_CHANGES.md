@@ -135,8 +135,9 @@ Every arm uses GPT-4o-mini and the same inputs.
   significantly (PROTOCOL_V5 "Exp 5 on test2 -- RESULT", same routing caveat). Conflicting evidence (65
   cases): 0.800.
 - Secondary measures Section IV promises (PROTOCOL_V5 round AUD, final system, $0):
-  Exp 5 -- the Judge cited only eligible observations in 1,265 / 1,265 decisions; withheld evidence was never used
-  (0 / 800) and was disclosed as a coverage limitation in 791 / 800; open issues listed 96.8%, gap fields 97.3%
+  Exp 5 -- the Judge cited only eligible observations in 1,265 / 1,265 decisions on dev-2 and 1,200 / 1,200 on the
+  zero-day test2 pages (round AUD2); withheld evidence was never used (0 / 800 on each) and was disclosed as a coverage
+  limitation in 791 / 800 (dev-2) and 787 / 800 (test2); open issues listed 96.8%, gap fields 97.3%
   (the Judge lists the ones it judges material, by its contract). Exp 6 -- removing reconciliation or Judge blinding
   changes 0-2 of 200 verdicts per run; revision-validation failures 11-12% of revisions. Exp 2 -- adaptive selection
   starts 1.95 of 3.81 specialists and the Moderator later dispatches every omitted one (372 / 372).
