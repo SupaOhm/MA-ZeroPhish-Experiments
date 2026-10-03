@@ -1406,3 +1406,118 @@ H1+JL F1 0.874 / FPR 0.160 (McNemar H1 vs H1+JL 3 vs 0, p = 0.25). H1+JL is stil
 (+4 pages) and test2 (-3 pages) JL's effect is within noise; its benefit is not established. The frozen
 choice (H1+JL primary, H1 secondary on test3) stands unless the team decides otherwise BEFORE test3; any such
 change will be recorded with this post hoc result as its stated reason.
+
+## Screening on fit / calib only, after round JL (2026-10-03; no dev or dev-2 outcome computed; $0)
+Teammate request: find more rules like JL. To avoid tuning on dev, candidates were screened on calib (fit shown
+as in-sample context) and only a candidate that helps on calib would be declared for dev / dev-2. None did, so
+nothing below was computed on dev or dev-2. H1 on calib: F1 0.909, FPR 0.040 (130 TP, 6 FP, 20 FN).
+Calib errors: 10 of the 20 FN have no phishing finding at all and Judge p = 0.0 (the specialists found
+nothing; no decision rule can recover them); most other FN have Judge p 0.5-0.9 with H1 below its threshold.
+| candidate (calib) | covers | flips H1 on | right / wrong | calib F1 / FPR |
+|---|---|---|---|---|
+| BL: Judge p = 0 and no phishing finding -> benign | 119 | 5 | 1 / 4 | worse |
+| BL3: Judge p <= 0.2 and top phishing strength 0 -> benign | 122 | 5 | 1 / 4 | worse |
+| JV: Judge verdict phishing and p >= 0.85 -> phishing | 59 | 4 | 1 / 3 | worse |
+| SE: distinctive phishing finding, >= 2 fields, no opposition -> phishing | 26 | 0 | - | same |
+| band: within d of H1's threshold, decide by Judge p (d 0.05/0.10/0.15 x p 0.8/0.85) | - | - | - | 0.897-0.912 / 0.033-0.040 |
+| AV: mean of P1 and B2 scores, threshold calib precision >= 0.95 (0.5662) | all | - | - | 0.905 / 0.040 |
+Reading: no candidate clearly beats H1 on calib; the best band setting (+0.003, one FP fewer) is within noise
+and was the best of six settings, so it is not declared. Not taken to dev.
+Disclosure for round JL: on calib itself JL changes 2 pages, 1 right and 1 wrong (calib F1 0.909 -> 0.910,
+FPR 0.040 -> 0.047). This is the one calib page with Judge p >= 0.9 that is benign (stated in JL's declaration);
+"FPR unchanged" in round JL holds on dev / dev-2, not on calib.
+Next real gains need better evidence (the specialists), i.e. new model calls; see the next round.
+
+## Round FDS: full debate as the system's collaboration mode (declared 2026-10-03, before running; needs approval to spend)
+Why: the screening above shows decision rules on existing outputs are exhausted; round FD found the fixed full
+debate scored highest on dev-2 (0.949 vs targeted 0.935, one run, not significant). This round asks whether the
+system should collaborate by full debate instead of targeted rounds, with the decision step unchanged.
+Candidate "H1-FD": pipeline v4abdf with collaboration = full_debate (fixed code), decision = frozen H1 (nothing
+refit). Reference: H1 on the targeted pipeline, same pages, same Phase 2 answers.
+Data: dev 300 (NEW paid run; Phase 2 replays from runs/llm_cache -- checked: 20 / 20 dev pages replay the
+stored v5f decisions exactly -- so only debate rounds and the Judge are new calls) and dev-2 200 (round FD's run,
+paired with rep1). Pooled 500. One process, output runs/v5f_fd/dev (new), estimate ~$1.05 (round FD: $0.69 for
+200 pages); stop if the cost reported by the responses passes $2.0.
+Reported: P / R / FPR / F1 per set and pooled for H1-FD and H1 (and both with JL on top, descriptive); paired
+bootstrap CI and exact McNemar on the pooled pages; calls and tokens per page.
+Acceptance (fixed now): H1-FD is a candidate only if pooled F1 is higher than H1's AND pooled FPR is not higher.
+A candidate is NOT adopted here: team decision, then freeze, then test3 once. Otherwise targeted collaboration
+stays. Code: experiments/exp4_collaboration/run_full_debate_dev.py.
+Round FDS -- NOT RUN (2026-10-03): the team lead decided to stop changing the detection system for Exp 1
+("enough for Exp 1; work on the other experiments"). No call was made; nothing spent. The declaration stays
+as a record.
+
+## Round AUD: the paper's promised secondary measures for Exp 2, 5 and 6 on the final system (declared 2026-10-03, before computing; $0)
+Why: Section IV promises measures that were reported only for the superseded v1 system
+(RESULTS_GPT4OMINI.md, 2026-09-30) or never: Exp 5's citation / disclosure audit, Exp 6's unsupported citations
+and decision changes, Exp 2's recovery of initially unselected specialists. Read from the stored v4 ledgers
+(the same ones behind final/h1_all); no model call; nothing in the system changes. Descriptive; no acceptance rule.
+Exp 5 (runs/v4_exp/exp5: 6 conditions x 200 dev-2 pages + 65 conflict swaps), per condition:
+ (a) citations eligible: every locator the Judge cites or lists as support is in the decision's eligible set;
+ (b) coverage gaps disclosed: every coverage gap is in the Judge's coverage limitations;
+ (c) open issues disclosed: the Judge's unresolved-issue list has one entry per unresolved issue;
+ (d) withheld evidence never used: no eligible or cited locator comes from a withheld field, and each withheld
+     field is a coverage gap;
+ (e) the Judge's own rubric abstention rate (verdict insufficient) next to H1's forced verdicts.
+Exp 6 (runs/v4_exp, _rep1, _rep2; exp6 arms), per arm and run: unsupported citations = findings dropped by the
+grounding check (bad line or quote) / findings returned; H1 verdict changes vs the full system (count, right /
+wrong); calls per page. Where the run's cache replays exactly (rep1, rep2), revisions accepted / rejected per arm by
+cache replay (round ESC's method, network disabled); pages that do not reproduce are excluded and counted.
+Exp 2 (runs/v4_exp/exp2: complete and matched-agent-2 conditions; adaptive, literal, fixed-all), per arm:
+specialists dispatched initially per page; share of initially unselected but ready specialists dispatched later
+by the Moderator; dispatch shortfalls; calls per page.
+Code: experiments/audit_secondary.py.
+Round AUD -- RESULT (results_gpt4omini/audit_secondary/result.json; $0, no API call).
+Exp 5, 1,265 Judge decisions (6 conditions x 200 + 65 conflict swaps):
+- (a) citations eligible: 1,265 / 1,265 (every cited or support locator is in the eligible set).
+- (d) withheld evidence never used: 0 of 800 withholding decisions use a locator from a withheld field; the withheld
+  fields are a coverage gap in 800 / 800, and appear in the Judge's own coverage limitations in 791 / 800.
+- (b), (c): the declared definitions were stricter than the Judge's contract, which asks only for "unavailable fields
+  that matter" and "issue ids that remain material" (phases/judge_llm.py); found after computing, reported both ways.
+  Contract level: a coverage limitation whenever there is a gap 1,265 / 1,265; an issue list whenever there are open
+  issues 1,211 / 1,211. As declared (everything listed): gap fields listed 10,495 / 10,782 (97.3%; the omitted ones
+  are mostly redirect_chain and page_resources), all gaps listed in 1,104 / 1,265 decisions; open issues listed
+  2,709 / 2,800 (96.8%), all listed in 1,149 / 1,211.
+- (e) the Judge's own rubric abstains (insufficient) on 165-182 of 200 pages per condition and 62 / 65 conflict
+  swaps; H1 gives a forced verdict on every page, as reported in Exp 5.
+Exp 6, three runs (H1 verdict changes vs the full system on 200 dev-2 pages; right / wrong):
+| arm | run 1 | rep1 | rep2 | unsupported citations | calls / page |
+|---|---|---|---|---|---|
+| ablation 1 (= full config) | 0 | 0 | 0 | same as full | same |
+| ablation 2 no reconciliation | 2 (2 / 0) | 0 | 1 (0 / 1) | same as full | same |
+| ablation 3 (= full admission rule) | 0 | 0 | 0 | same as full | same |
+| ablation 4 full debate (old, defective code) | 10 (5 / 5) | 5 (3 / 2) | 12 (6 / 6) | 8.5-9.0% | 8.56-8.60 |
+| ablation 5 Judge sees verdicts | 1 (1 / 0) | 0 | 1 (0 / 1) | same as full | same |
+| full system | - | - | - | 17.2-18.6% | 7.79-7.83 |
+Unsupported citations = findings dropped by the grounding check (bad line id or quote) / findings returned; the old
+full debate's lower rate comes from its repeated identical Phase 2 answers. Revision-validation failures by cache
+replay (rep1 / rep2, all 200 pages reproduced): full system 72 / 65 rejected of 604 / 595 revisions; ablations 2
+and 5 are identical (they change only what the Judge sees, not the rounds).
+Exp 2, complete evidence (run 1, H1 F1 in final/h1_all/exp2_*): adaptive selection dispatches 1.95 specialists
+first (fixed-all 3.81, literal 1.0); every initially unselected but ready specialist was later dispatched by the
+Moderator (372 / 372 adaptive; 561 / 561 literal), so selection saves calls (6.2 vs 7.8 per page) without losing
+any modality. Budget-2 condition: adaptive 1.33 first, 497 / 497 recovered, 5.7 calls; fixed-all hits 198 dispatch
+shortfalls (budget) and recovers through 363 later dispatches, 6.3 calls.
+READING (descriptive): the evidence-integrity properties the paper claims hold on the final system (eligible-only
+citations, withheld evidence never used and disclosed); disclosure is near-complete rather than complete at the
+field level, by the Judge's "material" contract. Removing reconciliation or Judge blinding changes 0-2 verdicts of
+200; Exp 2's adaptive selection recovers every omitted modality.
+
+## Round AUD2: Exp 5 integrity audit on the zero-day test2 ledgers (declared 2026-10-03, before computing; $0)
+Teammate lead's direction: stop changing the detection system; strengthen the other experiments. Round AUD's
+Exp 5 audit used dev-2 (development data). The same measures, unchanged code (audit_secondary.exp5), on the
+existing test2 Exp 5 ledgers (runs/test2/exp5: 6 conditions x 200 zero-day pages; Tinpat's run, scored for
+detection in "Exp 5 on test2 -- RESULT"). This measures properties of the frozen system's outputs (citations,
+use and disclosure of withheld evidence); it selects or changes nothing, and no detection number is recomputed.
+Measures: (a) citations eligible; (b) gaps -- contract level and all listed; (c) open issues -- contract level and
+all listed; (d) withheld evidence never used, a coverage gap, and in the Judge's own limitations; (e) the Judge's
+rubric abstention rate. Reported whatever it shows. Code: experiments/audit_secondary.py --test2.
+Round AUD2 -- RESULT (results_gpt4omini/audit_secondary/result_test2.json; $0, no API call, no detection number).
+1,200 Judge decisions on zero-day test2 pages (6 conditions x 200):
+- (a) citations eligible: 1,200 / 1,200.
+- (d) withheld evidence never used: 0 of 800 withholding decisions use a withheld field; withheld fields are a
+  coverage gap 800 / 800 and appear in the Judge's own coverage limitations 787 / 800.
+- (b), (c) contract level: a coverage limitation whenever there is a gap 1,200 / 1,200; an issue list whenever there
+  are open issues 1,157 / 1,157. All listed: gap fields 10,034 / 10,362 (96.8%), open issues 2,670 / 2,723 (98.1%).
+- (e) the Judge's rubric abstains on 168-177 of 200 pages per condition (1,039 / 1,200); H1 decides every page.
+READING: the integrity properties measured on dev-2 (round AUD) hold on the zero-day pages too, at the same rates.
