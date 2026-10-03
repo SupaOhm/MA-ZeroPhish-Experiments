@@ -1488,3 +1488,10 @@ Runs started (2026-10-04 00:0x; balance $25.14 after a top-up): C2-R training ru
 300, B2's 200 fit pages x 3 withheld conditions; runs/d3/fd_*); a chain that, once dev-3's captures are done,
 runs C0 then C2 on dev-3 (run r1, fresh cache runs/llm_cache_d3r1), each only after a balance check.
 Scorer with the declared rule: experiments/d3_eval.py.
+
+## test3 captures complete (2026-10-04 03:34; no model call)
+After the crt.sh outage, the chain's CT passes and runs/ct_resume.py: test3 CT obtained 851, no covering
+certificate 145, crtsh_unreachable 4 (0.4%) -- comparable to test2 (177 / 22 / 1, 0.5%). 1,000 capture files
+rebuilt (build_captures --split test3). Render warning as on other splits: dom / page_content / screenshot
+available for 96% of phishing vs 85% of benign pages. test3 is ready; it is NOT run until round D3 has chosen and
+frozen the system and the user gives the go.
