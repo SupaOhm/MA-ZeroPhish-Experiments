@@ -1430,3 +1430,8 @@ run 3 times on test3 and combined the same way (majority of the three verdicts; 
 its three Judge confidences), so the comparison stays at equal repeats; the single-run rows are reported too.
 Not in this round: more training data (CT capture time); a GPT-4o replication (a separate study, all arms).
 Cost estimate: dev-3 ~$12 (3 x H1 + 3 x full debate on 500 pages); test3 afterwards up to ~$50 with x3 baselines.
+D3 amendment 1 (2026-10-03, before any dev-3 row was read): pyarrow is blocked by the Windows Application
+Control policy ("DLL load failed ... blocked this file"), so dev-3 rows come from the Hugging Face
+datasets-server filter API over the PhreshPhish test split in the same window (build_test3.py fetch mode:
+deterministic spread of pages, cached), not from the parquet shards. Everything else unchanged; every group
+touching an existing manifest case (test3 included) is still blocked.

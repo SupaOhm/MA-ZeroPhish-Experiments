@@ -82,11 +82,12 @@ def dedup(rows: list[dict], log: Counter) -> list[dict]:
     return out
 
 
-def build(out_dir: str, parquet: list[str] | None = None) -> None:
+def build(out_dir: str, parquet: list[str] | None = None, split: str = "test3", seed: str = SEED,
+          n_per_label: int = N_PER_LABEL) -> None:
     out = Path(out_dir)
     existing = read(str(out / "manifest.jsonl"))
-    if any(r.split == "test3" for r in existing):
-        raise SystemExit("REFUSED: the manifest already has a test3 split")
+    if any(r.split == split for r in existing):
+        raise SystemExit(f"REFUSED: the manifest already has a {split} split")
     used = {r.source_id for r in existing}
     used_keys = {k for r in existing for k in r.group_keys}
     screened = {json.loads(l)["sha256"] for l in open(SCREENED, encoding="utf-8")} if SCREENED.exists() else set()
@@ -149,7 +150,7 @@ def build(out_dir: str, parquet: list[str] | None = None) -> None:
             if ok:
                 cands.append(min(ok, key=lambda r: (r["date"], r["sha256"])))
         cands.sort(key=lambda r: r["sha256"])
-        pick = random.Random(f"{SEED}:{label}").sample(cands, min(len(cands), N_PER_LABEL))
+        pick = random.Random(f"{seed}:{label}").sample(cands, min(len(cands), n_per_label))
         log[f"{label}:candidate_groups"], log[f"{label}:picked"] = len(cands), len(pick)
         for r in pick:
             cid = "pp-" + r["sha256"][:12]
@@ -158,16 +159,16 @@ def build(out_dir: str, parquet: list[str] | None = None) -> None:
             new.append(ManifestRow(
                 case_id=cid, source_dataset=SOURCE, source_split="test", source_id=r["sha256"],
                 label=r["label"], stratum="webpage", submission_type="url", observed_at=r["date"],
-                split="test3", campaign_group=r["group"], group_keys=r["group_keys"],
+                split=split, campaign_group=r["group"], group_keys=r["group_keys"],
                 target_brand=r.get("target"), language=r.get("lang"),
                 post_cutoff=post_cutoff_flags(r["date"]), reputation_absent=None,
                 notes=[f"url={r['url']}", "source=" + ("parquet:" + ",".join(Path(p).name for p in parquet) if parquet else "hf-datasets-server-filter")]))
     allrows = existing + new
     allrows.sort(key=lambda m: (m.split, m.case_id))
     errs, warns = validate(allrows)
-    report = {"window": [LO, HI], "seed": SEED, "log": dict(sorted(log.items())), "errors": errs,
+    report = {"window": [LO, HI], "seed": seed, "split": split, "log": dict(sorted(log.items())), "errors": errs,
               "warnings": warns, "new_case_ids": sorted(r.case_id for r in new)}
-    (out / "build_report_test3.json").write_text(json.dumps(report, indent=1), encoding="utf-8")
+    (out / f"build_report_{split}.json").write_text(json.dumps(report, indent=1), encoding="utf-8")
     print(json.dumps(report["log"], indent=1))
     for w in warns:
         print("WARNING:", w)
@@ -184,5 +185,8 @@ if __name__ == "__main__":
     ap.add_argument("step", choices=["fetch", "build"])
     ap.add_argument("--out", default="experiments/data_eval/data/phreshphish")
     ap.add_argument("--parquet", nargs="*", default=None, help="downloaded PhreshPhish test shards")
+    ap.add_argument("--split", default="test3", help="test3 (default) or dev3 (PROTOCOL_V5 round D3)")
+    ap.add_argument("--seed", default=SEED)
+    ap.add_argument("--n", type=int, default=N_PER_LABEL, help="pages per label")
     a = ap.parse_args()
-    fetch() if a.step == "fetch" else build(a.out, a.parquet)
+    fetch() if a.step == "fetch" else build(a.out, a.parquet, a.split, a.seed, a.n)
