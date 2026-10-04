@@ -1,0 +1,76 @@
+{
+ "test3_C2": {
+  "decisions": 1000,
+  "has_disclosure": 1000,
+  "cited_subset_of_eligible": 1000,
+  "citations": 7279,
+  "with_gaps": 1000,
+  "gaps_some_listed": 1000,
+  "with_open_issues": 985,
+  "issues_list_present": 985
+ },
+ "exp5_C2:base": {
+  "decisions": 200,
+  "has_disclosure": 200,
+  "cited_subset_of_eligible": 200,
+  "citations": 1408,
+  "with_gaps": 200,
+  "gaps_some_listed": 200,
+  "with_open_issues": 199,
+  "issues_list_present": 199
+ },
+ "exp5_C2:cum3_+html_no_browser": {
+  "decisions": 200,
+  "has_disclosure": 200,
+  "cited_subset_of_eligible": 200,
+  "citations": 627,
+  "with_gaps": 200,
+  "gaps_some_listed": 200,
+  "with_open_issues": 200,
+  "issues_list_present": 200,
+  "withheld_used": 0
+ },
+ "exp5_C2:no_dom": {
+  "decisions": 200,
+  "has_disclosure": 200,
+  "cited_subset_of_eligible": 200,
+  "citations": 1303,
+  "with_gaps": 200,
+  "gaps_some_listed": 200,
+  "with_open_issues": 145,
+  "issues_list_present": 145,
+  "withheld_used": 0
+ },
+ "exp5_C2:no_html": {
+  "decisions": 200,
+  "has_disclosure": 200,
+  "cited_subset_of_eligible": 200,
+  "citations": 1405,
+  "with_gaps": 200,
+  "gaps_some_listed": 200,
+  "with_open_issues": 197,
+  "issues_list_present": 197,
+  "withheld_used": 0
+ },
+ "exp5_C2:no_network_metadata": {
+  "decisions": 200,
+  "has_disclosure": 200,
+  "cited_subset_of_eligible": 200,
+  "citations": 1051,
+  "with_gaps": 200,
+  "gaps_some_listed": 200,
+  "with_open_issues": 200,
+  "issues_list_present": 200,
+  "withheld_used": 0
+ },
+ "exp5_C2:transient_browser_recoverable": {
+  "decisions": 200,
+  "has_disclosure": 200,
+  "cited_subset_of_eligible": 200,
+  "citations": 1408,
+  "with_gaps": 200,
+  "gaps_some_listed": 200,
+  "with_open_issues": 199,
+  "issues_list_present": 199
+ }
+}

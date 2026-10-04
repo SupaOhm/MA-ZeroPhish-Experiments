@@ -213,7 +213,20 @@ Text: "No removal changes the final verdicts, because the learned decision step 
 Judge independence significantly degrades the Judge's own judgement (AUC 0.881 to 0.834; false-positive rate
 0.16 to 0.29): independent adjudication matters for the quality of the multi-agent reasoning."
 
-## 8. Limitations (state these; they cost little space)
+## 8. Integrity of the explanations (verifiable output)
+
+Measured on the final system's own runs (`results_gpt4omini/audit_c2.json`):
+
+| Check | Result |
+|---|---|
+| Every piece of evidence the Judge cites is a real, eligible observation (test3) | **1,000 / 1,000 pages** (7,279 citations) |
+| Missing evidence is disclosed by the Judge (test3) | 1,000 / 1,000 pages |
+| Withheld evidence is never used (Exp 5, four withholding conditions) | **0 / 800** decisions used it |
+
+Text: "Every Judge decision on test3 cites only real, eligible evidence (7,279 citations on 1,000 pages), and
+evidence that was withheld was never used (0 of 800 decisions)."
+
+## 9. Limitations (state these; they cost little space)
 
 - One model (GPT-4o-mini) for all systems; other models are future work.
 - test3 is one run per system; run-to-run spread on dev-3 was about 0.01-0.02 F1 (smaller than the gaps to
@@ -226,7 +239,7 @@ Judge independence significantly degrades the Judge's own judgement (AUC 0.881 t
   false alarms (FPR 0.24): the decision step learned PhreshPhish-specific URL shapes. Do not claim "equally
   good on normal and zero-day data".
 
-## 9. What to write, and what not to
+## 10. What to write, and what not to
 
 - **Write:** test3 as the evaluation; dev / dev-3 as development splits ("design choices were made on
   development splits; test3 was used once, after freezing the system"); the fairness sentence (Section 4).
@@ -237,7 +250,7 @@ Judge independence significantly degrades the Judge's own judgement (AUC 0.881 t
 - Code, protocol and results are public in the repository; a footnote link is optional (anonymised for
   double-blind review).
 
-## 10. Where the numbers come from
+## 11. Where the numbers come from
 
 | Result | File |
 |---|---|
@@ -246,5 +259,6 @@ Judge independence significantly degrades the Judge's own judgement (AUC 0.881 t
 | Exp 2 / 5 | `results_gpt4omini/c2_exps_exp2_exp5.json` |
 | Exp 3 | `results_gpt4omini/c2_exps_exp3.json`, `c2_exps_exp3_independence.json` |
 | Exp 6 (+ Judge level, conflict cases) | `results_gpt4omini/c2_exps_exp6.json`, `c2_exps_exp6_judge.json`, `c2_exps_exp6_conflicts.json` |
+| Integrity audit | `results_gpt4omini/audit_c2.json` |
 | Exp 4 full debate (2 runs) | PROTOCOL_V5 round FD + "Exp 2-6 with C2" |
 | Frozen system, GO | `results_gpt4omini/final/FROZEN_C2.json`, `FROZEN_H1.json`, `GO_TEST3.json` |

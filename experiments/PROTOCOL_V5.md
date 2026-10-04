@@ -1868,3 +1868,18 @@ consistent with goya's PR #9: -1.59 calls / page, -20.4%, tokens -16.7% -- the s
 targeted collaboration nearly doubles the cost of no collaboration (0.0026 -> 0.0049) with no accuracy gain; the fixed
 full debate costs 14% more than targeted. These are the costs of a live run of each arm; actual spend was lower because
 arms replayed shared answers from the cache.
+
+## Integrity audit of C2 (declared 2026-10-04, before computing; user request; $0)
+Round AUD's checks on the final system's own ledgers (experiments/audit_c2.py -> results_gpt4omini/audit_c2.json):
+(a) test3 C2, 1,000 pages: Judge disclosure present, every cited / support locator an eligible observation,
+coverage gaps and open issues disclosed; (b) Exp 5 with C2 (dev-2): withheld evidence never cited nor eligible.
+Reported whatever it shows.
+Integrity audit of C2 -- RESULT (results_gpt4omini/audit_c2.json): test3, 1,000 pages: Judge disclosure on 1,000 /
+1,000; every cited / support locator eligible on 1,000 / 1,000 (7,279 citations); coverage gaps disclosed on 1,000 /
+1,000; open issues listed on 985 / 985. Exp 5 with C2: withheld evidence used on 0 of 800 decisions (no_html,
+no_dom, no_network_metadata, cum3), every citation eligible in every condition.
+
+## Data package rebuilt (2026-10-04): DATA_VERSION fab2359ef66ab843
+experiments/data_eval/data/dist/ma-zerophish-data-fab2359ef66ab843.zip (1,134 MB, 22,715 files; adds dev3, test3,
+trop_fit to 545370aaf6ad14c6); own key found in 0 files (third-party keys inside captured pages: 312 files, part of
+the evidence). Verify after unzipping: python -m experiments.data_eval.package verify --dir <folder>.

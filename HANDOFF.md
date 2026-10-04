@@ -73,9 +73,9 @@ rebuild + test3 scoring `experiments/score_test2.py --test3`.
 - Source: PhreshPhish (own-domain, campaign-disjoint splits). test3 and dev-3 were built from shards
   test-001/002 (`experiments/data_eval/build_test3.py`; dev-3 under WSL because Windows blocks pyarrow on
   Tinpat's machine; the builder now streams in batches).
-- **Data package:** the shared package (DATA_VERSION `545370aaf6ad14c6`) does **not** yet contain dev-3,
-  test3 or trop_fit (manifest now `ecc3c4d9e40dc8e6`). Ask Tinpat for the updated package before re-running
-  anything on those splits. It contains real phishing pages: never open captured HTML in a browser.
+- **Data package:** DATA_VERSION **`fab2359ef66ab843`** (`ma-zerophish-data-fab2359ef66ab843.zip`, 1.1 GB, from
+  Tinpat; includes dev-3, test3, trop_fit). After unzipping run `python -m experiments.data_eval.package verify --dir <folder>`.
+  It contains real phishing pages: never open captured HTML in a browser.
 - Missing from this machine: round FD's ledger `runs/v4_exp_rep1_fdfix/` (on a teammate's machine; add it to
   the runs package).
 
