@@ -1,0 +1,14 @@
+{
+ "mazerophish": {
+  "sufficient_conclusions": 201,
+  "share_on_lt2_artifacts": 0.09950248756218906,
+  "units_per": 6.343283582089552,
+  "artifacts_per": 2.9203980099502487
+ },
+ "ablation2_no_reconciliation": {
+  "sufficient_conclusions": 203,
+  "share_on_lt2_artifacts": 0.07389162561576355,
+  "units_per": 6.812807881773399,
+  "artifacts_per": 3.0788177339901477
+ }
+}

@@ -1642,3 +1642,8 @@ Exp 3 with C2 -- support-independence check (declared 2026-10-04, before computi
 C2 ledgers (with vs without reconciliation): among conclusions the Judge marks sufficient (suf_phishing /
 suf_benign), the share that rests on fewer than two distinct artifacts (artifact = field prefix of the support
 locator), and the mean number of support units vs distinct artifacts behind a sufficient conclusion.
+Support-independence RESULT (results_gpt4omini/c2_exps_exp3_independence.json): sufficient conclusions resting on
+< 2 distinct artifacts -- with reconciliation 20 / 201 (10.0%), without 15 / 203 (7.4%); support units vs distinct
+artifacts per sufficient conclusion 6.34 vs 2.92 (with) and 6.81 vs 3.08 (without). Reading: no sign that
+reconciliation makes the Judge's sufficiency judgements more independent on these natural pages (same direction as
+teammate goya's 11% vs 9% on the targeted runs). Reported as is.
