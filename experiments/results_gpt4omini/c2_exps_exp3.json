@@ -1,0 +1,14 @@
+{
+ "mazerophish": {
+  "dup_share": 0.4803048201798202,
+  "groups_per_page": 10.995,
+  "pages_with_groups": 200,
+  "pages": 200
+ },
+ "ablation2_no_reconciliation": {
+  "dup_share": 0.515638542013542,
+  "groups_per_page": 0,
+  "pages_with_groups": 0,
+  "pages": 200
+ }
+}

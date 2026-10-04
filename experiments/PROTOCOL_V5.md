@@ -1630,3 +1630,6 @@ READING (pre-declared rule): WIN -- C2 has the highest F1 and the difference to 
 2000, seed "20261004:t3prauc"): C2 vs PhishDebate +0.034 [+0.015, +0.060], vs PhishDebate + screenshot +0.025
 [+0.010, +0.052]. Precision and FPR: CoT and single agent are more conservative (P 0.942, FPR 0.044) but miss 28%
 of phishing. C2 vs H1: +0.007 F1, not significant (as dev-3's run spread suggested).
+Exp 3 with C2 (descriptive, from the Exp 6 C2 ledgers; results_gpt4omini/c2_exps_exp3.json): with reconciliation,
+11.0 dependency groups per page on 200/200 pages and a duplicate-support share of 0.480 in the Judge's support lists;
+without it 0 groups and 0.516. Verdicts unchanged (Exp 6).
