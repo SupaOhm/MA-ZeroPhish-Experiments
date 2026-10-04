@@ -1647,3 +1647,8 @@ Support-independence RESULT (results_gpt4omini/c2_exps_exp3_independence.json): 
 artifacts per sufficient conclusion 6.34 vs 2.92 (with) and 6.81 vs 3.08 (without). Reading: no sign that
 reconciliation makes the Judge's sufficiency judgements more independent on these natural pages (same direction as
 teammate goya's 11% vs 9% on the targeted runs). Reported as is.
+Exp 3 reporting decision (2026-10-04, user, option A): Exp 3 is reported as validation of the reconciliation
+component itself -- constructed pairs with ground truth: pair F1 0.952, 0% double-counted support (the original
+Exp 3) -- plus its activity on real C2 records (11.0 dependency groups per page on 200/200 pages; duplicate-support
+share 0.480 vs 0.516 without), stating plainly that on natural pages it changes no verdict and does not make
+sufficiency judgements more independent (10.0% vs 7.4%). No stress test is run.
