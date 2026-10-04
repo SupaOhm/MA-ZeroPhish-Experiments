@@ -1633,3 +1633,8 @@ of phishing. C2 vs H1: +0.007 F1, not significant (as dev-3's run spread suggest
 Exp 3 with C2 (descriptive, from the Exp 6 C2 ledgers; results_gpt4omini/c2_exps_exp3.json): with reconciliation,
 11.0 dependency groups per page on 200/200 pages and a duplicate-support share of 0.480 in the Judge's support lists;
 without it 0 groups and 0.516. Verdicts unchanged (Exp 6).
+Exp 4 reporting decision (2026-10-04, user, option A): the full-debate (C2) row of Exp 4 on dev-2 is reported as
+the mean of its two independent runs, both sharing rep1's Phase 2: round FD (teammate, F1 0.949, P 0.959, R 0.940,
+FPR 0.040) and the local re-run (F1 0.936, P 0.922, R 0.950, FPR 0.080) -> F1 0.943 (mean of 2 runs), with both
+runs named in the caption. Not chosen: the higher run alone. The teammate's ledgers (runs/v4_exp_rep1_fdfix) are to
+be added to the data package so 0.949 can be reproduced from our data.
