@@ -1509,3 +1509,19 @@ eligible (F1 -0.020; its retrained threshold trades recall for precision). Conte
 gain over the targeted system now has the same sign on three separate page sets -- dev-2 (+0.015, round FD),
 test2 (+0.020, supplementary) and dev-3 (+0.016) -- none significant alone.
 Next (needs the user's go): freeze C2 = pipeline v4abdfFD + the frozen H1 decision step (unchanged), then test3.
+
+## Exp 2-6 with C2 (declared 2026-10-04, before running; user request; balance $12.97)
+The component experiments re-described for C2 (fixed full debate), on the same 200 dev-2 pages, one run,
+response cache runs/llm_cache_rep1 (the cache of round FD's C2 run, so Phase 2 replays). Same runner scripts,
+with every arm's collaboration set to full_debate (new options --collaboration / --only-arms; nothing else
+changes). Decision: the frozen H1 decision step, as for C2. New arms: Exp 2 adaptive + literal (complete
+evidence); Exp 5 the five withholding conditions + 8 conflict cases per (label, group) as before; Exp 6
+no reconciliation + no independent adjudication. Not re-run: C2 itself (round FD, runs/v4_exp_rep1_fdfix),
+Exp 4 (its four arms exist on rep1: full debate = C2, targeted = H1, fixed round, no collaboration), Exp 6
+"no targeted collaboration" (under C2 = targeted collaboration = H1) and ablations 1 / 3 (identical
+configurations). Exp 3 from the C2 vs no-reconciliation ledgers. Descriptive, reported whatever it shows.
+Deviation (before any of these runs except a 4-page check): round FD's C2 ledger (runs/v4_exp_rep1_fdfix) and its
+debate responses are on the teammate's machine, not here, so C2 itself is re-run locally on the 200 dev-2 pages
+(Exp 6 "mazerophish" arm with --collaboration full_debate, cache runs/llm_cache_rep1; Phase 2 replays, debate and
+Judge are new calls) and serves as the reference for every C2 arm of Exp 2-6 (same run, same cache). Round FD's
+numbers stay as reported; the local C2 run is a second, independent run of the same configuration.
