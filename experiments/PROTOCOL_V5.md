@@ -1638,3 +1638,7 @@ the mean of its two independent runs, both sharing rep1's Phase 2: round FD (tea
 FPR 0.040) and the local re-run (F1 0.936, P 0.922, R 0.950, FPR 0.080) -> F1 0.943 (mean of 2 runs), with both
 runs named in the caption. Not chosen: the higher run alone. The teammate's ledgers (runs/v4_exp_rep1_fdfix) are to
 be added to the data package so 0.949 can be reproduced from our data.
+Exp 3 with C2 -- support-independence check (declared 2026-10-04, before computing; descriptive; $0): from the Exp 6
+C2 ledgers (with vs without reconciliation): among conclusions the Judge marks sufficient (suf_phishing /
+suf_benign), the share that rests on fewer than two distinct artifacts (artifact = field prefix of the support
+locator), and the mean number of support units vs distinct artifacts behind a sufficient conclusion.
