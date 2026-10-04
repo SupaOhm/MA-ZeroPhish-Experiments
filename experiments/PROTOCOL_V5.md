@@ -1456,7 +1456,8 @@ Round CL -- RESULT (results_gpt4omini/cost_per_arm/result.json; $0). Per page, 2
 | Exp 4 full debate, old defective code (3 runs) | 8.56-8.60 | 23.1-23.3k / 1.95-1.97k | 0.0046-0.0047 |
 | Exp 4 full debate, fixed (round FD, 1 run) | 8.60 | 28.7k / 2.1k | 0.0056 |
 | Exp 6 ablations 2 / 5 (3 runs) | 7.79-7.83 | within 1.2% of full | 0.0048-0.0049 |
-Reading (descriptive): adaptive selection cuts cost per page by 18% (0.0049 -> 0.0040) at the same H1 F1 (Exp 2);
+Reading (descriptive): adaptive selection cuts cost per page by 18% (0.0049 -> 0.0040) at the same H1 F1 (Exp 2;
+consistent with goya's PR #9: -1.59 calls / page, -20.4%, tokens -16.7% -- the same ledgers, computed independently);
 targeted collaboration nearly doubles the cost of no collaboration (0.0026 -> 0.0049) with no accuracy gain; the fixed
 full debate costs 14% more than targeted. These are the costs of a live run of each arm; actual spend was lower because
 arms replayed shared answers from the cache.
