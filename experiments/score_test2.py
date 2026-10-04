@@ -108,7 +108,7 @@ def main() -> None:
         # JL: a confident Judge is not overruled; a locked page scores 1.0 (the rule decides phishing).
         jp = e.get("judge_score_any")
         locked = jp is not None and jp >= hi
-        rows += [dict(base, arm=ref, score=1.0 if locked else qh,
+        rows += [dict(base, arm="H1JL_primary", score=1.0 if locked else qh,
                       verdict="phishing" if (locked or qh >= th) else "benign"),
                  dict(base, arm="H1_primary", score=qh, verdict="phishing" if qh >= th else "benign"),
                  dict(base, arm="P1_secondary", score=q1, verdict="phishing" if q1 >= p1[1] else "benign"),
@@ -169,7 +169,7 @@ def main() -> None:
     if args.test3:      # test3 plan amendment: no matched-precision endpoint
         (OUT / "reading.json").write_text(json.dumps({"system": top, "S": S, "reading": reading, "holm": adj,
                                                       "pages": len(dec), "routed_b2": routed_b2,
-                                                      "jl_threshold": hi}, indent=1), encoding="utf-8")
+                                                      "jl_threshold": jl_threshold()}, indent=1), encoding="utf-8")
         return
     # Supplementary (appendix), declared before test2: H1's best recall at a threshold whose precision is
     # at least each baseline's precision (from H1's own scores on the same pages).

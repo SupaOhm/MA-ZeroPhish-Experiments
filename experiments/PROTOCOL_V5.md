@@ -1609,3 +1609,24 @@ steps (a step waits until the balance covers it): (1) single agent, CoT, PhishDe
 the test2 settings: html 12,000 / text 4,000 chars, r_max 3, tau 0.8); (2) PhishDebate + screenshot; (3) C2
 (v4abdfFD, dev_eval --sealed-test3-final, cache runs/llm_cache_test3); (4) H1 (v4abdf, same cache, Phase 2 replays);
 (5) score_test2.py --test3. Running the systems at different times does not change any input (captures frozen).
+
+## test3 -- RESULT: WIN (2026-10-04 17:41; run once per system, 1,000 pages, 0 failures; results_gpt4omini/final/test3/)
+Runs: single agent, CoT, PhishDebate, PhishDebate + screenshot (1,000 each, 0 failures; CoT 6 "insufficient"
+answers forced as the evaluator does for every arm); C2 (v4abdfFD) 1,000, 0 failures; H1 (v4abdf, same cache) 1,000,
+0 failures; 233 pages routed to B2. Scoring fixes before the first successful score (no effect on any number):
+evaluate.py did not accept split "test3"; score_test2.py named the JL row after the reference (duplicate rows) and
+wrote a wrong jl_threshold field (the JL row itself used 0.9).
+| system | F1 | accuracy | P | R | FPR | PR-AUC | baseline minus C2 [95% CI], McNemar p (Holm) |
+|---|---|---|---|---|---|---|---|
+| C2 (ours, primary) | 0.891 | 0.894 | 0.914 | 0.870 | 0.082 | 0.955 | -- |
+| C2 + JL (secondary) | 0.892 | 0.894 | 0.910 | 0.874 | 0.086 | 0.936 | +0.000 [-0.004, +0.005] |
+| H1 (secondary) | 0.884 | 0.886 | 0.897 | 0.872 | 0.100 | 0.958 | -0.007 [-0.021, +0.008], p = 0.302 |
+| PhishDebate + screenshot | 0.859 | 0.861 | 0.871 | 0.848 | 0.126 | 0.931 | -0.032 [-0.056, -0.009], 0.004 (0.004) |
+| PhishDebate | 0.847 | 0.851 | 0.868 | 0.828 | 0.126 | 0.921 | -0.044 [-0.069, -0.019], <0.001 (0.001) |
+| CoT | 0.815 | 0.837 | 0.942 | 0.718 | 0.044 | -- | -0.076 [-0.107, -0.048], <0.001 (<0.001) |
+| single agent | 0.814 | 0.836 | 0.942 | 0.716 | 0.044 | -- | -0.078 [-0.105, -0.051], <0.001 (<0.001) |
+READING (pre-declared rule): WIN -- C2 has the highest F1 and the difference to every baseline, including the best
+(PhishDebate + screenshot), is significant after Holm. PR-AUC (secondary; CI computed after the run, page bootstrap
+2000, seed "20261004:t3prauc"): C2 vs PhishDebate +0.034 [+0.015, +0.060], vs PhishDebate + screenshot +0.025
+[+0.010, +0.052]. Precision and FPR: CoT and single agent are more conservative (P 0.942, FPR 0.044) but miss 28%
+of phishing. C2 vs H1: +0.007 F1, not significant (as dev-3's run spread suggested).
