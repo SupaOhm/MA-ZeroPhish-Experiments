@@ -1495,3 +1495,17 @@ certificate 145, crtsh_unreachable 4 (0.4%) -- comparable to test2 (177 / 22 / 1
 rebuilt (build_captures --split test3). Render warning as on other splits: dom / page_content / screenshot
 available for 96% of phishing vs 85% of benign pages. test3 is ready; it is NOT run until round D3 has chosen and
 frozen the system and the user gives the go.
+
+## Round D3 -- RESULT: C2 (fixed full debate) CHOSEN by the declared rule (2026-10-04 08:37; results_gpt4omini/d3/result.json)
+Runs: C0 (v4abdf) and C2 (v4abdfFD) on all 500 dev-3 pages, run r1, 0 failures; C2-R from the retrained P1-R /
+B2-R (training runs 1,739, 0 failures). C3 (runs r2/r3) still running; descriptive only, added later.
+| candidate (dev-3, 500 pages) | F1 | accuracy | P | R | FPR | PR-AUC | vs C0 [95% CI], McNemar |
+|---|---|---|---|---|---|---|---|
+| C0 H1 (targeted) | 0.886 | 0.888 | 0.904 | 0.868 | 0.092 | 0.965 | -- |
+| C2 fixed full debate | 0.902 | 0.904 | 0.924 | 0.880 | 0.072 | 0.972 | +0.016 [-0.003, +0.036], 15 vs 7, p = 0.134 |
+| C2-R full debate, retrained | 0.865 | 0.876 | 0.948 | 0.796 | 0.044 | 0.967 | -0.020 [-0.047, +0.005], 16 vs 22, p = 0.418 |
+Rule: eligible = F1 >= C0 + 0.01 and P >= C0 - 0.01 -> only C2 (+0.016 F1, +0.020 P) -> CHOSEN: C2. C2-R is not
+eligible (F1 -0.020; its retrained threshold trades recall for precision). Context (not part of the rule): C2's
+gain over the targeted system now has the same sign on three separate page sets -- dev-2 (+0.015, round FD),
+test2 (+0.020, supplementary) and dev-3 (+0.016) -- none significant alone.
+Next (needs the user's go): freeze C2 = pipeline v4abdfFD + the frozen H1 decision step (unchanged), then test3.
