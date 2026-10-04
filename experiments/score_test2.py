@@ -81,7 +81,8 @@ def main() -> None:
         base_dirs = [("runs/test2", ""), ("runs/test2/vision", "vision__")]
     else:
         split, ours_pat, out = "test3", "runs/test3/ma/devv4_phreshphish_test3__*__ma_v4abdf.jsonl", "test3"
-        base_dirs = [("runs/test3", ""), ("runs/test3/vision", "vision__")]
+        # test3 plan amendment 3: the PhishDebate paper's baselines only (text, published prompts).
+        base_dirs = [("runs/test3", "")]
     OUT = ROOT / "experiments" / "results_gpt4omini" / "final" / out
     OUT.mkdir(parents=True, exist_ok=True)
     p1, b2 = frozen_steps()

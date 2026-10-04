@@ -1533,3 +1533,13 @@ change the declared choice): the selected C2 run was the best of C2's three runs
 over the single H1 run is about +0.005, and H1's own run-to-run spread on dev-3 is not measured. The choice of C2
 stands by the declared rule; its expected gain on test3 is small and uncertain, so H1 is reported next to it on
 test3 as declared.
+
+## test3 plan amendment 3: the PhishDebate paper's baselines (declared 2026-10-04, before test3 is run; user decision)
+test3 compares our system with exactly the baselines of the PhishDebate paper (IEEE BigData 2025): single agent,
+CoT and PhishDebate, text input, with the paper's published prompts. The three "+ screenshot" variants were our
+own addition (PROTOCOL_V4 round 2d, to give the baselines the screenshot our system receives); they are not run
+on test3. Disclosure for the paper (fixed now): our system additionally receives an offline screenshot; on test2
+the screenshot variants did not consistently improve the baselines (single agent 0.813 -> 0.777, CoT 0.828 ->
+0.831, PhishDebate 0.823 -> 0.838), and the full test2 table with all six baselines goes to the appendix.
+Holm correction is over the 3 baselines; endpoints and the reading rule are otherwise unchanged.
+score_test2.py --test3 reads only the text baselines.
