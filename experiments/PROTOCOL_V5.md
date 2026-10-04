@@ -1561,3 +1561,7 @@ C2 (local run) F1 0.936, P 0.922, R 0.950, FPR 0.080, 8.60 calls / page. No reco
 no independent adjudication: F1 0.936 (+0.000). Checked, not a scoring artifact: the ledgers differ -- the Judge's
 p_phishing changes on 66 (no reconciliation) and 97 (no independent adjudication) of 200 pages and H1's score on
 32 / 49 -- but no final verdict changes. Under full debate, these two components do not change detection outcomes.
+Exp 6 with C2 -- Judge-level analysis (declared 2026-10-04, before computing; descriptive; $0): the ablated
+components act on the Judge, and the decision step absorbed every change in verdict. On the same ledgers, the
+Judge's own p_phishing per arm: ranking AUC, Brier score, and F1 / FPR at p >= 0.5; paired bootstrap of the AUC
+difference vs C2 (2000 resamples). Reported whatever it shows.
