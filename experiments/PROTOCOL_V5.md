@@ -1406,3 +1406,38 @@ H1+JL F1 0.874 / FPR 0.160 (McNemar H1 vs H1+JL 3 vs 0, p = 0.25). H1+JL is stil
 (+4 pages) and test2 (-3 pages) JL's effect is within noise; its benefit is not established. The frozen
 choice (H1+JL primary, H1 secondary on test3) stands unless the team decides otherwise BEFORE test3; any such
 change will be recorded with this post hoc result as its stated reason.
+
+## New analyses on stored runs for Exp 2, 3 and 5 (teammate goya, 2026-10-04; each declared before computing; $0; documentation only)
+No system, threshold or earlier number changed; no model call; stored ledgers only. Scripts and result files are on
+goya's machine and can be added if the team wants them.
+
+### Exp 2: the cost saving with its confidence interval
+Same Exp 2 ledgers (runs/v4_exp/exp2, one run, 200 dev-2 pages), H1 F1 quoted from final/h1_all.
+| condition / arm | calls / page | input tokens / page | $ / page (mini list price) | specialists chosen | H1 F1 |
+|---|---|---|---|---|---|
+| complete / adaptive (mazerophish) | 6.21 | 20,917 | 0.0040 | 1.95 | 0.933 |
+| complete / fixed_all | 7.81 | 25,126 | 0.0049 | 3.81 | 0.933 |
+| matched budget 2 / adaptive | 5.73 | 18,508 | 0.0035 | 1.32 | 0.933 |
+| matched budget 2 / fixed_all | 6.33 | 20,301 | 0.0039 | 3.81 | 0.931 |
+Paired adaptive minus fixed_all (page bootstrap 95% CI, 2000 resamples): complete -1.59 calls [-1.77, -1.42]
+(-20.4%), input tokens -4,208 [-4,919, -3,525] (-16.7%); matched budget -0.60 calls [-0.70, -0.51] (-9.6%). The CIs
+exclude 0, at the same H1 F1. (The counts equal the earlier 6.2 vs 7.8: same runs, the decision step does not change
+which calls are made.) Latency was also checked and is NOT reliably measurable: many Exp 2 pages were answered from a
+shared cache (e.g. 94% of complete / fixed_all pages under 2 s), so no latency number is claimed.
+
+### Exp 3: duplicate support and reconciliation on the sealed test2 pages
+Read only, the frozen pipeline's stored test2 run (runs/test2/ma; nothing re-run): of 1,394 support units in the
+Judge's support lists, 53.3% are extra units from an artifact already represented; reconciliation formed 8.97
+dependency groups per page, on 199 of 200 pages. Same as the three dev-2 runs (53.4-53.9%; about 8.5 groups per page;
+see "Exp 3 on real records" above). Duplicate same-artifact support is common on zero-day pages too.
+
+### Exp 5: where the conflicting-evidence errors are (65 conflict cases, frozen H1 as h1_eval.py)
+| swapped group | pages | correct | flipped to the donor's label by the swap |
+|---|---|---|---|
+| content (page text / screenshot) | 22 | 20 | 2 |
+| metadata (CT etc.) | 21 | 16 | 5 |
+| structure (HTML / DOM) | 22 | 16 | 6 |
+| benign pages / phishing pages | 35 / 30 | 26 / 26 | 9 / 4 |
+All 13 errors are pages H1 got right on their clean run that flipped to the donor's label after one evidence group
+was swapped. A swapped page structure is the most damaging, swapped content the least; benign pages flip more often.
+Descriptive; one run; dev-2.
