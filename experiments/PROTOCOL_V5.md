@@ -1543,3 +1543,9 @@ the screenshot variants did not consistently improve the baselines (single agent
 0.831, PhishDebate 0.823 -> 0.838), and the full test2 table with all six baselines goes to the appendix.
 Holm correction is over the 3 baselines; endpoints and the reading rule are otherwise unchanged.
 score_test2.py --test3 reads only the text baselines.
+
+## test3 plan amendment 4: + PhishDebate with screenshot (declared 2026-10-04, before test3 is run; user decision)
+To answer the fairness question (our system also uses an offline screenshot), test3 adds one baseline row:
+PhishDebate + screenshot -- the strongest baseline, with the same screenshot our system receives (PROTOCOL_V4 2d
+setting). test3 baselines: single agent, CoT, PhishDebate (text, the PhishDebate paper's setup) and PhishDebate +
+screenshot. Holm correction over these 4; endpoints and the reading rule otherwise unchanged.

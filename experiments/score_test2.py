@@ -81,8 +81,9 @@ def main() -> None:
         base_dirs = [("runs/test2", ""), ("runs/test2/vision", "vision__")]
     else:
         split, ours_pat, out = "test3", "runs/test3/ma/devv4_phreshphish_test3__*__ma_v4abdf.jsonl", "test3"
-        # test3 plan amendment 3: the PhishDebate paper's baselines only (text, published prompts).
-        base_dirs = [("runs/test3", "")]
+        # test3 plan amendments 3 + 4: the PhishDebate paper's baselines (text, published prompts) plus
+        # PhishDebate + screenshot (the strongest baseline given the same screenshot our system receives).
+        base_dirs = [("runs/test3", ""), ("runs/test3/vision", "vision__")]
     OUT = ROOT / "experiments" / "results_gpt4omini" / "final" / out
     OUT.mkdir(parents=True, exist_ok=True)
     p1, b2 = frozen_steps()
@@ -113,7 +114,7 @@ def main() -> None:
                  dict(base, arm="B2_secondary", score=q2, verdict="phishing" if q2 >= b2[1] else "benign")]
     n_base = {}
     for d, pre in base_dirs:
-        for arm in (BASE_ARMS[:3] if args.test3 else BASE_ARMS):
+        for arm in ((("phishdebate",) if pre == "vision__" else BASE_ARMS[:3]) if args.test3 else BASE_ARMS):
             for p in glob.glob(str(ROOT / d / f"{arm}__{MODEL_TAG}__phreshphish_{split}.jsonl")):
                 for line in open(p, encoding="utf-8"):
                     e = json.loads(line)
