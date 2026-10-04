@@ -1,5 +1,8 @@
 # Proposed paper changes (draft for the team, updated 2026-10-01)
 
+> **Superseded (2026-10-04):** the final system is C2 and the evaluation is test3. For the paper use
+> [PAPER_RESULTS.md](PAPER_RESULTS.md). This file is kept as the record of the H1 / test2 stage.
+
 **LATEST (overrides item 1 below):** the final decision step has two learned versions selected per object
 by evidence completeness (label-free): P1 (trained on complete captures) and B2 (trained also on captures
 with the page source, browser or certificate data withheld). Suggested sentence: *"The final decision

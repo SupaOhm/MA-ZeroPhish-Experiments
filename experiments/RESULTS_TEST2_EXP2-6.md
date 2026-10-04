@@ -1,5 +1,8 @@
 # MA-ZeroPhish results: test2 and Experiments 2-6
 
+> **Superseded (2026-10-04):** the final system is C2 and the evaluation is test3. For the paper use
+> [PAPER_RESULTS.md](PAPER_RESULTS.md). This file is kept as the record of the H1 / test2 stage.
+
 As of 2026-10-03. System: H1 (v4abdf pipeline + learned decision step H1, frozen before test2). Every
 system uses GPT-4o-mini. Full records: [PROTOCOL_V5.md](PROTOCOL_V5.md); proposed paper text:
 [PAPER_CHANGES.md](PAPER_CHANGES.md).
