@@ -1602,3 +1602,10 @@ H1 decision step; withheld fields also withheld from the code features and the r
 Reading: same pattern as with H1 -- a failed browser run is fully recovered; losing network metadata is the one
 significant loss (routing caveat as before: withholding sends every page to B2). Under full debate, the literal
 selection rule is the cheapest (5.8 calls) at equal or higher F1; adaptive selection saves calls at -0.009 F1.
+
+## test3 GO (2026-10-04, user decision; balance $6.61)
+GO_TEST3.json written: system C2 (FROZEN_C2.json). Each system is run once on the 1,000 test3 pages, in balance-gated
+steps (a step waits until the balance covers it): (1) single agent, CoT, PhishDebate (text; run_baselines.py with
+the test2 settings: html 12,000 / text 4,000 chars, r_max 3, tau 0.8); (2) PhishDebate + screenshot; (3) C2
+(v4abdfFD, dev_eval --sealed-test3-final, cache runs/llm_cache_test3); (4) H1 (v4abdf, same cache, Phase 2 replays);
+(5) score_test2.py --test3. Running the systems at different times does not change any input (captures frozen).

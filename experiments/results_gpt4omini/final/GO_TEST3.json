@@ -1,0 +1,18 @@
+{
+ "decision": "go",
+ "system": "C2",
+ "approved_by": "Tinpat",
+ "date": "2026-10-04",
+ "frozen": "experiments/results_gpt4omini/final/FROZEN_C2.json",
+ "runs": {
+  "C2_primary": "v4abdfFD, cache runs/llm_cache_test3",
+  "H1_secondary": "v4abdf, same cache, after C2",
+  "baselines": [
+   "single_agent",
+   "cot",
+   "phishdebate",
+   "vision__phishdebate"
+  ]
+ },
+ "note": "each step starts only when the OpenRouter balance covers it; test3 is run once per system"
+}
