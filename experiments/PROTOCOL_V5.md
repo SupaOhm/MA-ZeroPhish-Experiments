@@ -1525,3 +1525,11 @@ debate responses are on the teammate's machine, not here, so C2 itself is re-run
 (Exp 6 "mazerophish" arm with --collaboration full_debate, cache runs/llm_cache_rep1; Phase 2 replays, debate and
 Judge are new calls) and serves as the reference for every C2 arm of Exp 2-6 (same run, same cache). Round FD's
 numbers stay as reported; the local C2 run is a second, independent run of the same configuration.
+Round D3 -- C3 and run-to-run spread (descriptive; 2026-10-04; runs r2 / r3 500 pages each, 0 failures):
+C2's three independent runs on dev-3 score F1 0.902 (r1, the selected run) / 0.888 (r2) / 0.883 (r3), mean 0.891,
+spread 0.019; C3 (mean of the three calibrated scores) 0.900 (P 0.921, R 0.880, FPR 0.076, PR-AUC 0.970),
++0.014 vs C0 [-0.002, +0.031], McNemar 12 vs 5, p = 0.143. C0 has one run (0.886). Reading (descriptive, does not
+change the declared choice): the selected C2 run was the best of C2's three runs; averaged over runs C2's lead
+over the single H1 run is about +0.005, and H1's own run-to-run spread on dev-3 is not measured. The choice of C2
+stands by the declared rule; its expected gain on test3 is small and uncertain, so H1 is reported next to it on
+test3 as declared.
