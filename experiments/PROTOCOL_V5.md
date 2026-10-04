@@ -1883,3 +1883,13 @@ no_dom, no_network_metadata, cum3), every citation eligible in every condition.
 experiments/data_eval/data/dist/ma-zerophish-data-fab2359ef66ab843.zip (1,134 MB, 22,715 files; adds dev3, test3,
 trop_fit to 545370aaf6ad14c6); own key found in 0 files (third-party keys inside captured pages: 312 files, part of
 the evidence). Verify after unzipping: python -m experiments.data_eval.package verify --dir <folder>.
+
+## Round FD ledger received and verified (2026-10-04; $0)
+The teammate's round FD files (fdfix_for_tinpat.zip: runs/v4_exp_rep1_fdfix ledger + 956 cache files) are now here.
+759 of the cache files share a request key with entries of the local C2 re-run in runs/llm_cache_rep1 but hold
+different answers (same requests, independent runs), so they were NOT merged into that cache: they sit in
+runs/llm_cache_rep1_fdfix (a copy of llm_cache_rep1 with the teammate's 956 files on top); runs/llm_cache_rep1 is
+unchanged. Checks: the ledger scores H1 F1 0.949 (P 0.959, R 0.940), as reported; an offline replay (Exp 6 runner,
+mazerophish arm, --collaboration full_debate, cache runs/llm_cache_rep1_fdfix, a dummy API key so any cache miss
+would fail) reproduces all 200 decisions (0 differences, 0 failures). Exp 4's full-debate row (mean 0.943 of
+0.949 and 0.936) is now reproducible from local data.

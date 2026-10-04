@@ -76,8 +76,9 @@ rebuild + test3 scoring `experiments/score_test2.py --test3`.
 - **Data package:** DATA_VERSION **`fab2359ef66ab843`** (`ma-zerophish-data-fab2359ef66ab843.zip`, 1.1 GB, from
   Tinpat; includes dev-3, test3, trop_fit). After unzipping run `python -m experiments.data_eval.package verify --dir <folder>`.
   It contains real phishing pages: never open captured HTML in a browser.
-- Missing from this machine: round FD's ledger `runs/v4_exp_rep1_fdfix/` (on a teammate's machine; add it to
-  the runs package).
+- Round FD's ledger `runs/v4_exp_rep1_fdfix/` is here (from the teammate, verified by offline replay); its cache
+  is the separate folder `runs/llm_cache_rep1_fdfix/` (do not merge it into `llm_cache_rep1`: same request keys,
+  different answers from the local C2 re-run).
 
 ## 5. Results summary (final system C2 unless stated)
 
