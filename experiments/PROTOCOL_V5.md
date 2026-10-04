@@ -1576,3 +1576,10 @@ conflicting-evidence cases (same selection, 8 per (label, group); the stress tes
 for), one run, collaboration full_debate, cache runs/llm_cache_rep1. Reported: final F1 / FPR (H1 decision step;
 conflict cases are scored as Exp 5 scores them) and Judge-level AUC / Brier / FPR@0.5. ~$0.7. Script:
 experiments/exp6_ablations/run_conflict_ablations.py.
+Option A -- RESULT (48 conflicting-evidence cases, 24 / 24; 0 failures; results_gpt4omini/c2_exps_exp6_conflicts.json):
+final F1 / FPR and Judge AUC / Brier / FPR@0.5 -- C2 0.857 / 0.167, 0.768 / 0.209 / 0.375; no reconciliation
+0.857 / 0.167, 0.785 / 0.188 / 0.375 (Judge AUC +0.016 [-0.041, +0.080], 0 verdicts changed); no independent
+adjudication 0.833 / 0.167, 0.714 / 0.239 / 0.583 (Judge AUC -0.055 [-0.168, +0.049], 1 verdict changed).
+Reading: the same direction as on the 200 pages for Judge independence (worse ranking, more Judge false
+positives), not significant on 48 cases; reconciliation shows no effect here either. (48 cases, not the 65 of the
+earlier Exp 5 report: this selection takes 8 per (label, group) from the 200-page base set in one pass.)
