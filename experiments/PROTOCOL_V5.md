@@ -1571,3 +1571,8 @@ no independent adjudication 0.834 / 0.171 / 0.794 / 0.290 (AUC -0.047 [-0.088, -
 Reading: letting the Judge see the specialists' verdicts makes its own judgement clearly worse (ranking, calibration,
 false positives nearly doubled at 0.5); the learned decision step absorbs this, so final verdicts are unchanged.
 Reconciliation: no measurable Judge-level effect. Descriptive, dev-2, one run.
+Exp 6 with C2 -- option A (declared 2026-10-04, before running; user request): C2 and the two ablations on Exp 5's
+conflicting-evidence cases (same selection, 8 per (label, group); the stress test these mechanisms are designed
+for), one run, collaboration full_debate, cache runs/llm_cache_rep1. Reported: final F1 / FPR (H1 decision step;
+conflict cases are scored as Exp 5 scores them) and Judge-level AUC / Brier / FPR@0.5. ~$0.7. Script:
+experiments/exp6_ablations/run_conflict_ablations.py.
