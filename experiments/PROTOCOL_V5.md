@@ -1583,3 +1583,22 @@ adjudication 0.833 / 0.167, 0.714 / 0.239 / 0.583 (Judge AUC -0.055 [-0.168, +0.
 Reading: the same direction as on the 200 pages for Judge independence (worse ranking, more Judge false
 positives), not significant on 48 cases; reconciliation shows no effect here either. (48 cases, not the 65 of the
 earlier Exp 5 report: this selection takes 8 per (label, group) from the 200-page base set in one pass.)
+Exp 5 and Exp 2 with C2 -- RESULTS (dev-2, 200 pages, one run, 0 failures; results_gpt4omini/c2_exps_exp2_exp5.json;
+H1 decision step; withheld fields also withheld from the code features and the routing check, as in Exp 5):
+| Exp 5 condition | F1 | P | R | FPR | vs base [95% CI], McNemar p |
+|---|---|---|---|---|---|
+| base (C2) | 0.936 | 0.922 | 0.950 | 0.080 | -- |
+| transient browser failure, recovered | 0.936 | 0.922 | 0.950 | 0.080 | +0.000, 1.000 |
+| no served HTML | 0.932 | 0.906 | 0.960 | 0.100 | -0.004 [-0.041, +0.033], 1.000 |
+| no rendered DOM | 0.929 | 0.939 | 0.920 | 0.060 | -0.007 [-0.047, +0.032], 1.000 |
+| no network metadata | 0.900 | 0.862 | 0.940 | 0.150 | -0.036 [-0.067, -0.009], 0.021 |
+| HTML only, no browser evidence | 0.892 | 0.841 | 0.950 | 0.180 | -0.044 [-0.086, -0.003], 0.052 |
+| conflicting evidence (48 cases) | 0.857 | -- | -- | 0.167 | -- |
+| Exp 2 selection policy | F1 | P | R | FPR | calls / page |
+|---|---|---|---|---|---|
+| all specialists (= C2) | 0.936 | 0.922 | 0.950 | 0.080 | 8.60 |
+| adaptive (MA-ZeroPhish) | 0.927 | 0.905 | 0.950 | 0.100 | 6.76 |
+| literal (equation 10) | 0.941 | 0.923 | 0.960 | 0.080 | 5.82 |
+Reading: same pattern as with H1 -- a failed browser run is fully recovered; losing network metadata is the one
+significant loss (routing caveat as before: withholding sends every page to B2). Under full debate, the literal
+selection rule is the cheapest (5.8 calls) at equal or higher F1; adaptive selection saves calls at -0.009 F1.
