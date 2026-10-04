@@ -1556,3 +1556,8 @@ routing and thresholds unchanged). Frozen in results_gpt4omini/final/FROZEN_C2.j
 SHA-256). test3 primary = C2; secondary rows = H1 (v4abdf, run after C2 with the same cache so Phase 2 replays)
 and C2+JL (JL threshold 0.9 on C2's Judge score); baselines per amendments 3 + 4. The paper's Phase 3 becomes
 full debate; targeted collaboration is reported as the Exp 4 alternative.
+Exp 6 with C2 -- RESULT (dev-2, 200 pages, one run, 0 failures; results_gpt4omini/c2_exps_exp6.json):
+C2 (local run) F1 0.936, P 0.922, R 0.950, FPR 0.080, 8.60 calls / page. No reconciliation: F1 0.936 (+0.000);
+no independent adjudication: F1 0.936 (+0.000). Checked, not a scoring artifact: the ledgers differ -- the Judge's
+p_phishing changes on 66 (no reconciliation) and 97 (no independent adjudication) of 200 pages and H1's score on
+32 / 49 -- but no final verdict changes. Under full debate, these two components do not change detection outcomes.
