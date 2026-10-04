@@ -115,11 +115,12 @@ def main() -> None:
     if args.sealed_test3_final:
         # PROTOCOL_V5 test3 plan: the same frozen H1, run once on test3 after the team's GO.
         final = ROOT / "experiments" / "results_gpt4omini" / "final"
-        frozen, go = final / "FROZEN_H1.json", final / "GO_TEST3.json"
+        frozen, go = final / "FROZEN_C2.json", final / "GO_TEST3.json"
         if not (frozen.exists() and go.exists()):
-            raise SystemExit("REFUSED: test3 needs FROZEN_H1.json and GO_TEST3.json (PROTOCOL_V5)")
+            raise SystemExit("REFUSED: test3 needs FROZEN_C2.json and GO_TEST3.json (PROTOCOL_V5)")
         g = json.loads(go.read_text(encoding="utf-8"))
-        if g.get("decision") != "go" or g.get("system") not in ("H1", "H1+JL") or args.variants != ["v4abdf"]:
+        # C2 (v4abdfFD) is the system; v4abdf only for H1's secondary row, run after C2 with the same cache.
+        if g.get("decision") != "go" or g.get("system") != "C2" or args.variants not in (["v4abdfFD"], ["v4abdf"]):
             raise SystemExit(f"REFUSED: GO {g.get('decision')!r} for {g.get('system')!r}; the test3 pipeline "
                              f"variant must be v4abdf, got {args.variants}")
         allowed = ("test3",)

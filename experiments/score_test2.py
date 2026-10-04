@@ -80,7 +80,8 @@ def main() -> None:
         split, ours_pat, out = "test2", "runs/test2/ma/devv4_phreshphish_test2__*__ma_v4abdf.jsonl", "test2"
         base_dirs = [("runs/test2", ""), ("runs/test2/vision", "vision__")]
     else:
-        split, ours_pat, out = "test3", "runs/test3/ma/devv4_phreshphish_test3__*__ma_v4abdf.jsonl", "test3"
+        # C2 frozen (FROZEN_C2.json): our system = the full-debate pipeline; H1 (v4abdf) is a secondary row.
+        split, ours_pat, out = "test3", "runs/test3/ma/devv4_phreshphish_test3__*__ma_v4abdfFD.jsonl", "test3"
         # test3 plan amendments 3 + 4: the PhishDebate paper's baselines (text, published prompts) plus
         # PhishDebate + screenshot (the strongest baseline given the same screenshot our system receives).
         base_dirs = [("runs/test3", ""), ("runs/test3/vision", "vision__")]
@@ -88,7 +89,7 @@ def main() -> None:
     OUT.mkdir(parents=True, exist_ok=True)
     p1, b2 = frozen_steps()
     hi = jl_threshold()
-    ref = "H1JL_primary"
+    ref = "C2_primary" if args.test3 else "H1JL_primary"
     dec = H.decisions(ours_pat)
     if not dec:
         raise SystemExit(f"no ledgers for our system at {ours_pat}")
@@ -121,6 +122,21 @@ def main() -> None:
                     if e["case_id"] in dec and e.get("repeat", 0) == 0:
                         rows.append(dict(e, arm=pre + e["arm"]))
                         n_base[pre + arm] = n_base.get(pre + arm, 0) + 1
+    if args.test3:
+        # dec holds C2's ledgers: rename its rows; add H1 (v4abdf ledgers, same pages) as a secondary row.
+        names = {"H1_primary": "C2_primary", "H1JL_primary": "C2JL_secondary"}
+        rows = [dict(r, arm=names[r["arm"]]) if r["arm"] in names else r for r in rows
+                if r["arm"] not in ("P1_secondary", "B2_secondary")]
+        h1 = H.decisions("runs/test3/ma/devv4_phreshphish_test3__*__ma_v4abdf.jsonl")
+        for c, e in h1.items():
+            if c not in dec:
+                continue
+            q1, q2 = p1[0](H.feats(e, split)), b2[0](H.feats(e, split))
+            qh, th = (q2, b2[1]) if not all(H.available(c, split).values()) else (q1, p1[1])
+            rows.append({"kind": "decision", "case_id": c, "parent_object_id": None, "repeat": 0, "split": split,
+                         "model_id": "openrouter:openai/gpt-4o-mini-2024-07-18", "arm": "H1_secondary",
+                         "score": qh, "verdict": "phishing" if qh >= th else "benign"})
+        print(f"H1 secondary rows: {len(h1)}")
     print(f"pages {len(dec)} (routed to B2: {routed_b2}); baseline arms found: {n_base}")
     comb = OUT / "_rows.jsonl"
     comb.write_text("".join(json.dumps(r) + "\n" for r in rows), encoding="utf-8")
@@ -131,7 +147,8 @@ def main() -> None:
     comb.unlink()
     met = {r["arm"]: r for r in csv.DictReader(open(OUT / "metrics.csv")) if r["subset"] == "all"}
     cmp_ = {r["arm"]: r for r in csv.DictReader(open(OUT / "comparisons.csv"))}
-    ours = ("H1JL_primary", "H1_primary", "P1_secondary", "B2_secondary")
+    ours = ("H1JL_primary", "H1_primary", "P1_secondary", "B2_secondary", "C2_primary", "C2JL_secondary",
+            "H1_secondary")
     baselines = [a for a in met if a not in ours]
     top = ref if (args.test3 or args.dry_run) else "H1_primary"
     adj = holm({a: float(cmp_[a]["mcnemar_p_value"]) for a in baselines})

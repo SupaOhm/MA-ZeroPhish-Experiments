@@ -1549,3 +1549,10 @@ To answer the fairness question (our system also uses an offline screenshot), te
 PhishDebate + screenshot -- the strongest baseline, with the same screenshot our system receives (PROTOCOL_V4 2d
 setting). test3 baselines: single agent, CoT, PhishDebate (text, the PhishDebate paper's setup) and PhishDebate +
 screenshot. Holm correction over these 4; endpoints and the reading rule otherwise unchanged.
+
+## C2 FROZEN as the final system (2026-10-04, user decision, before test3)
+MA-ZeroPhish final = C2: the fixed full debate pipeline (v4abdfFD) scored by the frozen H1 decision step (P1 / B2,
+routing and thresholds unchanged). Frozen in results_gpt4omini/final/FROZEN_C2.json (with FROZEN_H1.json's
+SHA-256). test3 primary = C2; secondary rows = H1 (v4abdf, run after C2 with the same cache so Phase 2 replays)
+and C2+JL (JL threshold 0.9 on C2's Judge score); baselines per amendments 3 + 4. The paper's Phase 3 becomes
+full debate; targeted collaboration is reported as the Exp 4 alternative.
