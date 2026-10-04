@@ -1810,3 +1810,61 @@ see "Exp 3 on real records" above). Duplicate same-artifact support is common on
 All 13 errors are pages H1 got right on their clean run that flipped to the donor's label after one evidence group
 was swapped. A swapped page structure is the most damaging, swapped content the least; benign pages flip more often.
 Descriptive; one run; dev-2.
+
+## Merge note (2026-10-04): the next sections (PR #10: rounds SR and CL, teammate) were written in parallel on the
+H1 runs; they do not change any number above.
+
+## Round SR: abstaining when the evidence is inadequate (Exp 5's selective risk / coverage) (declared 2026-10-03, before computing on dev-2 or test2; $0)
+Why: Exp 5 promises substantive-verdict coverage and selective risk and asks whether the system "can abstain
+when evidence is inadequate". H1 forces a verdict on every page; the Judge's own rubric abstains on ~85%, too
+often to be useful. This round adds an abstention band to the frozen H1 score; nothing is refit.
+Rule (fixed on calib only): abstain when |q - t| < 0.2061, where q is H1's calibrated score of the routed step
+(P1 or B2) and t its threshold; 0.2061 gives 90% coverage on calib (calib risk 0.087 forced -> 0.056 selective;
+95% / 80% targets would give 0.1213 / 0.3285). The withheld fields are hidden from the features and from H1's
+routing exactly as in Exp 5 scoring.
+Data: Exp 5 ledgers on dev-2 (runs/v4_exp/exp5, 6 conditions x 200 + 65 conflict swaps) and, supplementary, on
+the zero-day test2 (runs/test2/exp5, 6 x 200; detection there was already scored -- this adds abstention only).
+Measures per condition: coverage, selective risk (error rate on answered pages), FPR and recall on answered pages,
+forced risk; also H1+JL with the band (JL-locked pages are answered).
+"Good" (fixed now, both must hold on dev-2 AND on test2): (i) selective risk is below forced risk in every condition;
+(ii) coverage under each evidence-withholding condition (no_html, no_dom, no_network_metadata, cum3) is lower than
+under base -- the system abstains more when evidence is missing. Reported whatever it shows.
+Code: experiments/selective_risk.py.
+Round SR -- RESULT (results_gpt4omini/selective_risk/result.json; $0). H1 with the calib-fixed band:
+| set : condition | coverage | selective risk | forced risk | FPR (answered) |
+|---|---|---|---|---|
+| dev-2 : base | 0.895 | 0.028 | 0.065 | 0.000 |
+| dev-2 : no_html / no_dom / no_network / cum3 | 0.855 / 0.875 / 0.870 / 0.845 | 0.064 / 0.046 / 0.069 / 0.059 | 0.085 / 0.090 / 0.110 / 0.105 | 0.098 / 0.045 / 0.099 / 0.075 |
+| dev-2 : conflict swaps (65) | 0.785 | 0.137 | 0.200 | 0.231 |
+| test2 : base | 0.875 | 0.069 | 0.115 | 0.071 |
+| test2 : no_html / no_dom / no_network / cum3 | 0.865 / 0.885 / 0.850 / 0.865 | 0.064 / 0.056 / 0.088 / 0.046 | 0.100 / 0.080 / 0.130 / 0.085 | 0.115 / 0.078 / 0.148 / 0.061 |
+(transient_browser_recoverable equals base on both sets.) Forced risk reproduces the known Exp 5 accuracy.
+READING by the declared rule: NOT "good". (i) holds everywhere: abstaining on the ~10-15% of pages nearest the
+threshold cuts the error rate by 25-57% in every condition, on dev-2 and on the zero-day test2. (ii) holds on
+dev-2 (all four withholding conditions abstain more than base) but not on test2: no_dom answers 0.885 vs base 0.875
+(the other three abstain more). So the band gives a usable selective-risk operating point, but the claim "the
+system abstains more when evidence is missing" is not supported on test2. Nothing in the frozen system changes.
+
+## Round CL: tokens and cost per page for Exp 2 / 4 / 6 (declared 2026-10-03, before computing; $0)
+Section IV asks for model calls, tokens, latency and cost per arm. From the stored ledgers (Exp 2 run 1; Exp 4 and
+Exp 6 runs 1, rep1, rep2; round FD's fixed full debate): calls, input and output tokens per page, and dollar cost per
+page computed from the tokens at GPT-4o-mini list price ($0.15 / M input, $0.60 / M output). The ledger field
+`monetary_cost` is the framework's internal budget unit, not dollars, so it is not used. Latency is NOT reported:
+arms of one run share a response cache and run case by case, so the first arm of each page pays the Phase 2 calls
+and later arms replay them (e.g. no collaboration shows a 3 s median against 25 s for targeted) -- the stored
+latencies measure run order, not the arms. Descriptive. Code: experiments/cost_per_arm.py.
+Round CL -- RESULT (results_gpt4omini/cost_per_arm/result.json; $0). Per page, 200 dev-2 pages, list-price dollars:
+| arm | calls | input / output tokens | $ / page |
+|---|---|---|---|
+| Exp 2 complete: fixed-all / adaptive (ours) / literal | 7.81 / 6.21 / 5.38 | 25.1k / 20.9k / 17.3k in | 0.0049 / 0.0040 / 0.0033 |
+| Exp 2 budget 2: fixed-all / adaptive / literal | 6.33 / 5.73 / 5.38 | 20.3k / 18.5k / 17.3k in | 0.0039 / 0.0035 / 0.0033 |
+| Exp 4 (3 runs): no collaboration | 4.81 | 12.6k / 1.1k | 0.0026 |
+| Exp 4 (3 runs): targeted (= fixed round) | 7.79-7.84 | 24.6-25.2k / 1.85-1.89k | 0.0048-0.0049 |
+| Exp 4 full debate, old defective code (3 runs) | 8.56-8.60 | 23.1-23.3k / 1.95-1.97k | 0.0046-0.0047 |
+| Exp 4 full debate, fixed (round FD, 1 run) | 8.60 | 28.7k / 2.1k | 0.0056 |
+| Exp 6 ablations 2 / 5 (3 runs) | 7.79-7.83 | within 1.2% of full | 0.0048-0.0049 |
+Reading (descriptive): adaptive selection cuts cost per page by 18% (0.0049 -> 0.0040) at the same H1 F1 (Exp 2;
+consistent with goya's PR #9: -1.59 calls / page, -20.4%, tokens -16.7% -- the same ledgers, computed independently);
+targeted collaboration nearly doubles the cost of no collaboration (0.0026 -> 0.0049) with no accuracy gain; the fixed
+full debate costs 14% more than targeted. These are the costs of a live run of each arm; actual spend was lower because
+arms replayed shared answers from the cache.

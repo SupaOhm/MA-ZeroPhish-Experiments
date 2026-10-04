@@ -1,0 +1,261 @@
+{
+ "exp2 run1: complete__fixed_all": {
+  "pages": 200,
+  "calls": 7.81,
+  "input_tokens": 25125.535,
+  "output_tokens": 1879.345,
+  "usd_per_page": 0.00489643725
+ },
+ "exp2 run1: complete__literal_eq10": {
+  "pages": 200,
+  "calls": 5.375,
+  "input_tokens": 17313.175,
+  "output_tokens": 1163.0,
+  "usd_per_page": 0.00329477625
+ },
+ "exp2 run1: complete__mazerophish": {
+  "pages": 200,
+  "calls": 6.215,
+  "input_tokens": 20917.225,
+  "output_tokens": 1409.325,
+  "usd_per_page": 0.00398317875
+ },
+ "exp2 run1: matched_agent_2__fixed_all": {
+  "pages": 200,
+  "calls": 6.335,
+  "input_tokens": 20300.705,
+  "output_tokens": 1353.165,
+  "usd_per_page": 0.0038570047500000003
+ },
+ "exp2 run1: matched_agent_2__literal_eq10": {
+  "pages": 200,
+  "calls": 5.375,
+  "input_tokens": 17313.175,
+  "output_tokens": 1163.0,
+  "usd_per_page": 0.00329477625
+ },
+ "exp2 run1: matched_agent_2__mazerophish": {
+  "pages": 200,
+  "calls": 5.73,
+  "input_tokens": 18507.975,
+  "output_tokens": 1203.305,
+  "usd_per_page": 0.0034981792499999996
+ },
+ "exp4 run1: fixed_round": {
+  "pages": 200,
+  "calls": 7.81,
+  "input_tokens": 25125.295,
+  "output_tokens": 1879.59,
+  "usd_per_page": 0.00489654825
+ },
+ "exp4 run1: full_debate": {
+  "pages": 200,
+  "calls": 8.56,
+  "input_tokens": 23143.285,
+  "output_tokens": 1954.16,
+  "usd_per_page": 0.0046439887499999995
+ },
+ "exp4 run1: mazerophish": {
+  "pages": 200,
+  "calls": 7.845,
+  "input_tokens": 25203.27,
+  "output_tokens": 1884.55,
+  "usd_per_page": 0.0049112205
+ },
+ "exp4 run1: no_collaboration": {
+  "pages": 200,
+  "calls": 4.81,
+  "input_tokens": 12604.125,
+  "output_tokens": 1117.29,
+  "usd_per_page": 0.00256099275
+ },
+ "exp4 rep1: fixed_round": {
+  "pages": 200,
+  "calls": 7.83,
+  "input_tokens": 24907.945,
+  "output_tokens": 1855.975,
+  "usd_per_page": 0.00484977675
+ },
+ "exp4 rep1: full_debate": {
+  "pages": 200,
+  "calls": 8.6,
+  "input_tokens": 23277.65,
+  "output_tokens": 1966.05,
+  "usd_per_page": 0.0046712775
+ },
+ "exp4 rep1: mazerophish": {
+  "pages": 200,
+  "calls": 7.83,
+  "input_tokens": 24907.945,
+  "output_tokens": 1855.975,
+  "usd_per_page": 0.00484977675
+ },
+ "exp4 rep1: no_collaboration": {
+  "pages": 200,
+  "calls": 4.81,
+  "input_tokens": 12615.71,
+  "output_tokens": 1118.32,
+  "usd_per_page": 0.0025633484999999998
+ },
+ "exp4 rep2: fixed_round": {
+  "pages": 200,
+  "calls": 7.785,
+  "input_tokens": 24635.61,
+  "output_tokens": 1849.325,
+  "usd_per_page": 0.0048049365
+ },
+ "exp4 rep2: full_debate": {
+  "pages": 200,
+  "calls": 8.56,
+  "input_tokens": 23153.585,
+  "output_tokens": 1944.65,
+  "usd_per_page": 0.00463982775
+ },
+ "exp4 rep2: mazerophish": {
+  "pages": 200,
+  "calls": 7.785,
+  "input_tokens": 24635.61,
+  "output_tokens": 1849.325,
+  "usd_per_page": 0.0048049365
+ },
+ "exp4 rep2: no_collaboration": {
+  "pages": 200,
+  "calls": 4.81,
+  "input_tokens": 12621.015,
+  "output_tokens": 1111.085,
+  "usd_per_page": 0.0025598032499999997
+ },
+ "exp6 run1: ablation1_no_selection": {
+  "pages": 200,
+  "calls": 7.81,
+  "input_tokens": 25125.535,
+  "output_tokens": 1879.24,
+  "usd_per_page": 0.00489637425
+ },
+ "exp6 run1: ablation2_no_reconciliation": {
+  "pages": 200,
+  "calls": 7.805,
+  "input_tokens": 24849.4,
+  "output_tokens": 1888.135,
+  "usd_per_page": 0.004860291
+ },
+ "exp6 run1: ablation3_no_calibrated_gate": {
+  "pages": 200,
+  "calls": 7.81,
+  "input_tokens": 25125.535,
+  "output_tokens": 1879.495,
+  "usd_per_page": 0.004896527249999999
+ },
+ "exp6 run1: ablation4_no_targeted_collaboration": {
+  "pages": 200,
+  "calls": 8.56,
+  "input_tokens": 23143.525,
+  "output_tokens": 1954.505,
+  "usd_per_page": 0.00464423175
+ },
+ "exp6 run1: ablation5_no_independent_adjudication": {
+  "pages": 200,
+  "calls": 7.805,
+  "input_tokens": 25068.9,
+  "output_tokens": 1889.46,
+  "usd_per_page": 0.004894011
+ },
+ "exp6 run1: mazerophish": {
+  "pages": 200,
+  "calls": 7.81,
+  "input_tokens": 25107.155,
+  "output_tokens": 1876.66,
+  "usd_per_page": 0.00489206925
+ },
+ "exp6 rep1: ablation1_no_selection": {
+  "pages": 200,
+  "calls": 7.83,
+  "input_tokens": 24907.945,
+  "output_tokens": 1855.975,
+  "usd_per_page": 0.00484977675
+ },
+ "exp6 rep1: ablation2_no_reconciliation": {
+  "pages": 200,
+  "calls": 7.83,
+  "input_tokens": 24667.83,
+  "output_tokens": 1863.795,
+  "usd_per_page": 0.0048184515
+ },
+ "exp6 rep1: ablation3_no_calibrated_gate": {
+  "pages": 200,
+  "calls": 7.83,
+  "input_tokens": 24907.945,
+  "output_tokens": 1855.975,
+  "usd_per_page": 0.00484977675
+ },
+ "exp6 rep1: ablation4_no_targeted_collaboration": {
+  "pages": 200,
+  "calls": 8.6,
+  "input_tokens": 23277.65,
+  "output_tokens": 1966.05,
+  "usd_per_page": 0.0046712775
+ },
+ "exp6 rep1: ablation5_no_independent_adjudication": {
+  "pages": 200,
+  "calls": 7.835,
+  "input_tokens": 24874.2,
+  "output_tokens": 1864.025,
+  "usd_per_page": 0.004849545
+ },
+ "exp6 rep1: mazerophish": {
+  "pages": 200,
+  "calls": 7.83,
+  "input_tokens": 24907.945,
+  "output_tokens": 1855.975,
+  "usd_per_page": 0.00484977675
+ },
+ "exp6 rep2: ablation1_no_selection": {
+  "pages": 200,
+  "calls": 7.785,
+  "input_tokens": 24635.61,
+  "output_tokens": 1849.325,
+  "usd_per_page": 0.0048049365
+ },
+ "exp6 rep2: ablation2_no_reconciliation": {
+  "pages": 200,
+  "calls": 7.785,
+  "input_tokens": 24380.77,
+  "output_tokens": 1859.845,
+  "usd_per_page": 0.0047730225
+ },
+ "exp6 rep2: ablation3_no_calibrated_gate": {
+  "pages": 200,
+  "calls": 7.785,
+  "input_tokens": 24635.61,
+  "output_tokens": 1849.325,
+  "usd_per_page": 0.0048049365
+ },
+ "exp6 rep2: ablation4_no_targeted_collaboration": {
+  "pages": 200,
+  "calls": 8.56,
+  "input_tokens": 23153.585,
+  "output_tokens": 1944.65,
+  "usd_per_page": 0.00463982775
+ },
+ "exp6 rep2: ablation5_no_independent_adjudication": {
+  "pages": 200,
+  "calls": 7.785,
+  "input_tokens": 24581.365,
+  "output_tokens": 1859.625,
+  "usd_per_page": 0.00480297975
+ },
+ "exp6 rep2: mazerophish": {
+  "pages": 200,
+  "calls": 7.785,
+  "input_tokens": 24635.61,
+  "output_tokens": 1849.325,
+  "usd_per_page": 0.0048049365
+ },
+ "exp4 FD-fixed (rep1 pages): full_debate": {
+  "pages": 200,
+  "calls": 8.6,
+  "input_tokens": 28688.915,
+  "output_tokens": 2122.36,
+  "usd_per_page": 0.00557675325
+ }
+}
