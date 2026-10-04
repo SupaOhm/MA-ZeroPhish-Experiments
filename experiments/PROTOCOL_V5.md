@@ -1565,3 +1565,9 @@ Exp 6 with C2 -- Judge-level analysis (declared 2026-10-04, before computing; de
 components act on the Judge, and the decision step absorbed every change in verdict. On the same ledgers, the
 Judge's own p_phishing per arm: ranking AUC, Brier score, and F1 / FPR at p >= 0.5; paired bootstrap of the AUC
 difference vs C2 (2000 resamples). Reported whatever it shows.
+Judge-level RESULT (results_gpt4omini/c2_exps_exp6_judge.json): Judge AUC / Brier / F1@0.5 / FPR@0.5 --
+C2 0.881 / 0.140 / 0.822 / 0.160; no reconciliation 0.871 / 0.148 / 0.829 / 0.130 (AUC -0.010 [-0.038, +0.015]);
+no independent adjudication 0.834 / 0.171 / 0.794 / 0.290 (AUC -0.047 [-0.088, -0.006], CI excludes 0).
+Reading: letting the Judge see the specialists' verdicts makes its own judgement clearly worse (ranking, calibration,
+false positives nearly doubled at 0.5); the learned decision step absorbs this, so final verdicts are unchanged.
+Reconciliation: no measurable Judge-level effect. Descriptive, dev-2, one run.
