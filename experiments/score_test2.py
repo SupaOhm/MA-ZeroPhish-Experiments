@@ -72,7 +72,12 @@ def main() -> None:
     g.add_argument("--dry-run", action="store_true")
     g.add_argument("--test2", action="store_true")
     g.add_argument("--test3", action="store_true", help="test3 plan: the 6 PhishDebate-paper baselines, Holm over 6")
+    g.add_argument("--test3-ieee", action="store_true",
+                   help="test3 amendment 5: + ChatPhishDetector and CLASP (IEEE), Holm over 6; output final/test3_ieee")
     args = ap.parse_args()
+    ieee = args.test3_ieee
+    if ieee:
+        args.test3 = True
     if args.dry_run:
         split, ours_pat, out = "test", "runs/v4_exp/exp5/exp5_phreshphish_test__shard*of*__base.jsonl", "dryrun_dev2"
         base_dirs = [("runs/exp1", ""), ("runs/minimal", "")]
@@ -84,7 +89,9 @@ def main() -> None:
         split, ours_pat, out = "test3", "runs/test3/ma/devv4_phreshphish_test3__*__ma_v4abdfFD.jsonl", "test3"
         # test3 plan amendments 3 + 4: the PhishDebate paper's baselines (text, published prompts) plus
         # PhishDebate + screenshot (the strongest baseline given the same screenshot our system receives).
-        base_dirs = [("runs/test3", ""), ("runs/test3/vision", "vision__")]
+        base_dirs = [("runs/test3", ""), ("runs/test3/vision", "vision__")] + ([("runs/test3/ieee", "")] if ieee else [])
+        if ieee:
+            out = "test3_ieee"
     OUT = ROOT / "experiments" / "results_gpt4omini" / "final" / out
     OUT.mkdir(parents=True, exist_ok=True)
     p1, b2 = frozen_steps()
@@ -115,7 +122,9 @@ def main() -> None:
                  dict(base, arm="B2_secondary", score=q2, verdict="phishing" if q2 >= b2[1] else "benign")]
     n_base = {}
     for d, pre in base_dirs:
-        for arm in ((("phishdebate",) if pre == "vision__" else BASE_ARMS[:3]) if args.test3 else BASE_ARMS):
+        arms_here = (("chatphishdetector", "clasp") if d == "runs/test3/ieee" else
+                     ("phishdebate",) if pre == "vision__" else BASE_ARMS[:3]) if args.test3 else BASE_ARMS
+        for arm in arms_here:
             for p in glob.glob(str(ROOT / d / f"{arm}__{MODEL_TAG}__phreshphish_{split}.jsonl")):
                 for line in open(p, encoding="utf-8"):
                     e = json.loads(line)

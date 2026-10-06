@@ -1950,3 +1950,18 @@ Reading rule per baseline, fixed now: WIN if C2's F1 is higher and the Holm-adju
 baseline's F1 is higher and Holm p < 0.05; TIE otherwise. Secondary: PR-AUC C2 vs ChatPhishDetector (page
 bootstrap); CLASP gives labels only. Reported whatever it shows; the paper states that these two rows were added
 after the test3 result at the advisor's request.
+test3 amendment 5 -- RESULT (2026-10-06; 1,000 pages each, 0 failures; results_gpt4omini/final/test3_ieee/):
+| system | F1 | accuracy | P | R | FPR | PR-AUC | baseline minus C2 [95% CI], McNemar p (Holm over 6) | reading |
+|---|---|---|---|---|---|---|---|---|
+| C2 (ours) | 0.891 | 0.894 | 0.914 | 0.870 | 0.082 | 0.955 | -- | -- |
+| ChatPhishDetector (IEEE Access 2024) | 0.887 | 0.883 | 0.861 | 0.914 | 0.148 | 0.917 | -0.005 [-0.028, +0.019], 0.390 (0.390) | TIE |
+| CLASP (ICECET 2025) | 0.869 | 0.861 | 0.822 | 0.922 | 0.200 | -- | -0.022 [-0.046, +0.001], 0.007 (0.014) | WIN |
+| PhishDebate + screenshot | 0.859 | 0.861 | 0.871 | 0.848 | 0.126 | 0.931 | -0.032, 0.004 (0.013) | WIN |
+| PhishDebate | 0.847 | 0.851 | 0.868 | 0.828 | 0.126 | 0.921 | -0.044, < 0.001 (0.001) | WIN |
+| CoT | 0.815 | 0.837 | 0.942 | 0.718 | 0.044 | -- | -0.076, < 0.001 (< 0.001) | WIN |
+| single agent | 0.814 | 0.836 | 0.942 | 0.716 | 0.044 | -- | -0.078, < 0.001 (< 0.001) | WIN |
+READING (declared rule): WIN against five baselines, TIE against ChatPhishDetector (F1 0.891 vs 0.887, not
+significant). Against ChatPhishDetector C2 has the higher accuracy (0.894 vs 0.883) and precision (0.914 vs
+0.861), about half its false-positive rate (0.082 vs 0.148), and a higher PR-AUC: +0.039 [+0.021, +0.071] (page
+bootstrap 2000, seed "20261006:t3cpd"; secondary, CI computed after the run); ChatPhishDetector has the higher
+recall (0.914 vs 0.870). The four earlier rows are unchanged; their Holm p values rise slightly with six tests.
