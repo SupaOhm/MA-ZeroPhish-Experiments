@@ -1935,3 +1935,18 @@ dev, once on the 500 dev-3 pages, so the two extra IEEE baselines and C2 / H1 ar
 ChatPhishDetector on dev-3 -- RESULT (500 pages, 0 failures, 0 without a verdict; runs/cpd/dev3): F1 0.885,
 accuracy 0.878, precision 0.839, recall 0.936, FPR 0.180, PR-AUC 0.918 (C2 0.972). C2 vs ChatPhishDetector:
 McNemar 42 vs 29, p = 0.154 (not significant on 500 pages). Same pages: C2 0.902, H1 0.886, CLASP 0.885.
+Descriptive (dev-3, before the test3 run): why the two IEEE baselines reach high recall. ChatPhishDetector flags
+phishing if `phishing` OR `suspicious_domain` is true; of its 45 false positives, 20 come from suspicious_domain
+alone (true detections: 201 both keys, 31 suspicious_domain only). CLASP stops at the first "Phishing": false
+positives by stage URL 19, screenshot 22, HTML 5 (true detections 213 / 21 / 1).
+
+## test3 amendment 5: two extra IEEE baselines, ChatPhishDetector and CLASP (declared 2026-10-06, before running)
+Added AFTER the test3 result, at the advisor's request (one more IEEE method; both tried on dev-3 first). The
+system is frozen (FROZEN_C2.json) and nothing in it or in the earlier rows changes. Each baseline is run once on
+the 1,000 test3 pages with the dev / dev-3 settings (screenshots attached as for the other vision runs; ledgers in
+runs/test3/ieee). Scoring: score_test2.py --test3-ieee (output results_gpt4omini/final/test3_ieee; the original
+test3 files stay as they are): C2 vs all six baselines, paired bootstrap CI and exact McNemar, Holm over the six.
+Reading rule per baseline, fixed now: WIN if C2's F1 is higher and the Holm-adjusted p < 0.05; LOSS if the
+baseline's F1 is higher and Holm p < 0.05; TIE otherwise. Secondary: PR-AUC C2 vs ChatPhishDetector (page
+bootstrap); CLASP gives labels only. Reported whatever it shows; the paper states that these two rows were added
+after the test3 result at the advisor's request.
