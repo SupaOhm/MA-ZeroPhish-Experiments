@@ -1930,3 +1930,5 @@ accuracy 0.878, precision 0.836, recall 0.940, FPR 0.184. Same pages: C2 0.902 (
 screenshot stage on 43, the HTML stage on 225; 1.91 calls and ~13,950 input tokens per page. As in the paper
 (recall 0.850, precision 0.807 with GPT-4o-mini), CLASP trades precision for recall: any stage's "Phishing" ends
 the cascade, so false positives accumulate. dev-3 is development data; a test3 run is a separate declaration.
+ChatPhishDetector on dev-3 (declared 2026-10-06, before running; user request): the same arm and settings as on
+dev, once on the 500 dev-3 pages, so the two extra IEEE baselines and C2 / H1 are compared on the same pages.
