@@ -1893,3 +1893,24 @@ unchanged. Checks: the ledger scores H1 F1 0.949 (P 0.959, R 0.940), as reported
 mazerophish arm, --collaboration full_debate, cache runs/llm_cache_rep1_fdfix, a dummy API key so any cache miss
 would fail) reproduces all 200 decisions (0 differences, 0 failures). Exp 4's full-debate row (mean 0.943 of
 0.949 and 0.936) is now reproducible from local data.
+
+## Extra IEEE baseline: ChatPhishDetector on dev (declared 2026-10-06, before running; advisor's request)
+The advisor asked Experiment 1 to compare with one more IEEE-published method. Chosen: ChatPhishDetector (Koide,
+Nakano, Chiba, IEEE Access 2024; preprint arXiv 2306.05816) -- the only IEEE candidate whose prompt and decision
+rule are published (CLASP, ICECET 2025, publishes only its URL agent's prompt; the IEEE Access ML detectors need
+training on other data). Implementation prototype/arms/chatphishdetector.py: Prompt Template 1 in Vision mode
+(word for word; the Vision-mode reading of the colour-marked template is ours), URL <= 300 tokens, rendered HTML
+(our offline DOM; served HTML if the render failed) simplified by the paper's Algorithm 1 to <= 2,500 tokens, the
+screenshot image; verdict phishing if `phishing` or `suspicious_domain` is true (paper Sec. 3.2), score =
+phishing_score / 10. Disclosed deviations: tokens ~ characters / 4 (tiktoken is blocked by the Windows policy;
+this leaves the baseline somewhat more HTML than the paper), response limit 1,024 tokens (paper 300), long
+href / base64 src shortened to 100 characters. GPT-4o-mini, same settings and screenshots as the other vision
+baselines. This step: a 4-page pilot, then dev (300 pages) once, as a trial before test3 (test3 run to be declared
+separately). Nothing in our system changes.
+ChatPhishDetector on dev -- RESULT (300 pages, 0 failures, 0 answers without a verdict; ledger runs/cpd/dev):
+F1 0.913, accuracy 0.910, precision 0.882, recall 0.947, FPR 0.127, PR-AUC 0.964 (phishing_score / 10). Same pages:
+H1 0.923 (McNemar 18 vs 14, p = 0.597), CoT 0.926, CoT + screenshot 0.923, single agent 0.913, single agent +
+screenshot 0.914, PhishDebate 0.904, PhishDebate + screenshot 0.895. Rendered DOM and screenshot used on 260 / 300
+pages (render failures run on served HTML, text only); ~5,100 input tokens per page. The implementation behaves
+as the paper describes (high recall, more false positives). dev is development data; the test3 run is a
+separate declaration.

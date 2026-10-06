@@ -110,18 +110,19 @@ def main() -> None:
             continue
         if r["case_id"] not in done:
             shot = str(data / art["screenshot"]) if args.screenshots and art.get("screenshot") else None
-            todo.append((r["case_id"], art["url"], art["html"], shot))
+            todo.append((r["case_id"], art["url"], art["html"], shot, art.get("dom")))
     print(f"{args.arm} on {data.name}/{args.split}: {len(rows)} selected, {len(done)} already done, "
           f"{len(todo)} to run, {skipped} non-webpage skipped, {no_capture} without capture", flush=True)
 
     lock, stop = threading.Lock(), threading.Event()
     n_ok = n_fail = 0
 
-    def one(case_id, url, html, shot=None):
+    def one(case_id, url, html, shot=None, dom=None):
         if stop.is_set():
             return
         t0 = time.time()
-        res = arm.run(url, html, image=shot)
+        # ChatPhishDetector reads the browser-rendered HTML (our offline render's DOM); others the served HTML.
+        res = arm.run(url, html, image=shot, **({"dom": dom} if getattr(arm, "uses_dom", False) else {}))
         event = {"kind": "decision", "arm": args.arm, "case_id": case_id, "verdict": res.verdict,
                  "parent_object_id": None, "repeat": args.repeat, "score": res.score,
                  "model_id": args.model, "model_extra": extra, "data_version": args.data_version,
