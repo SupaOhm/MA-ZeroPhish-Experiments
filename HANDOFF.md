@@ -1,4 +1,4 @@
-# Handoff: MA-ZeroPhish experiments (updated 2026-10-04, after test3)
+# Handoff: MA-ZeroPhish experiments (updated 2026-10-06, test3 with two extra IEEE baselines)
 
 For the teammate continuing the work. Branch **`main`** (the only branch). **To write the paper, read
 [experiments/PAPER_RESULTS.md](experiments/PAPER_RESULTS.md)**: final system, what changed from the original
@@ -13,10 +13,17 @@ declared there BEFORE it was run.
 
 - **The final evaluation (test3) is done.** 1,000 unseen zero-day PhreshPhish pages, system frozen first,
   each system run once. Final system **C2** (frozen: `experiments/results_gpt4omini/final/FROZEN_C2.json`,
-  GO file `final/GO_TEST3.json`). Result: **F1 0.891**, accuracy 0.894, PR-AUC 0.955; beats single agent
-  (0.814), CoT (0.815), PhishDebate (0.847) and PhishDebate + screenshot (0.859), **all significant after
-  Holm** (p <= 0.004). Reading by the pre-declared rule: **WIN**. test3 is now used: do not re-run it after
-  changing anything.
+  GO file `final/GO_TEST3.json`). Result: **F1 0.891**, accuracy 0.894, PR-AUC 0.955; the highest F1 and
+  accuracy of seven systems. Significantly better (Holm over six) than single agent (0.814), CoT (0.815),
+  PhishDebate (0.847), PhishDebate + screenshot (0.859) and CLASP (0.869): **WIN**. **TIE** with
+  ChatPhishDetector (0.887, Holm p = 0.390), which has twice our false-positive rate (0.148 vs 0.082) and a
+  lower PR-AUC (0.917; difference +0.039 [+0.021, +0.071]). test3 is now used: do not re-run our system on it.
+- **Two IEEE baselines added on 2026-10-06** at the advisor's request, after the first test3 result (test3
+  amendment 5 in PROTOCOL_V5, declared before running; the system was not changed): ChatPhishDetector (Koide et
+  al., IEEE Access 2024; `prototype/arms/chatphishdetector.py`) and CLASP (Trad & Chehab, ICECET 2025;
+  `prototype/arms/clasp.py`). Both were tried on dev / dev-3 first. Scoring: `score_test2.py --test3-ieee` ->
+  `results_gpt4omini/final/test3_ieee/`. **The paper draft must be updated: PAPER_RESULTS.md Section 12 has the
+  replacement text** (the draft still says "exceeds every baseline").
 - **Final system C2 = the earlier H1 with full-debate collaboration** (Phase 3). Chosen on a fresh
   development set (dev-3) by a rule fixed in advance; the decision step (P1 / B2) is unchanged.
 - **Experiments 2-6 were re-run with C2** on dev-2 (development data). Summary in section 5; full tables in
@@ -25,7 +32,7 @@ declared there BEFORE it was run.
 - **Not done (optional, needs credit):** a table of our system with other LLMs (like the PhishDebate paper;
   ~$20-25 for three cheap models on 500 test3 pages, GPT-4o alone ~$50+); Experiment 6 "no independent
   Judge" on test3 (~$3.5). GPT-4o-mini stays the main model whatever such a table shows.
-- **OpenRouter credit:** about $6.6 left (account credits endpoint). Check before any paid run
+- **OpenRouter credit:** about $2 left (account credits endpoint). Check before any paid run
   (GET https://openrouter.ai/api/v1/credits; print only totals, never the key).
 - **Teammates' work merged:** PR #3 (goya's rounds), #4 (full-debate fix + round FD), #5 (round JL).
   PRs #6 / #7 (JL documentation) are still open.
@@ -84,7 +91,8 @@ rebuild + test3 scoring `experiments/score_test2.py --test3`.
 
 | Exp | What it tests | Result |
 |---|---|---|
-| **1 test3** | detection vs 4 baselines, unseen zero-day pages | **F1 0.891, all differences significant (WIN)**; PR-AUC 0.955 vs PhishDebate 0.921 / +screenshot 0.931 |
+| **1 test3** | detection vs 6 baselines, unseen zero-day pages | **F1 0.891, highest; WIN vs 5, TIE vs ChatPhishDetector (0.887)**; PR-AUC 0.955 vs ChatPhishDetector 0.917, PhishDebate 0.921 / +screenshot 0.931 |
+| 1 IEEE baselines on dev-3 | ChatPhishDetector, CLASP (development) | both 0.885 vs C2 0.902 (n.s. on 500 pages) |
 | 1 selection (dev-3) | choosing the final system | full debate 0.902 vs targeted 0.886 (rule met) |
 | 2 | specialist selection | F1 0.927-0.941; up to a third fewer model calls |
 | 3 | common-cause reconciliation | detection pair F1 0.952, 0% double counting; active on 200/200 pages; no verdict changes |
@@ -100,9 +108,11 @@ rebuild + test3 scoring `experiments/score_test2.py --test3`.
 2. Unzip the data package so `experiments/data_eval/data/phreshphish/...` exists.
 3. Unzip the runs package at the repo root -> `runs/` (ledgers + response caches, so re-running an existing
    configuration costs $0). Real phishing content: never in a public repo, never opened in a browser.
+   The 2026-10-04 runs package does not yet contain `runs/cpd`, `runs/clasp`, `runs/test3/ieee` (the two IEEE
+   baselines); ask Tinpat for an updated package to re-score `--test3-ieee`.
 4. Your own `.env` outside the repo: `OPENROUTER_API_KEY=...`; pass `--env <path>`. Never commit it.
 5. Python 3.13; the venv at `..\MA_ZeroPhish_VerAJ_Ohm\.venv` for data tools and scoring.
-6. Tests: `python -B -m pytest -q` in `prototype/` (302 tests).
+6. Tests: `python -B -m pytest -q` in `prototype/` (308 tests).
 
 Common flags: `--model openrouter:openai/gpt-4o-mini-2024-07-18 --env <.env> --min-interval 0 --extra
 '{"provider":{"order":["openai"],"allow_fallbacks":false,"data_collection":"deny"}}'`
@@ -112,11 +122,12 @@ Common flags: `--model openrouter:openai/gpt-4o-mini-2024-07-18 --env <.env> --m
 | Result | Command |
 |---|---|
 | test3 scoring (rebuilds the frozen decision steps, refuses if anything changed) | `<venv> -B experiments/score_test2.py --test3` |
+| test3 with the two IEEE baselines (main table) | `<venv> -B experiments/score_test2.py --test3-ieee` (needs `runs/test3/ieee`) |
 | dev-3 selection | `<venv> -B experiments/d3_eval.py` |
 | Exp 2-6 with C2 | runners with `--collaboration full_debate` (see PROTOCOL_V5 "Exp 2-6 with C2"); scoring snippets recorded there |
 | C2 on test2 (supplementary) | `<venv> -B experiments/c2_test2_eval.py` |
 | pipeline runs | `experiments/dev_eval.py --variants v4abdfFD --split <fit/dev/calib/dev3> ...` (test3 only with `--sealed-test3-final`) |
-| baselines | `experiments/exp1_detection/run_baselines.py --arm ... [--screenshots]` |
+| baselines | `experiments/exp1_detection/run_baselines.py --arm ... [--screenshots]` (arms include `chatphishdetector`, `clasp`) |
 
 ## 8. Next steps (options for the team)
 
@@ -139,7 +150,7 @@ Common flags: `--model openrouter:openai/gpt-4o-mini-2024-07-18 --env <.env> --m
 |---|---|
 | `experiments/PAPER_RESULTS.md` | **everything needed for the paper** |
 | `experiments/PROTOCOL_V5.md` | complete dated log |
-| `experiments/results_gpt4omini/final/` | FROZEN_C2 / FROZEN_H1, GO_TEST3, test3 results |
+| `experiments/results_gpt4omini/final/` | FROZEN_C2 / FROZEN_H1, GO_TEST3, test3 results (`test3_ieee/` = main table) |
 | `experiments/results_gpt4omini/d3/`, `c2_exps_*.json` | dev-3 selection, Experiments 2-6 with C2 |
 | `prototype/` | the system (agents, phases, model adapter with response cache) |
 | `experiments/dev_eval.py`, `system_runner.py` | configurations, runs, split guards |

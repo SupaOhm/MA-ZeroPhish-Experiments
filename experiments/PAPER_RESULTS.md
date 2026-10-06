@@ -1,13 +1,18 @@
-# MA-ZeroPhish: results for the paper (final, 2026-10-04)
+# MA-ZeroPhish: results for the paper (final, updated 2026-10-06)
 
 This is the one document to write the paper from (Overleaf). It covers the final system, what changed from
 the original design, the data, the main result (test3), Experiments 2-6, ready-to-paste tables and text, and
 what must and must not be claimed. Every number below comes from a stored run; the dated log of every decision
 (including the attempts that failed) is [PROTOCOL_V5.md](PROTOCOL_V5.md).
 
-**Headline:** on 1,000 unseen zero-day pages (test3), MA-ZeroPhish reaches **F1 0.891** and beats every
-baseline, including PhishDebate given the same screenshot (0.859), with every difference significant after
-Holm correction.
+**Headline:** on 1,000 unseen zero-day pages (test3), MA-ZeroPhish reaches **F1 0.891**, the highest F1 and
+accuracy of seven systems. It is significantly better than five of the six baselines (Holm-corrected) and **ties
+on F1 with ChatPhishDetector** (IEEE Access 2024; 0.887, not significant), against which it has about half the
+false-positive rate (0.082 vs 0.148) and a higher PR-AUC (+0.039, 95% CI +0.021 to +0.071).
+
+**New on 2026-10-06 (advisor's request: "compare with one more IEEE paper"):** two IEEE baselines,
+ChatPhishDetector and CLASP, were added to test3 after its first result; our system was not changed. Sections 4,
+5, 6, 9, 10 and 11 are updated, and **Section 12 has the replacement text to paste into Overleaf**.
 
 ---
 
@@ -72,63 +77,112 @@ and averaging 3 runs (not a fair comparison with single-run baselines).
 
 ## 4. Baselines (test3)
 
-The baselines of the PhishDebate paper, with its published prompts and text input (URL, HTML, visible text):
-**single agent, CoT, PhishDebate**; plus **PhishDebate + screenshot** (the strongest baseline given the same
-screenshot our system receives). Same model (GPT-4o-mini) for all.
+Six baselines, all with GPT-4o-mini and the same 1,000 test3 pages:
 
-**Sentence to include (fairness):** "Following the PhishDebate paper, baselines receive the URL, HTML and
-visible text; our system additionally uses an offline-rendered screenshot, so we also report PhishDebate with
-the same screenshot."
+| Baseline | Source | Input | How it decides |
+|---|---|---|---|
+| Single agent | PhishDebate paper's prompt | URL, HTML, visible text | one call |
+| CoT | PhishDebate paper's prompt | URL, HTML, visible text | one call, step by step |
+| PhishDebate | Li et al., IEEE BigData 2025 (published prompts) | URL, HTML, visible text | agents debate, a Judge decides |
+| PhishDebate + screenshot | same | + the same screenshot our system gets | same |
+| **ChatPhishDetector** | Koide et al., **IEEE Access 2024** | URL, rendered HTML (simplified), screenshot | one call; phishing if `phishing` OR `suspicious_domain` |
+| **CLASP** | Trad & Chehab, **ICECET 2025 (IEEE)** | URL, then screenshot, then HTML | cascade: the first agent that says "Phishing" decides |
+
+- **ChatPhishDetector** (Vision mode): the paper's Prompt Template 1 word for word; HTML simplified with the
+  paper's Algorithm 1 to about 2,500 tokens; the paper's decision rule; score = phishing_score / 10, so it has a
+  PR-AUC. Code: `prototype/arms/chatphishdetector.py`.
+- **CLASP** (Progressive Analysis): the URL agent's prompt word for word. The screenshot and HTML agents' prompts
+  are not published ("similar prompts were adapted"), so they are adapted by changing only the input type. It
+  returns a label only, so it has no PR-AUC. Code: `prototype/arms/clasp.py`.
+- **Disclosed deviations:**
+  - ChatPhishDetector: tokens counted as characters / 4, which gives it slightly more HTML than the paper; a
+    response limit of 1,024 tokens; our own reading of the Vision-mode form of the colour-coded template.
+  - CLASP: adapted screenshot and HTML prompts; a viewport screenshot (not full page), with the screenshot stage
+    skipped when the render failed; HTML cut to 100,000 characters.
+- **Timing (must be stated):** both were added after the first test3 evaluation, at the advisor's request. Both
+  were tried on development data first (dev, dev-3), and our system was not changed.
+
+**Sentences to include:**
+- "Following the PhishDebate paper, baselines receive the URL, HTML and visible text; our system additionally uses
+  an offline-rendered screenshot, so we also report PhishDebate with the same screenshot."
+- "Two further IEEE-published detectors, ChatPhishDetector and CLASP, were added after the first evaluation of the
+  test split; the evaluated system was not modified."
 
 ## 5. Main result: test3 (Experiment 1)
 
 1,000 pages, each system run once, 0 failures. Primary metric F1; paired bootstrap CI and exact McNemar test,
-Holm correction over the 4 baselines.
+Holm correction over the six baselines. Reading rule (declared before running): WIN if our F1 is higher and Holm
+p < 0.05; LOSS if the baseline's is higher and Holm p < 0.05; TIE otherwise.
 
 | System | F1 | Accuracy | Precision | Recall | FPR | PR-AUC |
 |---|---|---|---|---|---|---|
-| **MA-ZeroPhish (ours)** | **0.891** | **0.894** | 0.914 | **0.870** | 0.082 | **0.955** |
+| **MA-ZeroPhish (ours)** | **0.891** | **0.894** | 0.914 | 0.870 | 0.082 | **0.955** |
+| ChatPhishDetector | 0.887 | 0.883 | 0.861 | 0.914 | 0.148 | 0.917 |
+| CLASP | 0.869 | 0.861 | 0.822 | **0.922** | 0.200 | -- |
 | PhishDebate + screenshot | 0.859 | 0.861 | 0.871 | 0.848 | 0.126 | 0.931 |
 | PhishDebate | 0.847 | 0.851 | 0.868 | 0.828 | 0.126 | 0.921 |
 | CoT | 0.815 | 0.837 | **0.942** | 0.718 | **0.044** | -- |
 | Single agent | 0.814 | 0.836 | **0.942** | 0.716 | **0.044** | -- |
 
-| Ours vs | F1 difference [95% CI] | McNemar p (Holm) | PR-AUC difference [95% CI] |
-|---|---|---|---|
-| PhishDebate + screenshot | +0.032 [+0.009, +0.056] | 0.004 | +0.025 [+0.010, +0.052] |
-| PhishDebate | +0.044 [+0.019, +0.069] | 0.001 | +0.034 [+0.015, +0.060] |
-| CoT | +0.076 [+0.048, +0.107] | < 0.001 | -- |
-| Single agent | +0.078 [+0.051, +0.105] | < 0.001 | -- |
+| Ours vs | F1 difference [95% CI] | McNemar p (Holm over 6) | Reading | PR-AUC difference [95% CI] |
+|---|---|---|---|---|
+| ChatPhishDetector | +0.005 [-0.019, +0.028] | 0.390 | **TIE** | +0.039 [+0.021, +0.071] |
+| CLASP | +0.022 [-0.001, +0.046] | 0.014 | **WIN** | -- |
+| PhishDebate + screenshot | +0.032 [+0.009, +0.056] | 0.013 | **WIN** | +0.025 [+0.010, +0.052] |
+| PhishDebate | +0.044 [+0.019, +0.069] | 0.001 | **WIN** | +0.034 [+0.015, +0.060] |
+| CoT | +0.076 [+0.048, +0.107] | < 0.001 | **WIN** | -- |
+| Single agent | +0.078 [+0.051, +0.105] | < 0.001 | **WIN** | -- |
 
-CoT and single agent return only a verdict, so they have no PR-AUC.
+- CoT, single agent and CLASP return only a verdict, so they have no PR-AUC.
+- The PR-AUC CIs are secondary (page bootstrap; the CI against ChatPhishDetector was computed after the run).
+- Against CLASP the F1 CI just touches 0 while McNemar is significant. The two tests differ, and the declared rule
+  uses McNemar + Holm.
+- With six baselines instead of four, the Holm p values of the four earlier rows rise slightly (PhishDebate +
+  screenshot 0.004 -> 0.013). Every reading is unchanged.
 
-**How to describe it:** highest F1, accuracy, recall and PR-AUC; significantly better than every baseline.
-CoT and single agent are more conservative (precision 0.942, FPR 0.044) but miss 28% of phishing pages
-(recall 0.72); ours misses 13%.
+**How to describe it:**
+- Highest F1 and accuracy, and significantly better than five baselines.
+- On F1, a tie with ChatPhishDetector, which reaches higher recall (0.914) by flagging nearly twice as many benign
+  pages (FPR 0.148 vs 0.082).
+- Without a threshold, our system ranks pages better than ChatPhishDetector (PR-AUC +0.039, CI above 0).
+- CoT and single agent are the most conservative (precision 0.942, FPR 0.044) but miss 28% of phishing pages.
+
+**Why the IEEE baselines have high recall** (descriptive, from their dev-3 runs): both use "any single signal is
+enough" rules.
+- ChatPhishDetector's `suspicious_domain` flag alone caused 20 of its 45 false alarms.
+- CLASP stops at the first "Phishing" of its three agents (false alarms: URL stage 19, screenshot stage 22, HTML
+  stage 5).
 
 ```latex
-\begin{table}[t]
+\begin{table*}[t]
 \centering
-\caption{Detection on test3 (1,000 unseen zero-day pages, GPT-4o-mini for all systems).
-Differences to every baseline are significant (exact McNemar, Holm-corrected, $p \le 0.004$).}
-\label{tab:test3}
-\begin{tabular}{lcccccc}
+\caption{Detection on the test split (1,000 unseen zero-day webpages; GPT-4o-mini for all systems). Gain:
+MA-ZeroPhish minus baseline F1-score [95\% bootstrap CI]; $p$: exact McNemar, Holm-adjusted over the six
+baselines. ChatPhishDetector and CLASP were added after the first evaluation of this split; MA-ZeroPhish was not
+modified.}
+\label{tab:res-test}
+\begin{tabular}{lcccccccc}
 \toprule
-System & F1 & Acc. & Prec. & Rec. & FPR & PR-AUC \\
+System & F1 & Acc. & Prec. & Rec. & FPR & PR-AUC & Gain [95\% CI] & $p$ \\
 \midrule
-\textbf{MA-ZeroPhish} & \textbf{0.891} & \textbf{0.894} & 0.914 & \textbf{0.870} & 0.082 & \textbf{0.955} \\
-PhishDebate + screenshot & 0.859 & 0.861 & 0.871 & 0.848 & 0.126 & 0.931 \\
-PhishDebate & 0.847 & 0.851 & 0.868 & 0.828 & 0.126 & 0.921 \\
-CoT & 0.815 & 0.837 & \textbf{0.942} & 0.718 & \textbf{0.044} & -- \\
-Single agent & 0.814 & 0.836 & \textbf{0.942} & 0.716 & \textbf{0.044} & -- \\
+\textbf{MA-ZeroPhish} & \textbf{0.891} & \textbf{0.894} & 0.914 & 0.870 & 0.082 & \textbf{0.955} & --- & --- \\
+ChatPhishDetector & 0.887 & 0.883 & 0.861 & 0.914 & 0.148 & 0.917 & +0.005 [$-$0.019, +0.028] & 0.390 \\
+CLASP & 0.869 & 0.861 & 0.822 & \textbf{0.922} & 0.200 & --- & +0.022 [$-$0.001, +0.046] & 0.014 \\
+PhishDebate + screenshot & 0.859 & 0.861 & 0.871 & 0.848 & 0.126 & 0.931 & +0.032 [+0.009, +0.056] & 0.013 \\
+PhishDebate & 0.847 & 0.851 & 0.868 & 0.828 & 0.126 & 0.921 & +0.044 [+0.019, +0.069] & 0.001 \\
+CoT & 0.815 & 0.837 & \textbf{0.942} & 0.718 & \textbf{0.044} & --- & +0.076 [+0.048, +0.107] & $<$0.001 \\
+Single-agent & 0.814 & 0.836 & \textbf{0.942} & 0.716 & \textbf{0.044} & --- & +0.078 [+0.051, +0.105] & $<$0.001 \\
 \bottomrule
 \end{tabular}
-\end{table}
+\end{table*}
 ```
+To cite the two baselines in the table, add `~\cite{...}` after their names using your .bib keys. CLASP is cited
+in the draft as `trad2025clasp`. ChatPhishDetector (Koide, Nakano, Chiba, IEEE Access vol. 12, pp. 154381-154400,
+2024) is already in the draft's reference list, but no key is used in the text yet.
 
 **Secondary rows (not the headline; may be one sentence):** the same system with targeted collaboration
-instead of full debate (H1) scores F1 0.884 on test3 (+0.007 for full debate, not significant); adding the
-JL rule gives 0.892.
+instead of full debate (H1) scores F1 0.884 on test3 (+0.007 for full debate, not significant, p = 0.302);
+adding the JL rule gives 0.892.
 
 ## 6. How the final system was chosen (method section, one paragraph)
 
@@ -141,9 +195,13 @@ Candidates were compared on dev-3, a fresh 500-page sample used for nothing else
 | **Full debate (C2), chosen** | **0.902** | 0.924 | 0.880 | 0.072 |
 | Full debate + retrained decision step | 0.865 | 0.948 | 0.796 | 0.044 |
 
+For context only (not part of the choice; run afterwards on the same dev-3 pages): ChatPhishDetector F1 0.885
+(P 0.839, R 0.936, FPR 0.180; PR-AUC 0.918 vs C2 0.972), CLASP F1 0.885 (P 0.836, R 0.940, FPR 0.184). Neither
+difference to C2 (0.902) is significant on 500 pages (p = 0.154 / 0.165).
+
 Honest note: full debate's three dev-3 runs scored 0.902 / 0.888 / 0.883, so its expected advantage over the
-targeted version is small (test3: +0.007). Its lead over the **baselines** (+0.03 to +0.08 on test3) is far
-larger than this run-to-run spread.
+targeted version is small (test3: +0.007). Its lead over five of the baselines (+0.02 to +0.08 on test3) is
+larger than this run-to-run spread; its lead over ChatPhishDetector (+0.005) is not.
 
 ## 7. Experiments 2-6 (component analysis)
 
@@ -229,6 +287,9 @@ evidence that was withheld was never used (0 of 800 decisions)."
 ## 9. Limitations (state these; they cost little space)
 
 - One model (GPT-4o-mini) for all systems; other models are future work.
+- ChatPhishDetector and CLASP were added after the first test3 evaluation (advisor's request; system unchanged).
+  CLASP's screenshot and HTML prompts are adaptations of its published URL prompt. Against ChatPhishDetector the
+  F1 difference is not significant.
 - test3 is one run per system; run-to-run spread on dev-3 was about 0.01-0.02 F1 (smaller than the gaps to
   the baselines).
 - One data source (PhreshPhish) for evaluation; offline, retrospective evidence (no live lookups, screenshots
@@ -245,7 +306,9 @@ evidence that was withheld was never used (0 of 800 decisions)."
   development splits; test3 was used once, after freezing the system"); the fairness sentence (Section 4).
 - **You may leave out:** test2, dev-2 as a separate result, the screenshot variants of CoT and single agent.
   Leaving them out is fine; do not write anything that implies test3 was the only test ever run.
-- **Do not claim:** that every component improves accuracy (Exp 3 / 6 do not), that full debate is
+- **Do not claim:** that MA-ZeroPhish is significantly better than *every* baseline (ChatPhishDetector is a tie
+  on F1), that it has the highest recall (CLASP and ChatPhishDetector have higher), that every component
+  improves accuracy (Exp 3 / 6 do not), that full debate is
   significantly better than targeted collaboration, or stability on normal data.
 - Code, protocol and results are public in the repository; a footnote link is optional (anonymised for
   double-blind review).
@@ -254,7 +317,9 @@ evidence that was withheld was never used (0 of 800 decisions)."
 
 | Result | File |
 |---|---|
-| test3 metrics, comparisons, reading | `results_gpt4omini/final/test3/` (`metrics.csv`, `comparisons.csv`, `reading.json`, `pr_auc_ci.json`) |
+| **test3 with all six baselines (the main table)** | `results_gpt4omini/final/test3_ieee/` (`metrics.csv`, `comparisons.csv`, `reading.json`, `pr_auc_cpd.json`); rebuilt by `score_test2.py --test3-ieee` |
+| ChatPhishDetector / CLASP runs | `runs/test3/ieee` (test3), `runs/cpd/dev`, `runs/cpd/dev3`, `runs/clasp/dev3` (in the runs package, not in git); log: PROTOCOL_V5 "Extra IEEE baseline" and "test3 amendment 5" |
+| test3 first scoring with four baselines (record) | `results_gpt4omini/final/test3/` (`metrics.csv`, `comparisons.csv`, `reading.json`, `pr_auc_ci.json`) |
 | dev-3 selection (and C3 runs) | `results_gpt4omini/d3/result.json` |
 | Exp 2 / 5 | `results_gpt4omini/c2_exps_exp2_exp5.json` |
 | Exp 3 | `results_gpt4omini/c2_exps_exp3.json`, `c2_exps_exp3_independence.json` |
@@ -262,3 +327,61 @@ evidence that was withheld was never used (0 of 800 decisions)."
 | Integrity audit | `results_gpt4omini/audit_c2.json` |
 | Exp 4 full debate (2 runs) | PROTOCOL_V5 round FD + "Exp 2-6 with C2" |
 | Frozen system, GO | `results_gpt4omini/final/FROZEN_C2.json`, `FROZEN_H1.json`, `GO_TEST3.json` |
+
+## 12. Text to paste into the paper (Overleaf)
+
+The current draft (`updatepaper.md`) still says the system beats every baseline. After the two IEEE baselines
+were added, these passages must change. Section names follow the draft.
+
+**Contribution 3, last sentence.** Replace "the framework exceeds single-agent, chain-of-thought, and debate
+baselines in F1-score." with:
+> the framework attains the highest F1-score among seven detectors and significantly exceeds five of them,
+> including PhishDebate given the same screenshot.
+
+**Experimental Setup, "Baselines" paragraph.** Replace the paragraph with:
+> **Baselines.** We compare MA-ZeroPhish with a single-agent detector, chain-of-thought (CoT) prompting, and
+> PhishDebate [@li2025phishdebate], using the prompts published with PhishDebate. Following that work, these
+> baselines receive the URL, the served HTML, and the visible text. Because MA-ZeroPhish additionally receives the
+> rendered screenshot, PhishDebate is also run with the same screenshot. We further compare with two
+> IEEE-published LLM detectors: ChatPhishDetector [Koide et al.] in its vision mode, with its published prompt,
+> HTML simplification, and decision rule, and CLASP [@trad2025clasp] with its progressive URL, screenshot, and HTML
+> cascade, whose screenshot and HTML prompts we adapt from its published URL prompt. These two baselines were added
+> after the first evaluation of the test split; MA-ZeroPhish was not modified. On the 200-sample sealed split,
+> single-agent and CoT prompts reduced to the output instruction were also run; they were not run on the test
+> split, a choice made after CoT with the reduced prompt proved the strongest baseline there.
+
+**Experiment 1, first paragraph.** Replace "compared with the single-agent, CoT, and PhishDebate baselines" with
+"compared with the six baselines of Section [Experimental Setup]".
+
+**Experiment 1 table.** Replace it with the LaTeX table in Section 5 above. The p values of the old rows change
+because Holm now adjusts over six baselines; for example, PhishDebate + screenshot goes from 0.004 to 0.013.
+
+**Experiment 1, "Results and Analysis", first paragraph.** Replace it with:
+> Table [tab:res-test] reports the sealed test split. MA-ZeroPhish attains the highest F1-score (0.891) and accuracy
+> (0.894), and the highest area under the precision--recall curve among the systems that output a score. After
+> Holm adjustment it exceeds five of the six baselines, including PhishDebate given the same screenshot and CLASP.
+> Against ChatPhishDetector the F1 difference is not significant (0.891 against 0.887, $p=0.390$).
+> ChatPhishDetector reaches higher recall (0.914 against 0.870) by flagging nearly twice as many benign objects
+> (false-positive rate 0.148 against 0.082), while MA-ZeroPhish ranks objects better (area under the
+> precision--recall curve 0.955 against 0.917; difference +0.039, 95% CI +0.021 to +0.071). Both IEEE baselines
+> report phishing as soon as a single signal indicates it, either a suspicious-domain flag or any stage of a
+> cascade, which raises recall and false positives together. CoT and the single-agent detector attain higher
+> precision and a lower false-positive rate but recall 0.718 and 0.716 of phishing objects, against 0.870.
+
+The rest of that subsection (dev-3 selection, H1 on test3 0.884 with $p=0.302$, the 200-sample table, the
+features-only comparison) stays as it is.
+
+**Limitations.** Add after "...collaboration policies.":
+> ChatPhishDetector and CLASP were added after the first evaluation of the test split, and CLASP's screenshot and
+> HTML prompts are adaptations of its published URL prompt.
+
+**Conclusion, second paragraph, first sentence.** Replace "MA-ZeroPhish attains an F1-score of 0.891 against
+0.859 for the strongest baseline, PhishDebate given the same screenshot, and exceeds every baseline in F1-score,
+with every difference significant." with:
+> MA-ZeroPhish attains an F1-score of 0.891, the highest of seven detectors. It significantly exceeds five of
+> them, including PhishDebate given the same screenshot, and matches ChatPhishDetector in F1-score at about half
+> its false-positive rate and with a higher area under the precision--recall curve.
+
+**References.** CLASP and ChatPhishDetector are both already in the reference list; cite ChatPhishDetector with
+its .bib key wherever the text above says [Koide et al.].
+
