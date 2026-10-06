@@ -222,7 +222,9 @@ ARMS = {"single_agent": SingleAgent, "cot": CoT, "phishdebate": PhishDebate,
 def _register_chatphishdetector() -> None:
     """ChatPhishDetector (IEEE Access 2024), added for the advisor's extra IEEE baseline (PROTOCOL_V5)."""
     from .chatphishdetector import ChatPhishDetector
+    from .clasp import CLASP
     ARMS[ChatPhishDetector.name] = ChatPhishDetector
+    ARMS[CLASP.name] = CLASP
 
 
 _register_chatphishdetector()

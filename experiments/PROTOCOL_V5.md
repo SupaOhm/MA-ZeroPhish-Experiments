@@ -1914,3 +1914,19 @@ screenshot 0.914, PhishDebate 0.904, PhishDebate + screenshot 0.895. Rendered DO
 pages (render failures run on served HTML, text only); ~5,100 input tokens per page. The implementation behaves
 as the paper describes (high recall, more false positives). dev is development data; the test3 run is a
 separate declaration.
+
+## Extra IEEE baseline: CLASP on dev-3 (declared 2026-10-06, before running; user request after the advisor's feedback)
+CLASP (Trad & Chehab, ICECET 2025, IEEE; DOI 10.1109/ICECET63943.2025.11471974), Progressive Analysis: URL Agent ->
+(if not phishing) Screenshot Agent -> (if not phishing) HTML Agent, whose label is final; any "Phishing" stops.
+URL Agent prompt word for word from the paper; the Screenshot / HTML prompts are not published ("similar prompts
+were adapted") and are adapted by changing only the input type; JSON {classification, reasoning}. Disclosed
+deviations: screenshot = our offline render (viewport, not full page; stage skipped when the render failed),
+served HTML cut to 100,000 characters (paper gives no limit), GPT-4o-mini (the paper's Sec. V-E also reports
+GPT-4o-mini). Code prototype/arms/clasp.py. Run once on dev-3 (500 pages; development data, where C0 = H1 0.886 and
+C2 0.902 exist; no other baseline exists on dev-3), after a 4-page pilot. Label only -> no PR-AUC.
+CLASP on dev-3 -- RESULT (500 pages, 0 failures, 0 answers without a label; ledger runs/clasp/dev3): F1 0.885,
+accuracy 0.878, precision 0.836, recall 0.940, FPR 0.184. Same pages: C2 0.902 (P 0.924, R 0.880, FPR 0.072), H1
+0.886. C2 vs CLASP: McNemar 44 vs 31, p = 0.165 (not significant). Decided at the URL stage on 232 pages, the
+screenshot stage on 43, the HTML stage on 225; 1.91 calls and ~13,950 input tokens per page. As in the paper
+(recall 0.850, precision 0.807 with GPT-4o-mini), CLASP trades precision for recall: any stage's "Phishing" ends
+the cascade, so false positives accumulate. dev-3 is development data; a test3 run is a separate declaration.
