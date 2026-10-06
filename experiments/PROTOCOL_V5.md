@@ -1932,3 +1932,6 @@ screenshot stage on 43, the HTML stage on 225; 1.91 calls and ~13,950 input toke
 the cascade, so false positives accumulate. dev-3 is development data; a test3 run is a separate declaration.
 ChatPhishDetector on dev-3 (declared 2026-10-06, before running; user request): the same arm and settings as on
 dev, once on the 500 dev-3 pages, so the two extra IEEE baselines and C2 / H1 are compared on the same pages.
+ChatPhishDetector on dev-3 -- RESULT (500 pages, 0 failures, 0 without a verdict; runs/cpd/dev3): F1 0.885,
+accuracy 0.878, precision 0.839, recall 0.936, FPR 0.180, PR-AUC 0.918 (C2 0.972). C2 vs ChatPhishDetector:
+McNemar 42 vs 29, p = 0.154 (not significant on 500 pages). Same pages: C2 0.902, H1 0.886, CLASP 0.885.
