@@ -1,0 +1,320 @@
+{
+ "pages": 1000,
+ "reference": "C2",
+ "C2": {
+  "f1": 0.8913934426229508,
+  "p": 0.9138655462184874,
+  "r": 0.87,
+  "fpr": 0.082,
+  "accuracy": 0.894,
+  "n": 1000,
+  "calls": 8.45
+ },
+ "exp2:complete__literal_eq10": {
+  "f1": 0.8825910931174089,
+  "p": 0.8934426229508197,
+  "r": 0.872,
+  "fpr": 0.104,
+  "accuracy": 0.884,
+  "n": 1000,
+  "calls": 5.761,
+  "missing": 0,
+  "diff": -0.008802349505541929,
+  "ci": [
+   -0.02349940215225188,
+   0.006573211981727556
+  ],
+  "mcnemar": [
+   32,
+   22,
+   0.22032849417661104
+  ]
+ },
+ "exp2:complete__mazerophish": {
+  "f1": 0.8830645161290323,
+  "p": 0.8902439024390244,
+  "r": 0.876,
+  "fpr": 0.108,
+  "accuracy": 0.884,
+  "n": 1000,
+  "calls": 6.613,
+  "missing": 0,
+  "diff": -0.008328926493918587,
+  "ci": [
+   -0.022335718864613274,
+   0.006218008528400931
+  ],
+  "mcnemar": [
+   29,
+   19,
+   0.19341265286193732
+  ]
+ },
+ "exp4:targeted_H1": {
+  "f1": 0.8843813387423936,
+  "p": 0.897119341563786,
+  "r": 0.872,
+  "fpr": 0.1,
+  "accuracy": 0.886,
+  "n": 1000,
+  "calls": 7.62,
+  "missing": 0,
+  "diff": -0.0070121038805572855,
+  "ci": [
+   -0.020531508921511343,
+   0.0069142148253215074
+  ],
+  "mcnemar": [
+   27,
+   19,
+   0.3019956131896606
+  ]
+ },
+ "exp4:no_collaboration": {
+  "f1": 0.8937437934458788,
+  "p": 0.8875739644970414,
+  "r": 0.9,
+  "fpr": 0.114,
+  "accuracy": 0.893,
+  "n": 1000,
+  "calls": 4.756,
+  "missing": 0,
+  "diff": 0.0023503508229280046,
+  "ci": [
+   -0.012932066034773926,
+   0.018441809236788398
+  ],
+  "mcnemar": [
+   33,
+   32,
+   1.0
+  ]
+ },
+ "exp4:yield": {
+  "test3:mazerophish": {
+   "pages": 999,
+   "failed_share": 0.001,
+   "rounds_per_page": 1.6036036036036037,
+   "reinvocations_per_page": 2.8628628628628627,
+   "escalation_precision": 0.5093632958801498,
+   "share_resolved": 0.1797752808988764,
+   "share_new_finding": 0.5062421972534332
+  },
+  "test3:full_debate": {
+   "pages": 999,
+   "failed_share": 0.001,
+   "rounds_per_page": 0.984984984984985,
+   "reinvocations_per_page": 3.6936936936936937,
+   "escalation_precision": 0.7652439024390244,
+   "share_resolved": 0.29065040650406504,
+   "share_new_finding": 0.7611788617886179
+  }
+ },
+ "exp3:no_reconciliation": {
+  "f1": 0.8891170431211499,
+  "p": 0.9135021097046413,
+  "r": 0.866,
+  "fpr": 0.082,
+  "accuracy": 0.892,
+  "n": 1000,
+  "calls": 8.453,
+  "missing": 0,
+  "diff": -0.0022763995018009187,
+  "ci": [
+   -0.00660071193392997,
+   0.0016067912378978644
+  ],
+  "mcnemar": [
+   3,
+   1,
+   0.625
+  ],
+  "verdicts_changed": 4
+ },
+ "exp3:support": {
+  "with_reconciliation": {
+   "dup_share": 0.4785793674682563,
+   "groups_per_page": 10.625,
+   "pages_with_groups": 999,
+   "pages": 1000
+  },
+  "without": {
+   "dup_share": 0.5000558025308025,
+   "groups_per_page": 0.0,
+   "pages_with_groups": 0,
+   "pages": 1000
+  }
+ },
+ "exp5:cum3_+html_no_browser": {
+  "f1": 0.8865979381443299,
+  "p": 0.8342151675485009,
+  "r": 0.946,
+  "fpr": 0.188,
+  "accuracy": 0.879,
+  "n": 1000,
+  "calls": 4.702,
+  "missing": 0,
+  "diff": -0.004795504478620982,
+  "ci": [
+   -0.026621223286661833,
+   0.017176388969185385
+  ],
+  "mcnemar": [
+   74,
+   59,
+   0.22462992985836266
+  ],
+  "audit": {
+   "decisions": 1000,
+   "has_disclosure": 1000,
+   "cited_subset_of_eligible": 1000,
+   "citations": 3112,
+   "with_gaps": 1000,
+   "gaps_some_listed": 1000,
+   "with_open_issues": 1000,
+   "issues_list_present": 1000,
+   "withheld_used": 0
+  }
+ },
+ "exp5:no_dom": {
+  "f1": 0.867005076142132,
+  "p": 0.8804123711340206,
+  "r": 0.854,
+  "fpr": 0.116,
+  "accuracy": 0.869,
+  "n": 1000,
+  "calls": 8.02,
+  "missing": 0,
+  "diff": -0.02438836648081888,
+  "ci": [
+   -0.04757665904367214,
+   -0.0012390971597948663
+  ],
+  "mcnemar": [
+   70,
+   45,
+   0.02479353633964363
+  ],
+  "audit": {
+   "decisions": 1000,
+   "has_disclosure": 1000,
+   "cited_subset_of_eligible": 1000,
+   "citations": 6428,
+   "with_gaps": 1000,
+   "gaps_some_listed": 1000,
+   "with_open_issues": 762,
+   "issues_list_present": 762,
+   "withheld_used": 0
+  }
+ },
+ "exp5:no_html": {
+  "f1": 0.8692380056444027,
+  "p": 0.8206039076376554,
+  "r": 0.924,
+  "fpr": 0.202,
+  "accuracy": 0.861,
+  "n": 1000,
+  "calls": 8.267,
+  "missing": 0,
+  "diff": -0.02215543697854816,
+  "ci": [
+   -0.046485221689859246,
+   0.0016531202644992637
+  ],
+  "mcnemar": [
+   92,
+   59,
+   0.008986616457699298
+  ],
+  "audit": {
+   "decisions": 1000,
+   "has_disclosure": 1000,
+   "cited_subset_of_eligible": 1000,
+   "citations": 7001,
+   "with_gaps": 1000,
+   "gaps_some_listed": 1000,
+   "with_open_issues": 979,
+   "issues_list_present": 979,
+   "withheld_used": 0
+  }
+ },
+ "exp5:no_network_metadata": {
+  "f1": 0.8467583497053045,
+  "p": 0.832046332046332,
+  "r": 0.862,
+  "fpr": 0.174,
+  "accuracy": 0.844,
+  "n": 1000,
+  "calls": 6.806,
+  "missing": 0,
+  "diff": -0.044635092917646335,
+  "ci": [
+   -0.06547301046679488,
+   -0.025248961028777495
+  ],
+  "mcnemar": [
+   82,
+   32,
+   3.1385246161595705e-06
+  ],
+  "audit": {
+   "decisions": 1000,
+   "has_disclosure": 1000,
+   "cited_subset_of_eligible": 1000,
+   "citations": 5367,
+   "with_gaps": 1000,
+   "gaps_some_listed": 1000,
+   "with_open_issues": 1000,
+   "issues_list_present": 1000,
+   "withheld_used": 0
+  }
+ },
+ "exp5:transient_browser_recoverable": {
+  "f1": 0.8913934426229508,
+  "p": 0.9138655462184874,
+  "r": 0.87,
+  "fpr": 0.082,
+  "accuracy": 0.894,
+  "n": 1000,
+  "calls": 8.45,
+  "missing": 0,
+  "diff": 0.0,
+  "ci": [
+   0.0,
+   0.0
+  ],
+  "mcnemar": [
+   0,
+   0,
+   1.0
+  ],
+  "audit": {
+   "decisions": 1000,
+   "has_disclosure": 1000,
+   "cited_subset_of_eligible": 1000,
+   "citations": 7279,
+   "with_gaps": 1000,
+   "gaps_some_listed": 1000,
+   "with_open_issues": 985,
+   "issues_list_present": 985
+  }
+ },
+ "exp5:conflict_swaps": {
+  "f1": 0.8333333333333334,
+  "p": 0.8333333333333334,
+  "r": 0.8333333333333334,
+  "fpr": 0.16666666666666666,
+  "accuracy": 0.8333333333333334,
+  "n": 48
+ },
+ "test3_C2_audit": {
+  "decisions": 1000,
+  "has_disclosure": 1000,
+  "cited_subset_of_eligible": 1000,
+  "citations": 7279,
+  "with_gaps": 1000,
+  "gaps_some_listed": 1000,
+  "with_open_issues": 985,
+  "issues_list_present": 985
+ }
+}

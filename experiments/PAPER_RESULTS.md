@@ -14,6 +14,11 @@ false-positive rate (0.082 vs 0.148) and a higher PR-AUC (+0.039, 95% CI +0.021 
 ChatPhishDetector and CLASP, were added to test3 after its first result; our system was not changed. Sections 4,
 5, 6, 9, 10 and 11 are updated, and **Section 12 has the replacement text to paste into Overleaf**.
 
+**New on 2026-10-07: Experiments 2-5 moved from dev-2 to test3** (1,000 pages, frozen C2; Section 7).
+Same conclusions as on dev-2, with two honest differences: in Exp 2 selection raises FPR (0.082 to 0.104), and
+in Exp 5 losing HTML or the DOM is now also significant. **Section 13 has the Overleaf text and Tables III, V
+(with FPR) and VI.**
+
 ---
 
 ## 1. The final system ("C2")
@@ -205,58 +210,85 @@ larger than this run-to-run spread; its lead over ChatPhishDetector (+0.005) is 
 
 ## 7. Experiments 2-6 (component analysis)
 
-Run on dev-2 (200 pages, development data, one run each), with the final system. They analyse our own
-system's components; they are not comparisons with the baselines. **Label them as development data.**
+**Updated 2026-10-07: Experiments 2-5 are now on test3** (the same 1,000 sealed pages as Experiment 1; frozen
+C2, one run per arm, 0 failures; declared in PROTOCOL_V5 "Exp 2-5 on test3" before running, with the rule that
+the paper reports these numbers whatever they show). Every arm is C2 with one part changed; the reference is
+C2's own test3 run (F1 0.891), which the runners reproduce call for call. Each arm vs C2: paired page bootstrap
+95% CI and exact McNemar p (unadjusted). They analyse our own system's components; they are not comparisons
+with the baselines. Results: `results_gpt4omini/final/test3_exps.json` (`experiments/score_test3_exps.py`).
+Experiment 6 stays on dev-2 (not in the paper). The earlier dev-2 numbers remain in PROTOCOL_V5.
 
-### Experiment 2: specialist selection
-| Selection policy | F1 | FPR | Model calls / page |
-|---|---|---|---|
-| All specialists (final system) | 0.936 | 0.080 | 8.60 |
-| Adaptive selection | 0.927 | 0.100 | 6.76 |
-| Literal rule (equation 10) | 0.941 | 0.080 | 5.82 |
+### Experiment 2: specialist selection (Table III, test3)
+| Dispatch | F1 | FPR | Calls / page | vs all specialists [95% CI], p |
+|---|---|---|---|---|
+| All applicable specialists (C2) | 0.891 | 0.082 | 8.45 | -- |
+| Strict trigger-coverage selection (adaptive) | 0.883 | 0.108 | 6.61 | -0.008 [-0.022, +0.006], 0.193 |
+| Proposed cost-aware selection (equation 10) | 0.883 | 0.104 | **5.76** | -0.009 [-0.023, +0.007], 0.220 |
 
-Text: "Specialist selection cuts model calls by up to a third (8.6 to 5.8 per page) with no significant
-change in F1 (0.927-0.941)."
+Text: "On the 1,000-page test split, cost-aware selection reduces mean model calls from 8.45 to 5.76 per object
+(31.8%) without a significant change in F1 (0.883 versus 0.891, p = 0.220), although its false-positive rate
+rises from 0.082 to 0.104." (dev-2 had shown equal FPR; on test3 FPR rises -- state it.)
 
-### Experiment 3: common-cause reconciliation
+### Experiment 3: common-cause reconciliation (test3 for the natural-evidence part)
 | Measure | Result |
 |---|---|
-| Dependent-evidence detection on constructed pairs (known answer) | pair F1 0.952, 0% double-counted support |
-| Active on real pages | 200 / 200 pages, 11.0 dependency groups per page |
-| Duplicated share of the Judge's support | 0.480 (0.516 without reconciliation) |
-| Final verdicts changed | 0 / 200 |
+| Dependent-evidence detection on constructed pairs (known answer; Table IV, no split data, unchanged) | pair F1 0.952, 0% double-counted support |
+| Active on real test3 pages | 999 / 1,000 pages, 10.6 dependency groups per page |
+| Duplicated share of the Judge's support | 0.479 (0.500 without reconciliation) |
+| Final verdicts changed | 4 / 1,000 (F1 0.891 vs 0.889 without, p = 0.625) |
 
-Text: "Reconciliation identifies dependent evidence accurately (pair F1 0.952, no double-counted support) and
-is active on every real page, but on natural pages it changes no verdict; its contribution is evidence
-integrity and auditable explanations rather than accuracy." (Do not claim an accuracy gain.)
+Text: "On the 1,000 test objects, reconciliation forms an average of 10.6 dependency groups per object and
+reduces the duplicated share of Judge support from 0.500 to 0.479, changing 4 of 1,000 reported
+classifications (F1 0.891 versus 0.889, p = 0.625)." (Do not claim an accuracy gain.)
 
-### Experiment 4: collaboration policy
-| Collaboration (dev-2) | F1 | Model calls / page |
-|---|---|---|
-| **Full debate (final)** | **0.943** (mean of 2 runs: 0.949, 0.936) | 8.6 |
-| No collaboration | 0.940 | 4.8 |
-| Targeted | 0.935 | 7.8 |
-| Fixed extra round | 0.935 | -- |
+### Experiment 4: collaboration policy (Table V, test3; FPR column added)
+| Policy | F1 | FPR | Calls / page | Yield | vs full debate [95% CI], p |
+|---|---|---|---|---|---|
+| Full-agent collaboration (C2) | 0.891 | **0.082** | 8.45 | **0.765** | -- |
+| Targeted collaboration (H1) | 0.884 | 0.100 | 7.62 | 0.509 | -0.007 [-0.021, +0.007], 0.302 |
+| No collaboration | 0.894 | 0.114 | 4.76 | -- | +0.002 [-0.013, +0.018], 1.000 |
 
-Full-debate rounds add a new finding 75% of the time (targeted: 55-61%). On dev-2 the differences are not
-significant; on **test3 full debate 0.891 vs targeted 0.884**, and full debate was ahead on every page set.
+Yield = share of collaboration rounds that resolve an issue or add a new eligible finding (cache replay of the
+C2 and H1 test3 runs, 999 / 1,000 pages reproduced exactly; 1 page excluded). No policy differs significantly in
+F1; no collaboration has the highest recall (0.900) and the highest FPR. Text: "No policy differs significantly in
+F1 on the test split (p >= 0.30). Collaboration thus acts as an evidence-resolution mechanism rather than a
+detection gain: full-agent collaboration produces new eligible evidence in 76.5% of rounds, against 50.9% for
+targeted collaboration, at 1.8 times the model calls of no collaboration." Do NOT write that collaboration
+improves accuracy, or that no collaboration is better (p = 1.000).
 
-### Experiment 5: robustness to missing evidence
-| Condition | F1 | FPR | vs complete [95% CI], p |
-|---|---|---|---|
-| Complete evidence | 0.936 | 0.080 | -- |
-| Browser fails, then recovers | 0.936 | 0.080 | +0.000 |
-| No served HTML | 0.932 | 0.100 | -0.004 [-0.041, +0.033], 1.00 |
-| No rendered DOM | 0.929 | 0.060 | -0.007 [-0.047, +0.032], 1.00 |
-| **No network metadata (DNS, CT, TLS)** | **0.900** | 0.150 | **-0.036 [-0.067, -0.009], 0.021** |
-| HTML only, no browser evidence | 0.892 | 0.180 | -0.044 [-0.086, -0.003], 0.052 |
-| Conflicting evidence (48 swapped cases) | 0.857 | 0.167 | -- |
+### Experiment 5: robustness to missing and conflicting evidence (Table VI, test3)
+| Condition | F1 | FPR | vs complete [95% CI] | p |
+|---|---|---|---|---|
+| Complete evidence (C2) | 0.891 | 0.082 | -- | -- |
+| Browser failure, retried | 0.891 | 0.082 | 0.000 [0.000, 0.000] | 1.000 |
+| No served HTML | 0.869 | 0.202 | -0.022 [-0.046, +0.002] | 0.009 |
+| No rendered DOM | 0.867 | 0.116 | -0.024 [-0.048, -0.001] | 0.025 |
+| **No network metadata** | **0.847** | 0.174 | **-0.045 [-0.065, -0.025]** | **< 0.001** |
+| Served HTML only | 0.887 | 0.188 | -0.005 [-0.027, +0.017] | 0.225 |
+| Exchanged evidence (48 objects) | 0.833 | 0.167 | -- | -- |
 
-Text: "A failed browser run is fully recovered; losing HTML or the rendered DOM costs less than 0.01 F1;
-losing network metadata is the only significant loss." Caveat to state: with any field withheld every page
-uses the B2 decision model, so these drops mix evidence loss with the change of decision model.
+p = exact McNemar, unadjusted (as before). Exchanged evidence: 48 test3 objects (8 per label and swapped group,
+built by the dev-2 procedure), scored on those 48 only, so not comparable with the 1,000-object rows.
 
-### Experiment 6: ablations
+**This differs from dev-2 -- write it as it is:**
+- On 1,000 pages, losing **any one** of served HTML, rendered DOM or network metadata now significantly lowers F1
+  (on dev-2 only network metadata did). Network metadata is still the largest loss (-0.045).
+- Removing served HTML roughly **2.5x** the false-positive rate (0.082 to 0.202).
+- "Served HTML only" is **not** significantly worse (-0.005, p = 0.225), smaller than losing the DOM alone. Do not
+  explain this away. Withholding any field routes every object to the B2 decision model (Eq. 32), so each row
+  mixes evidence loss with a change of decision model, and the rows are not modality-importance estimates.
+- For no served HTML the McNemar test is significant (p = 0.009) while the bootstrap CI just includes 0
+  (+0.002). Report both.
+- A failed browser run that is retried is fully recovered (identical results).
+
+Text: "Browser retry fully restores the complete-evidence result. Withholding served HTML, the rendered DOM, or
+network metadata each reduces F1 significantly (to 0.869, 0.867 and 0.847), network metadata most, while retaining
+served HTML alone yields 0.887 (p = 0.225). Because withholding also routes objects to pi_part under Eq. (32), these
+results characterize end-to-end behavior under incomplete evidence rather than the isolated contribution of
+individual modalities. On the 48 exchanged-evidence objects, F1 is 0.833 and FPR 0.167. Withheld evidence was
+never cited or eligible in any of the 4,000 decisions under withholding."
+
+### Experiment 6: ablations (dev-2, 200 pages; not in the paper)
 | Removed | Final F1 | Judge's own AUC | Judge FPR at 0.5 |
 |---|---|---|---|
 | Nothing (final system) | 0.936 | 0.881 | 0.160 |
@@ -279,10 +311,10 @@ Measured on the final system's own runs (`results_gpt4omini/audit_c2.json`):
 |---|---|
 | Every piece of evidence the Judge cites is a real, eligible observation (test3) | **1,000 / 1,000 pages** (7,279 citations) |
 | Missing evidence is disclosed by the Judge (test3) | 1,000 / 1,000 pages |
-| Withheld evidence is never used (Exp 5, four withholding conditions) | **0 / 800** decisions used it |
+| Withheld evidence is never used (Exp 5 on test3, four withholding conditions) | **0 / 4,000** decisions used it (dev-2: 0 / 800) |
 
 Text: "Every Judge decision on test3 cites only real, eligible evidence (7,279 citations on 1,000 pages), and
-evidence that was withheld was never used (0 of 800 decisions)."
+evidence that was withheld was never used (0 of 4,000 decisions)."
 
 ## 9. Limitations (state these; they cost little space)
 
@@ -294,7 +326,7 @@ evidence that was withheld was never used (0 of 800 decisions)."
   the baselines).
 - One data source (PhreshPhish) for evaluation; offline, retrospective evidence (no live lookups, screenshots
   without external images).
-- Experiments 2-6 use development data (200 pages).
+- Experiments 2-5 now use test3 (each arm one run); Experiment 6 (not in the paper) uses dev-2.
 - Higher cost than single-prompt baselines (8.5 calls per page).
 - On older, pre-cutoff pages from a different crawler (TR-OP, Tranco benign homepages) our system raises more
   false alarms (FPR 0.24): the decision step learned PhreshPhish-specific URL shapes. Do not claim "equally
@@ -321,7 +353,8 @@ evidence that was withheld was never used (0 of 800 decisions)."
 | ChatPhishDetector / CLASP runs | `runs/test3/ieee` (test3), `runs/cpd/dev`, `runs/cpd/dev3`, `runs/clasp/dev3` (in the runs package, not in git); log: PROTOCOL_V5 "Extra IEEE baseline" and "test3 amendment 5" |
 | test3 first scoring with four baselines (record) | `results_gpt4omini/final/test3/` (`metrics.csv`, `comparisons.csv`, `reading.json`, `pr_auc_ci.json`) |
 | dev-3 selection (and C3 runs) | `results_gpt4omini/d3/result.json` |
-| Exp 2 / 5 | `results_gpt4omini/c2_exps_exp2_exp5.json` |
+| **Exp 2-5 on test3 (the paper's Tables III, V, VI and Exp 3 text)** | `results_gpt4omini/final/test3_exps.json` (`experiments/score_test3_exps.py`; ledgers `runs/test3_exps/`); yield `results_gpt4omini/exp4_escalation/test3.json` |
+| Exp 2 / 5 on dev-2 (earlier record) | `results_gpt4omini/c2_exps_exp2_exp5.json` |
 | Exp 3 | `results_gpt4omini/c2_exps_exp3.json`, `c2_exps_exp3_independence.json` |
 | Exp 6 (+ Judge level, conflict cases) | `results_gpt4omini/c2_exps_exp6.json`, `c2_exps_exp6_judge.json`, `c2_exps_exp6_conflicts.json` |
 | Integrity audit | `results_gpt4omini/audit_c2.json` |
@@ -385,3 +418,79 @@ with every difference significant." with:
 **References.** CLASP and ChatPhishDetector are both already in the reference list; cite ChatPhishDetector with
 its .bib key wherever the text above says [Koide et al.].
 
+
+## 13. Text to paste into the paper: Experiments 2-5 on test3 (2026-10-07)
+
+Follows the current PDF (`MA_ZeroPhish_VerAJ_Ohm (1).pdf`). Only what the move to test3 changes.
+
+**IV-A Dataset and Zero-Day Protocol, last sentence.** Replace "Framework design and mechanism-level analyses use
+development data, whereas the final configuration is evaluated once on a sealed 1,000-page test split." with:
+> Framework design uses development data; the final configuration is frozen and evaluated on a sealed 1,000-page
+> test split, on which the mechanism-level experiments vary one component of the frozen configuration at a time.
+
+**Experiment 2.** In the first sentence, replace "on the 200-object development split" with "on the 1,000-object
+test split". Replace the results paragraph with:
+> Cost-aware selection reduces mean model calls from 8.45 to 5.76 per object (31.8%) without a significant change
+> in F1 (0.883 versus 0.891, $p=0.220$), while its FPR rises from 0.082 to 0.104 (Table III). The result therefore
+> demonstrates a substantial reduction in specialist execution at a small, non-significant cost in detection.
+> The configuration evaluated in Experiment 1 dispatches every applicable specialist; cost-aware selection is
+> evaluated here as the budget-bound alternative of Phase 1.
+
+Table III caption: "SPECIALIST DISPATCH ON THE 1,000-OBJECT TEST SPLIT. CALLS DENOTES MEAN MODEL CALLS PER OBJECT."
+| Dispatch | F1 | FPR | Calls |
+|---|---|---|---|
+| All applicable specialists | 0.891 | 0.082 | 8.45 |
+| Strict trigger-coverage selection | 0.883 | 0.108 | 6.61 |
+| Proposed cost-aware selection | 0.883 | 0.104 | 5.76 |
+
+**Experiment 3, natural-evidence paragraph.** Replace "On naturally occurring evidence from the 200-object
+development split, ... without changing the reported classifications." with:
+> On naturally occurring evidence from the 1,000-object test split, the proposed method forms an average of 10.6
+> dependency groups per object and reduces the duplicated share of Judge support from 0.500 to 0.479, changing 4 of
+> the 1,000 reported classifications (F1 0.891 versus 0.889 without reconciliation, $p=0.625$).
+(Table IV and its paragraph are unchanged: constructed pairs, no split data.)
+
+**Experiment 4.** In the first sentence, replace "on the 200-object development split" with "on the 1,000-object
+test split". Replace the results paragraph (including "Consistently, ... on the sealed test split.") with:
+> Table V shows no significant F1 difference among the three policies ($p \ge 0.30$). Full-agent collaboration
+> achieves the highest evidence-resolution yield (76.5%) and the lowest FPR (0.082), but increases mean model calls
+> from 4.76 without collaboration to 8.45. Targeted collaboration costs 7.62 calls, with a yield of 50.9%. Thus,
+> collaboration primarily provides an evidence-resolution mechanism with additional inference cost rather than a
+> measurable detection gain.
+
+Table V caption: "COLLABORATION POLICIES ON THE 1,000-OBJECT TEST SPLIT. YIELD IS THE PROPORTION OF COLLABORATION
+ROUNDS THAT RESOLVE AN ISSUE OR PRODUCE NEW ELIGIBLE EVIDENCE."
+| Policy | F1 | FPR | Calls | Yield |
+|---|---|---|---|---|
+| Full-agent collaboration | 0.891 | 0.082 | 8.45 | 0.765 |
+| Targeted collaboration | 0.884 | 0.100 | 7.62 | 0.509 |
+| No collaboration | 0.894 | 0.114 | 4.76 | — |
+
+**Experiment 5.** In the first sentence, replace "on the 200-object development split" with "on the 1,000-object
+test split". Replace the results paragraph with:
+> As shown in Table VI, browser retry fully restores the complete-evidence result. Withholding served HTML, the
+> rendered DOM, or network metadata each reduces F1 significantly, to 0.869, 0.867, and 0.847, respectively, with
+> network metadata the largest loss; removing served HTML also raises the FPR from 0.082 to 0.202. Retaining served
+> HTML alone yields 0.887 ($p=0.225$). The exchanged-evidence condition is intentionally adversarial and tests
+> provenance handling rather than modality importance; its F1 and FPR are computed over the 48 exchanged objects
+> only and are therefore not compared with the 1,000-object conditions. Because evidence withholding also routes
+> objects to $\pi^{\text{part}}$ under Eq. (32), these results characterize end-to-end behavior under incomplete
+> evidence rather than the isolated contribution of individual modalities. Importantly, all 7,279 Judge citations
+> on the 1,000-object test split resolve to eligible observations, and none of the 4,000 decisions under evidence
+> withholding cites a withheld field, confirming enforcement of evidence eligibility and coverage constraints.
+
+Table VI caption: "PERFORMANCE UNDER INCOMPLETE EVIDENCE ON THE 1,000-OBJECT TEST SPLIT. ∆F1 IS RELATIVE TO
+COMPLETE EVIDENCE; p IS THE UNADJUSTED EXACT MCNEMAR TEST. THE EXCHANGED-EVIDENCE ROW COVERS THE 48 EXCHANGED
+OBJECTS ONLY."
+| Condition | F1 | FPR | ∆F1 [95% CI] | p |
+|---|---|---|---|---|
+| Complete evidence | 0.891 | 0.082 | — | — |
+| Browser failure, retried | 0.891 | 0.082 | 0.000 [0.000, 0.000] | 1.000 |
+| No served HTML | 0.869 | 0.202 | −0.022 [−0.046, +0.002] | 0.009 |
+| No rendered DOM | 0.867 | 0.116 | −0.024 [−0.048, −0.001] | 0.025 |
+| No network metadata | 0.847 | 0.174 | −0.045 [−0.065, −0.025] | < 0.001 |
+| Served HTML only | 0.887 | 0.188 | −0.005 [−0.027, +0.017] | 0.225 |
+| Exchanged evidence (48) | 0.833 | 0.167 | — | — |
+
+**Conclusion.** Replace "Experiments 2–5 use development data, and each system is run once on the sealed test
+split." with "each system and mechanism-level configuration is run once on the sealed test split."

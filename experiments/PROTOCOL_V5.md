@@ -1995,3 +1995,37 @@ Exp 6 is not run (not in the paper). Endpoints as on dev-2: F1, P, R, FPR, model
 reference with a paired page bootstrap 95% CI (2000 resamples) and the exact McNemar p (unadjusted, as in dev-2's
 Table VI). Descriptive; no reading rule. Pilot: 4 pages per arm first (cost measurement); if the projected total
 exceeds the balance, the user is told before the remaining steps are started.
+Exp 2-5 on test3 -- RESULT (2026-10-07 20:23; 1,000 pages per arm, 0 failures, 0 rate-limit errors; cost $13.08 by
+the credits endpoint; results_gpt4omini/final/test3_exps.json via experiments/score_test3_exps.py, which run on the
+dev-2 ledgers reproduces every published dev-2 number; bootstrap seed "20261007:t3exps").
+Pilot (4 pages): the runners' C2 arms (exp6 "mazerophish", exp5 "base") replayed C2's test3 calls with 0 new calls,
+and the H1 inputs and scores were identical, so runs/test3/ma (F1 0.891) is the reference for every arm. (The
+runners write verdict "insufficient" where dev_eval writes the Judge-mode label; this field is not an H1 input.)
+| arm (vs C2 0.891 / FPR 0.082 / 8.45 calls) | F1 | P | R | FPR | calls | diff [95% CI], McNemar a vs b, p |
+|---|---|---|---|---|---|---|
+| Exp 2 adaptive (strict trigger-coverage) | 0.883 | 0.890 | 0.876 | 0.108 | 6.61 | -0.008 [-0.022, +0.006], 29 vs 19, 0.193 |
+| Exp 2 literal eq. 10 (cost-aware) | 0.883 | 0.893 | 0.872 | 0.104 | 5.76 | -0.009 [-0.023, +0.007], 32 vs 22, 0.220 |
+| Exp 3 no reconciliation | 0.889 | 0.914 | 0.866 | 0.082 | 8.45 | -0.002 [-0.007, +0.002], 3 vs 1, 0.625 |
+| Exp 4 targeted (H1 test3 run) | 0.884 | 0.897 | 0.872 | 0.100 | 7.62 | -0.007 [-0.021, +0.007], 27 vs 19, 0.302 |
+| Exp 4 no collaboration | 0.894 | 0.888 | 0.900 | 0.114 | 4.76 | +0.002 [-0.013, +0.018], 33 vs 32, 1.000 |
+| Exp 5 browser failure, retried | 0.891 | 0.914 | 0.870 | 0.082 | 8.45 | 0.000, 0 vs 0, 1.000 |
+| Exp 5 no served HTML | 0.869 | 0.821 | 0.924 | 0.202 | 8.27 | -0.022 [-0.046, +0.002], 92 vs 59, 0.009 |
+| Exp 5 no rendered DOM | 0.867 | 0.880 | 0.854 | 0.116 | 8.02 | -0.024 [-0.048, -0.001], 70 vs 45, 0.025 |
+| Exp 5 no network metadata | 0.847 | 0.832 | 0.862 | 0.174 | 6.81 | -0.045 [-0.065, -0.025], 82 vs 32, 3e-6 |
+| Exp 5 served HTML only | 0.887 | 0.834 | 0.946 | 0.188 | 4.70 | -0.005 [-0.027, +0.017], 74 vs 59, 0.225 |
+| Exp 5 exchanged evidence (48 objects, own labels) | 0.833 | 0.833 | 0.833 | 0.167 | -- | -- |
+Exp 3 natural evidence: with reconciliation 10.6 dependency groups per page on 999 / 1,000 pages, duplicate-support
+share 0.479; without 0 groups, 0.500 (dev-2 definition, reproduced). Exp 4 yield (escalation_replay.py --runs test3,
+cache replay with dev_eval's own configs, no API call; 999 / 1,000 pages reproduced exactly, pp-6d7c3560634b
+excluded: cache miss for H1, token mismatch for C2): full debate 0.765 (0.99 rounds, 3.69 reinvocations per page),
+targeted 0.509 (1.60 rounds, 2.86 reinvocations). Exp 5 audit: withheld evidence cited or eligible in 0 of 4,000
+decisions; every citation eligible in all 5,000. Test3 conflict cases: build_conflicts.py --split test3, seed 5
+(2,657 candidates; 8 per (label, group) taken by the runner).
+Reading (descriptive, as declared): same conclusions as dev-2 for Exp 2 (calls -32%, no significant F1 change),
+Exp 3 (active, near-zero effect on verdicts) and Exp 4 (no significant F1 difference; full debate the highest
+yield and lowest FPR). Differences from dev-2, reported as they are: in Exp 2 selection raises FPR (0.082 to
+0.104); in Exp 5 losing served HTML or the DOM is now also significant, and "served HTML only" is not
+(-0.005, p = 0.225; every withholding row also switches to the B2 decision model). Note: the four experiments ran
+in parallel on one cache; C2's and H1's cached answers were only read (the replay above confirms them), new
+answers are real model outputs, and a later replay of a new arm may differ on pages where two arms sent the same
+new request at the same time.
