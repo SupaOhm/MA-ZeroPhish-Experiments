@@ -1965,3 +1965,33 @@ significant). Against ChatPhishDetector C2 has the higher accuracy (0.894 vs 0.8
 0.861), about half its false-positive rate (0.082 vs 0.148), and a higher PR-AUC: +0.039 [+0.021, +0.071] (page
 bootstrap 2000, seed "20261006:t3cpd"; secondary, CI computed after the run); ChatPhishDetector has the higher
 recall (0.914 vs 0.870). The four earlier rows are unchanged; their Holm p values rise slightly with six tests.
+
+## Exp 2-5 on test3 (declared 2026-10-07, before any run including pilots; user request; balance $31.61)
+The paper's Experiments 2-5 move from dev-2 (200 pages, development data) to test3 (the 1,000 sealed pages). User
+decision, fixed now: the paper reports these test3 numbers WHATEVER they show (it does not fall back to dev-2 if
+they are weaker), and every arm below is reported. The dev-2 results stay in this log. The system is not changed:
+frozen C2 (FROZEN_C2.json) with the frozen H1 decision step (h1_eval.h1, captures test3; in Exp 5 the withheld
+fields are also withheld from the code features and the routing check, as on dev-2). test3 stays used once for
+Experiment 1; these are component analyses of the frozen system on the same pages, not a new system choice.
+Setup: split test3, --per-label 500 (all 1,000 pages), DATA_VERSION label test3-ecc3c4d9e40dc8e6, cache
+runs/llm_cache_test3 (C2's test3 cache, so identical calls replay), every arm --collaboration full_debate except
+Exp 4's no_collaboration (gate "never"; run without the override). Outputs runs/test3_exps/<exp>.
+Reference: C2's test3 run (runs/test3/ma, ma_v4abdfFD; F1 0.891). Check first: each runner's C2 arm (exp6
+"mazerophish", exp5 "base") on 4 pages with the test3 cache; if every call replays (0 new calls), the runner
+configuration equals C2's test3 run and runs/test3/ma is the reference for every arm. If not, that runner's C2 arm
+is run on all 1,000 pages and is the reference for its arms (as on dev-2), and both C2 runs are reported.
+Arms, in this order (each step only if the balance covers its measured cost; stop with $1 left):
+ 1. Exp 2: complete__mazerophish (adaptive) and complete__literal_eq10; all-specialists = C2.
+ 2. Exp 4: no_collaboration; full debate = C2, targeted = the H1 test3 run (runs/test3/ma, ma_v4abdf). Collaboration
+    yield and calls / page from the ledgers, computed as on dev-2.
+ 3. Exp 3, natural evidence: ablation2_no_reconciliation (exp6 runner): dependency groups per page and the
+    duplicate-support share with vs without reconciliation, and verdict changes. The constructed-pair evaluation
+    (2,599 pairs, Table IV) uses no split data and is unchanged.
+ 4. Exp 5: no_html, no_dom, no_network_metadata, cum3_+html_no_browser, transient_browser_recoverable; then the
+    conflicting-evidence cases: test3 conflict captures built by build_conflicts.py --split test3 (the dev-2
+    procedure, no model call), 8 per (label, group) as on dev-2; plus the eligibility audit (withheld evidence
+    cited or eligible).
+Exp 6 is not run (not in the paper). Endpoints as on dev-2: F1, P, R, FPR, model calls / page; each arm vs the
+reference with a paired page bootstrap 95% CI (2000 resamples) and the exact McNemar p (unadjusted, as in dev-2's
+Table VI). Descriptive; no reading rule. Pilot: 4 pages per arm first (cost measurement); if the projected total
+exceeds the balance, the user is told before the remaining steps are started.
