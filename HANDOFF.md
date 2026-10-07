@@ -26,13 +26,13 @@ declared there BEFORE it was run.
   replacement text** (the draft still says "exceeds every baseline").
 - **Final system C2 = the earlier H1 with full-debate collaboration** (Phase 3). Chosen on a fresh
   development set (dev-3) by a rule fixed in advance; the decision step (P1 / B2) is unchanged.
-- **Experiments 2-6 were re-run with C2** on dev-2 (development data). Summary in section 5; full tables in
-  PAPER_RESULTS.md.
+- **Experiments 2-5 are on test3** (2026-10-07, frozen C2, declared before running; $13). Experiment 6 stays on
+  dev-2. Summary in section 5; tables and Overleaf text in PAPER_RESULTS.md Sections 7 and 13.
 - **Model:** GPT-4o-mini (`openrouter:openai/gpt-4o-mini-2024-07-18`) for our system and every baseline.
 - **Not done (optional, needs credit):** a table of our system with other LLMs (like the PhishDebate paper;
   ~$20-25 for three cheap models on 500 test3 pages, GPT-4o alone ~$50+); Experiment 6 "no independent
   Judge" on test3 (~$3.5). GPT-4o-mini stays the main model whatever such a table shows.
-- **OpenRouter credit:** about $2 left (account credits endpoint). Check before any paid run
+- **OpenRouter credit:** about $18 left (account credits endpoint). Check before any paid run
   (GET https://openrouter.ai/api/v1/credits; print only totals, never the key).
 - **Teammates' work merged:** PR #3 (goya's rounds), #4 (full-debate fix + round FD), #5 (round JL).
   PRs #6 / #7 (JL documentation) are still open.
@@ -94,10 +94,10 @@ rebuild + test3 scoring `experiments/score_test2.py --test3`.
 | **1 test3** | detection vs 6 baselines, unseen zero-day pages | **F1 0.891, highest; WIN vs 5, TIE vs ChatPhishDetector (0.887)**; PR-AUC 0.955 vs ChatPhishDetector 0.917, PhishDebate 0.921 / +screenshot 0.931 |
 | 1 IEEE baselines on dev-3 | ChatPhishDetector, CLASP (development) | both 0.885 vs C2 0.902 (n.s. on 500 pages) |
 | 1 selection (dev-3) | choosing the final system | full debate 0.902 vs targeted 0.886 (rule met) |
-| 2 | specialist selection | F1 0.927-0.941; up to a third fewer model calls |
-| 3 | common-cause reconciliation | detection pair F1 0.952, 0% double counting; active on 200/200 pages; no verdict changes |
-| 4 | collaboration policy | full debate 0.943 (2-run mean) vs targeted 0.935 on dev-2 (n.s.); test3 0.891 vs 0.884 |
-| 5 | missing evidence | browser failure fully recovered; only network metadata significant (-0.036) |
+| 2 (test3) | specialist selection | calls 8.45 -> 5.76 (-32%), F1 0.883 vs 0.891 (n.s.), FPR 0.082 -> 0.104 |
+| 3 (test3) | common-cause reconciliation | constructed pairs F1 0.952, 0% double counting; 10.6 groups/page on 999/1,000 test3 pages; 4 verdicts changed (n.s.) |
+| 4 (test3) | collaboration policy | full 0.891 / targeted 0.884 / none 0.894 (all n.s.); yield 0.765 vs 0.509; FPR 0.082 / 0.100 / 0.114 |
+| 5 (test3) | missing evidence | retry fully recovered; no HTML / no DOM / no network metadata all significant (-0.022 / -0.024 / -0.045); withheld evidence used 0/4,000 |
 | 6 | ablations | no final-verdict change; without Judge independence the Judge's AUC drops 0.881 -> 0.834 (significant) |
 | test2 (H1) | earlier evaluation | F1 0.887, highest of 11, tie by rule (not in the paper) |
 | TR-OP / N2 | older, pre-cutoff pages | weaker (FPR 0.24-0.33): limitation |
