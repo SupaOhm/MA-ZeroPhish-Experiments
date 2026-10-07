@@ -32,8 +32,12 @@ RUNS = {"base": ("runs/v4_exp/exp4", "runs/llm_cache"),
         "rep1": ("runs/v4_exp_rep1/exp4", "runs/llm_cache_rep1"),
         "rep2": ("runs/v4_exp_rep2/exp4", "runs/llm_cache_rep2"),
         # round FD: the fixed full debate, one process, rep1's cache (full_debate arm only)
-        "fdfix": ("runs/v4_exp_rep1_fdfix/exp4", "runs/llm_cache_rep1")}
+        "fdfix": ("runs/v4_exp_rep1_fdfix/exp4", "runs/llm_cache_rep1"),
+        # PROTOCOL_V5 "Exp 2-5 on test3": C2 (full debate) and H1 (targeted) test3 runs, test3 cache
+        "test3": ("runs/test3/ma", "runs/llm_cache_test3")}
 ARMS = {"mazerophish": config.MAZEROPHISH, "full_debate": config.BASELINE_FULL_DEBATE}
+# test3 ledgers come from dev_eval's variants: H1 = v4abdf (targeted), C2 = v4abdfFD (full debate)
+TEST3 = {"mazerophish": ("ma_v4abdf", "v4abdf"), "full_debate": ("ma_v4abdfFD", "v4abdfFD")}
 CHECK = ("verdict", "model_calls", "input_tokens", "output_tokens", "judge_score_any")
 OUT = ROOT / "experiments" / "results_gpt4omini" / "exp4_escalation"
 
@@ -128,7 +132,9 @@ def rounds_summary(trace):
 
 def stored(ledger_dir, arm):
     out = {}
-    for f in glob.glob(str(ROOT / ledger_dir / f"exp[46]_phreshphish_test*__{arm}.jsonl")):
+    pat = (f"devv4_phreshphish_test3__*__{TEST3[arm][0]}.jsonl" if ledger_dir == RUNS["test3"][0]
+           else f"exp[46]_phreshphish_test*__{arm}.jsonl")
+    for f in glob.glob(str(ROOT / ledger_dir / pat)):
         for l in open(f, encoding="utf-8"):
             e = json.loads(l)
             if e["kind"] == "decision" and not e.get("parent_object_id"):
@@ -142,10 +148,15 @@ def replay(run, arm, limit=None):
     extra = next(iter(ref.values()))["model_extra"]
     os.environ.setdefault("OPENROUTER_API_KEY", "replay-only-no-network")
     model = adapter.ChatModel(MODEL, cache_dir=str(ROOT / cache), extra=extra, min_interval=0, verify=False)
-    cfg = replace(SR.frozen_system(MODEL, ARMS[arm], version="v4")[0], name=arm)
+    split = "test3" if run == "test3" else "test"
+    if run == "test3":
+        import dev_eval
+        cfg = replace(dev_eval.variants(MODEL)[TEST3[arm][1]], name=arm)
+    else:
+        cfg = replace(SR.frozen_system(MODEL, ARMS[arm], version="v4")[0], name=arm)
     pages, failed = {}, {}
     for c in sorted(ref)[:limit]:
-        capture = SR.load_capture(str(SR.DATA / "phreshphish" / "captures" / "test" / f"{c}.json"))
+        capture = SR.load_capture(str(SR.DATA / "phreshphish" / "captures" / split / f"{c}.json"))
         sp = SR.LLMSpecialists(model, max_lines=cfg.evidence_max_lines, max_chars=cfg.evidence_max_chars,
                                baseline_view=cfg.specialist_baseline_view,
                                expand_on_focus=cfg.specialist_expand_on_focus,
