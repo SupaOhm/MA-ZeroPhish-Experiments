@@ -71,10 +71,10 @@ rebuild + test3 scoring `experiments/score_test2.py --test3`.
 | fit | 839 used (1,000 in manifest) | Jul 2024 - Jan 2025 | trains the decision step |
 | dev | 300 | Feb - Jul 2025 | development |
 | calib | 300 | Jul - Sep 2025 | calibration |
-| dev-2 (old "test") | 200 | Sep - Dec 2025 | development; Experiments 2-6 |
+| dev-2 (old "test") | 200 | Sep - Dec 2025 | development; Experiment 6 (earlier runs of Exp 2-5) |
 | test2 | 200 | Sep - Dec 2025 | used once for H1 (not in the paper) |
 | dev-3 | 500 | Sep - Dec 2025 | choosing the final system (round D3) |
-| **test3** | **1,000** | **Sep - Dec 2025** | **the evaluation** |
+| **test3** | **1,000** | **Sep - Dec 2025** | **the evaluation (Exp 1) and Experiments 2-5** |
 | trop_fit / trop_ext | 400 / 200 | 2022-2023 | TR-OP-source pages (round TD; normal-set check) |
 
 - Source: PhreshPhish (own-domain, campaign-disjoint splits). test3 and dev-3 were built from shards
@@ -124,7 +124,8 @@ Common flags: `--model openrouter:openai/gpt-4o-mini-2024-07-18 --env <.env> --m
 | test3 scoring (rebuilds the frozen decision steps, refuses if anything changed) | `<venv> -B experiments/score_test2.py --test3` |
 | test3 with the two IEEE baselines (main table) | `<venv> -B experiments/score_test2.py --test3-ieee` (needs `runs/test3/ieee`) |
 | dev-3 selection | `<venv> -B experiments/d3_eval.py` |
-| Exp 2-6 with C2 | runners with `--collaboration full_debate` (see PROTOCOL_V5 "Exp 2-6 with C2"); scoring snippets recorded there |
+| **Exp 2-5 on test3** | runs: `sh runs/test3_exps/run_all.sh` (ledgers in the runs package); scoring ($0): `<venv> -B experiments/score_test3_exps.py` (`--dev2` reproduces dev-2); yield: `experiments/exp4_collaboration/escalation_replay.py --runs test3 --out-name test3.json` |
+| Exp 2-6 with C2 on dev-2 (earlier) | runners with `--collaboration full_debate` (see PROTOCOL_V5 "Exp 2-6 with C2"); scoring snippets recorded there |
 | C2 on test2 (supplementary) | `<venv> -B experiments/c2_test2_eval.py` |
 | pipeline runs | `experiments/dev_eval.py --variants v4abdfFD --split <fit/dev/calib/dev3> ...` (test3 only with `--sealed-test3-final`) |
 | baselines | `experiments/exp1_detection/run_baselines.py --arm ... [--screenshots]` (arms include `chatphishdetector`, `clasp`) |
@@ -151,7 +152,8 @@ Common flags: `--model openrouter:openai/gpt-4o-mini-2024-07-18 --env <.env> --m
 | `experiments/PAPER_RESULTS.md` | **everything needed for the paper** |
 | `experiments/PROTOCOL_V5.md` | complete dated log |
 | `experiments/results_gpt4omini/final/` | FROZEN_C2 / FROZEN_H1, GO_TEST3, test3 results (`test3_ieee/` = main table) |
-| `experiments/results_gpt4omini/d3/`, `c2_exps_*.json` | dev-3 selection, Experiments 2-6 with C2 |
+| `experiments/results_gpt4omini/final/test3_exps.json` | **Experiments 2-5 on test3 (the paper's Tables III, V, VI)** |
+| `experiments/results_gpt4omini/d3/`, `c2_exps_*.json` | dev-3 selection; Experiments 2-6 with C2 on dev-2 (earlier record) |
 | `prototype/` | the system (agents, phases, model adapter with response cache) |
 | `experiments/dev_eval.py`, `system_runner.py` | configurations, runs, split guards |
 | `experiments/data_eval/` | dataset building, evaluation, provenance |

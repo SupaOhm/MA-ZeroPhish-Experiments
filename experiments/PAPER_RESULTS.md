@@ -1,7 +1,7 @@
 # MA-ZeroPhish: results for the paper (final, updated 2026-10-06)
 
 This is the one document to write the paper from (Overleaf). It covers the final system, what changed from
-the original design, the data, the main result (test3), Experiments 2-6, ready-to-paste tables and text, and
+the original design, the data, the main result (test3), Experiments 2-5 (test3) and 6, ready-to-paste tables and text, and
 what must and must not be claimed. Every number below comes from a stored run; the dated log of every decision
 (including the attempts that failed) is [PROTOCOL_V5.md](PROTOCOL_V5.md).
 
@@ -70,9 +70,9 @@ and averaging 3 runs (not a fair comparison with single-run baselines).
 | fit | 839 used (1,000 in the manifest) | Jul 2024 - Jan 2025 | trains the decision step |
 | dev | 300 (150 / 150) | Feb - Jul 2025 | development |
 | calib | 300 (150 / 150) | Jul - Sep 2025 | calibration and thresholds |
-| dev-2 | 200 (100 / 100) | Sep - Dec 2025 | development (Experiments 2-6) |
+| dev-2 | 200 (100 / 100) | Sep - Dec 2025 | development (Experiment 6; earlier runs of Exp 2-5) |
 | dev-3 | 500 (250 / 250) | Sep - Dec 2025 | choosing the final system (fresh, used only for that) |
-| **test3** | **1,000 (500 / 500)** | **Sep - Dec 2025** | **the evaluation: system frozen first, run once** |
+| **test3** | **1,000 (500 / 500)** | **Sep - Dec 2025** | **the evaluation: system frozen first, run once (Experiment 1); Experiments 2-5 vary one part of the frozen system** |
 
 - Source: **PhreshPhish** (Hugging Face), own-domain pages, exact de-duplication, campaigns grouped
   (site / page skeleton / text) and kept in one split only; every test3 / dev-3 group disjoint from all others.
@@ -208,7 +208,7 @@ Honest note: full debate's three dev-3 runs scored 0.902 / 0.888 / 0.883, so its
 targeted version is small (test3: +0.007). Its lead over five of the baselines (+0.02 to +0.08 on test3) is
 larger than this run-to-run spread; its lead over ChatPhishDetector (+0.005) is not.
 
-## 7. Experiments 2-6 (component analysis)
+## 7. Experiments 2-5 on test3, and 6 on dev-2 (component analysis)
 
 **Updated 2026-10-07: Experiments 2-5 are now on test3** (the same 1,000 sealed pages as Experiment 1; frozen
 C2, one run per arm, 0 failures; declared in PROTOCOL_V5 "Exp 2-5 on test3" before running, with the rule that
@@ -358,7 +358,7 @@ evidence that was withheld was never used (0 of 4,000 decisions)."
 | Exp 3 | `results_gpt4omini/c2_exps_exp3.json`, `c2_exps_exp3_independence.json` |
 | Exp 6 (+ Judge level, conflict cases) | `results_gpt4omini/c2_exps_exp6.json`, `c2_exps_exp6_judge.json`, `c2_exps_exp6_conflicts.json` |
 | Integrity audit | `results_gpt4omini/audit_c2.json` |
-| Exp 4 full debate (2 runs) | PROTOCOL_V5 round FD + "Exp 2-6 with C2" |
+| Exp 4 on dev-2 (earlier record; full debate 2 runs) | PROTOCOL_V5 round FD + "Exp 2-6 with C2" |
 | Frozen system, GO | `results_gpt4omini/final/FROZEN_C2.json`, `FROZEN_H1.json`, `GO_TEST3.json` |
 
 ## 12. Text to paste into the paper (Overleaf)
