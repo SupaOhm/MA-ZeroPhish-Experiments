@@ -206,7 +206,7 @@ if __name__ == "__main__":
     ap.add_argument("step", choices=["fetch", "build"])
     ap.add_argument("--out", default="experiments/data_eval/data/phreshphish")
     ap.add_argument("--parquet", nargs="*", default=None, help="downloaded PhreshPhish test shards")
-    ap.add_argument("--split", default="test3", help="test3 (default) or dev3 (PROTOCOL_V5 round D3)")
+    ap.add_argument("--split", default="test3", help="test3 (default), dev3 (PROTOCOL_V5 round D3) or test4 (TRACE-Phish T4-1)")
     ap.add_argument("--seed", default=SEED)
     ap.add_argument("--n", type=int, default=N_PER_LABEL, help="pages per label")
     a = ap.parse_args()
