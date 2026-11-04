@@ -117,9 +117,14 @@ def build(row, data: Path, stats: Counter) -> dict:
         render = dict(render, status="failed", failure_reason="offline_navigation_error")
         stats[f"render_offline_navigation_error:{row.label}"] += 1
     if render and render["status"] == "obtained":
+        if (ev / "rendered_dom.html").exists():
+            artifacts.append({"field": "dom", "content": (ev / "rendered_dom.html").read_text(encoding="utf-8"),
+                              "instrument": render["instrument"]})
+        else:
+            # The stored DOM file was deleted after rendering (antivirus quarantine of
+            # phishing HTML, T4-1, 2026-11-04). Label-blind: recorded, never re-rendered.
+            failures["dom"] = "dom_file_removed_by_antivirus"
         artifacts += [
-            {"field": "dom", "content": (ev / "rendered_dom.html").read_text(encoding="utf-8"),
-             "instrument": render["instrument"]},
             {"field": "page_content", "content": render["visible_text"],
              "instrument": render["instrument"]},
             {"field": "screenshot",
