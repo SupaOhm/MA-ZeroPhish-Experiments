@@ -1,0 +1,58 @@
+{
+ "pages": 1000,
+ "phishing": 500,
+ "benign": 500,
+ "arms": {
+  "full_debate_C2": {
+   "f1": 0.8913934426229508,
+   "precision": 0.9138655462184874,
+   "recall": 0.87,
+   "fpr": 0.082,
+   "accuracy": 0.894,
+   "pr_auc": 0.9553539097168741
+  },
+  "targeted": {
+   "f1": 0.8843813387423936,
+   "precision": 0.897119341563786,
+   "recall": 0.872,
+   "fpr": 0.1,
+   "accuracy": 0.886,
+   "pr_auc": 0.9575569346912283
+  },
+  "no_collaboration": {
+   "f1": 0.8937437934458788,
+   "precision": 0.8875739644970414,
+   "recall": 0.9,
+   "fpr": 0.114,
+   "accuracy": 0.893,
+   "pr_auc": 0.957358181968444
+  }
+ },
+ "matched": {
+  "recall_0.870": {
+   "full_debate_C2": {
+    "fpr": 0.08,
+    "achieved_recall": 0.87
+   },
+   "targeted": {
+    "fpr": 0.102,
+    "achieved_recall": 0.87
+   },
+   "no_collaboration": {
+    "fpr": 0.094,
+    "achieved_recall": 0.87
+   },
+   "targeted_minus_C2_fpr": 0.021999999999999992,
+   "targeted_minus_C2_ci95": [
+    -0.00784313725490196,
+    0.04174573055028463
+   ],
+   "no_collaboration_minus_C2_fpr": 0.013999999999999999,
+   "no_collaboration_minus_C2_ci95": [
+    -0.019455252918287938,
+    0.037848605577689244
+   ]
+  }
+ },
+ "method": "one shared threshold on the calibrated H1 score q (both routes), set per arm to the highest value reaching the target recall on the 500 phishing pages; FPR on the 500 benign pages; CI: 2000 page bootstrap resamples with the threshold re-set inside each resample; post hoc"
+}
