@@ -155,6 +155,33 @@ here, so it has no row.
   tags); visible text (lowercased, digits normalized, >= 200 characters). Platform-hosted pages excluded; one
   page per group per label (`data_eval/fingerprint.py`, `data_eval/build_test3.py`).
 
+### Item 7 / R2.2: the zero-day evaluation, control by control (test3)
+
+What "zero-day" means here, as the controls below implement it: a test page is unseen by the system (no page,
+duplicate or campaign of it in any training, calibration or development split), observed after every
+training and calibration page, observed after the model's knowledge cutoff, and judged without any
+information that only exists after its observation date. It does not mean unknown to the world: PhreshPhish
+collects its phishing pages from feeds, so a test page may have appeared on a blocklist; reputation and
+blocklists are never an input.
+
+| # | Control | What was done (test3) | Source |
+|---|---|---|---|
+| 1 | Temporal separation | Training (fit) 2024-07-02 – 2024-10-31; dev 2025-02-01 – 2025-07-05; calib 2025-07-06 – 2025-09-08; test3 2025-09-08 – 2025-12-15 | manifest, ledgers (Item 7 table) |
+| 2 | Fresh source shards | test3 drawn from PhreshPhish v1.0.1 test shards `test-001` and `test-002`, not used by any earlier split; 10,995 rows read | PROTOCOL_V5 test3 build entry |
+| 3 | Exact de-duplication | Same HTML hash or same normalized URL kept once (1,059 duplicates removed) | `build_test3.py`, `build_report_test3.json` |
+| 4 | Campaign-disjoint | Union-find over exact site, page-skeleton and visible-text keys (no threshold); every group sharing a page sha256 or a key with ANY existing split is blocked (253 of 6,102 groups); one page per group per label (999 groups for 1,000 pages) | `fingerprint.py`, `build_test3.py`, build report |
+| 5 | After the model's cutoff | GPT-4o-mini cutoff 2023-10 (OpenAI: "Oct 01, 2023 knowledge cutoff"); all 1,000 test3 pages are flagged post-cutoff for GPT-4o-mini, and also for GPT-4o, gpt-oss-120b / 20b, Gemma-4-31B and Llama-3.2-11B-Vision | manifest `post_cutoff`, `manifest.py` `MODEL_CUTOFFS` |
+| 6 | No future information: rendering | Stored HTML rendered by headless Edge with all network blocked (DNS forced to fail, dead proxy); instrument recorded as `...-headless-offline`, `network: all_blocked` | `enrich.py` `OFFLINE_FLAGS` |
+| 7 | No future information: certificates | crt.sh certificates kept only if valid on or before the observation date (`no_covering_cert_valid_before_observation` otherwise) | `enrich.py` CT v2 |
+| 8 | No future information: registration | RDAP withheld for every case, both labels: a lookup today mostly reveals takedowns after observation | `build_captures.py` (`excluded_retrospective_lookup_leaks_future_takedown`) |
+| 9 | No live lookups | Live DNS, TLS and hosting recorded as `not_retrospectively_observable`, never filled in | `build_captures.py` |
+| 10 | No reputation features | No blocklist or reputation input to any agent or to the decision model; manifest `reputation_absent` is "unknown" (feed-sourced data) | captures, `manifest.py` |
+| 11 | Own-domain pages only | Pages on shared hosting platforms (PSL private suffixes) excluded, because platform hosting was a label shortcut | test3 plan, `build_test3.py` |
+| 12 | Sealed and frozen | System frozen before test3 (`FROZEN_C2.json`, decision models trained on fit and calibrated on calib, not refitted); `GO_TEST3.json`; each system run once on test3; no page looked at before scoring | PROTOCOL_V5 "C2 FROZEN", "test3 GO" |
+
+Limits that stay: pages can resemble older phishing kits even when the page itself is new, so pretraining
+exposure to similar content cannot be ruled out; one dataset (PhreshPhish) and one model family.
+
 ### Item 11: pretraining overlap, the cutoff checked
 
 OpenAI's model page for gpt-4o-mini (https://developers.openai.com/api/docs/models/gpt-4o-mini, read
