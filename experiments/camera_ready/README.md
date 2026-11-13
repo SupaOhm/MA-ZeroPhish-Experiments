@@ -3,6 +3,8 @@
 New numbers for the reviewers' comments, computed on 2026-11-13. All cost $0: they read the stored ledgers
 and captures, and make no model call. Nothing in the frozen system changed.
 
+All results, tables and sources in one place: [`CAMERA_READY_RESULTS.md`](CAMERA_READY_RESULTS.md).
+
 | Command | Review point | Data | Output |
 |---|---|---|---|
 | `baselines --split dev3` | R3.1: page-feature-only and Judge-free decision models | dev-3, 500 pages (development) | `results/baselines_dev3.json` |
