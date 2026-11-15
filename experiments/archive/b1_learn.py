@@ -2,8 +2,8 @@
 Selection by grouped CV on fit only; Platt + high-precision threshold on calib; adoption on dev by
 the declared rule (dev F1 > 0.923 and dev precision >= 0.916). Test pages reported as exploratory.
 
-    python experiments/b1_learn.py select
-    python experiments/b1_learn.py apply
+    python experiments/archive/b1_learn.py select
+    python experiments/archive/b1_learn.py apply
 """
 import csv
 import glob
@@ -13,7 +13,7 @@ import subprocess
 import sys
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "prototype"))
 sys.path.insert(0, str(ROOT / "experiments"))
 import v5_learn as L  # noqa: E402

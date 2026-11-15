@@ -1,13 +1,13 @@
 """Descriptive table (round TD, not adopted): H1, H1+JL, H1-TD and H1-TD+JL next to the six paper baselines on
 dev (300), dev-2 (200) and TR-OP (200; development data since the diagnosis). No model call.
 
-    python experiments/td_vs_baselines.py
+    python experiments/archive/td_vs_baselines.py
 """
 import json
 import sys
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "prototype"))
 sys.path.insert(0, str(ROOT / "experiments"))
 import b2_learn as B  # noqa: E402

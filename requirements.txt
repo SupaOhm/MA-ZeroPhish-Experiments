@@ -1,0 +1,7 @@
+# Prototype: Public Suffix List for registrable domains (pinned to match experiments/data_eval).
+tldextract==5.3.2
+# Data tooling: corpus building, offline evidence, ChatPhishDetector preprocessing.
+beautifulsoup4>=4.12
+lxml>=5
+requests>=2.31
+pyarrow>=15

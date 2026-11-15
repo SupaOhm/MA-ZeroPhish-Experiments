@@ -1,8 +1,8 @@
 """PROTOCOL_V5 round BR: brand-reference check (one model call per page) and its evaluation as decision
 features for P1 inside H1.
 
-    python experiments/brand_check.py run  --env <.env>     # tool calls (cached in runs/llm_cache_brand)
-    python experiments/brand_check.py eval                  # no model call
+    python experiments/archive/brand_check.py run  --env <.env>     # tool calls (cached in runs/llm_cache_brand)
+    python experiments/archive/brand_check.py eval                  # no model call
 """
 import argparse
 import json
@@ -12,7 +12,7 @@ import sys
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "prototype"))
 sys.path.insert(0, str(ROOT / "experiments"))
 import hybrid_eval as H  # noqa: E402

@@ -1,7 +1,7 @@
 """PROTOCOL_V5 round M1: case-memory features (nearest labelled fit pages) for P1; H1+M keeps B2 and the
 routing. Memory = fit pages and their labels only. No model call.
 
-    python experiments/memory_m1.py
+    python experiments/archive/memory_m1.py
 """
 import json
 import math
@@ -11,7 +11,7 @@ import sys
 from collections import Counter, defaultdict
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "prototype"))
 sys.path.insert(0, str(ROOT / "experiments"))
 import hybrid_eval as H  # noqa: E402

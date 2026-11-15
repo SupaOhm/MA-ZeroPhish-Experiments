@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # PROTOCOL_V2.md step 4: run the declared test experiments ONCE for v2 and v2b (in parallel
-# per experiment), into runs/<version>/expN. Resumable. Usage: bash experiments/run_v2_test.sh
+# per experiment), into runs/<version>/expN. Resumable. Usage: bash experiments/archive/run_v2_test.sh
 set -uo pipefail
 M="openrouter:openai/gpt-4o-mini-2024-07-18"
 X='{"provider":{"order":["openai"],"allow_fallbacks":false,"data_collection":"deny"}}'

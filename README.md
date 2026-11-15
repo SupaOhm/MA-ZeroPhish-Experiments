@@ -1,121 +1,161 @@
 # MA-ZeroPhish experiments
 
-Independent implementation repository for coworkers extending the shared prototype
-for the paper's six experiments. It has its own Git history and requires no access
-to the original research repository.
+[![checks](https://github.com/SupaOhm/MA-ZeroPhish-Experiments/actions/workflows/checks.yml/badge.svg)](https://github.com/SupaOhm/MA-ZeroPhish-Experiments/actions/workflows/checks.yml)
 
-## Team status — read this first (updated 2026-09-29)
+Implementation and evaluation code for **MA-ZeroPhish: Adaptive Multi-Agent Multimodal AI with
+Collaborative Reasoning for Zero-Day Phishing Detection** (Sirindhorn International Institute of
+Technology, Thammasat University: Supakorn Prayongyam, Tinpat Vittayaphanpracha, Thanapat Wicharn,
+Kanyakorn Na Songkhla, Somchart Fugkeaw).
 
-**Role 2 (Data & Evaluation) is done.** The corpus, evidence, prototype captures and the
-scoring tool are on branch `data-eval`; the full handoff — what is ready, what the data means,
-and what each role does next — is in
-[experiments/data_eval/HANDOFF.md](experiments/data_eval/HANDOFF.md).
+The repository holds the evaluated system, every experiment runner and scorer, and the stored results
+(metrics, comparisons, frozen decision steps) behind the numbers in the paper. The model calls and the
+phishing pages themselves are not in Git; see [Data](#data).
 
-- **Data:** download the shared package `ma-zerophish-data-7fa6084808ee4025.zip` (Drive link in
-  the team chat), unzip, and run
-  `python -m experiments.data_eval.package verify --dir <folder>`; it must report
-  `DATA_VERSION 7fa6084808ee4025 … version check OK`. It contains real phishing pages: never
-  open captured HTML in a browser.
-- **Main zero-day test:** PhreshPhish `test` (200 cases, all after every model's cutoff).
-  Tune on `dev`, fit the estimator/τ on `calib`, report final numbers on `test` only.
-- **PhishDebate comparison:** TR-OP and Mendeley, 500/500 each. SMS/Email reported separately.
-- **Models:** free models first (Gemma 4 31B best in screening, gpt-oss-120b fastest); a paid
-  model only if the free run succeeds.
-- **Results:** write one `decision` event per submission (format in HANDOFF §4) and send the
-  ledger to role 2, who scores all arms with `experiments/data_eval/evaluate.py`.
+> **Safety.** The corpus is made of real phishing pages. Never open captured HTML in a browser.
 
-### Rules for every experiment: real results only
-1. **No simulation.** The fake specialists and stand-in Judge are for tests only. The scorer
-   refuses ledgers from `fake-deterministic` or unnamed models. Never write, estimate or
-   extrapolate a number by hand.
-2. **No AI hallucination.** Model outputs must cite evidence that exists and quote it verbatim;
-   invalid citations are rejected and their rate is reported. AI coding assistants must not
-   invent results, citations, dataset facts or model details — verify every claim at the source.
-3. **Keep raw logs** of every model call. **Report failures** (API/quota/parse) instead of
-   filling them in. **Report bad news** too: no cherry-picking after seeing test results.
+## The evaluated system
 
-## What is included
+Webpages only. One backing model for every agent and every baseline: GPT-4o-mini
+(`openai/gpt-4o-mini-2024-07-18`, through OpenRouter).
 
-- `prototype/`: all implemented phase logic, contracts, replay, budget accounting,
-  configuration switches, metrics scaffold, eleven test files and eight sample captures.
-- `experiments/handoffs/`: six implementation briefs, one per paper experiment.
-- `experiments/registry.md`: only EXP-012 through EXP-017 and their shared setup.
-- `docs/`: system specification, governing decision, the complete main-paper source and
-  figure, open protocol questions, and the latest implementation handoff.
-- `EXPORT-MANIFEST.json`: source revision, content hashes and documented export edits.
-
-Runtime Python and capture JSON are copied byte for byte from the working prototype,
-including the dispatch repair that was not yet committed in the source repository.
-Documentation links were adapted; this README and the two helper scripts are new.
-No source Git history, research archive, old experiment runs, literature library,
-agent/session configuration, credentials or live corpus is included.
-
-## Agent start here
-
-[AGENTS.md](AGENTS.md) defines the reading order, repository-only work boundary,
-implementation rules and checks for coding agents. [CLAUDE.md](CLAUDE.md) is Claude's
-entry point to those same instructions. Agents should read their assigned handoff
-and the local paper's evaluation/framework sections before changing code.
-
-## Get started
-
-Python 3.14 is the original development environment. The current prototype requires
-only the standard library; no package install or API key is needed.
-
-```bash
-python3 -B -m unittest discover -s prototype/tests -p 'test_*.py'
-python3 -B scripts/check.py
-python3 -B scripts/run_demo.py --output runs/demo-001
+```
+page -> evidence (URL, served HTML, offline render: DOM / text / screenshot, CT records)
+     -> Phase 1  Orchestrator: shared acquisition, normalization, specialist dispatch
+     -> Phase 2  specialists (URL, Web Structure, Content + screenshot, Metadata): findings citing evidence lines
+     -> Phase 3  Moderator: common-cause reconciliation, one round of full-agent collaboration
+     -> Phase 4  independent Judge (sees findings and evidence lines, not the agents' verdicts) -> probability
+     -> decision step: calibrated gradient-boosted trees, routed by evidence completeness
 ```
 
-Expect 177 passing tests. The demo writes one ledger per arm plus `summary.json`.
-Use a new output directory for each run; the wrapper refuses to overwrite one.
-All verdicts are currently `insufficient`, deliberately: specialists replay authored
-findings and the Judge is a deterministic stand-in. Tokens are zero and cost is unit
-budget spend, not an API bill. These fixtures test the framework, not detection.
-
-## Experiment handoffs
-
-| Paper experiment | Brief |
+| Part | Code |
 |---|---|
-| 1 — Detection performance | [EXP-012](experiments/handoffs/experiment-1-detection.md) |
-| 2 — Acquisition and selection | [EXP-013](experiments/handoffs/experiment-2-selection.md) |
-| 3 — Provenance reconciliation | [EXP-014](experiments/handoffs/experiment-3-reconciliation.md) |
-| 4 — Uncertainty-driven collaboration | [EXP-015](experiments/handoffs/experiment-4-collaboration.md) |
-| 5 — Missing and conflicting evidence | [EXP-016](experiments/handoffs/experiment-5-robustness.md) |
-| 6 — Ablations | [EXP-017](experiments/handoffs/experiment-6-ablations.md) |
+| Agents, phases, model adapter (with response cache) | [`prototype/`](prototype/) (`agents/`, `phases/`, `models/`, `run.py`) |
+| Baselines: single agent, CoT, PhishDebate, ChatPhishDetector, CLASP | [`prototype/arms/`](prototype/arms/) |
+| Pipeline configurations and runs (final variant `v4abdfFD`) | [`experiments/dev_eval.py`](experiments/dev_eval.py), [`experiments/system_runner.py`](experiments/system_runner.py) |
+| Decision step (fit, calibration, routing) | [`experiments/v5_precision_p1.py`](experiments/v5_precision_p1.py), [`experiments/b2_learn.py`](experiments/b2_learn.py), [`experiments/hybrid_eval.py`](experiments/hybrid_eval.py) |
+| Frozen final system | [`experiments/results_gpt4omini/final/FROZEN_C2.json`](experiments/results_gpt4omini/final/FROZEN_C2.json) |
+| Corpus building, offline evidence, scoring | [`experiments/data_eval/`](experiments/data_eval/README.md) |
 
-Each coworker extends one shared framework. Put experiment-specific preparation,
-condition matrices and reports in the suggested experiment directories; do not copy
-phases into six separate programs. Coordinate model adapters, capture schema, logging
-and scoring changes before merging. Read [prototype status](prototype/README.md) and
-[the implementation handoff](docs/implementation-handoff.md) before starting.
+## Install
 
-## Specification and remaining work
+Python 3.13 or newer.
 
-The complete [main-paper source](docs/paper/main.tex), all sections and its figure
-are included as a reference snapshot. Start with the [paper reading guide](docs/paper/README.md),
-[framework](docs/paper/sections/03-framework.tex) and
-[evaluation](docs/paper/sections/04-evaluation.tex). LaTeX compilation is not verified. The readable [system model](docs/system-model.md)
-is a dated translation, not a statement that every described feature is implemented.
-The paper's Overleaf version is the upstream authority; agents use this local
-snapshot and must not fetch or sync external versions without a user request. See
-[contract precedence](docs/contract-authority.md) and
-[protocol questions](docs/protocol-open-items.md).
+```bash
+git clone https://github.com/SupaOhm/MA-ZeroPhish-Experiments.git
+cd MA-ZeroPhish-Experiments
+python3 -m venv .venv && . .venv/bin/activate     # Windows: .venv\Scripts\activate
+pip install -r requirements.txt
+```
 
-Real specialist/Judge adapters, trained/calibrated stopping-error estimation, the
-single-agent baseline, real corpus integration and complete evaluation tooling remain
-work to implement. The handoffs identify each experiment's dependencies and tests.
+## Run the checks (no data, no API key)
 
-## Collaboration
+```bash
+python -B -m unittest discover -s prototype/tests -p 'test_*.py'   # 308 tests
+python -B -m unittest experiments.data_eval.test_data_eval          # 20 tests
+python -B -m unittest experiments.test_system_runner                # 3 tests
+python -B scripts/check.py                                          # documentation links
+python -B scripts/preflight.py                                      # what you can reproduce on this machine
+```
 
-Commit shared changes here and work on branches for each experiment. This repository
-has no remote until one is explicitly added; creating a remote or inviting teammates
-is separate from this local export. Experiment data and generated runs are ignored
-by default. Store reproducible configuration and code in Git, and keep provider
-credentials out of it.
+`preflight.py` lists every table of the report as READY or BLOCKED, with what is missing. The same checks,
+the demo and Experiment 3 run on every push ([`.github/workflows/checks.yml`](.github/workflows/checks.yml)).
 
-## Repository layout (2026-10-02)
-- `prototype/`, `experiments/`: the final system (H1) and every experiment; start with `HANDOFF.md`.
-- `paper_faithful/`: Ohm's paper-faithful implementation, kept for reference (see its README).
-- Single branch: `main`. All earlier branches were merged and deleted; their history is preserved.
+The prototype tests include the framework's prohibitions (for example, the Judge never sees specialist
+verdicts or bands) checked against running code.
+
+**Scripted demo.** `python -B scripts/run_demo.py --output runs/demo-001` runs nine configurations over
+the eight hand-built captures in `prototype/captures/` with scripted specialists and a stand-in Judge. It
+writes one ledger per configuration and `summary.json`. Every verdict is `insufficient` by design: it
+exercises the phases, not detection.
+
+**One result you can reproduce without data.** Experiment 3 (dependency reconciliation, Table VII of the
+report) runs on constructed records stored in Git:
+
+```bash
+python -B experiments/exp3_reconciliation/score.py fit   --cases experiments/exp3_reconciliation/cases_v2
+python -B experiments/exp3_reconciliation/score.py score --cases experiments/exp3_reconciliation/cases_v2 --split test
+```
+
+Expected: 2,599 pairs; common-cause-aware reconciliation (`provenance_cc`) precision 0.908, recall
+1.000, F1 0.952.
+
+## Data
+
+The corpus is drawn from PhreshPhish (T. Dalton et al., "PhreshPhish: A Real-World, High-Quality,
+Large-Scale Phishing Website Dataset and Benchmark", arXiv:2507.10854, 2025): own-domain webpages,
+de-duplicated and grouped into campaigns, with no page or campaign shared between splits. The fit,
+development and calibration splits are ordered in time; the final development split and the sealed test
+split cover the same window and are separated by campaign. How the corpus is built is in
+[`experiments/data_eval/`](experiments/data_eval/README.md) and
+[`DATASET_PROVENANCE.md`](experiments/data_eval/DATASET_PROVENANCE.md).
+
+Two packages are needed to re-score the detection experiments. Neither is in this repository, because
+both contain live phishing content:
+
+| Package | Contents | Unpack to |
+|---|---|---|
+| Data package, `DATA_VERSION fab2359ef66ab843` (1.1 GB) | manifest, raw HTML, offline renders, CT records, captures | so that `experiments/data_eval/data/phreshphish/` exists |
+| Runs packages (several zips) | model ledgers and response caches; which zip holds which ledgers is listed in [`docs/internal/HANDOFF.md`](docs/internal/HANDOFF.md) §6 and [`table_v/README.md`](experiments/camera_ready/table_v/README.md) | `runs/` at the repository root |
+
+Contact the authors for access. Verify the data package after unpacking:
+
+```bash
+python -m experiments.data_eval.package verify --dir <unzipped package root>
+```
+
+With both packages, re-scoring reads the response cache and costs nothing. A new model run needs an
+OpenRouter key in a `.env` file outside the repository, passed with `--env <path>`.
+
+## Reproducing the report's tables
+
+Table numbers follow the CSS453 final report. The ISPA paper and the files under `experiments/camera_ready/`
+number them differently (there, the main table is Table II and Experiment 4 is Table V).
+
+All commands run from the repository root with both packages unpacked. Scoring scripts refuse to run
+if a training ledger or a frozen threshold differs from
+[`FROZEN_H1.json`](experiments/results_gpt4omini/final/FROZEN_H1.json).
+
+| Report table | Command | Stored output |
+|---|---|---|
+| III Data splits | (from the manifest; recorded) | [`CAMERA_READY_RESULTS.md`](experiments/camera_ready/CAMERA_READY_RESULTS.md), Item 7 |
+| IV Detection on the sealed 1,000-page test split | `python -B experiments/score_test2.py --test3-ieee` | [`final/test3_ieee/`](experiments/results_gpt4omini/final/test3_ieee/) (`metrics.csv`, `comparisons.csv`) |
+| IV cost columns | `python -B experiments/camera_ready/cr_analysis.py cost` | [`camera_ready/results/cost_test3.json`](experiments/camera_ready/results/cost_test3.json) |
+| IV ROC-AUC, TPR at FPR ≤ 1% | `python -B experiments/camera_ready/table_v/table_v_matched_recall.py` | [`table_v/results/`](experiments/camera_ready/table_v/results/) |
+| V Specialist dispatch (Exp. 2), IX Incomplete evidence (Exp. 5) | `python -B experiments/score_test3_exps.py` | [`final/test3_exps.json`](experiments/results_gpt4omini/final/test3_exps.json) |
+| VI Decision-model inputs (post hoc) | `python -B experiments/camera_ready/cr_analysis.py baselines --split dev3` and `--split test3` | [`camera_ready/results/baselines_*.json`](experiments/camera_ready/results/) |
+| VII Dependency reconciliation (Exp. 3) | see [above](#run-the-checks-no-data-no-api-key) (no packages needed; a new run writes `runs/exp3/exp3_test.json`) | [`exp3_reconciliation/results/exp3_v2_test.json`](experiments/exp3_reconciliation/results/exp3_v2_test.json) |
+| VIII Collaboration policies (Exp. 4) | `python -B experiments/score_test3_exps.py`; yield: `python -B experiments/exp4_collaboration/escalation_replay.py --runs test3 --out-name test3.json`; matched recall: `python -B experiments/camera_ready/cr_analysis.py exp4` | [`final/test3_exps.json`](experiments/results_gpt4omini/final/test3_exps.json), [`exp4_escalation/test3.json`](experiments/results_gpt4omini/exp4_escalation/test3.json), [`camera_ready/results/exp4_matched_recall_test3.json`](experiments/camera_ready/results/exp4_matched_recall_test3.json) |
+
+`cr_analysis.py baselines` and `exp4` read the data from `MAZP_DATA_PP` when it is set; see
+[`experiments/camera_ready/README.md`](experiments/camera_ready/README.md). Post hoc analyses are
+labeled as such in the report.
+
+## How the evaluation was run
+
+- Every detection number comes from stored ledgers of real model calls; Experiment 3 scores constructed
+  records stored in Git. No simulated results.
+- Each change was declared, with its acceptance rule, before it was run; every round is logged,
+  including the rejected ones, in [`experiments/PROTOCOL_V5.md`](experiments/PROTOCOL_V5.md)
+  (earlier rounds: `PROTOCOL_V2.md`–`PROTOCOL_V4.md`).
+- The decision step is trained on fit, developed on dev and dev-3, calibrated on calib. The system was
+  frozen before the sealed test split was scored, and each system was run on it once.
+- Our system and the baselines use the same model and inputs. API errors are retried, never scored.
+- Results summary for the paper: [`experiments/PAPER_RESULTS.md`](experiments/PAPER_RESULTS.md); the
+  camera-ready analyses: [`experiments/camera_ready/CAMERA_READY_RESULTS.md`](experiments/camera_ready/CAMERA_READY_RESULTS.md).
+
+## Repository layout
+
+| Path | What |
+|---|---|
+| `prototype/` | the system: contracts, agents, phases, model adapter, baselines, tests, eight demo captures |
+| `experiments/` | runners, decision-step training, scorers, protocols and results |
+| `experiments/exp1_detection/` … `exp6_ablations/` | per-experiment runners and scorers |
+| `experiments/archive/` | scripts of development rounds that were not adopted, with the moved-paths table |
+| `experiments/camera_ready/` | post hoc analyses for the camera-ready (stored ledgers only, no model calls) |
+| `experiments/results_gpt4omini/` | stored metrics and comparisons per round; `final/` is the evaluation |
+| `experiments/data_eval/` | corpus building, offline evidence acquisition, data package tools |
+| `experiments/handoffs/` | the original per-experiment implementation briefs |
+| `docs/` | the paper snapshot the experiments were built against, and the system specification |
+| `docs/internal/` | team handoff notes and the export manifest |
+| `paper_faithful/` | an earlier model-backed pipeline, kept for reference; not the evaluated system |
+| `AGENTS.md`, `CLAUDE.md` | instructions for coding agents working in this repository |

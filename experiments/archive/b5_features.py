@@ -1,8 +1,8 @@
 """PROTOCOL_V5 round B5: extra decision features from what the system already produces (B5a) and
 from a deterministic brand-domain check (B5b). No model call.
 
-    python experiments/b5_features.py select
-    python experiments/b5_features.py apply
+    python experiments/archive/b5_features.py select
+    python experiments/archive/b5_features.py apply
 """
 import csv
 import glob
@@ -12,7 +12,7 @@ import subprocess
 import sys
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "prototype"))
 sys.path.insert(0, str(ROOT / "experiments"))
 import v5_learn as L  # noqa: E402

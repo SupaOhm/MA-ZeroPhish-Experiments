@@ -1,0 +1,33 @@
+name: checks
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - run: pip install -r requirements.txt
+      - name: Prototype tests
+        run: python -B -m unittest discover -s prototype/tests -p 'test_*.py'
+      - name: Data tooling tests
+        run: python -B -m unittest experiments.data_eval.test_data_eval
+      - name: System runner tests
+        run: python -B -m unittest experiments.test_system_runner
+      - name: Documentation links
+        run: python -B scripts/check.py
+      - name: Scripted demo
+        run: python -B scripts/run_demo.py --output runs/demo-ci
+      - name: Experiment 3 on constructed records (report Table VII)
+        run: |
+          python -B experiments/exp3_reconciliation/score.py fit --cases experiments/exp3_reconciliation/cases_v2
+          python -B experiments/exp3_reconciliation/score.py score --cases experiments/exp3_reconciliation/cases_v2 --split test | tee exp3.txt
+          grep -E '^provenance_cc \| 2599 \| 0\.908 \| 1\.000 \| 0\.952 ' exp3.txt
+      - name: Preflight
+        run: python -B scripts/preflight.py
