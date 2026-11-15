@@ -90,7 +90,9 @@ split cover the same window and are separated by campaign. How the corpus is bui
 [`DATASET_PROVENANCE.md`](experiments/data_eval/DATASET_PROVENANCE.md).
 
 Two packages are needed to re-score the detection experiments. Neither is in this repository, because
-both contain live phishing content. Contact the authors for access.
+both contain live phishing content. Download both zips from the
+[project Google Drive folder](https://drive.google.com/drive/folders/1C_yk4ypAWmBGvJUrBfphCpYk4RTASwZZ?usp=sharing)
+(request access if asked; access is granted by the authors).
 
 | Package | Contents | Unpack to |
 |---|---|---|
