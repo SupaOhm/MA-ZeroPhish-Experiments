@@ -3,7 +3,7 @@ the v3 system with the placeholder calibration (identity, w = 0). Checks: no exc
 every decision logs the Judge's raw score, verdicts follow the declared band rule, full
 dispatch happened, evidence limits 80 x 300 in force.
 
-    python experiments/smoke_v3.py --model openrouter:openai/gpt-4o-mini-2024-07-18 \
+    python experiments/archive/smoke_v3.py --model openrouter:openai/gpt-4o-mini-2024-07-18 \
         --env ../MA_ZeroPhish_VerAJ_Ohm/.env --extra '<json>' --n 6
 """
 import argparse
@@ -13,7 +13,7 @@ import tempfile
 from dataclasses import replace
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "prototype"))
 sys.path.insert(0, str(ROOT / "experiments"))
 

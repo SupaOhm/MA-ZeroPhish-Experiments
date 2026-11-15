@@ -144,6 +144,7 @@ labeled as such in the report.
 | `prototype/` | the system: contracts, agents, phases, model adapter, baselines, tests, eight demo captures |
 | `experiments/` | runners, decision-step training, scorers, protocols and results |
 | `experiments/exp1_detection/` … `exp6_ablations/` | per-experiment runners and scorers |
+| `experiments/archive/` | scripts of development rounds that were not adopted, with the moved-paths table |
 | `experiments/camera_ready/` | post hoc analyses for the camera-ready (stored ledgers only, no model calls) |
 | `experiments/results_gpt4omini/` | stored metrics and comparisons per round; `final/` is the evaluation |
 | `experiments/data_eval/` | corpus building, offline evidence acquisition, data package tools |

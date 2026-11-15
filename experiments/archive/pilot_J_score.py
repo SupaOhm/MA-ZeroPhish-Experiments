@@ -1,13 +1,13 @@
 """PROTOCOL_V5 round J pilot: go/no-go exactly as declared. No model call.
 
-    python experiments/pilot_J_score.py
+    python experiments/archive/pilot_J_score.py
 """
 import collections
 import json
 import sys
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "experiments"))
 import pilot_G_score as G  # noqa: E402
 

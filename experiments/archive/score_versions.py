@@ -2,7 +2,7 @@
 experiments/results_gpt4omini/v2/. Arms are relabelled "<version>__<arm>" so versions never
 merge (evaluate.py groups by arm name); forced views come from forced_ledger.forced().
 
-    python experiments/score_versions.py
+    python experiments/archive/score_versions.py
 """
 import glob
 import json
@@ -10,7 +10,7 @@ import subprocess
 import sys
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "experiments"))
 from forced_ledger import forced  # noqa: E402
 

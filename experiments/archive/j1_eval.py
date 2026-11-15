@@ -1,14 +1,14 @@
 """PROTOCOL_V5 round J1: the cross-modality Judge (new p + 5 matrix features) for P1 inside H1, with the
 BR adoption rule exactly as declared. The B2 route keeps the frozen v4abdf Judge. No model call.
 
-    python experiments/j1_eval.py
+    python experiments/archive/j1_eval.py
 """
 import json
 import random
 import sys
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "prototype"))
 sys.path.insert(0, str(ROOT / "experiments"))
 import hybrid_eval as H  # noqa: E402

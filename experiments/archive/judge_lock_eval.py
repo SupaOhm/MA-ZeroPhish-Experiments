@@ -2,14 +2,14 @@
 No model call, nothing refit; reads the same dev / dev-2 ledgers as h1_eval.py. Writes
 results_gpt4omini/judge_lock/result.json.
 
-    python experiments/judge_lock_eval.py
+    python experiments/archive/judge_lock_eval.py
 """
 import json
 import math
 import sys
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "experiments"))
 import b2_eval as E  # noqa: E402
 import h1_eval as X  # noqa: E402
