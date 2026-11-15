@@ -77,7 +77,9 @@ Expected: 2,599 pairs; common-cause-aware reconciliation (`provenance_cc`) preci
 
 The corpus is drawn from PhreshPhish (T. Dalton et al., "PhreshPhish: A Real-World, High-Quality,
 Large-Scale Phishing Website Dataset and Benchmark", arXiv:2507.10854, 2025): own-domain webpages,
-de-duplicated, split chronologically and by campaign. How it is built is in
+de-duplicated and grouped into campaigns, with no page or campaign shared between splits. The fit,
+development and calibration splits are ordered in time; the final development split and the sealed test
+split cover the same window and are separated by campaign. How the corpus is built is in
 [`experiments/data_eval/`](experiments/data_eval/README.md) and
 [`DATASET_PROVENANCE.md`](experiments/data_eval/DATASET_PROVENANCE.md).
 
@@ -86,19 +88,22 @@ both contain live phishing content:
 
 | Package | Contents | Unpack to |
 |---|---|---|
-| Data package, `DATA_VERSION fab2359ef66ab843` (1.1 GB) | manifest, raw HTML, offline renders, CT records, captures for every split | `experiments/data_eval/data/` |
-| Runs package | every model ledger and the model response cache | `runs/` at the repository root |
+| Data package, `DATA_VERSION fab2359ef66ab843` (1.1 GB) | manifest, raw HTML, offline renders, CT records, captures | so that `experiments/data_eval/data/phreshphish/` exists |
+| Runs packages (several zips) | model ledgers and response caches; which zip holds which ledgers is listed in [`docs/internal/HANDOFF.md`](docs/internal/HANDOFF.md) §6 and [`table_v/README.md`](experiments/camera_ready/table_v/README.md) | `runs/` at the repository root |
 
 Contact the authors for access. Verify the data package after unpacking:
 
 ```bash
-python -m experiments.data_eval.package verify --dir experiments/data_eval/data
+python -m experiments.data_eval.package verify --dir <unzipped package root>
 ```
 
 With both packages, re-scoring reads the response cache and costs nothing. A new model run needs an
 OpenRouter key in a `.env` file outside the repository, passed with `--env <path>`.
 
 ## Reproducing the report's tables
+
+Table numbers follow the CSS453 final report. The ISPA paper and the files under `experiments/camera_ready/`
+number them differently (there, the main table is Table II and Experiment 4 is Table V).
 
 All commands run from the repository root with both packages unpacked. Scoring scripts refuse to run
 if a training ledger or a frozen threshold differs from
@@ -112,7 +117,7 @@ if a training ledger or a frozen threshold differs from
 | IV ROC-AUC, TPR at FPR ≤ 1% | `python -B experiments/camera_ready/table_v/table_v_matched_recall.py` | [`table_v/results/`](experiments/camera_ready/table_v/results/) |
 | V Specialist dispatch (Exp. 2), IX Incomplete evidence (Exp. 5) | `python -B experiments/score_test3_exps.py` | [`final/test3_exps.json`](experiments/results_gpt4omini/final/test3_exps.json) |
 | VI Decision-model inputs (post hoc) | `python -B experiments/camera_ready/cr_analysis.py baselines --split dev3` and `--split test3` | [`camera_ready/results/baselines_*.json`](experiments/camera_ready/results/) |
-| VII Dependency reconciliation (Exp. 3) | see [above](#run-the-checks-no-data-no-api-key) | `runs/exp3/exp3_test.json` |
+| VII Dependency reconciliation (Exp. 3) | see [above](#run-the-checks-no-data-no-api-key) (no packages needed; a new run writes `runs/exp3/exp3_test.json`) | [`exp3_reconciliation/results/exp3_v2_test.json`](experiments/exp3_reconciliation/results/exp3_v2_test.json) |
 | VIII Collaboration policies (Exp. 4) | `python -B experiments/score_test3_exps.py`; yield: `python -B experiments/exp4_collaboration/escalation_replay.py --runs test3 --out-name test3.json`; matched recall: `python -B experiments/camera_ready/cr_analysis.py exp4` | [`final/test3_exps.json`](experiments/results_gpt4omini/final/test3_exps.json), [`exp4_escalation/test3.json`](experiments/results_gpt4omini/exp4_escalation/test3.json), [`camera_ready/results/exp4_matched_recall_test3.json`](experiments/camera_ready/results/exp4_matched_recall_test3.json) |
 
 `cr_analysis.py baselines` and `exp4` read the data from `MAZP_DATA_PP` when it is set; see
@@ -121,7 +126,8 @@ labeled as such in the report.
 
 ## How the evaluation was run
 
-- Every reported number comes from a stored ledger of real model calls. No simulated results.
+- Every detection number comes from stored ledgers of real model calls; Experiment 3 scores constructed
+  records stored in Git. No simulated results.
 - Each change was declared, with its acceptance rule, before it was run; every round is logged,
   including the rejected ones, in [`experiments/PROTOCOL_V5.md`](experiments/PROTOCOL_V5.md)
   (earlier rounds: `PROTOCOL_V2.md`–`PROTOCOL_V4.md`).
