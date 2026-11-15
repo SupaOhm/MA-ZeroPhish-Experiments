@@ -1,13 +1,13 @@
 """PROTOCOL_V5 round TD: P1 and B2 retrained with the trop_fit rows added (like the fit rows), Platt and
 thresholds on calib as before, routing unchanged; the declared adoption rule. No model call.
 
-    python experiments/td_eval.py
+    python experiments/archive/td_eval.py
 """
 import json
 import sys
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "prototype"))
 sys.path.insert(0, str(ROOT / "experiments"))
 import b2_learn as B  # noqa: E402

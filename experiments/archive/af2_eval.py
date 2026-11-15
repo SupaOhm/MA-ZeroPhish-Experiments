@@ -1,15 +1,15 @@
 """PROTOCOL_V5 round AF2: per-agent scores (separate call) as decision features for P1 inside H1, with
 the BR adoption rule exactly as declared. No model call.
 
-    (first: python experiments/af2_check.py per set -- decisions must equal the v4abdf ledgers)
-    python experiments/af2_eval.py
+    (first: python experiments/archive/af2_check.py per set -- decisions must equal the v4abdf ledgers)
+    python experiments/archive/af2_eval.py
 """
 import json
 import random
 import sys
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "prototype"))
 sys.path.insert(0, str(ROOT / "experiments"))
 import hybrid_eval as H  # noqa: E402

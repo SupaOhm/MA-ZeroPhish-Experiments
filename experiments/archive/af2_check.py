@@ -1,7 +1,7 @@
 """PROTOCOL_V5 round AF2: the v4abdfAF2 ledger must reproduce the reference v4abdf decisions exactly
 (Judge score and evidence features) on every page; only the separate per-agent scores are new.
 
-    python experiments/af2_check.py <af2 ledger glob> <reference ledger glob>
+    python experiments/archive/af2_check.py <af2 ledger glob> <reference ledger glob>
 """
 import glob
 import json

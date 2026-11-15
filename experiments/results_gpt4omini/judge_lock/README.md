@@ -78,4 +78,4 @@ The Judge's probability takes only a few values, and no calib page reaches 0.95.
 | small effect | **caution** | 4 of 500 pages, p = 0.125. The 3 runs use the same 200 pages, so they are not new evidence. Only test3, once and after freezing, can confirm it. |
 
 Reproduce ($0; needs `runs/` and data package 545370aaf6ad14c6):
-`python experiments/judge_lock_eval.py` and `python experiments/judge_lock_eval.py --repeats`.
+`python experiments/archive/judge_lock_eval.py` and `python experiments/archive/judge_lock_eval.py --repeats`.

@@ -1,13 +1,13 @@
 """PROTOCOL_V5 round G pilot: A/B/C and cost for v4abdfG vs the v4abdf re-run (same 50 dev pages,
 same fresh cache), plus the go/no-go rule exactly as declared. No model call.
 
-    python experiments/pilot_G_score.py
+    python experiments/archive/pilot_G_score.py
 """
 import glob
 import json
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).resolve().parents[2]
 MAN = {json.loads(l)["case_id"]: json.loads(l)["label"] for l in
        open(ROOT / "experiments/data_eval/data/phreshphish/manifest.jsonl", encoding="utf-8")}
 CASES = {l.strip() for l in open(ROOT / "experiments/results_gpt4omini/pilot_G_cases.txt") if l.strip()}
