@@ -46,6 +46,9 @@ TARGETS = [
      True, FROZEN + [C2]),
     ("Table VIII matched recall", "python -B experiments/camera_ready/cr_analysis.py exp4", True,
      FROZEN + [C2, H1, NO_COLLAB]),
+    ("Table VIII yield (escalation replay)",
+     "python -B experiments/exp4_collaboration/escalation_replay.py --runs test3 --out-name test3.json", True,
+     [C2, H1, "runs/llm_cache_test3/*"]),
 ]
 
 

@@ -90,14 +90,23 @@ split cover the same window and are separated by campaign. How the corpus is bui
 [`DATASET_PROVENANCE.md`](experiments/data_eval/DATASET_PROVENANCE.md).
 
 Two packages are needed to re-score the detection experiments. Neither is in this repository, because
-both contain live phishing content:
+both contain live phishing content. Contact the authors for access.
 
 | Package | Contents | Unpack to |
 |---|---|---|
-| Data package, `DATA_VERSION fab2359ef66ab843` (1.1 GB) | manifest, raw HTML, offline renders, CT records, captures | so that `experiments/data_eval/data/phreshphish/` exists |
-| Runs packages (several zips) | model ledgers and response caches; which zip holds which ledgers is listed in [`docs/internal/HANDOFF.md`](docs/internal/HANDOFF.md) §6 and [`table_v/README.md`](experiments/camera_ready/table_v/README.md) | `runs/` at the repository root |
+| `ma-zerophish-data-7c91c500558f6559.zip` (1.5 GB; `DATA_VERSION 7c91c500558f6559`) | manifest, offline renders, CT records, captures (with the served HTML) for every split | move the contents of its top folder into `experiments/data_eval/data/`, so that `experiments/data_eval/data/phreshphish/manifest.jsonl` exists |
+| `ma-zerophish-runs.zip` (157 MB) | model ledgers for the frozen decision step, dev-3, the test split and Experiments 2, 4, 5, and the test-split response cache | move `ma-zerophish-runs/runs` to `runs/` at the repository root |
 
-Contact the authors for access. Verify the data package after unpacking:
+SHA-256 of the zips: data `675368822527a3a9ada378bb6fb039879655a6a44e95d9a7a50ad2ffc8c905b5`, runs
+`563601867ea0ec70450ac52571f2261c809defa6a11c3f3754c8dadc14d1f97d`. Each zip also holds a file of
+per-file checksums. The data package supersedes `fab2359ef66ab843`: it contains every data file of that
+package unchanged, plus a split used by a separate project (`test4`, whose 1,000 rows are appended to
+`manifest.jsonl`). With both packages unpacked,
+`scripts/preflight.py` reports every table READY, and every command in the table below reproduces
+the stored outputs.
+
+Unpack on Linux or WSL if you can: Windows antivirus may delete the phishing HTML files.
+Verify the data package after unpacking:
 
 ```bash
 python -m experiments.data_eval.package verify --dir <unzipped package root>
