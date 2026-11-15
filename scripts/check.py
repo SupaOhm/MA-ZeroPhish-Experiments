@@ -21,7 +21,7 @@ paper = ROOT / "docs/paper"
 for tex in paper.rglob("*.tex"):
     for kind, target in re.findall(
         r"\\(input|include|includegraphics)(?:\[[^\]]*\])?\{([^}]+)\}",
-        tex.read_text(),
+        tex.read_text(encoding="utf-8"),
     ):
         destination = paper / target
         if kind in {"input", "include"} and not destination.suffix:
@@ -34,7 +34,7 @@ for path in ROOT.rglob("*.md"):
     # Code (fenced blocks, incl. indented ones, and inline spans) is not Markdown:
     # `reasoners[agent](envelope)` is not a link.
     lines, fenced = [], False
-    for line in path.read_text().splitlines():
+    for line in path.read_text(encoding="utf-8").splitlines():
         if line.lstrip().startswith("```"):
             fenced = not fenced
         elif not fenced:

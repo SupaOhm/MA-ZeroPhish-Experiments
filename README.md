@@ -155,6 +155,7 @@ labeled as such in the report.
 | `experiments/results_gpt4omini/` | stored metrics and comparisons per round; `final/` is the evaluation |
 | `experiments/data_eval/` | corpus building, offline evidence acquisition, data package tools |
 | `experiments/handoffs/` | the original per-experiment implementation briefs |
+| `demo/` | clickable class-demo prototype (`demo/index.html`, open in a browser; invented example pages, no real phishing) |
 | `docs/` | the paper snapshot the experiments were built against, and the system specification |
 | `docs/internal/` | team handoff notes and the export manifest |
 | `paper_faithful/` | an earlier model-backed pipeline, kept for reference; not the evaluated system |
