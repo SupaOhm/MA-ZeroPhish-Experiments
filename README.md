@@ -1,5 +1,7 @@
 # MA-ZeroPhish experiments
 
+[![checks](https://github.com/SupaOhm/MA-ZeroPhish-Experiments/actions/workflows/checks.yml/badge.svg)](https://github.com/SupaOhm/MA-ZeroPhish-Experiments/actions/workflows/checks.yml)
+
 Implementation and evaluation code for **MA-ZeroPhish: Adaptive Multi-Agent Multimodal AI with
 Collaborative Reasoning for Zero-Day Phishing Detection** (Sirindhorn International Institute of
 Technology, Thammasat University: Supakorn Prayongyam, Tinpat Vittayaphanpracha, Thanapat Wicharn,
@@ -52,7 +54,11 @@ python -B -m unittest discover -s prototype/tests -p 'test_*.py'   # 308 tests
 python -B -m unittest experiments.data_eval.test_data_eval          # 20 tests
 python -B -m unittest experiments.test_system_runner                # 3 tests
 python -B scripts/check.py                                          # documentation links
+python -B scripts/preflight.py                                      # what you can reproduce on this machine
 ```
+
+`preflight.py` lists every table of the report as READY or BLOCKED, with what is missing. The same checks,
+the demo and Experiment 3 run on every push ([`.github/workflows/checks.yml`](.github/workflows/checks.yml)).
 
 The prototype tests include the framework's prohibitions (for example, the Judge never sees specialist
 verdicts or bands) checked against running code.
