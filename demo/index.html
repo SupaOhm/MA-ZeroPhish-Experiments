@@ -1,0 +1,553 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>html{-webkit-text-size-adjust:100%}body{margin:0}img{max-width:100%}[hidden]{display:none!important}:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}</style>
+<title>MA-ZeroPhish Prototype</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap">
+<style>
+/* Layout: an analyst tool. Input on top; the run (stages + live log) in the middle; the verdict with traceable reasons below. */
+:root {
+  --bg: #eef1f5;
+  --panel: #ffffff;
+  --ink: #18212e;
+  --muted: #5b6676;
+  --line: #d6dce5;
+  --accent: #1f5f8b;
+  --accent-soft: #e3eef6;
+  --phish: #b4372e;
+  --phish-soft: #f8e5e3;
+  --safe: #2f7a4b;
+  --safe-soft: #e2f1e7;
+  --grey: #6b6f78;
+  --grey-soft: #eceef1;
+  --warn: #9a6a00;
+  --warn-soft: #f6edd6;
+  --log-bg: #17202b;
+  --log-ink: #cfe0ee;
+  --font-display: "Space Grotesk", "Segoe UI", system-ui, sans-serif;
+  --font-body: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0f141a; --panel: #18202a; --ink: #e6ebf1; --muted: #9aa6b5; --line: #2b3542;
+    --accent: #7fb6dc; --accent-soft: #1d3346; --phish: #ef8a80; --phish-soft: #3a2020;
+    --safe: #7fcf9b; --safe-soft: #1c3326; --grey: #a4a9b2; --grey-soft: #262d37;
+    --warn: #e2b850; --warn-soft: #362d17; --log-bg: #0b1016; --log-ink: #cfe0ee; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0f141a; --panel: #18202a; --ink: #e6ebf1; --muted: #9aa6b5; --line: #2b3542;
+  --accent: #7fb6dc; --accent-soft: #1d3346; --phish: #ef8a80; --phish-soft: #3a2020;
+  --safe: #7fcf9b; --safe-soft: #1c3326; --grey: #a4a9b2; --grey-soft: #262d37;
+  --warn: #e2b850; --warn-soft: #362d17; --log-bg: #0b1016; --log-ink: #cfe0ee; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 16px; line-height: 1.5;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 18px 44px;
+}
+.wrap { max-width: 1120px; margin: 0 auto; display: flex; flex-direction: column; gap: 16px; }
+.appbar { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 8px 16px; }
+.brand { display: flex; align-items: center; gap: 10px; }
+.logo { width: 34px; height: 34px; border-radius: 8px; background: var(--accent); display: grid; place-items: center; color: var(--panel); font-family: var(--font-display); font-weight: 700; font-size: 0.95rem; }
+.brand b { font-family: var(--font-display); font-size: 1.35rem; }
+.brand span { color: var(--muted); font-size: 0.9rem; display: block; line-height: 1.1; }
+.tag { font-family: var(--font-mono); font-size: 0.75rem; color: var(--warn); background: var(--warn-soft); padding: 4px 9px; border-radius: 4px; }
+
+.card { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 18px 20px; min-width: 0; }
+.card h2 { font-family: var(--font-display); font-size: 1.15rem; margin: 0 0 10px; }
+
+/* input */
+.inrow { display: flex; gap: 10px; flex-wrap: wrap; }
+.inrow input {
+  flex: 1 1 320px; min-width: 0; font: inherit; font-family: var(--font-mono); font-size: 0.98rem;
+  padding: 11px 13px; border: 1px solid var(--line); border-radius: 8px; background: var(--bg); color: var(--ink);
+}
+.inrow input:focus-visible { outline: 3px solid var(--accent); outline-offset: 1px; }
+.btn { font: inherit; font-weight: 600; cursor: pointer; border-radius: 8px; padding: 10px 18px; border: 1px solid var(--line); background: var(--panel); color: var(--ink); }
+.btn.go { background: var(--accent); border-color: var(--accent); color: var(--panel); min-width: 120px; }
+.btn:disabled { opacity: 0.5; cursor: default; }
+.btn:focus-visible, .ex:focus-visible, select:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.exrow { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-top: 12px; }
+.exrow > span { color: var(--muted); font-size: 0.9rem; }
+.ex { font: inherit; font-size: 0.88rem; cursor: pointer; border: 1px solid var(--line); background: var(--panel); color: var(--ink); border-radius: 999px; padding: 6px 12px; }
+.ex[aria-pressed="true"] { border-color: var(--accent); background: var(--accent-soft); color: var(--accent); font-weight: 600; }
+.msg { margin-top: 10px; font-size: 0.9rem; color: var(--warn); }
+.opts { display: flex; gap: 8px; align-items: center; color: var(--muted); font-size: 0.88rem; margin-left: auto; }
+.opts select { font: inherit; font-size: 0.88rem; padding: 4px 6px; border-radius: 6px; border: 1px solid var(--line); background: var(--panel); color: var(--ink); }
+
+/* run */
+.run { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 16px; align-items: stretch; }
+.stages { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.st { display: grid; grid-template-columns: 26px minmax(0, 1fr); gap: 10px; align-items: start; padding: 8px 10px; border-radius: 8px; border: 1px solid transparent; }
+.st .ic { width: 24px; height: 24px; border-radius: 50%; display: grid; place-items: center; font-size: 0.8rem; font-weight: 700; border: 2px solid var(--line); color: var(--muted); background: var(--panel); }
+.st .nm { font-weight: 600; }
+.st .out { font-size: 0.88rem; color: var(--muted); min-height: 1.3em; }
+.st.wait { opacity: 0.55; }
+.st.now { border-color: var(--accent); background: var(--accent-soft); }
+.st.now .ic { border-color: var(--accent); border-top-color: transparent; }
+.st.ok .ic { border-color: var(--safe); background: var(--safe); color: var(--panel); }
+.st.warn .ic { border-color: var(--warn); background: var(--warn); color: var(--panel); }
+.st.skip .ic { border-style: dashed; }
+@media (prefers-reduced-motion: no-preference) {
+  .st.now .ic { animation: spin 0.8s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+}
+.log { background: var(--log-bg); color: var(--log-ink); border-radius: 10px; padding: 12px 14px; font-family: var(--font-mono); font-size: 0.8rem; line-height: 1.55; height: 100%; min-height: 320px; max-height: 470px; overflow-y: auto; }
+.log .ln { white-space: pre-wrap; overflow-wrap: anywhere; }
+.log .t { opacity: 0.55; }
+.log .p { color: #f19b92; } .log .s { color: #8fd6a8; } .log .w { color: #e6c46b; } .log .a { color: #9cc8ea; }
+.loghead { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px; }
+.loghead h2 { margin: 0; }
+
+/* result */
+.verdict { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 22px; border-radius: 10px; padding: 16px 18px; border: 2px solid var(--line); }
+.verdict.ph { border-color: var(--phish); background: var(--phish-soft); }
+.verdict.sf { border-color: var(--safe); background: var(--safe-soft); }
+.verdict .big { font-family: var(--font-display); font-size: 2.1rem; font-weight: 700; letter-spacing: 0.02em; }
+.verdict.ph .big { color: var(--phish); } .verdict.sf .big { color: var(--safe); }
+.verdict p { margin: 0; flex: 1 1 320px; min-width: 0; }
+.gauge { margin: 16px 0 4px; }
+.gauge .bar { height: 14px; border-radius: 999px; background: var(--grey-soft); position: relative; }
+.gauge .fill { position: absolute; inset: 0 auto 0 0; border-radius: 999px; }
+.gauge .line { position: absolute; top: -7px; bottom: -7px; width: 3px; background: var(--ink); border-radius: 2px; }
+.gauge .labels { position: relative; height: 24px; font-family: var(--font-mono); font-size: 0.78rem; color: var(--muted); }
+.gauge .labels span { position: absolute; top: 5px; transform: translateX(-50%); white-space: nowrap; }
+.cols { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 16px; margin-top: 14px; }
+.cols h3 { font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); margin: 0 0 8px; }
+.reasons { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.reasons li { border: 1px solid var(--line); border-radius: 8px; padding: 9px 12px; }
+.reasons .at { display: block; font-family: var(--font-mono); font-size: 0.78rem; color: var(--accent); margin-top: 2px; overflow-wrap: anywhere; }
+.limits { margin: 0; padding-left: 18px; color: var(--muted); }
+.limits li + li { margin-top: 4px; }
+details.audit { margin-top: 16px; border-top: 1px solid var(--line); padding-top: 12px; }
+details.audit summary { cursor: pointer; font-weight: 600; }
+.atable { overflow-x: auto; margin-top: 10px; }
+table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+th, td { text-align: left; padding: 7px 9px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-size: 0.74rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); font-weight: 600; }
+td.loc { font-family: var(--font-mono); font-size: 0.78rem; color: var(--accent); }
+.pill { font-family: var(--font-mono); font-size: 0.72rem; padding: 2px 8px; border-radius: 999px; white-space: nowrap; }
+.pill.ph { background: var(--phish-soft); color: var(--phish); }
+.pill.sf { background: var(--safe-soft); color: var(--safe); }
+.pill.nu { background: var(--grey-soft); color: var(--grey); }
+.pill.x { background: var(--phish-soft); color: var(--phish); }
+.pill.w { background: var(--warn-soft); color: var(--warn); }
+tr.out td { opacity: 0.6; text-decoration: line-through; }
+.judge2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin-top: 10px; }
+.judge2 div { border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; font-size: 0.9rem; }
+.judge2 b { display: block; margin-bottom: 4px; }
+.placeholder { color: var(--muted); text-align: center; padding: 30px 10px; }
+
+/* step explainer */
+.explain { border: 2px solid var(--accent); background: var(--panel); }
+.explain .eno { font-family: var(--font-mono); font-size: 0.8rem; color: var(--accent); text-transform: uppercase; letter-spacing: 0.05em; }
+.explain h2 { font-size: 1.5rem; margin: 2px 0 10px; }
+.explain .egrid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px; }
+.explain h3 { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); margin: 0 0 6px; }
+.explain p { margin: 0; font-size: 1.04rem; }
+.explain .happened { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.explain .happened li { font-size: 0.95rem; border-left: 3px solid var(--line); padding-left: 10px; }
+.explain .happened li.p { border-left-color: var(--phish); }
+.explain .happened li.s { border-left-color: var(--safe); }
+.explain .happened li.w { border-left-color: var(--warn); }
+.explain .happened li.a { border-left-color: var(--accent); }
+.explain .passes { margin-top: 12px; background: var(--accent-soft); border-radius: 8px; padding: 10px 12px; font-weight: 600; }
+.explain .ebtns { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 16px; align-items: center; }
+@media (max-width: 760px) { .explain .egrid { grid-template-columns: minmax(0, 1fr); } }
+
+.facts { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+.fact { border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; }
+.fact .n { font-family: var(--font-display); font-size: 1.5rem; font-weight: 700; font-variant-numeric: tabular-nums; }
+.fact p { margin: 2px 0 0; color: var(--muted); font-size: 0.86rem; }
+.foot { color: var(--muted); font-size: 0.82rem; margin: 10px 0 0; }
+
+@media (max-width: 860px) {
+  .run, .cols { grid-template-columns: minmax(0, 1fr); }
+  .log { min-height: 220px; max-height: 320px; }
+  .facts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 520px) {
+  .judge2 { grid-template-columns: minmax(0, 1fr); }
+  .opts { margin-left: 0; }
+  .card { padding: 16px 14px; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="appbar">
+    <div class="brand"><div class="logo">MZ</div><div><b>MA-ZeroPhish</b><span>Zero-day phishing link checker</span></div></div>
+    <span class="tag">PROTOTYPE · prepared example cases</span>
+  </header>
+
+  <section class="card" aria-label="Check a link">
+    <h2>Link to check</h2>
+    <form class="inrow" id="form">
+      <input id="url" type="text" spellcheck="false" autocomplete="off" aria-label="Link to check">
+      <button class="btn go" id="check" type="submit">Check link</button>
+    </form>
+    <div class="exrow">
+      <span>Try an example:</span>
+      <span id="examples" style="display:contents"></span>
+      <span class="opts">
+        <label for="mode">Mode</label>
+        <select id="mode"><option value="step" selected>Step by step</option><option value="auto">Run all at once</option></select>
+        <label for="speed">Speed</label>
+        <select id="speed"><option value="1500">Slow</option><option value="850" selected>Normal</option><option value="250">Fast</option></select>
+      </span>
+    </div>
+    <div class="msg" id="msg" hidden></div>
+  </section>
+
+  <section class="card explain" id="explain" aria-live="polite"></section>
+
+  <section class="run" aria-label="Processing">
+    <div class="card">
+      <h2>What the system is doing</h2>
+      <ol class="stages" id="stages"></ol>
+    </div>
+    <div class="card" style="display:flex; flex-direction:column">
+      <div class="loghead"><h2>Live log</h2><span class="foot" id="clock" style="margin:0"></span></div>
+      <div class="log" id="log" role="log" aria-live="polite"></div>
+    </div>
+  </section>
+
+  <section class="card" id="result" aria-label="Result" aria-live="polite"></section>
+
+  <section class="card" aria-label="Real test results">
+    <h2>Real results: tested on 1,000 brand-new websites</h2>
+    <div class="facts">
+      <div class="fact"><div class="n">435 / 500</div><p>phishing pages caught</p></div>
+      <div class="fact"><div class="n">41 / 500</div><p>safe pages wrongly flagged (8.2%)</p></div>
+      <div class="fact"><div class="n">0.891</div><p>F1, best of 7 detectors tested</p></div>
+      <div class="fact"><div class="n">312 / 500</div><p>caught without the expert agents (page features only)</p></div>
+    </div>
+    <p class="foot">The example cases in this prototype are invented and their scores are illustrative. The real system was tested on 500 phishing and 500 safe PhreshPhish webpages seen after the AI model's knowledge cutoff, using GPT-4o-mini. Its F1 is significantly higher than five of six other methods; the gap to ChatPhishDetector (0.887) is not significant, but MA-ZeroPhish raises fewer false alarms (8.2% vs 14.8%). It costs about USD 5.40 per 1,000 pages and about 33 s per page. Accepted at IEEE ISPA 2026.</p>
+  </section>
+</div>
+
+<script>
+const STAGES = [
+  ["Read the input", "Decide what was submitted"],
+  ["Collect evidence safely", "Copy the page and open it offline"],
+  ["Pick the experts", "Call the specialists that apply"],
+  ["Experts find clues", "Every clue must point to proof"],
+  ["Merge duplicate clues", "The same evidence counts once"],
+  ["Experts discuss once", "Change only with new proof"],
+  ["Independent judge", "Reads clues, not votes"],
+  ["Final score and answer", "Compare with a fixed bar"]
+];
+
+const CASES = {
+  bank: {
+    label: "Fake bank login", url: "https://novabank-secure-verify.example/login",
+    out: ["Website link · 1 object", "4 kinds of evidence collected · blacklists not used", "4 experts called · message expert not needed",
+          "7 clues with proof · 1 thrown out (no proof)", "2 clues cite the same page title → counted once", "1 change accepted · 1 rejected",
+          "Very likely phishing (0.93)", "Score 0.97 ≥ bar 0.59 → PHISHING"],
+    st: ["ok", "ok", "ok", "ok", "ok", "ok", "ok", "ok"],
+    log: [
+      ["a", "input  type=URL  case=c-0142"],
+      ["", "fetch  page code ........ ok"], ["", "render offline browser, network blocked ... ok (text + screenshot)"], ["", "ct     certificates valid before observation ... ok"], ["w", "skip   blacklist / reputation / domain registration (not used)"],
+      ["a", "dispatch URL, Page-code, Content, Certificate experts"], ["", "skip   Message expert (not an SMS or email)"],
+      ["p", "Page-code: password form sends data to another host   [page code → login form]"], ["p", "Link: bank name on an unrelated domain   [the link]"], ["p", "Content: '24 hours or your account is locked'   [page text line 14]"], ["p", "Certificate: first certificate only 3 days old   [certificate history]"], ["w", "REJECTED Content: 'logo looks blurry'   [screenshot area 7 does not exist]"],
+      ["w", "merge  Page-code + Content both cite the page title → 1 clue"],
+      ["a", "discuss open issue: does the valid certificate mean safe?"], ["s", "ACCEPTED Certificate: 'valid but 3 days old; not proof of safety'   [cites certificate + link]"], ["w", "REJECTED Link: 'I agree it's phishing'   [no new evidence]"],
+      ["a", "judge  sees clues + proof, not the experts' votes"], ["p", "judge  very likely phishing (0.93)"],
+      ["a", "model  complete evidence → main model"], ["p", "score  0.97 ≥ 0.59 → PHISHING"]
+    ],
+    verdict: "ph", word: "PHISHING", score: 0.97, bar: 0.59,
+    summary: "This page is pretending to be a bank login. Do not enter your password.",
+    reasons: [
+      ["Your password would be sent to a different website, not this one.", "page code → login form"],
+      ["The address uses a bank's name but belongs to an unrelated website.", "the link"],
+      ["The page pressures you: verify within 24 hours or be locked out.", "page text, line 14"],
+      ["The site's security certificate is only 3 days old.", "certificate history"]
+    ],
+    limits: ["Domain registration was not checked (it could reveal later takedowns).", "Blacklists were not used; the decision comes from the page's own evidence.", "The system checks that every reason points to real evidence, not that every reading is right."],
+    clues: [
+      ["Page-code expert", "Password form sends data to another host", "page code → login form", "ph", "kept"],
+      ["Page-code expert", "Page title says 'NovaBank – Sign in'", "page title", "ph", "merged"],
+      ["Content expert", "Heading shows the NovaBank sign-in name", "page title", "ph", "merged"],
+      ["Content expert", "'Verify within 24 hours or be locked'", "page text, line 14", "ph", "kept"],
+      ["Content expert", "Logo looks blurry", "screenshot area 7 (missing)", "ph", "thrown out"],
+      ["Link expert", "Bank name on an unrelated domain", "the link", "ph", "kept"],
+      ["Certificate expert", "Certificate valid but only 3 days old", "certificate history", "ph", "kept (updated)"],
+      ["Certificate expert", "A valid certificate names this host", "certificate history", "nu", "kept"]
+    ],
+    discuss: ["Accepted: the certificate expert updated its clue, citing the certificate date and the link.", "Rejected: the link expert only agreed with another expert and gave no new evidence."]
+  },
+
+  library: {
+    label: "Library website", url: "https://www.riverside-library.example/opening-hours",
+    out: ["Website link · 1 object", "4 kinds of evidence collected · blacklists not used", "4 experts called · message expert not needed",
+          "6 clues with proof · none thrown out", "2 clues cite the same page title → counted once", "No open issues → no discussion needed",
+          "Very likely safe (0.06)", "Score 0.04 < bar 0.59 → SAFE"],
+    st: ["ok", "ok", "ok", "ok", "ok", "skip", "ok", "ok"],
+    log: [
+      ["a", "input  type=URL  case=c-0143"],
+      ["", "fetch  page code ........ ok"], ["", "render offline browser, network blocked ... ok (text + screenshot)"], ["", "ct     certificates valid before observation ... ok"], ["w", "skip   blacklist / reputation / domain registration (not used)"],
+      ["a", "dispatch URL, Page-code, Content, Certificate experts"], ["", "skip   Message expert (not an SMS or email)"],
+      ["s", "Link: the library's own domain, plain path   [the link]"], ["s", "Page-code: no login or payment form; links stay on this site   [page code]"], ["s", "Content: opening hours and address; asks for nothing personal   [page text]"], ["s", "Certificate: certificates for this host go back 4 years   [certificate history]"],
+      ["w", "merge  Page-code + Content both cite the page title → 1 clue"],
+      ["a", "discuss no open issues → round not needed"],
+      ["a", "judge  sees clues + proof, not the experts' votes"], ["s", "judge  very likely safe (0.06)"],
+      ["a", "model  complete evidence → main model"], ["s", "score  0.04 < 0.59 → SAFE"]
+    ],
+    verdict: "sf", word: "SAFE", score: 0.04, bar: 0.59,
+    summary: "No sign of phishing was found on this page.",
+    reasons: [
+      ["The page asks for no password, card number or personal details.", "page code · page text"],
+      ["All links and the address belong to the library's own website.", "the link · page code"],
+      ["This site has had security certificates for about 4 years.", "certificate history"]
+    ],
+    limits: ["Domain registration was not checked (it could reveal later takedowns).", "Safe means no phishing evidence was found on this copy of the page, not a guarantee forever."],
+    clues: [
+      ["Link expert", "The library's own domain, plain path", "the link", "sf", "kept"],
+      ["Page-code expert", "No login or payment form; links stay on site", "page code", "sf", "kept"],
+      ["Page-code expert", "Page title 'Riverside Library – Opening hours'", "page title", "sf", "merged"],
+      ["Content expert", "Title shows opening hours", "page title", "sf", "merged"],
+      ["Content expert", "Opening hours and address; asks for nothing personal", "page text", "sf", "kept"],
+      ["Certificate expert", "Certificates for this host go back 4 years", "certificate history", "sf", "kept"]
+    ],
+    discuss: ["No discussion round: there was no open issue for the experts to resolve."]
+  },
+
+  parcel: {
+    label: "Parcel fee page (browser blocked)", url: "https://parcel-redelivery-fee.example/pay",
+    out: ["Website link · 1 object", "Page code + certificates collected · browser view FAILED twice", "3 experts called · content expert has no data",
+          "4 clues with proof", "No duplicate clues", "Missing screenshot can't be fixed → kept as a known gap",
+          "Likely phishing (0.84) · notes missing view", "Partial-evidence model: 0.88 ≥ bar 0.55 → PHISHING"],
+    st: ["ok", "warn", "warn", "ok", "ok", "warn", "ok", "ok"],
+    log: [
+      ["a", "input  type=URL  case=c-0144"],
+      ["", "fetch  page code ........ ok"], ["w", "render offline browser ... FAILED (page blocks automated browsers)"], ["w", "retry  offline browser ... FAILED → recorded as missing, NOT as safe"], ["", "ct     certificates valid before observation ... ok"],
+      ["a", "dispatch URL, Page-code, Certificate experts"], ["w", "no_data Content expert (no screenshot or page text)"],
+      ["p", "Page-code: card-number form sends data to another host   [page code → payment form]"], ["p", "Link: 'redelivery', 'fee', 'pay' on a newly seen domain   [the link]"], ["p", "Page-code: page hides its text until scripts run   [page code]"], ["p", "Certificate: first certificate 1 day before it was seen   [certificate history]"],
+      ["", "merge  no shared evidence"],
+      ["w", "discuss open issue: page view missing; no way to get it → stays open"],
+      ["a", "judge  sees clues + proof + 'page view missing'"], ["p", "judge  likely phishing (0.84), with the gap disclosed"],
+      ["a", "model  evidence incomplete → partial-evidence model"], ["p", "score  0.88 ≥ 0.55 → PHISHING"]
+    ],
+    verdict: "ph", word: "PHISHING", score: 0.88, bar: 0.55,
+    summary: "This page asks for card details for a parcel fee and sends them to another website.",
+    reasons: [
+      ["The card-number form sends your details to a different website.", "page code → payment form"],
+      ["The address combines 'redelivery', 'fee' and 'pay' on a brand-new domain.", "the link"],
+      ["The site's first security certificate is only 1 day old.", "certificate history"]
+    ],
+    limits: ["The page could not be displayed (it blocks automated browsers), so the screenshot and visible text were not checked.", "Missing evidence was recorded as missing, never treated as a sign of safety.", "Because evidence was incomplete, the model built for partial evidence made the decision."],
+    clues: [
+      ["Page-code expert", "Card-number form sends data to another host", "page code → payment form", "ph", "kept"],
+      ["Page-code expert", "Page hides its text until scripts run", "page code", "ph", "kept"],
+      ["Link expert", "'redelivery', 'fee', 'pay' on a new domain", "the link", "ph", "kept"],
+      ["Certificate expert", "First certificate 1 day before it was seen", "certificate history", "ph", "kept"],
+      ["Content expert", "No data: page view missing", "—", "nu", "no data"]
+    ],
+    discuss: ["Open issue kept: the page view is missing and no authorised step can recover it, so the gap is shown to the Judge and in the answer."]
+  }
+};
+
+const $ = id => document.getElementById(id);
+const stagesEl = $("stages"), logEl = $("log"), resultEl = $("result"), urlEl = $("url"), msgEl = $("msg"), checkBtn = $("check");
+let current = "bank", running = false, runId = 0;
+
+STAGES.forEach((s, i) => {
+  const li = document.createElement("li");
+  li.className = "st wait"; li.id = "st-" + i;
+  li.innerHTML = `<span class="ic">${i + 1}</span><div><div class="nm">${s[0]}</div><div class="out">${s[1]}</div></div>`;
+  stagesEl.appendChild(li);
+});
+Object.entries(CASES).forEach(([k, c]) => {
+  const b = document.createElement("button");
+  b.type = "button"; b.className = "ex"; b.id = "ex-" + k; b.textContent = c.label;
+  b.addEventListener("click", () => { select(k); run(); });
+  $("examples").appendChild(b);
+});
+
+function select(k) {
+  current = k; urlEl.value = CASES[k].url; msgEl.hidden = true;
+  document.querySelectorAll(".ex").forEach(b => b.setAttribute("aria-pressed", String(b.id === "ex-" + k)));
+}
+function setStage(i, cls, text) {
+  const li = $("st-" + i);
+  li.className = "st " + cls;
+  li.querySelector(".ic").textContent = cls === "ok" ? "✓" : cls === "warn" ? "!" : cls === "skip" ? "–" : (i + 1);
+  if (text !== undefined) li.querySelector(".out").textContent = text;
+}
+function resetStages() { STAGES.forEach((s, i) => setStage(i, "wait", s[1])); }
+function addLog(kind, text, t) {
+  const d = document.createElement("div"); d.className = "ln";
+  d.innerHTML = `<span class="t">${t}</span> <span class="${kind}">${text.replace(/&/g, "&amp;").replace(/</g, "&lt;")}</span>`;
+  logEl.appendChild(d); logEl.scrollTop = logEl.scrollHeight;
+}
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+// log lines grouped by stage index
+const GROUPS = { bank: [1, 4, 2, 5, 1, 3, 2, 2], library: [1, 4, 2, 4, 1, 1, 2, 2], parcel: [1, 4, 2, 4, 1, 1, 2, 2] };
+// what each step does, in plain words (same for every input)
+const EXPLAIN = [
+  "The system first checks what kind of thing was sent: a website link, an SMS or an email. It does not decide yet whether it is dangerous.",
+  "It saves a copy of the page and opens it in a browser with no internet, so the page cannot do anything. It also gets the site's security-certificate history from before that day. Blacklists are not used.",
+  "Only the experts that can work on this kind of input are called. Each expert sees only its own kind of evidence, so each one specialises.",
+  "Each expert works alone and writes clues. Every clue must say exactly where in the evidence it was found. A checker throws out any clue whose proof cannot be found.",
+  "A moderator looks for clues that come from the same piece of evidence. Those count as one clue, so one trick by the scammer cannot look like many proofs.",
+  "If a question is still open, every expert sees the other experts' clues (not their opinions) for one round. An expert may change a clue only by pointing to evidence; just agreeing is rejected.",
+  "A separate judge reads the clues and their proof, but not the experts' votes or how confident they were, and gives its own reading.",
+  "A trained scoring model combines the judge's reading with the experts' clues and simple page facts. If the score passes a fixed bar, the answer is phishing. The answer lists its reasons and what was not checked."
+];
+const explainEl = $("explain");
+let stepIdx = 0, logIdx = 0, clock = 0, stepBusy = false;
+
+function linesFor(k, i) {
+  const start = GROUPS[k].slice(0, i).reduce((a, b) => a + b, 0);
+  return CASES[k].log.slice(start, start + GROUPS[k][i]);
+}
+function explainIntro() {
+  explainEl.innerHTML = `
+    <div class="eno">Step by step</div>
+    <h2>Ready to check: ${CASES[current].label}</h2>
+    <p>Press <b>Next step</b> to make the system do one step at a time. Each step explains what it does and what happened to this link.</p>
+    <div class="ebtns"><button class="btn go" type="button" id="nextStep">Next step →</button><button class="btn" type="button" id="runRest">Run the rest</button></div>`;
+  wireStepButtons();
+}
+function explainStep(i) {
+  const c = CASES[current], last = i === STAGES.length - 1;
+  explainEl.innerHTML = `
+    <div class="eno">Step ${i + 1} of ${STAGES.length}</div>
+    <h2>${STAGES[i][0]}</h2>
+    <div class="egrid">
+      <div><h3>What this step does</h3><p>${EXPLAIN[i]}</p></div>
+      <div><h3>What happened to this link</h3><ul class="happened">${linesFor(current, i).map(L => `<li class="${L[0]}">${L[1].replace(/&/g, "&amp;").replace(/</g, "&lt;")}</li>`).join("")}</ul></div>
+    </div>
+    <div class="passes">${last ? "Result: " : "Passes on: "}${c.out[i]}</div>
+    <div class="ebtns">${last
+      ? `<span class="hint" style="color:var(--muted)">Done. The full answer is below.</span><button class="btn" type="button" id="again">↺ Start again</button>`
+      : `<button class="btn go" type="button" id="nextStep">Next step →</button><button class="btn" type="button" id="runRest">Run the rest</button>`}</div>`;
+  wireStepButtons();
+}
+function wireStepButtons() {
+  const n = $("nextStep"), r = $("runRest"), a = $("again");
+  if (n) n.onclick = () => doStep();
+  if (r) r.onclick = () => { $("mode").value = "auto"; runFrom(stepIdx); };
+  if (a) a.onclick = () => startStepMode();
+}
+async function playStage(i, id, speed) {
+  setStage(i, "now", "working…");
+  for (const L of linesFor(current, i)) {
+    await sleep(speed * 0.45); if (id !== runId) return false;
+    clock += 0.4 + Math.random() * 1.6;
+    addLog(L[0], L[1], clock.toFixed(1).padStart(5, " ") + "s");
+  }
+  await sleep(speed * 0.4); if (id !== runId) return false;
+  setStage(i, CASES[current].st[i], CASES[current].out[i]);
+  return true;
+}
+function startStepMode() {
+  ++runId; stepIdx = 0; clock = 0;
+  resetStages(); logEl.innerHTML = ""; $("clock").textContent = "";
+  resultEl.innerHTML = `<p class="placeholder">The answer appears after step 8.</p>`;
+  checkBtn.disabled = false; checkBtn.textContent = "Check link";
+  explainIntro();
+}
+async function doStep() {
+  if (stepBusy || stepIdx >= STAGES.length) return;
+  stepBusy = true; const id = runId;
+  const n = $("nextStep"); if (n) { n.disabled = true; n.textContent = "Working…"; }
+  const ok = await playStage(stepIdx, id, Math.min(+$("speed").value, 900));
+  stepBusy = false;
+  if (!ok) return;
+  explainStep(stepIdx);
+  stepIdx++;
+  if (stepIdx === STAGES.length) { $("clock").textContent = "example run"; showResult(CASES[current]); }
+}
+async function runFrom(from) {
+  const id = ++runId; checkBtn.disabled = true; checkBtn.textContent = "Checking…";
+  const speed = +$("speed").value;
+  if (from === 0) { resetStages(); logEl.innerHTML = ""; clock = 0; }
+  resultEl.innerHTML = `<p class="placeholder">Working on it… the answer appears when all 8 steps finish.</p>`;
+  explainEl.hidden = true;
+  for (let i = from; i < STAGES.length; i++) {
+    if (!(await playStage(i, id, speed))) return;
+  }
+  stepIdx = STAGES.length;
+  $("clock").textContent = "example run";
+  showResult(CASES[current]);
+  checkBtn.disabled = false; checkBtn.textContent = "Check link";
+  $("mode").value = "step";
+  explainEl.hidden = false;
+  explainEl.innerHTML = `<div class="eno">Finished</div><h2>All 8 steps done</h2><p>The answer is below. Press <b>Start again</b> to go through it one step at a time.</p><div class="ebtns"><button class="btn go" type="button" id="again">↺ Start again</button></div>`;
+  wireStepButtons();
+}
+function run() {
+  if ($("mode").value === "step") { explainEl.hidden = false; startStepMode(); }
+  else runFrom(0);
+}
+
+function finishInstantly(k) {
+  const c = CASES[k]; logEl.innerHTML = "";
+  let clock = 0;
+  c.log.forEach(L => { clock += 1; addLog(L[0], L[1], clock.toFixed(1).padStart(5, " ") + "s"); });
+  STAGES.forEach((s, i) => setStage(i, c.st[i], c.out[i]));
+  $("clock").textContent = "example run";
+  showResult(c);
+}
+
+function showResult(c) {
+  const pos = Math.round(c.score * 100), bar = Math.round(c.bar * 100);
+  const fill = c.verdict === "ph" ? "var(--phish)" : "var(--safe)";
+  const clueRows = c.clues.map(r => `<tr class="${r[4] === "thrown out" ? "out" : ""}"><td>${r[0]}</td><td>${r[1]}</td><td class="loc">${r[2]}</td><td><span class="pill ${r[3]}">${r[3] === "ph" ? "phishing" : r[3] === "sf" ? "safe" : "neutral"}</span></td><td><span class="pill ${r[4] === "thrown out" ? "x" : r[4] === "merged" || r[4] === "no data" ? "w" : "nu"}">${r[4]}</span></td></tr>`).join("");
+  resultEl.innerHTML = `
+    <h2>Result</h2>
+    <div class="verdict ${c.verdict}"><span class="big">${c.word}</span><p>${c.summary}</p></div>
+    <div class="gauge" role="img" aria-label="Score ${c.score} against bar ${c.bar}">
+      <div class="bar"><div class="fill" style="width:${pos}%; background:${fill}"></div><div class="line" style="left:${bar}%"></div></div>
+      <div class="labels"><span style="left:${bar}%">bar ${c.bar.toFixed(2)}</span><span style="left:${Math.min(Math.max(pos, 6), 94)}%; top:${Math.abs(pos - bar) < 12 ? 14 : 5}px">score ${c.score.toFixed(2)}</span></div>
+    </div>
+    <div class="cols">
+      <div><h3>Why</h3><ul class="reasons">${c.reasons.map(r => `<li>${r[0]}<span class="at">evidence: ${r[1]}</span></li>`).join("")}</ul></div>
+      <div><h3>What was not checked</h3><ul class="limits">${c.limits.map(l => `<li>${l}</li>`).join("")}</ul></div>
+    </div>
+    <details class="audit">
+      <summary>See how the experts worked (audit trail)</summary>
+      <div class="atable"><table>
+        <thead><tr><th>Expert</th><th>Clue</th><th>Evidence</th><th>Points to</th><th>Status</th></tr></thead>
+        <tbody>${clueRows}</tbody>
+      </table></div>
+      <p style="margin:12px 0 4px; font-weight:600">Discussion</p>
+      <ul class="limits">${c.discuss.map(d => `<li>${d}</li>`).join("")}</ul>
+      <div class="judge2">
+        <div><b>The Judge saw</b>The clues, where each was found, which clues were the same, and what evidence was missing.</div>
+        <div><b>The Judge did not see</b>Each expert's vote, how confident they were, and clues that were thrown out.</div>
+      </div>
+    </details>`;
+}
+
+$("form").addEventListener("submit", e => {
+  e.preventDefault();
+  const v = urlEl.value.trim();
+  const k = Object.keys(CASES).find(key => CASES[key].url === v);
+  if (!k) {
+    msgEl.hidden = false;
+    msgEl.textContent = "This prototype runs prepared example cases only; it does not visit real websites. Pick one of the examples above.";
+    return;
+  }
+  select(k); run();
+});
+
+select("bank");
+finishInstantly("bank");
+explainEl.innerHTML = `
+  <div class="eno">Step by step</div>
+  <h2>See how the system checks a link, one step at a time</h2>
+  <p>Below is a finished example check. Press <b>Start step by step</b> to watch the same link go through all 8 steps, with an explanation at each one. Or pick another example above.</p>
+  <div class="ebtns"><button class="btn go" type="button" id="again">▶ Start step by step</button></div>`;
+wireStepButtons();
+</script>
+</body>
+</html>
