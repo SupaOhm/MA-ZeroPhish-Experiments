@@ -171,7 +171,7 @@ def paired_bootstrap(labels, va, vb, metric: str, n_boot: int = 2000, seed: int 
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--manifest", required=True)
-    ap.add_argument("--split", default="test", choices=["dev", "calib", "test", "test2"])
+    ap.add_argument("--split", default="test", choices=["dev", "calib", "test", "test2", "test3", "dev3"])
     ap.add_argument("--ledgers", nargs="+", required=True)
     ap.add_argument("--reference", default=None, help="arm name to compare every other arm against")
     ap.add_argument("--cutoff-model", default=None,

@@ -219,6 +219,17 @@ ARMS = {"single_agent": SingleAgent, "cot": CoT, "phishdebate": PhishDebate,
         "single_agent_minimal": SingleAgentMinimal, "cot_minimal": CoTMinimal}
 
 
+def _register_chatphishdetector() -> None:
+    """ChatPhishDetector (IEEE Access 2024), added for the advisor's extra IEEE baseline (PROTOCOL_V5)."""
+    from .chatphishdetector import ChatPhishDetector
+    from .clasp import CLASP
+    ARMS[ChatPhishDetector.name] = ChatPhishDetector
+    ARMS[CLASP.name] = CLASP
+
+
+_register_chatphishdetector()
+
+
 class MessageSingleAgent:
     """PROTOCOL_V5 Exp M: the single-agent baseline on an SMS / e-mail (adapted prompt)."""
     name = "single_agent_message"

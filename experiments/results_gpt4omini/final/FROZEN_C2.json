@@ -1,0 +1,25 @@
+{
+ "system": "MA-ZeroPhish final = C2: fixed full debate (v4abdfFD pipeline) + the frozen H1 decision step, unchanged",
+ "pipeline_variant": "v4abdfFD (experiments/dev_eval.py: v4abdf with collaboration='full_debate', round FD code)",
+ "decision_step": {
+  "file": "experiments/results_gpt4omini/final/FROZEN_H1.json",
+  "sha256": "83c4c98d84f064aaeb4cbb1a7f1caf42ffaa869172a319bf1958056b3921f15f",
+  "routing": "html, dom, page_content, ct all present -> P1 (threshold 0.5915), else B2 (0.5456)"
+ },
+ "selected_by": "PROTOCOL_V5 round D3 on dev-3 (declared rule): C2 F1 0.902 vs C0 (H1) 0.886, P 0.924 vs 0.904",
+ "caveat": "C2's three dev-3 runs: 0.902 / 0.888 / 0.883 (mean 0.891); expected gain over H1 small",
+ "test3": {
+  "primary": "C2",
+  "secondary": [
+   "H1 (v4abdf, same cache)",
+   "C2+JL"
+  ],
+  "baselines": [
+   "single_agent",
+   "cot",
+   "phishdebate",
+   "vision__phishdebate"
+  ]
+ },
+ "approved": "Tinpat, 2026-10-04, before test3"
+}

@@ -1,0 +1,272 @@
+{
+ "dev-2:base": {
+  "H1": {
+   "n": 200,
+   "answered": 179,
+   "coverage": 0.895,
+   "selective_risk": 0.027932960893854747,
+   "forced_risk": 0.065,
+   "fpr_answered": 0.0,
+   "recall_answered": 0.9438202247191011
+  },
+  "H1+JL": {
+   "n": 200,
+   "answered": 180,
+   "coverage": 0.9,
+   "selective_risk": 0.022222222222222223,
+   "forced_risk": 0.06,
+   "fpr_answered": 0.0,
+   "recall_answered": 0.9555555555555556
+  }
+ },
+ "dev-2:cum3_+html_no_browser": {
+  "H1": {
+   "n": 200,
+   "answered": 169,
+   "coverage": 0.845,
+   "selective_risk": 0.05917159763313609,
+   "forced_risk": 0.105,
+   "fpr_answered": 0.075,
+   "recall_answered": 0.9550561797752809
+  },
+  "H1+JL": {
+   "n": 200,
+   "answered": 169,
+   "coverage": 0.845,
+   "selective_risk": 0.05917159763313609,
+   "forced_risk": 0.105,
+   "fpr_answered": 0.075,
+   "recall_answered": 0.9550561797752809
+  }
+ },
+ "dev-2:no_dom": {
+  "H1": {
+   "n": 200,
+   "answered": 175,
+   "coverage": 0.875,
+   "selective_risk": 0.045714285714285714,
+   "forced_risk": 0.09,
+   "fpr_answered": 0.0449438202247191,
+   "recall_answered": 0.9534883720930233
+  },
+  "H1+JL": {
+   "n": 200,
+   "answered": 176,
+   "coverage": 0.88,
+   "selective_risk": 0.05113636363636364,
+   "forced_risk": 0.09,
+   "fpr_answered": 0.05555555555555555,
+   "recall_answered": 0.9534883720930233
+  }
+ },
+ "dev-2:no_html": {
+  "H1": {
+   "n": 200,
+   "answered": 171,
+   "coverage": 0.855,
+   "selective_risk": 0.06432748538011696,
+   "forced_risk": 0.085,
+   "fpr_answered": 0.0975609756097561,
+   "recall_answered": 0.9662921348314607
+  },
+  "H1+JL": {
+   "n": 200,
+   "answered": 172,
+   "coverage": 0.86,
+   "selective_risk": 0.05813953488372093,
+   "forced_risk": 0.08,
+   "fpr_answered": 0.0975609756097561,
+   "recall_answered": 0.9777777777777777
+  }
+ },
+ "dev-2:no_network_metadata": {
+  "H1": {
+   "n": 200,
+   "answered": 174,
+   "coverage": 0.87,
+   "selective_risk": 0.06896551724137931,
+   "forced_risk": 0.11,
+   "fpr_answered": 0.0989010989010989,
+   "recall_answered": 0.963855421686747
+  },
+  "H1+JL": {
+   "n": 200,
+   "answered": 174,
+   "coverage": 0.87,
+   "selective_risk": 0.06896551724137931,
+   "forced_risk": 0.11,
+   "fpr_answered": 0.10989010989010989,
+   "recall_answered": 0.9759036144578314
+  }
+ },
+ "dev-2:transient_browser_recoverable": {
+  "H1": {
+   "n": 200,
+   "answered": 179,
+   "coverage": 0.895,
+   "selective_risk": 0.027932960893854747,
+   "forced_risk": 0.065,
+   "fpr_answered": 0.0,
+   "recall_answered": 0.9438202247191011
+  },
+  "H1+JL": {
+   "n": 200,
+   "answered": 180,
+   "coverage": 0.9,
+   "selective_risk": 0.022222222222222223,
+   "forced_risk": 0.06,
+   "fpr_answered": 0.0,
+   "recall_answered": 0.9555555555555556
+  }
+ },
+ "dev-2 conflict:conflict_swaps": {
+  "H1": {
+   "n": 65,
+   "answered": 51,
+   "coverage": 0.7846153846153846,
+   "selective_risk": 0.13725490196078433,
+   "forced_risk": 0.2,
+   "fpr_answered": 0.23076923076923078,
+   "recall_answered": 0.96
+  },
+  "H1+JL": {
+   "n": 65,
+   "answered": 51,
+   "coverage": 0.7846153846153846,
+   "selective_risk": 0.13725490196078433,
+   "forced_risk": 0.2,
+   "fpr_answered": 0.23076923076923078,
+   "recall_answered": 0.96
+  }
+ },
+ "test2:base": {
+  "H1": {
+   "n": 200,
+   "answered": 175,
+   "coverage": 0.875,
+   "selective_risk": 0.06857142857142857,
+   "forced_risk": 0.115,
+   "fpr_answered": 0.07058823529411765,
+   "recall_answered": 0.9333333333333333
+  },
+  "H1+JL": {
+   "n": 200,
+   "answered": 178,
+   "coverage": 0.89,
+   "selective_risk": 0.0898876404494382,
+   "forced_risk": 0.13,
+   "fpr_answered": 0.11363636363636363,
+   "recall_answered": 0.9333333333333333
+  }
+ },
+ "test2:cum3_+html_no_browser": {
+  "H1": {
+   "n": 200,
+   "answered": 173,
+   "coverage": 0.865,
+   "selective_risk": 0.046242774566473986,
+   "forced_risk": 0.085,
+   "fpr_answered": 0.06097560975609756,
+   "recall_answered": 0.967032967032967
+  },
+  "H1+JL": {
+   "n": 200,
+   "answered": 173,
+   "coverage": 0.865,
+   "selective_risk": 0.046242774566473986,
+   "forced_risk": 0.085,
+   "fpr_answered": 0.06097560975609756,
+   "recall_answered": 0.967032967032967
+  }
+ },
+ "test2:no_dom": {
+  "H1": {
+   "n": 200,
+   "answered": 177,
+   "coverage": 0.885,
+   "selective_risk": 0.05649717514124294,
+   "forced_risk": 0.08,
+   "fpr_answered": 0.07777777777777778,
+   "recall_answered": 0.9655172413793104
+  },
+  "H1+JL": {
+   "n": 200,
+   "answered": 178,
+   "coverage": 0.89,
+   "selective_risk": 0.06179775280898876,
+   "forced_risk": 0.085,
+   "fpr_answered": 0.08791208791208792,
+   "recall_answered": 0.9655172413793104
+  }
+ },
+ "test2:no_html": {
+  "H1": {
+   "n": 200,
+   "answered": 173,
+   "coverage": 0.865,
+   "selective_risk": 0.06358381502890173,
+   "forced_risk": 0.1,
+   "fpr_answered": 0.11494252873563218,
+   "recall_answered": 0.9883720930232558
+  },
+  "H1+JL": {
+   "n": 200,
+   "answered": 173,
+   "coverage": 0.865,
+   "selective_risk": 0.06358381502890173,
+   "forced_risk": 0.1,
+   "fpr_answered": 0.11494252873563218,
+   "recall_answered": 0.9883720930232558
+  }
+ },
+ "test2:no_network_metadata": {
+  "H1": {
+   "n": 200,
+   "answered": 170,
+   "coverage": 0.85,
+   "selective_risk": 0.08823529411764706,
+   "forced_risk": 0.13,
+   "fpr_answered": 0.14814814814814814,
+   "recall_answered": 0.9662921348314607
+  },
+  "H1+JL": {
+   "n": 200,
+   "answered": 173,
+   "coverage": 0.865,
+   "selective_risk": 0.10404624277456648,
+   "forced_risk": 0.13,
+   "fpr_answered": 0.17857142857142858,
+   "recall_answered": 0.9662921348314607
+  }
+ },
+ "test2:transient_browser_recoverable": {
+  "H1": {
+   "n": 200,
+   "answered": 175,
+   "coverage": 0.875,
+   "selective_risk": 0.06857142857142857,
+   "forced_risk": 0.115,
+   "fpr_answered": 0.07058823529411765,
+   "recall_answered": 0.9333333333333333
+  },
+  "H1+JL": {
+   "n": 200,
+   "answered": 178,
+   "coverage": 0.89,
+   "selective_risk": 0.0898876404494382,
+   "forced_risk": 0.13,
+   "fpr_answered": 0.11363636363636363,
+   "recall_answered": 0.9333333333333333
+  }
+ },
+ "good": {
+  "dev-2": {
+   "i_selective_below_forced": true,
+   "ii_less_coverage_when_withheld": true
+  },
+  "test2": {
+   "i_selective_below_forced": true,
+   "ii_less_coverage_when_withheld": false
+  }
+ }
+}

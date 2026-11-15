@@ -38,6 +38,15 @@ def variants(model: str) -> dict:
             "v4abdfG": replace(v4abd, judge_shows_evidence=True, specialist_strength_scale=True,
                                judge_requires_deception=True),
             "v4abdfH": replace(v4abd, judge_shows_evidence=True, specialist_page_assessment=True),
+            "v4abdfAF": replace(v4abd, judge_shows_evidence=True, specialist_self_score=True),
+            "v4abdfAF2": replace(v4abd, judge_shows_evidence=True, specialist_separate_score=True),
+            # PROTOCOL_V5 round D3: the fixed full debate (round FD code) on the v4abdf pipeline.
+            "v4abdfFD": replace(v4abd, judge_shows_evidence=True, collaboration="full_debate"),
+            # round D3 C2-R: B2-R's evidence-withheld training rows under full debate.
+            **{f"v4abdfFD_x{k}": replace(v4abd, judge_shows_evidence=True, collaboration="full_debate",
+                                        evidence_removal=frozenset(w)) for k, w in _b2_withheld().items()},
+            "v4abdfJ": replace(v4abd, judge_shows_evidence=True, judge_corroboration=1),
+            "v4abdfJ1": replace(v4abd, judge_shows_evidence=True, judge_corroboration=2),
             # PROTOCOL_V5 round B2: the v4abdf pipeline with evidence withheld exactly as in Exp 5.
             **{f"v4abdf_x{k}": replace(v4abd, judge_shows_evidence=True, evidence_removal=frozenset(w))
                for k, w in _b2_withheld().items()}}
@@ -63,12 +72,31 @@ def main() -> None:
                     help="PROTOCOL_V5 external check: run the test split of a NON-PhreshPhish dataset")
     ap.add_argument("--fit-collection", action="store_true",
                     help="PROTOCOL_V5: run on the FIT split (training pages) for the learner")
+    ap.add_argument("--test2-supplementary", action="store_true",
+                    help="PROTOCOL_V5: C2 (v4abdfFD) on test2 as a supplementary run (or v4abdf for the replay check)")
+    ap.add_argument("--dev3", action="store_true",
+                    help="PROTOCOL_V5 round D3: development runs on the fresh dev3 split")
+    ap.add_argument("--dev2-collection", action="store_true",
+                    help="PROTOCOL_V5 round AF2: the dev-2 pages (the old test 200, development data since "
+                         "PROTOCOL_V5) -- only with --case-list")
     ap.add_argument("--sealed-test2-final", action="store_true",
                     help="the ONE final test2 run of the frozen system (needs FROZEN.json + GO.json)")
+    ap.add_argument("--sealed-test3-final", action="store_true",
+                    help="the ONE test3 run of the frozen H1 (needs FROZEN_H1.json + GO_TEST3.json)")
     args = ap.parse_args()
     allowed = ("dev", "calib") if args.calib_collection else ("dev",)
     if args.fit_collection:
         allowed = ("fit",)
+    if args.test2_supplementary:
+        if args.variants not in (["v4abdfFD"], ["v4abdf"]):
+            raise SystemExit("REFUSED: --test2-supplementary allows only v4abdfFD (or v4abdf for the replay check)")
+        allowed = ("test2",)
+    if args.dev3:
+        allowed = ("dev3",)
+    if args.dev2_collection:
+        if not args.case_list or args.variants not in (["v4abdfAF2"], ["v4abdfJ1"]):
+            raise SystemExit("REFUSED: --dev2-collection needs --case-list and variant v4abdfAF2 or v4abdfJ1")
+        allowed = ("test",)
     if args.external:
         if args.dataset == "phreshphish":
             raise SystemExit("REFUSED: --external is for other datasets; PhreshPhish test/test2 stay sealed")
@@ -84,6 +112,18 @@ def main() -> None:
             raise SystemExit(f"REFUSED: GO {g.get('decision')!r} for {g.get('system')!r}; the test2 pipeline "
                              f"variant must be v4abdf, got {args.variants}")
         allowed = ("test2",)
+    if args.sealed_test3_final:
+        # PROTOCOL_V5 test3 plan: the same frozen H1, run once on test3 after the team's GO.
+        final = ROOT / "experiments" / "results_gpt4omini" / "final"
+        frozen, go = final / "FROZEN_C2.json", final / "GO_TEST3.json"
+        if not (frozen.exists() and go.exists()):
+            raise SystemExit("REFUSED: test3 needs FROZEN_C2.json and GO_TEST3.json (PROTOCOL_V5)")
+        g = json.loads(go.read_text(encoding="utf-8"))
+        # C2 (v4abdfFD) is the system; v4abdf only for H1's secondary row, run after C2 with the same cache.
+        if g.get("decision") != "go" or g.get("system") != "C2" or args.variants not in (["v4abdfFD"], ["v4abdf"]):
+            raise SystemExit(f"REFUSED: GO {g.get('decision')!r} for {g.get('system')!r}; the test3 pipeline "
+                             f"variant must be v4abdf, got {args.variants}")
+        allowed = ("test3",)
     if args.split not in allowed:
         raise SystemExit("REFUSED: development runs are on dev (calib only with --calib-collection; "
                          "test2 only with --sealed-test2-final after a GO) -- PROTOCOL_V4")

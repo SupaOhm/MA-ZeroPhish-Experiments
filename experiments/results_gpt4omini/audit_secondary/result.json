@@ -1,0 +1,404 @@
+{
+ "exp5": {
+  "base": {
+   "decisions": 200,
+   "has_disclosure": 200,
+   "cited_subset_of_eligible": 200,
+   "gaps_all_listed": 177,
+   "with_gaps": 200,
+   "gaps_some_listed": 200,
+   "gap_fields": 1470,
+   "gap_fields_listed": 1424,
+   "with_open_issues": 197,
+   "issues_all_listed": 186,
+   "issues_list_present": 197,
+   "open_issues": 455,
+   "open_issues_listed": 439,
+   "judge_insufficient": 174,
+   "h1_phishing": 95
+  },
+  "conflict_swaps": {
+   "decisions": 65,
+   "has_disclosure": 65,
+   "cited_subset_of_eligible": 65,
+   "gaps_all_listed": 53,
+   "with_gaps": 65,
+   "gaps_some_listed": 65,
+   "gap_fields": 464,
+   "gap_fields_listed": 444,
+   "with_open_issues": 65,
+   "issues_all_listed": 41,
+   "issues_list_present": 65,
+   "open_issues": 176,
+   "open_issues_listed": 148,
+   "judge_insufficient": 62
+  },
+  "cum3_+html_no_browser": {
+   "decisions": 200,
+   "has_disclosure": 200,
+   "cited_subset_of_eligible": 200,
+   "gaps_all_listed": 196,
+   "with_gaps": 200,
+   "gaps_some_listed": 200,
+   "gap_fields": 2222,
+   "gap_fields_listed": 2218,
+   "with_open_issues": 200,
+   "issues_all_listed": 200,
+   "issues_list_present": 200,
+   "open_issues": 491,
+   "open_issues_listed": 491,
+   "withheld_used": 0,
+   "withheld_all_gaps": 200,
+   "withheld_all_in_judge_limitations": 196,
+   "judge_insufficient": 182,
+   "h1_phishing": 107
+  },
+  "no_dom": {
+   "decisions": 200,
+   "has_disclosure": 200,
+   "cited_subset_of_eligible": 200,
+   "gaps_all_listed": 183,
+   "with_gaps": 200,
+   "gaps_some_listed": 200,
+   "gap_fields": 1838,
+   "gap_fields_listed": 1817,
+   "with_open_issues": 157,
+   "issues_all_listed": 156,
+   "issues_list_present": 157,
+   "open_issues": 218,
+   "open_issues_listed": 216,
+   "withheld_used": 0,
+   "withheld_all_gaps": 200,
+   "withheld_all_in_judge_limitations": 198,
+   "judge_insufficient": 167,
+   "h1_phishing": 100
+  },
+  "no_html": {
+   "decisions": 200,
+   "has_disclosure": 200,
+   "cited_subset_of_eligible": 200,
+   "gaps_all_listed": 192,
+   "with_gaps": 200,
+   "gaps_some_listed": 200,
+   "gap_fields": 1670,
+   "gap_fields_listed": 1662,
+   "with_open_issues": 195,
+   "issues_all_listed": 194,
+   "issues_list_present": 195,
+   "open_issues": 370,
+   "open_issues_listed": 368,
+   "withheld_used": 0,
+   "withheld_all_gaps": 200,
+   "withheld_all_in_judge_limitations": 200,
+   "judge_insufficient": 172,
+   "h1_phishing": 105
+  },
+  "no_network_metadata": {
+   "decisions": 200,
+   "has_disclosure": 200,
+   "cited_subset_of_eligible": 200,
+   "gaps_all_listed": 126,
+   "with_gaps": 200,
+   "gaps_some_listed": 200,
+   "gap_fields": 1648,
+   "gap_fields_listed": 1506,
+   "with_open_issues": 200,
+   "issues_all_listed": 186,
+   "issues_list_present": 200,
+   "open_issues": 635,
+   "open_issues_listed": 608,
+   "withheld_used": 0,
+   "withheld_all_gaps": 200,
+   "withheld_all_in_judge_limitations": 197,
+   "judge_insufficient": 165,
+   "h1_phishing": 104
+  },
+  "transient_browser_recoverable": {
+   "decisions": 200,
+   "has_disclosure": 200,
+   "cited_subset_of_eligible": 200,
+   "gaps_all_listed": 177,
+   "with_gaps": 200,
+   "gaps_some_listed": 200,
+   "gap_fields": 1470,
+   "gap_fields_listed": 1424,
+   "with_open_issues": 197,
+   "issues_all_listed": 186,
+   "issues_list_present": 197,
+   "open_issues": 455,
+   "open_issues_listed": 439,
+   "judge_insufficient": 174,
+   "h1_phishing": 95
+  }
+ },
+ "exp6": {
+  "runs/v4_exp:ablation1_no_selection": {
+   "pages": 200,
+   "findings_returned": 4362,
+   "unsupported_citation_rate": 0.18271435121503898,
+   "calls_per_page": 7.81,
+   "h1_changes_vs_full": 0,
+   "changes_right": 0,
+   "changes_wrong": 0
+  },
+  "runs/v4_exp:ablation2_no_reconciliation": {
+   "pages": 200,
+   "findings_returned": 4362,
+   "unsupported_citation_rate": 0.18271435121503898,
+   "calls_per_page": 7.805,
+   "h1_changes_vs_full": 2,
+   "changes_right": 2,
+   "changes_wrong": 0
+  },
+  "runs/v4_exp:ablation3_no_calibrated_gate": {
+   "pages": 200,
+   "findings_returned": 4362,
+   "unsupported_citation_rate": 0.18271435121503898,
+   "calls_per_page": 7.81,
+   "h1_changes_vs_full": 0,
+   "changes_right": 0,
+   "changes_wrong": 0
+  },
+  "runs/v4_exp:ablation4_no_targeted_collaboration": {
+   "pages": 200,
+   "findings_returned": 4597,
+   "unsupported_citation_rate": 0.08984120078311943,
+   "calls_per_page": 8.56,
+   "h1_changes_vs_full": 10,
+   "changes_right": 5,
+   "changes_wrong": 5
+  },
+  "runs/v4_exp:ablation5_no_independent_adjudication": {
+   "pages": 200,
+   "findings_returned": 4362,
+   "unsupported_citation_rate": 0.18271435121503898,
+   "calls_per_page": 7.805,
+   "h1_changes_vs_full": 1,
+   "changes_right": 1,
+   "changes_wrong": 0
+  },
+  "runs/v4_exp:mazerophish": {
+   "pages": 200,
+   "findings_returned": 4351,
+   "unsupported_citation_rate": 0.18340611353711792,
+   "calls_per_page": 7.81,
+   "h1_changes_vs_full": 0,
+   "changes_right": 0,
+   "changes_wrong": 0
+  },
+  "runs/v4_exp_rep1:ablation1_no_selection": {
+   "pages": 200,
+   "findings_returned": 4320,
+   "unsupported_citation_rate": 0.18587962962962962,
+   "calls_per_page": 7.83,
+   "h1_changes_vs_full": 0,
+   "changes_right": 0,
+   "changes_wrong": 0
+  },
+  "runs/v4_exp_rep1:ablation2_no_reconciliation": {
+   "pages": 200,
+   "findings_returned": 4320,
+   "unsupported_citation_rate": 0.18587962962962962,
+   "calls_per_page": 7.83,
+   "h1_changes_vs_full": 0,
+   "changes_right": 0,
+   "changes_wrong": 0
+  },
+  "runs/v4_exp_rep1:ablation3_no_calibrated_gate": {
+   "pages": 200,
+   "findings_returned": 4320,
+   "unsupported_citation_rate": 0.18587962962962962,
+   "calls_per_page": 7.83,
+   "h1_changes_vs_full": 0,
+   "changes_right": 0,
+   "changes_wrong": 0
+  },
+  "runs/v4_exp_rep1:ablation4_no_targeted_collaboration": {
+   "pages": 200,
+   "findings_returned": 4609,
+   "unsupported_citation_rate": 0.08526795400303754,
+   "calls_per_page": 8.6,
+   "h1_changes_vs_full": 5,
+   "changes_right": 3,
+   "changes_wrong": 2
+  },
+  "runs/v4_exp_rep1:ablation5_no_independent_adjudication": {
+   "pages": 200,
+   "findings_returned": 4320,
+   "unsupported_citation_rate": 0.18587962962962962,
+   "calls_per_page": 7.835,
+   "h1_changes_vs_full": 0,
+   "changes_right": 0,
+   "changes_wrong": 0
+  },
+  "runs/v4_exp_rep1:mazerophish": {
+   "pages": 200,
+   "findings_returned": 4320,
+   "unsupported_citation_rate": 0.18587962962962962,
+   "calls_per_page": 7.83,
+   "h1_changes_vs_full": 0,
+   "changes_right": 0,
+   "changes_wrong": 0
+  },
+  "runs/v4_exp_rep2:ablation1_no_selection": {
+   "pages": 200,
+   "findings_returned": 4304,
+   "unsupported_citation_rate": 0.17216542750929367,
+   "calls_per_page": 7.785,
+   "h1_changes_vs_full": 0,
+   "changes_right": 0,
+   "changes_wrong": 0
+  },
+  "runs/v4_exp_rep2:ablation2_no_reconciliation": {
+   "pages": 200,
+   "findings_returned": 4304,
+   "unsupported_citation_rate": 0.17216542750929367,
+   "calls_per_page": 7.785,
+   "h1_changes_vs_full": 1,
+   "changes_right": 0,
+   "changes_wrong": 1
+  },
+  "runs/v4_exp_rep2:ablation3_no_calibrated_gate": {
+   "pages": 200,
+   "findings_returned": 4304,
+   "unsupported_citation_rate": 0.17216542750929367,
+   "calls_per_page": 7.785,
+   "h1_changes_vs_full": 0,
+   "changes_right": 0,
+   "changes_wrong": 0
+  },
+  "runs/v4_exp_rep2:ablation4_no_targeted_collaboration": {
+   "pages": 200,
+   "findings_returned": 4620,
+   "unsupported_citation_rate": 0.08917748917748917,
+   "calls_per_page": 8.56,
+   "h1_changes_vs_full": 12,
+   "changes_right": 6,
+   "changes_wrong": 6
+  },
+  "runs/v4_exp_rep2:ablation5_no_independent_adjudication": {
+   "pages": 200,
+   "findings_returned": 4304,
+   "unsupported_citation_rate": 0.17216542750929367,
+   "calls_per_page": 7.785,
+   "h1_changes_vs_full": 1,
+   "changes_right": 0,
+   "changes_wrong": 1
+  },
+  "runs/v4_exp_rep2:mazerophish": {
+   "pages": 200,
+   "findings_returned": 4304,
+   "unsupported_citation_rate": 0.17216542750929367,
+   "calls_per_page": 7.785,
+   "h1_changes_vs_full": 0,
+   "changes_right": 0,
+   "changes_wrong": 0
+  }
+ },
+ "exp2": {
+  "complete__fixed_all": {
+   "pages": 200,
+   "initial_specialists_per_page": 3.81,
+   "unselected_ready": 0,
+   "later_dispatched": 0,
+   "recovery_share": null,
+   "dispatch_shortfalls": 0,
+   "calls_per_page": 7.81
+  },
+  "complete__literal_eq10": {
+   "pages": 200,
+   "initial_specialists_per_page": 1.005,
+   "unselected_ready": 561,
+   "later_dispatched": 561,
+   "recovery_share": 1.0,
+   "dispatch_shortfalls": 0,
+   "calls_per_page": 5.375
+  },
+  "complete__mazerophish": {
+   "pages": 200,
+   "initial_specialists_per_page": 1.95,
+   "unselected_ready": 372,
+   "later_dispatched": 372,
+   "recovery_share": 1.0,
+   "dispatch_shortfalls": 0,
+   "calls_per_page": 6.215
+  },
+  "matched_agent_2__fixed_all": {
+   "pages": 200,
+   "initial_specialists_per_page": 3.81,
+   "unselected_ready": 0,
+   "later_dispatched": 363,
+   "recovery_share": null,
+   "dispatch_shortfalls": 198,
+   "calls_per_page": 6.335
+  },
+  "matched_agent_2__literal_eq10": {
+   "pages": 200,
+   "initial_specialists_per_page": 1.005,
+   "unselected_ready": 561,
+   "later_dispatched": 561,
+   "recovery_share": 1.0,
+   "dispatch_shortfalls": 0,
+   "calls_per_page": 5.375
+  },
+  "matched_agent_2__mazerophish": {
+   "pages": 200,
+   "initial_specialists_per_page": 1.325,
+   "unselected_ready": 497,
+   "later_dispatched": 497,
+   "recovery_share": 1.0,
+   "dispatch_shortfalls": 0,
+   "calls_per_page": 5.73
+  }
+ },
+ "exp6_revisions": {
+  "rep1:mazerophish": {
+   "pages": 200,
+   "rounds": 334,
+   "revisions_accepted": 532,
+   "revisions_rejected": 72,
+   "escalation_precision": 0.5508982035928144,
+   "not_reproduced": 0
+  },
+  "rep1:ablation2_no_reconciliation": {
+   "pages": 200,
+   "rounds": 334,
+   "revisions_accepted": 532,
+   "revisions_rejected": 72,
+   "escalation_precision": 0.5508982035928144,
+   "not_reproduced": 0
+  },
+  "rep1:ablation5_no_independent_adjudication": {
+   "pages": 200,
+   "rounds": 334,
+   "revisions_accepted": 532,
+   "revisions_rejected": 72,
+   "escalation_precision": 0.5508982035928144,
+   "not_reproduced": 0
+  },
+  "rep2:mazerophish": {
+   "pages": 200,
+   "rounds": 328,
+   "revisions_accepted": 530,
+   "revisions_rejected": 65,
+   "escalation_precision": 0.5609756097560976,
+   "not_reproduced": 0
+  },
+  "rep2:ablation2_no_reconciliation": {
+   "pages": 200,
+   "rounds": 328,
+   "revisions_accepted": 530,
+   "revisions_rejected": 65,
+   "escalation_precision": 0.5609756097560976,
+   "not_reproduced": 0
+  },
+  "rep2:ablation5_no_independent_adjudication": {
+   "pages": 200,
+   "rounds": 328,
+   "revisions_accepted": 530,
+   "revisions_rejected": 65,
+   "escalation_precision": 0.5609756097560976,
+   "not_reproduced": 0
+  }
+ }
+}

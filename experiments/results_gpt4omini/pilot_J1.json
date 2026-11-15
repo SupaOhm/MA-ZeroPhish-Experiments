@@ -1,0 +1,28 @@
+{
+ "pages": 50,
+ "matrix_ok": 1.0,
+ "finalization_errors_ref": 0,
+ "finalization_errors_J": 0,
+ "modal_p_share_ref": 0.46,
+ "modal_p_share_J": 0.26,
+ "distinct_p_ref": 7,
+ "distinct_p_J": 6,
+ "judge_auc_ref": 0.9848,
+ "judge_auc_J": 0.968,
+ "usd_per_page_ref": 0.004433586,
+ "usd_per_page_J": 0.00458667,
+ "errors_at_0.5_ref": {
+  "fp": 1,
+  "fn": 1
+ },
+ "errors_at_0.5_J": {
+  "fp": 2,
+  "fn": 1
+ },
+ "criteria": {
+  "matrix_and_validity": true,
+  "fewer_ties": true,
+  "auc_not_lower": true
+ },
+ "go": true
+}

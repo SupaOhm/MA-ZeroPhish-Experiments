@@ -1,0 +1,16 @@
+{
+ "system": "C2_primary",
+ "S": "chatphishdetector",
+ "reading": "TIE",
+ "holm": {
+  "single_agent": 1.739946035161873e-05,
+  "cot": 3.615800487930386e-05,
+  "phishdebate": 0.0014727023451367796,
+  "vision__phishdebate": 0.01299245434525892,
+  "clasp": 0.014473337167688333,
+  "chatphishdetector": 0.3895026289761405
+ },
+ "pages": 1000,
+ "routed_b2": 233,
+ "jl_threshold": 0.9
+}

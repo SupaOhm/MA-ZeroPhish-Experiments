@@ -117,9 +117,14 @@ def build(row, data: Path, stats: Counter) -> dict:
         render = dict(render, status="failed", failure_reason="offline_navigation_error")
         stats[f"render_offline_navigation_error:{row.label}"] += 1
     if render and render["status"] == "obtained":
+        if (ev / "rendered_dom.html").exists():
+            artifacts.append({"field": "dom", "content": (ev / "rendered_dom.html").read_text(encoding="utf-8"),
+                              "instrument": render["instrument"]})
+        else:
+            # The stored DOM file was deleted after rendering (antivirus quarantine of
+            # phishing HTML, T4-1, 2026-11-04). Label-blind: recorded, never re-rendered.
+            failures["dom"] = "dom_file_removed_by_antivirus"
         artifacts += [
-            {"field": "dom", "content": (ev / "rendered_dom.html").read_text(encoding="utf-8"),
-             "instrument": render["instrument"]},
             {"field": "page_content", "content": render["visible_text"],
              "instrument": render["instrument"]},
             {"field": "screenshot",
@@ -161,7 +166,7 @@ def build(row, data: Path, stats: Counter) -> dict:
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--data", required=True)
-    ap.add_argument("--split", choices=["fit", "dev", "calib", "test", "test2", "all"], default="all")
+    ap.add_argument("--split", choices=["fit", "dev", "calib", "test", "test2", "test3", "dev3", "test4", "all"], default="all")
     ap.add_argument("--rdap", choices=["exclude", "include"], default="exclude",
                     help="exclude (default): retrospective RDAP availability leaks future "
                          "takedowns; include: keep RDAP where obtained")

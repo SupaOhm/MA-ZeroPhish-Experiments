@@ -1,0 +1,14 @@
+{
+ "system": "C2_primary",
+ "S": "vision__phishdebate",
+ "reading": "WIN",
+ "holm": {
+  "single_agent": 1.1599640234412488e-05,
+  "cot": 2.1694802927582314e-05,
+  "phishdebate": 0.0007363511725683898,
+  "vision__phishdebate": 0.004330818115086306
+ },
+ "pages": 1000,
+ "routed_b2": 233,
+ "jl_threshold": 0.9
+}

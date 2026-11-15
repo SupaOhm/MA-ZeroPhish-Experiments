@@ -137,6 +137,10 @@ def select_cases(dataset: str, split: str, per_label: int | None, limit: int | N
 
 
 def common_args(ap: argparse.ArgumentParser) -> None:
+    # PROTOCOL_V5 "Exp 2-6 with C2": run any experiment's arms under another collaboration policy / a subset.
+    ap.add_argument("--collaboration", default=None, choices=("targeted", "full_debate"),
+                    help="override every arm's collaboration policy (default: each arm's own)")
+    ap.add_argument("--only-arms", nargs="+", default=None, help="run only these arm names")
     ap.add_argument("--model", required=True)
     ap.add_argument("--env", default=None)
     ap.add_argument("--key-env", default=None)
@@ -172,6 +176,10 @@ def brand_tools(cfg):
 def run_grid(arms: dict, case_paths: list[Path], out_dir: Path, tag: str, args,
              estimator=None, meta: dict | None = None) -> None:
     """arms: {arm_name: Config}. Each arm writes <tag>__<arm>.jsonl in out_dir."""
+    if getattr(args, "only_arms", None):
+        arms = {a: c for a, c in arms.items() if a in args.only_arms}
+    if getattr(args, "collaboration", None):
+        arms = {a: replace(c, collaboration=args.collaboration) for a, c in arms.items()}
     out_dir.mkdir(parents=True, exist_ok=True)
     extra = json.loads(args.extra) if getattr(args, "extra", "") else {}
     model = ChatModel(args.model, env_path=args.env, cache_dir=args.cache, extra=extra,
@@ -209,14 +217,17 @@ def run_grid(arms: dict, case_paths: list[Path], out_dir: Path, tag: str, args,
                                      peer_lines_uncitable=cfg.specialist_peer_lines_uncitable,
                                      tools=cfg.specialist_tools, brand_tools=brand_tools(cfg),
                                      strength_scale=cfg.specialist_strength_scale,
-                                     page_assessment=cfg.specialist_page_assessment)
+                                     page_assessment=cfg.specialist_page_assessment,
+                                     self_score=cfg.specialist_self_score,
+                                     separate_score=cfg.specialist_separate_score)
         judge = LLMJudge(model, structural_gaps=cfg.judge_structural_gaps,
                          decision_mode=cfg.judge_mode, platt_ab=cfg.judge_platt,
                          band_w=cfg.judge_band_w, task_definition=cfg.task_definition,
                          show_evidence=cfg.judge_shows_evidence, samples=cfg.judge_samples,
                          page_view=cfg.judge_page_view,
                          consider_opposite=cfg.judge_consider_opposite,
-                         requires_deception=cfg.judge_requires_deception)
+                         requires_deception=cfg.judge_requires_deception,
+                         corroboration=cfg.judge_corroboration)
         fd, scratch = tempfile.mkstemp(suffix=".jsonl")
         os.close(fd)
         t0 = time.time()

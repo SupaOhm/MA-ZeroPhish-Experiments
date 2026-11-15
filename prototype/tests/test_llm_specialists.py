@@ -79,6 +79,23 @@ class GroundingTests(unittest.TestCase):
         spec = LLMSpecialists(model)
         return spec, spec.make_reasoners()[agent], envelope
 
+    def test_separate_score_leaves_the_findings_call_unchanged(self):
+        # PROTOCOL_V5 round AF2: the findings prompt is byte-identical with the option on; the
+        # score is a second call, asked once per agent, and kept only from that call.
+        plain, scored = Scripted({"url:L0": []}), Scripted({"url:L0": []})
+        _, reason, env = self.reasoner("url", plain)
+        reason(env)
+        _, env2, _ = phase1and2("c1")
+        spec = LLMSpecialists(scored, separate_score=True)
+        r2 = spec.make_reasoners()["url"]
+        r2(env2)
+        r2(env2)
+        self.assertEqual(scored.prompts[0], plain.prompts[0])
+        self.assertEqual(len(scored.prompts), 3)            # findings, score, findings
+        self.assertIn('"suspicion"', scored.prompts[1][0])
+        self.assertEqual(spec.grounding()["agent_p_asked"], ["url"])
+        self.assertEqual(spec.grounding()["agent_p"], {})   # the double returns no score
+
     def test_grounded_finding_becomes_an_evidence_item_with_provenance(self):
         model = Scripted({"url:L0": [finding("url:L0", "secure-login.example.test",
                                              "phishing", "distinctive", "brand words in host")]})

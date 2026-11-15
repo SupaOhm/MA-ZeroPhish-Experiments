@@ -28,7 +28,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 INCLUDE = [
-    "*/manifest*.jsonl", "*/build_report.json", "*/coverage_by_label_*.json",
+    "*/manifest*.jsonl", "*/build_report.json", "*/build_report_test4.json", "*/coverage_by_label_*.json",
     "*/captures/**/*.json", "*/shots/*.png",
     "*/captures_platform_supplementary/**/*.json", "*/platform_exclusion_changes.json",
     "*/evidence/*/screenshot.png", "*/evidence/*/render.json",
