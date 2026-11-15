@@ -1,7 +1,7 @@
 """PROTOCOL_V5 round AF2: per-agent scores (separate call) as decision features for P1 inside H1, with
 the BR adoption rule exactly as declared. No model call.
 
-    (first: python experiments/af2_check.py per set -- decisions must equal the v4abdf ledgers)
+    (first: python experiments/archive/af2_check.py per set -- decisions must equal the v4abdf ledgers)
     python experiments/archive/af2_eval.py
 """
 import json

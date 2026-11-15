@@ -18,10 +18,12 @@ Git.
 
 ## Development rounds
 
-Everything else records development on the fit, dev, calib, dev-2 and dev-3 splits, or on the earlier
-200-page test2, including rounds that were rejected. Their scripts are listed in
+Everything else records development rounds and supplementary runs, including rounds that were
+rejected. Their scripts are listed in
 [`../archive/README.md`](../archive/README.md) when the round was not adopted. Examples: `af2/`, `j1/`,
-`td/`, `brand_br/`, `memory_m1/`, `b1/`, `b5/`, `judge_lock/` (rejected or demoted rounds);
-`dev_v4*/`, `v4_*`, `v5_*`, `p1_*`, `b2/`, `hybrid/` (the rounds that built the decision step); `exp1/`
+`td/`, `brand_br/`, `memory_m1/`, `b1/`, `b5/`, `judge_lock/` (rejected or demoted rounds); `dev_v4*/`,
+`v4_*` (development of the v4 system, [`PROTOCOL_V4.md`](../PROTOCOL_V4.md)); `v5_*`, `p1_*`, `b2/`,
+`hybrid/` (the rounds that built the decision step); `messages/` (SMS and email, reported separately);
+`ext_trop/` (older TR-OP-source pages); `exp1/`
 to `exp6/` (the first runs of the experiments, 2026-09-30, on the 200-page split then called test and
 now called dev-2).
