@@ -1,10 +1,10 @@
 # Handoff: MA-ZeroPhish experiments (updated 2026-10-06, test3 with two extra IEEE baselines)
 
 For the teammate continuing the work. Branch **`main`** (the only branch). **To write the paper, read
-[experiments/PAPER_RESULTS.md](experiments/PAPER_RESULTS.md)**: final system, what changed from the original
+[experiments/PAPER_RESULTS.md](../../experiments/PAPER_RESULTS.md)**: final system, what changed from the original
 design, every result with ready-to-paste tables / LaTeX, limitations, and what not to claim. The complete
 dated log of every decision and result (including every rejected attempt) is
-[experiments/PROTOCOL_V5.md](experiments/PROTOCOL_V5.md) (earlier: `PROTOCOL_V4.md`). Every change was
+[experiments/PROTOCOL_V5.md](../../experiments/PROTOCOL_V5.md) (earlier: `PROTOCOL_V4.md`). Every change was
 declared there BEFORE it was run.
 
 ---

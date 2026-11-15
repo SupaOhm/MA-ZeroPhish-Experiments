@@ -24,7 +24,7 @@ Copied byte for byte from the local main-paper mirror on 2026-09-28. The source
 mirror records an Overleaf export dated 2026-09-27. This is that local snapshot,
 not a claim that the current online paper is identical. Its conclusion contains a
 locally recorded correction that the source mirror says was not yet upstream.
-Hashes and original relative paths are recorded in [the export manifest](../../EXPORT-MANIFEST.json).
+Hashes and original relative paths are recorded in [the export manifest](../internal/EXPORT-MANIFEST.json).
 
 All seven section files and the referenced figure are included. This is LaTeX source,
 not a generated PDF. It uses `IEEEtran` and the packages declared in `main.tex`;

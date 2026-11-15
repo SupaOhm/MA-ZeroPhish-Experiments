@@ -1,5 +1,7 @@
 # MA-ZeroPhish prototype
 
+> **Historical status (as exported on 2026-09-28).** This page describes the prototype before the model-backed runs. The evaluated system, current test counts and how to run it are in the [repository README](../README.md).
+
 One implementation of the advisor's Phases 1--4, built so that **every arm of every
 one of his six experiments is a configuration of it rather than a separate
 program**. The source is his paper. Nothing here is derived from this
