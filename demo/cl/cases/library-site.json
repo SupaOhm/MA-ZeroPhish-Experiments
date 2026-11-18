@@ -1,0 +1,65 @@
+{
+  "case_id": "demo-library-site",
+  "submission_type": "url",
+  "payload": "https://library.riverside-college.example/catalog",
+  "label": "benign",
+  "inapplicable": [
+    "message_body"
+  ],
+  "artifacts": [
+    {
+      "field": "url",
+      "content": "https://library.riverside-college.example/catalog",
+      "instrument": "submission"
+    },
+    {
+      "field": "redirect_chain",
+      "content": "no redirect",
+      "instrument": "headless_browser"
+    },
+    {
+      "field": "html",
+      "content": "<html><head><title>Riverside College Library - Catalog</title></head><body><a href=\"/hours\">Opening hours</a><a href=\"/events\">Events</a><a href=\"https://www.riverside-college.example/\">College home</a><form method=\"get\" action=\"/catalog/search\"><input type=\"text\" name=\"q\" placeholder=\"Search books, journals\"><button>Search</button></form><script src=\"/static/app.js\"></script></body></html>",
+      "instrument": "headless_browser"
+    },
+    {
+      "field": "dom",
+      "content": "<html><head><title>Riverside College Library - Catalog</title></head><body><a href=\"/hours\">Opening hours</a><a href=\"/events\">Events</a><a href=\"https://www.riverside-college.example/\">College home</a><form method=\"get\" action=\"/catalog/search\"><input type=\"text\" name=\"q\" placeholder=\"Search books, journals\"><button>Search</button></form><script src=\"/static/app.js\"></script></body></html>",
+      "instrument": "headless_browser"
+    },
+    {
+      "field": "page_content",
+      "content": "Riverside College Library. Search the catalog for books, journals and theses. Opening hours: Monday to Friday 8:00 to 20:00. Upcoming events: research skills workshop.",
+      "instrument": "headless_browser"
+    },
+    {
+      "field": "dns",
+      "content": "A 198.51.100.20; MX mail.riverside-college.example",
+      "instrument": "dns_client"
+    },
+    {
+      "field": "registration",
+      "content": "registrable domain riverside-college.example; created 4,210 days before observation; registrant organization Riverside College",
+      "instrument": "registration_client"
+    },
+    {
+      "field": "tls",
+      "content": "OV certificate; organization Riverside College; valid 365 days",
+      "instrument": "tls_client"
+    },
+    {
+      "field": "ct",
+      "content": "certs_covering_host_valid_on_or_before_observation=48; first certificate for the host issued (2,410 days before observation)",
+      "instrument": "ct_client"
+    },
+    {
+      "field": "hosting",
+      "content": "college network AS64500; 3 other domains on the same address",
+      "instrument": "hosting_client"
+    }
+  ],
+  "failures": {
+    "screenshot": "not_rendered_in_demo"
+  },
+  "note": "Invented case for the terminal demo. Reserved .example domains; no real page or brand."
+}

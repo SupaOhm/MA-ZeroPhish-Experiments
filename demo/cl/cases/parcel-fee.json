@@ -1,0 +1,51 @@
+{
+  "case_id": "demo-parcel-fee",
+  "submission_type": "url",
+  "payload": "http://parcel-redelivery-fee.example/pay?ref=PX88231",
+  "label": "phishing",
+  "inapplicable": ["message_body"],
+  "artifacts": [
+    {
+      "field": "url",
+      "content": "http://parcel-redelivery-fee.example/pay?ref=PX88231",
+      "instrument": "submission"
+    },
+    {
+      "field": "redirect_chain",
+      "content": "http://s.example/x9 -> 302 -> http://parcel-redelivery-fee.example/pay?ref=PX88231",
+      "instrument": "headless_browser"
+    },
+    {
+      "field": "dns",
+      "content": "A 203.0.113.44; no MX record",
+      "instrument": "dns_client"
+    },
+    {
+      "field": "registration",
+      "content": "registrable domain parcel-redelivery-fee.example; created 1 day before observation; registrar privacy-protected",
+      "instrument": "registration_client"
+    },
+    {
+      "field": "tls",
+      "content": "no certificate (plain http)",
+      "instrument": "tls_client"
+    },
+    {
+      "field": "ct",
+      "content": "certs_covering_host_valid_on_or_before_observation=0",
+      "instrument": "ct_client"
+    },
+    {
+      "field": "hosting",
+      "content": "shared hosting AS64511; 1,204 other domains on the same address",
+      "instrument": "hosting_client"
+    }
+  ],
+  "failures": {
+    "html": "render_timeout",
+    "dom": "render_timeout",
+    "page_content": "render_timeout",
+    "screenshot": "render_timeout"
+  },
+  "note": "Invented case for the terminal demo. The browser capture failed, so the page itself is a coverage gap."
+}
